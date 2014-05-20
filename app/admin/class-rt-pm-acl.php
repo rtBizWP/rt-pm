@@ -24,11 +24,11 @@ if ( ! class_exists( 'Rt_PM_ACL' ) ) {
 		}
 
 		function register_rt_crm_module( $modules ) {
-			global $rt_pm_project;
+			global $rt_pm_project,$rt_pm_task;
 			$module_key = ( function_exists( 'rt_biz_sanitize_module_key' ) ) ? rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) : '';
 			$modules[ $module_key ] = array(
 				'label' => __( 'rtPM' ),
-				'post_types' => array( $rt_pm_project->post_type ),
+				'post_types' => array( $rt_pm_project->post_type,$rt_pm_task->post_type ),
 			);
 			return $modules;
 		}

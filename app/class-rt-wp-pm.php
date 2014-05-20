@@ -43,9 +43,26 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 		}
 
 		function check_rt_biz_dependecy() {
-			if ( ! class_exists( 'Rt_Biz' ) ) {
-				add_action( 'admin_notices', array( $this, 'rt_biz_admin_notice' ) );
-			}
+            $flag = true;
+            $used_function = array(
+                'rt_biz_get_access_role_cap'
+            );
+
+            foreach ( $used_function as $fn ) {
+                if ( ! function_exists( $fn ) ) {
+                    $flag = false;
+                }
+            }
+
+            if ( ! class_exists( 'Rt_Biz' ) ) {
+                $flag = false;
+            }
+
+            if ( ! $flag ) {
+                add_action( 'admin_notices', array( $this, 'rt_biz_admin_notice' ) );
+            }
+
+            return $flag;
 		}
 
 		function rt_biz_admin_notice() { ?>
@@ -81,7 +98,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 //			$rt_crm_closing_reason = new Rt_CRM_Closing_Reason();
 //			$rt_crm_attributes = new Rt_CRM_Attributes();
 			$rt_pm_project = new Rt_PM_Project();
-			$rt_pm_Task = new Rt_PM_Task();
+            $rt_pm_task = new Rt_PM_Task();
 			$rt_pm_acl = new Rt_PM_ACL();
 //			$rt_crm_roles = new Rt_CRM_Roles();
 //			$rt_crm_accounts = new Rt_CRM_Accounts();
