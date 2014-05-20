@@ -54,13 +54,13 @@ function rt_pm_include() {
 
 	include_once RT_PM_PATH_HELPER . 'rtpm-functions.php';
 
-	global $rtpm_app_autoload, $rtpm_admin_autoload, $rtpm_models_autoload, $rtpm_helper_autoload, $rt_form_autoload, $rt_reports_autoload;
+	global $rtpm_app_autoload, $rtpm_admin_autoload, $rtpm_models_autoload, $rtpm_helper_autoload, $rtpm_form_autoload, $rtpm_reports_autoload;
 	$rtpm_app_autoload = new RT_WP_Autoload( RT_PM_PATH_APP );
 	$rtpm_admin_autoload = new RT_WP_Autoload( RT_PM_PATH_ADMIN );
 	$rtpm_models_autoload = new RT_WP_Autoload( RT_PM_PATH_MODELS );
 	$rtpm_helper_autoload = new RT_WP_Autoload( RT_PM_PATH_HELPER );
-	$rt_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
-	$rt_reports_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtreports/' );
+//	$rtpm_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
+//	$rtpm_reports_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtreports/' );
 }
 
 function rt_pm_init() {
@@ -71,4 +71,4 @@ function rt_pm_init() {
 	$rt_wp_pm = new RT_WP_PM();
 
 }
-add_action( 'rt_biz_init', 'rt_crm_init', 1 );
+add_action( 'rt_biz_init', 'rt_pm_init', 1 );
