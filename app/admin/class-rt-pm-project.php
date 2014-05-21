@@ -50,10 +50,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function hooks() {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
-			add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
-
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-
            // add_action( 'save_post', 'update_project_meta' );
 		}
 
@@ -66,33 +63,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
            // $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
         }
-
-		function custom_pages_order( $menu_order ) {
-			global $submenu;
-			global $menu;
-			if ( isset( $submenu['edit.php?post_type='.$this->post_type] ) && !empty( $submenu['edit.php?post_type='.$this->post_type] ) ) {
-				$module_menu = $submenu['edit.php?post_type='.$this->post_type];
-				unset($submenu['edit.php?post_type='.$this->post_type]);
-				$new_index = 5;
-				foreach ( $this->custom_menu_order as $item ) {
-					foreach ( $module_menu as $p_key => $menu_item ) {
-						if ( in_array( $item, $menu_item ) ) {
-							$submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
-							unset ( $module_menu[$p_key] );
-							$new_index += 5;
-							break;
-						}
-					}
-				}
-				foreach( $module_menu as $p_key => $menu_item ) {
-					$menu_item[0]= '--- '.$menu_item[0];
-					$submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
-					unset ( $module_menu[$p_key] );
-					$new_index += 5;
-				}
-			}
-			return $menu_order;
-		}
 
 		function register_custom_post( $menu_position ) {
 			$pm_logo_url = get_site_option( 'rtpm_logo_url' );
@@ -125,14 +95,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				));
 			}
 		}
-
-        function get_custom_menu_order(){
-            $this->custom_menu_order = array(
-                'rtpm-all-'.$this->post_type,
-                'edit.php?post_type='.$this->post_type,
-                'post-new.php?post_type='.$this->post_type,
-            );
-        }
 
 		function get_custom_labels() {
 			$this->labels = array(

@@ -21,6 +21,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		public $templateURL;
 
+		static $settings_page_slug = 'rtpm-settings';
+
 		public function __construct() {
 
 			if( ! $this->check_rt_biz_dependecy() ) {
@@ -73,8 +75,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		function init_globals() {
 			global $rt_pm_attributes, $rt_pm_leads, $rt_pm_acl,
-//					$rt_crm_gravity_form_importer, $rt_crm_settings, $rt_crm_logs,
-					$taxonomy_metadata, $rt_pm_project, $rt_pm_task, $rt_pm_time_entries,
+//					$rt_crm_gravity_form_importer, $rt_crm_settings, $rt_crm_logs,$taxonomy_metadata,
+                   $rt_pm_project, $rt_pm_task, $rt_pm_time_entries,
 					$rt_pm_time_entries_model,
 //					$rt_crm_mail_acl_model, $rt_crm_mail_thread_importer_model,
 //					$rt_crm_mail_message_model, $rt_crm_mail_outbound_model,

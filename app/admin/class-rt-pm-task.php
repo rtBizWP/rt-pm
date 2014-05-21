@@ -44,7 +44,6 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
 
         function hooks() {
             add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
-            add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
         }
 
         function register_custom_pages() {
@@ -75,35 +74,6 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
             <script>postboxes.add_postbox_toggles(pagenow);</script>
         <?php }
 
-        function custom_pages_order( $menu_order ) {
-            global $submenu;
-            global $menu;
-            if ( isset( $submenu['edit.php?post_type='.$this->post_type] ) && !empty( $submenu['edit.php?post_type='.$this->post_type] ) ) {
-                $module_menu = $submenu['edit.php?post_type='.$this->post_type];
-                unset($submenu['edit.php?post_type='.$this->post_type]);
-                $new_index = 5;
-                foreach ( $this->custom_menu_order as $item ) {
-                    foreach ( $module_menu as $p_key => $menu_item ) {
-                        if ( in_array( $item, $menu_item ) ) {
-                            $submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
-                            unset ( $module_menu[$p_key] );
-                            $new_index += 5;
-                            break;
-                        }
-                    }
-                }
-                foreach( $module_menu as $p_key => $menu_item ) {
-                    $menu_item[0]= '--- '.$menu_item[0];
-                    $submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
-                    unset ( $module_menu[$p_key] );
-                    $new_index += 5;
-                }
-            }
-            return $menu_order;
-        }
-
-
-
         function register_custom_statuses() {
             foreach ($this->statuses as $status) {
 
@@ -114,14 +84,6 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                 , 'label_count' => _n_noop("{$status['name']} <span class='count'>(%s)</span>", "{$status['name']} <span class='count'>(%s)</span>"),
                 ));
             }
-        }
-
-        function get_custom_menu_order(){
-            global $rt_pm_attributes;
-            $this->custom_menu_order = array(
-                'edit.php?post_type='.$this->post_type,
-                'post-new.php?post_type='.$this->post_type,
-            );
         }
 
         function get_custom_labels() {
