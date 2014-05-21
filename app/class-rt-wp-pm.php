@@ -21,6 +21,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		public $templateURL;
 
+		static $settings_page_slug = 'rtpm-settings';
+
 		public function __construct() {
 
 			if( ! $this->check_rt_biz_dependecy() ) {
