@@ -63,57 +63,49 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
             } ?>
 
             <div class="large-12 small-12 columns ui-sortable meta-box-sortables">
-                <div class="row collapse">
-                    <div class="large-8 columns">
-                        <input type="text" id="new_rt_ptoject_title" name="post[project_title]" value="" placeholder="Project Title">
-                    </div>
+                <div class="large-8 small-8 columns">
+                    <input type="text" id="new_rt_ptoject_title" name="post[project_title]" value="" placeholder="Project Title">
                 </div>
-                <div class="row collapse">
-                    <div class="large-12 columns">
-                        <textarea id="new_rt_project_contentt" rows="20" autocomplete="off" cols="40"  name="post[project_content]" placeholder="Details about Project"></textarea>
-                    </div>
+                <div class="large-12 small-12 columns">
+                    <textarea id="new_rt_project_contentt" rows="20" autocomplete="off" cols="40"  name="post[project_content]" placeholder="Details about Project"></textarea>
                 </div>
-                <div class="row">
-                    <div class="large-5 small-12 postbox collapse columns">
-                        <div class="handlediv" title="Click to toggle"><br></div>
-                        <h6 class="hndle"><span><i class="general foundicon-tools"></i> Assign Manager</span></h6>
-                        <div class="inside">
-                            <div class="large-12 mobile-large-3 columns">
-                                <?php if( $user_edit ) { ?>
-                                    <select name="post[project_manager]" >
-                                        <?php
-                                        if (!empty($results)) {
-                                            foreach ($results as $author) {
-                                                if ($author->ID == get_current_user_id()) {
-                                                    $selected = " selected";
-                                                } else {
-                                                    $selected = " ";
-                                                }
-                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                <div class="large-5 small-12 columns">
+                    <h6 class="hndle"><span><i class="general foundicon-tools"></i> Assign Manager</span></h6>
+                    <div class="inside">
+                        <div class="large-12 mobile-large-3 columns">
+                            <?php if( $user_edit ) { ?>
+                                <select name="post[project_manager]" >
+                                    <?php
+                                    if (!empty($results)) {
+                                        foreach ($results as $author) {
+                                            if ($author->ID == get_current_user_id()) {
+                                                $selected = " selected";
+                                            } else {
+                                                $selected = " ";
                                             }
+                                            echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
                                         }
-                                        ?>
-                                    </select>
-                                <?php } ?>
-                            </div>
+                                    }
+                                    ?>
+                                </select>
+                            <?php } ?>
                         </div>
                     </div>
-                    <div class="large-6 small-12 postbox collapse column">
-                        <div class="handlediv" title="Click to toggle"><br></div>
-                        <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
-                        <div style="padding-bottom: 0" class="inside">
-                            <script>
-                                var arr_project_member_user =<?php echo json_encode($arrSubscriberUser); ?>;
-                                var ac_auth_token = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_token', true); ?>';
-                                var ac_default_project = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_default_project', true); ?>';
-                            </script>
-                            <?php if ( $user_edit ) { ?>
-                                <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
-                            <?php } ?>
-                            <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
-                                <?php echo $subScribetHTML; ?>
-                            </ul>
-                        </div>
+                </div>
+                <div class="large-6 small-12 column">
+                    <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
+                    <div style="padding-bottom: 0" class="inside">
+                        <script>
+                            var arr_project_member_user =<?php echo json_encode($arrSubscriberUser); ?>;
+                            var ac_auth_token = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_token', true); ?>';
+                            var ac_default_project = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_default_project', true); ?>';
+                        </script>
+                        <?php if ( $user_edit ) { ?>
+                            <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
+                        <?php } ?>
+                        <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
+                            <?php echo $subScribetHTML; ?>
+                        </ul>
                     </div>
                 </div>
             </div>

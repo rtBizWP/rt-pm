@@ -27,8 +27,15 @@
     <h2>
         <?php echo $labels['all_items']; ?>
     </h2>
+    <?php
+    $form_container_class = 'large-8 small-12 columns postbox rtpm-project-form-container ';
+    if ( isset( $error ) && ! empty( $error )   ){
+        $form_container_class.= 'collapse';
+    }else{
+        $form_container_class.= 'closed';
+    } ?>
 
-    <div style="margin-top:20px;" id="add-new-post" class="large-12 small-12 columns">
+    <div style="margin-top:20px;" id="add-new-post" class="<?php echo $form_container_class ?>">
         <?php
             if ( isset( $error ) && ! empty( $error )   ){
                 ?><div style="padding:10px;" class="error"><?php
@@ -36,27 +43,26 @@
                 ?> </div><?php
             }
         ?>
-        <form method="post" id="form-add-post" class="columns rtpm-project-form-container" action="<?php echo $form_ulr; ?>">
-            <div class="large-7 columns">
-                <h4><i class="gen-enclosed foundicon-add-doc"></i> Start a New Project</h4>
-            </div>
-            <?php $leadsTable->ui_create_project($user_edit); ?>
-        </form>
+        <div class="handlediv fullhandlediv" title="Click to toggle"><br>
+            <h6 class="hndle"><span><i class="general foundicon-tools"></i> Start a New Project</span></h6>
+        </div>
+        <div class="inside columns">
+            <form method="post" id="form-add-post" action="<?php echo $form_ulr; ?>">
+                <?php $leadsTable->ui_create_project($user_edit); ?>
+            </form>
+        </div>
+
     </div>
     <div style="padding:0" class="large-12 columns rtpm-projects">
             <?php $leadsTable->table_view(); ?>
     </div>
 
     <style>
-        .rtpm-projects{
-            margin-top: 20px;
-        }
-
 
         .hndle{
             border-bottom: 1px solid #eee;
             padding: 5px;
-            margin-bottom: 0;
+            margin-bottom: 10px;
             font-weight: bold;
             color: #444;
             font-size: 12px;
@@ -64,13 +70,17 @@
 
         .rtpm-project-form-container{
             background: #fff;
-            padding-top: 20px;
             -webkit-border-radius: 3px;
             -moz-border-radius: 3px;
             border-radius: 3px;
             -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
             -moz-box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .rtpm-project-form-container>.handlediv{
+            width:100%;
+            height: auto;
         }
 
         .rtpm-project-form-container h3{

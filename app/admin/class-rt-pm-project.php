@@ -58,6 +58,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $filter = add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
             add_action( "load-$filter", array( $this, 'add_screen_options' ) );
+            add_action( 'admin_footer-'.$filter, array( $this, 'footer_scripts' ) );
 
            // $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
@@ -146,6 +147,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			);
 			return $this->statuses;
 		}
+
+        /**
+         * Prints the jQuery script to initiliase the metaboxes
+         * Called on admin_footer-*
+         */
+        function footer_scripts() { ?>
+            <script> postboxes.add_postbox_toggles(pagenow);</script>
+        <?php }
 
         /**
          * Custom list page for Projects
