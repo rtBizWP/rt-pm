@@ -29,7 +29,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		public function __construct() {
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
-			$this->get_custom_menu_order();
 			add_action( 'init', array( $this, 'init_project' ) );
 			$this->hooks();
 		}
