@@ -46,7 +46,47 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
 		}
 
 		function load_styles_scripts() {
+            global $rt_pm_project;
+            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type );
+            if ( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pagearray ) ) {
+                wp_enqueue_script('foundation.zepto', RT_PM_URL . 'app/assets/javascripts/vendor/zepto.js',array("jquery"), "", true);
+                wp_enqueue_script('foundation-js', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
+                wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/assets/javascripts/admin.js',array("foundation-js"), RT_PM_VERSION, true);
 
+                if( !wp_script_is('jquery-ui-autocomplete') ) {
+                    wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.9.2',true);
+                }
+
+                if( !wp_script_is('jquery-ui-datepicker') ) {
+                    wp_enqueue_script( 'jquery-ui-datepicker' );
+                }
+
+                if( !wp_script_is('jquery-ui-accordion') ) {
+                    wp_enqueue_script( 'jquery-ui-accordion' );
+                }
+
+                global $wp_scripts;
+                if ( ! wp_script_is( 'jquery-ui-core' ) ) {
+                    $ui = $wp_scripts->query( 'jquery-ui-core' );
+                    // tell WordPress to load the Smoothness theme from Google CDN
+                    $protocol = is_ssl() ? 'https' : 'http';
+                    $url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.css";
+                    if ( ! wp_style_is( 'jquery-ui-smoothness' ) ) {
+                        wp_enqueue_style( 'jquery-ui-smoothness', $url, false, null );
+                    }
+                }
+
+                wp_enqueue_script( 'postbox' );
+
+                wp_enqueue_style('foundation-icon-general-css', RT_PM_URL . 'app/assets/css/general_foundicons.css', false, "", 'all');
+                wp_enqueue_style('foundation-icon-general-ie-css', RT_PM_URL . 'app/assets/css/general_foundicons_ie7.css', false, "", 'all');
+                wp_enqueue_style('foundation-icon-social-css', RT_PM_URL . 'app/assets/css/social_foundicons.css', false, "", 'all');
+                wp_enqueue_style('foundation-icon-social-ie-css', RT_PM_URL . 'app/assets/css/social_foundicons_ie7.css', false, "", 'all');
+                wp_enqueue_style('foundation-normalize', RT_PM_URL . 'app/assets/css/legacy_normalize.css', false, '', 'all');
+                wp_enqueue_style('foundation-legacy-css', RT_PM_URL . 'app/assets/css/legacy_admin.css', false, '', 'all');
+
+            }
+            //$this->localize_scripts();
 		}
 
 		function register_menu() {

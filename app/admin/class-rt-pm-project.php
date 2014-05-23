@@ -49,11 +49,20 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function hooks() {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
+            add_action( 'p2p_init', array( $this, 'create_connection' ) );
+           // add_action( 'save_post', 'update_project_meta' );
 		}
 
 		function register_custom_pages() {
+            $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 
-		}
+            $filter = add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
+            add_action( "load-$filter", array( $this, 'add_screen_options' ) );
+            add_action( 'admin_footer-'.$filter, array( $this, 'footer_scripts' ) );
+
+           // $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+            //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
+        }
 
 		function register_custom_post( $menu_position ) {
 			$pm_logo_url = get_site_option( 'rtpm_logo_url' );
@@ -139,19 +148,99 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			return $this->statuses;
 		}
 
+        /**
+         * Prints the jQuery script to initiliase the metaboxes
+         * Called on admin_footer-*
+         */
+        function footer_scripts() { ?>
+            <script> postboxes.add_postbox_toggles(pagenow);</script>
+        <?php }
+
+        /**
+         * Custom list page for Projects
+         */
 		function dashboard() {
-			/*global $rt_pm_dashboard;
-			$rt_pm_dashboard->ui( $this->post_type );*/
+            $args = array(
+                'post_type' => $this->post_type,
+                'labels' => $this->labels,
+            );
+            rtpm_get_template( 'admin/dashboard.php', $args );
 		}
+
+        /**
+         * Add list view on dashboard
+         */
+        function add_screen_options() {
+            $option = 'per_page';
+            $args = array(
+                'label' => $this->labels['all_items'],
+                'default' => 10,
+                'option' => $this->post_type.'_per_page',
+            );
+            add_screen_option($option, $args);
+            //new Rt_CRM_Leads_List_View();
+        }
 
 		function add_dashboard_widgets() {
 
 		}
 
 		function ui() {
-			/*global $rt_attributes_model;
-			rtpm_get_template('admin/add-module.php', array( 'rt_attributes_model' => $rt_attributes_model ) );*/
 		}
 
-	}
+        /**
+         * Register post relation between project with task
+         */
+        function create_connection() {
+            global $rt_pm_task;
+            p2p_register_connection_type( array(
+                'name' => $this->post_type.'_to_'.$rt_pm_task->post_type,
+                'from' => $this->post_type,
+                'to' => $rt_pm_task->post_type,
+            ) );
+        }
+
+        /**
+         * Create relationship between project and task
+         * @param $post_type
+         * @param string $from
+         * @param string $to
+         * @param bool $clear_old
+         */
+        function connect_post_to_entity( $post_type, $from = '', $to = '', $clear_old = false ) {
+            if ( $clear_old ) {
+                p2p_delete_connections( $post_type.'_to_'.$this->post_type, array( 'from' => $from ) );
+            }
+            if ( ! p2p_connection_exists( $post_type.'_to_'.$this->post_type, array( 'from' => $from, 'to' => $to ) ) ) {
+                p2p_create_connection( $post_type.'_to_'.$this->post_type, array( 'from' => $from, 'to' => $to ) );
+            }
+        }
+
+        /**
+         * get Project and task relationship
+         * @param $post_id
+         * @param $connection
+         * @param string $term_seperator
+         * @return string
+         */
+        static function connection_to_string( $post_id, $connection, $term_seperator = ' , ' ) {
+            $post = get_post( $post_id );
+            $termsArr = get_posts(array(
+                'connected_type' => $post->post_type.'_to_'.$connection,
+                'connected_items' => $post,
+                'nopaging' => true,
+                'suppress_filters' => false,
+            ));
+            $tmpStr = '';
+            if( $termsArr ) {
+                $sep = '';
+                foreach ( $termsArr as $tObj ) {
+                    $tmpStr .= $sep . $tObj->post_title;
+                    $sep = $term_seperator;
+                }
+            }
+            return $tmpStr;
+        }
+
+    }
 }
