@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
     $(document).foundation();
+
+    //ajex loder
     var LOADER_OVERLAY = $("<div class='loading-overlay'><i class='loader-icon'></i></div>");
     $.ajaxSetup({
         beforeSend : function(jqXHR, settings) {
@@ -12,6 +14,7 @@ jQuery(document).ready(function($) {
         }
     });
 
+    //autocomplete project member
     try {
         if (arr_project_member_user != undefined) {
             jQuery("#project_member_user_ac").autocomplete({
@@ -52,6 +55,194 @@ jQuery(document).ready(function($) {
     } catch (e) {
 
     }
+
+    //autocomplete project client
+    try {
+        if (arr_project_client_user != undefined) {
+            jQuery("#project_client_user_ac").autocomplete({
+                source: function (request, response) {
+                    var term = $.ui.autocomplete.escapeRegex(request.term)
+                        , startsWithMatcher = new RegExp("^" + term, "i")
+                        , startsWith = $.grep(arr_project_client_user, function (value) {
+                            return startsWithMatcher.test(value.label || value.value || value);
+                        })
+                        , containsMatcher = new RegExp(term, "i")
+                        , contains = $.grep(arr_project_client_user, function (value) {
+                            return $.inArray(value, startsWith) < 0 &&
+                                containsMatcher.test(value.label || value.value || value);
+                        });
+
+                    response(startsWith.concat(contains));
+                },
+                focus: function(event, ui) {
+
+                },
+                select: function(event, ui) {
+                    if (jQuery("#project-client-auth-" + ui.item.id).length < 1) {
+                        jQuery("#divProjectClientList").append("<li id='project-client-auth-" + ui.item.id + "' class='contact-list' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectClient' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_client][]' value='" + ui.item.id + "' /></li>")
+                    }
+                    jQuery("#project_client_user_ac").val("");
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-project-client =-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
+            };
+
+            jQuery(document).on('click', "a[href=#removeProjectClient]", function(e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });
+
+        }
+    } catch (e) {
+
+    }
+
+    //datetime picker
+    if( $(".datetimepicker").length > 0 ) {
+        $(".datetimepicker").datetimepicker({
+            dateFormat: "M d, yy",
+            timeFormat: "hh:mm TT",
+            onClose: function(newDate,inst) {
+
+                if( $(this).hasClass("moment-from-now") ) {
+                    var oldDate = $(this).attr("title");
+
+                    if( newDate != "" ) {
+                        $(this).val(moment(new Date(newDate)).fromNow());
+                        $(this).attr("title",newDate);
+
+                        if( $(this).next().length > 0 ) {
+                            $(this).next().val(newDate);
+                        }
+                    } else if( oldDate != "" ) {
+                        $(this).val(moment(new Date(oldDate)).fromNow());
+                        $(this).attr("title",oldDate);
+
+                        if( $(this).next().length > 0 ) {
+                            $(this).next().val(newDate);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).on("click", ".moment-from-now", function(e) {
+        var oldDate = $(this).attr("title");
+
+        if( oldDate != "" ) {
+            $(this).datepicker("setDate",new Date($(this).attr("title")));
+        }
+    });
+
+    $(".moment-from-now").each(function() {
+        if($(this).is("input[type='text']") && $(this).val()!="")
+            $(this).val(moment(new Date($(this).attr("title"))).fromNow());
+        else if($(this).is(".comment-date"))
+            $(this).html(moment(new Date($(this).attr("title"))).fromNow());
+        else
+            $(this).html(moment(new Date($(this).html())).fromNow());
+    });
+
+    $("#button-trash").click(function(){
+        var r = confirm("Are you sure you want to move this project to trash?");
+        if (r != true) {
+            return false;
+        }
+        alert('Trashed!!!');
+    });
+
+    $("#form-add-post").submit(function(e) {
+        try {
+            var eleAccountName = $("#new_rt_project_title");
+            if ($(eleAccountName).val().trim() == "") {
+                addError(eleAccountName, "Please Enter the Title");
+                return false;
+            }
+            removeError(eleAccountName);
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    });
+
+    function addError(element, message) {
+        $(element).addClass("error");
+        if ($(element).next().length > 0) {
+            if ($(element).next().hasClass("error")) {
+                $(element).next().html(message);
+            } else {
+                $(element).after("<small class='error'>" + message + "</small>");
+            }
+        } else {
+            $(element).after("<small class='error'>" + message + "</small>");
+        }
+    }
+    function removeError(element) {
+        $(element).removeClass("error");
+        if ($(element).next().length > 0) {
+            if ($(element).next().hasClass("error")) {
+                $(element).next().remove();
+            }
+        }
+    }
+
+    jQuery(document).on('click', '.rtcrm_delete_attachment',function(e) {
+        e.preventDefault();
+        jQuery(this).parent().remove();
+    });
+
+    var file_frame_task
+    jQuery('#add_lead_attachment').on('click', function(e) {
+        e.preventDefault();
+        if (file_frame_task) {
+            file_frame_task.open();
+            return;
+        }
+        file_frame_task = wp.media.frames.file_frame = wp.media({
+            title: jQuery(this).data('uploader_title'),
+            searchable: true,
+            button: {
+                text: 'Attach Selected Files'
+            },
+            multiple: true // Set to true to allow multiple files to be selected
+        });
+        file_frame_task.on('select', function() {
+            var selection = file_frame_task.state().get('selection');
+            var strAttachment = '';
+            selection.map(function(attachment) {
+                attachment = attachment.toJSON();
+                strAttachment = '<div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="'+attachment.id+'">';
+                strAttachment += '<a target="_blank" href="'+attachment.url+'"><img height="20px" width="20px" src="' +attachment.icon + '" > '+attachment.filename+'</a>';
+                strAttachment += '<a href="#" class="rtcrm_delete_attachment right">x</a>';
+                strAttachment += '<input type="hidden" name="attachment[]" value="' + attachment.id +'" /></div>';
+
+                jQuery("#attachment-container .scroll-height").append(strAttachment);
+
+                // Do something with attachment.id and/or attachment.url here
+            });
+            // Do something with attachment.id and/or attachment.url here
+        });
+        file_frame_task.open();
+    });
+
+    //open model
+    $(document).on("click",".add-task",function(e){
+        $("#div-add-task").reveal({
+            opened: function(){
+
+            }
+        });
+    });
+    $(document).on("click",".add-time-entry",function(e){
+        $("#div-add-time-entry").reveal({
+            opened: function(){
+
+            }
+        });
+    });
+
 });
 
 

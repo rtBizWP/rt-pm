@@ -59,7 +59,7 @@ function rt_pm_include() {
 	$rtpm_admin_autoload = new RT_WP_Autoload( RT_PM_PATH_ADMIN );
 	$rtpm_models_autoload = new RT_WP_Autoload( RT_PM_PATH_MODELS );
 	$rtpm_helper_autoload = new RT_WP_Autoload( RT_PM_PATH_HELPER );
-//	$rtpm_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
+	$rtpm_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
 //	$rtpm_reports_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtreports/' );
 }
 

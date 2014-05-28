@@ -34,7 +34,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 while ($project_list_query->have_posts()) : $project_list_query->the_post(); ?>
                     <div class="large-3 small-4 columns">
                         <article id="rtpm-<?php the_id() ?>" <?php post_class( 'rtpm_admin ' ); ?>>
-                            <a href="#" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
+                            <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                 <h2><?php the_title(); ?></h2>
                                 <h4 class="rtpm-project-sub-title"><?php the_content(); ?></h4>
                                 <div class="rtpm-project-detail">
@@ -50,17 +50,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
         }
 
         public function ui_create_project($user_edit){
-            $results = Rt_PM_Utils::get_crm_rtcamp_user();
-            $arrCommentReply = array();
-            $arrSubscriberUser[] = array();
-            $subScribetHTML = "";
+            $results = Rt_PM_Utils::get_pm_rtcamp_user();
+            $arrProjectMember[] = array();
+            $subProjectMemberHTML = "";
             if( !empty( $results ) ) {
                 foreach ( $results as $author ) {
-                    $subScribetHTML .= "";
-                    $arrSubscriberUser[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
-                    $arrCommentReply[] = array("userid" => $author->ID, "label" => $author->display_name, "email" => $author->user_email, "contact" => false, "imghtml" => get_avatar($author->user_email, 24));
+                    $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
                 }
-            } ?>
+            }?>
 
             <div class="large-12 small-12 columns ui-sortable meta-box-sortables">
                 <div class="large-8 small-8 columns">
@@ -96,7 +93,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
                     <div style="padding-bottom: 0" class="inside">
                         <script>
-                            var arr_project_member_user =<?php echo json_encode($arrSubscriberUser); ?>;
+                            var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
                             var ac_auth_token = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_token', true); ?>';
                             var ac_default_project = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_default_project', true); ?>';
                         </script>
@@ -104,7 +101,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                             <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                         <?php } ?>
                         <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
-                            <?php echo $subScribetHTML; ?>
+                            <?php echo $subProjectMemberHTML; ?>
                         </ul>
                     </div>
                 </div>
@@ -136,7 +133,8 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                         'post_type' => $rt_pm_project->post_type,
                     );
                     $newProjectID = wp_insert_post($newProject);
-                    update_post_meta( $newProjectID, 'project_members', $project_meta['project_member'] );
+                    update_post_meta( $newProjectID, 'project_member', $project_meta['project_member'] );
+                    return 1;
                 }
             }
             return $error;

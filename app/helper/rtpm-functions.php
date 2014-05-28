@@ -44,3 +44,25 @@ function rtpm_locate_template( $template_name, $template_path = '', $default_pat
 	return apply_filters('rtpm_locate_template', $template, $template_name, $template_path);
 }
 
+function rtpm_sanitize_taxonomy_name( $taxonomy ) {
+    $taxonomy = strtolower( stripslashes( strip_tags( $taxonomy ) ) );
+    $taxonomy = preg_replace( '/&.+?;/', '', $taxonomy ); // Kill entities
+    $taxonomy = str_replace( array( '.', '\'', '"' ), '', $taxonomy ); // Kill quotes and full stops.
+    $taxonomy = str_replace( array( ' ', '_' ), '-', $taxonomy ); // Replace spaces and underscores.
+
+    return $taxonomy;
+}
+
+function rtpm_post_type_name( $name ) {
+    return 'rt_' . rtpm_sanitize_taxonomy_name( $name );
+}
+
+function rtpm_attribute_taxonomy_name( $name ) {
+    return 'rt_' . rtpm_sanitize_taxonomy_name( $name );
+}
+
+function rtpm_get_time_entry_table_name() {
+    global $wpdb, $blog_id;
+    return $wpdb->prefix . ( ( is_multisite() ) ? $blog_id.'_' : '' ) . 'rt_wp_pm_time_entries';
+}
+

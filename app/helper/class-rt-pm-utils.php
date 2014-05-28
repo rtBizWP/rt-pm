@@ -22,10 +22,15 @@ if( !class_exists( 'Rt_PM_Utils' ) ) {
 			return preg_replace('/[^(\x20-\x7F)]*/','', $tmpStr);
 		}
 
-		public static function get_crm_rtcamp_user() {
-			$users = rt_biz_get_module_users( RT_CRM_TEXT_DOMAIN );
+		public static function get_pm_rtcamp_user() {
+			$users = rt_biz_get_module_users( RT_PM_TEXT_DOMAIN );
 			return $users;
 		}
+
+        public static function get_pm_client_user() {
+            $users = rt_biz_get_clients( );
+            return $users;
+        }
 
 	}
 }

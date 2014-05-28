@@ -45,6 +45,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			if ( isset( $settings['attach_accounts'] ) && $settings['attach_accounts'] == 'yes' && function_exists( 'rt_biz_register_organization_connection' ) ) {
 				rt_biz_register_organization_connection( $this->post_type, $this->labels['name'] );
 			}
+
+            global $rt_pm_project_type;
+            $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
 		}
 
 		function hooks() {
@@ -59,6 +62,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $filter = add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
             add_action( "load-$filter", array( $this, 'add_screen_options' ) );
             add_action( 'admin_footer-'.$filter, array( $this, 'footer_scripts' ) );
+
+            $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+            add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
 
            // $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
@@ -117,32 +123,27 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				array(
 					'slug' => 'new',
 					'name' => __( 'New' ),
-					'description' => __( 'New lead is created' ),
+					'description' => __( 'New Project is created' ),
 				),
 				array(
-					'slug' => 'assigned',
-					'name' => __( 'Assigned' ),
-					'description' => __( 'Lead is assigned' ),
+					'slug' => 'active',
+					'name' => __( 'Active' ),
+					'description' => __( 'Project is activated' ),
 				),
 				array(
-					'slug' => 'requirement-analysis',
-					'name' => __( 'Requirement Analysis' ),
-					'description' => __( 'Lead is under requirement analysis' ),
+					'slug' => 'paused',
+					'name' => __( 'Paused' ),
+					'description' => __( 'Project is under Paused' ),
 				),
 				array(
-					'slug' => 'quotation',
-					'name' => __( 'Quotation' ),
-					'description' => __( 'Lead is in quotation phase' ),
-				),
-				array(
-					'slug' => 'negotiation',
-					'name' => __( 'Negotiation' ),
-					'description' => __( 'Lead is in negotiation phase' ),
+					'slug' => 'complete',
+					'name' => __( 'Complete' ),
+					'description' => __( 'Project is Completed' ),
 				),
 				array(
 					'slug' => 'closed',
 					'name' => __( 'Closed' ),
-					'description' => __( 'Lead is closed' ),
+					'description' => __( 'Project is closed' ),
 				),
 			);
 			return $this->statuses;
@@ -181,11 +182,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //new Rt_CRM_Leads_List_View();
         }
 
-		function add_dashboard_widgets() {
-
-		}
-
-		function ui() {
+        /**
+         * Custom page ui for Add Project
+         */
+		function custom_page_ui() {
+            $args = array(
+                'post_type' => $this->post_type,
+                'labels' => $this->labels,
+            );
+            rtpm_get_template('admin/project.php', $args);
 		}
 
         /**
