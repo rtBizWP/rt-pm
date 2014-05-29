@@ -33,14 +33,14 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
         function get_custom_labels() {
             $this->labels = array(
                 'name' => __( 'TimeEntry' ),
-                'singular_name' => __( 'TimeEntry' ),
-                'all_items' => __( 'TTimeEntrys' ),
+                'singular_name' => __( 'Time Entry' ),
+                'all_items' => __( 'Time Entries' ),
                 'add_new' => __( 'Add TimeEntry' ),
-                'add_new_item' => __( 'Add TimeEntries' ),
-                'new_item' => __( 'Add TimeEntry' ),
-                'edit_item' => __( 'Edit TimeEntry' ),
-                'view_item' => __( 'View TimeEntry' ),
-                'search_items' => __( 'Search TimeEntries' ),
+                'add_new_item' => __( 'Add Time Entry' ),
+                'new_item' => __( 'Add Time Entry' ),
+                'edit_item' => __( 'Edit Time Entry' ),
+                'view_item' => __( 'View Time Entry' ),
+                'search_items' => __( 'Search Time Entries' ),
             );
             return $this->labels;
         }

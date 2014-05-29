@@ -358,6 +358,31 @@
     max-width:150px;
 }
 
+.rtpm-container #add-new-attachment .scroll-height{
+    max-height: none;
+    overflow-y: visible;
+}
+
+.wp-admin .rtpm-container select{
+    height: 2.0125em;
+}
+
+.rtpm-container .reveal-modal{
+    padding-bottom: 0px;
+}
+
+.rtpm-container .reveal-modal .mceEditor td.mceIframeContainer iframe {
+    min-height: 100px;
+}
+/* line 355, ../sass/admin.scss */
+.rtpm-container .reveal-modal .wp-editor-container textarea.wp-editor-area {
+    min-height: 100px;
+}
+
+.rtpm-container .reveal-modal .mybutton{
+    margin:1.25em 0 0;
+}
+
 
 .tabs {
     border-bottom: 1px solid #E6E6E6;
@@ -522,7 +547,7 @@
 .tabs-content {
     display: block;
     margin: 1px;
-    padding: 20px 10px 0 10px;
+    padding: 20px 10px 20px 10px;
     background-color:#ffffff;
 }
 

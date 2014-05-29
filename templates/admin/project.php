@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-    $AddProject = new Rt_PM_Add_Project();
+    global $rt_pm_add_project;
 
     $post_type=$_REQUEST['post_type'];
 
@@ -22,9 +22,9 @@
         <div style="max-width:none;" class="row">
             <div style="padding:0" class="large-6 columns">
                 <?php
-                if (isset($post->ID)) {
+                if (isset($_REQUEST["{$post_type}_id"])) {
                     $post_icon = "foundicon-".( ( $user_edit ) ? 'edit' : 'view-mode' );
-                    $page_title = ucfirst($labels['name']);
+                    $page_title = ucfirst(get_the_title($_REQUEST["{$post_type}_id"]));
                 } else {
                     $post_icon = "foundicon-add-doc";
                     $page_title = "Add ".ucfirst($labels['name']);
@@ -42,34 +42,34 @@
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
         if (!$is_new_project_page) {
             $ref_link = "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&";
-        }else{
-            $ref_link = "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&";
         }
+
         ?>
         <dl class="tabs five-up">
-            <dd <?php echo !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-details"); ?>">Project Details</a></dd>
+
             <?php if ( !$is_new_project_page) { ?>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-task"); ?>">Task</a></dd>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entry</a></dd>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Project File</a></dd>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-reports' ? 'class="active"':'';  ?>><a href="<?php echo admin_url($ref_link . "tab={$post_type}-reports"); ?>">Project Reports</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-task"); ?>">Tasks</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Attachments</a></dd>
+            <!--<dd <?php /*echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-reports' ? 'class="active"':'';  */?>><a href="<?php /*echo admin_url($ref_link . "tab={$post_type}-reports"); */?>">Project Reports</a></dd>-->
             <?php } ?>
+            <dd <?php echo !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-details"); ?>">Details</a></dd>
         </dl>
 
         <div class="tabs-content">
             <div class="content active" >
                 <?php
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ){
-                        $AddProject->get_project_task_tab($labels,$user_edit);
+                        $rt_pm_add_project->get_project_task_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ){
-                        $AddProject->get_project_timeentry_tab($labels,$user_edit);
+                        $rt_pm_add_project->get_project_timeentry_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ){
-                        $AddProject->get_project_file_tab($labels,$user_edit);
+                        $rt_pm_add_project->get_project_file_tab($labels,$user_edit);
                     }
                     if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' )) {
-                        $AddProject->get_project_description_tab($labels,$user_edit);
+                        $rt_pm_add_project->get_project_description_tab($labels,$user_edit);
                     }
 
                 ?>

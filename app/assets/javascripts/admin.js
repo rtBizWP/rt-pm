@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
 
     $("#form-add-post").submit(function(e) {
         try {
-            var eleAccountName = $("#new_rt_project_title");
+            var eleAccountName = $("#new_" + $(this).data("posttype") + "_title");
             if ($(eleAccountName).val().trim() == "") {
                 addError(eleAccountName, "Please Enter the Title");
                 return false;
@@ -227,11 +227,86 @@ jQuery(document).ready(function($) {
         file_frame_task.open();
     });
 
+    jQuery('#add_project_attachment').on('click', function(e) {
+        e.preventDefault();
+        var project_id = $(this).data("projectid");
+        if (file_frame_task) {
+            file_frame_task.open();
+            return;
+        }
+        file_frame_task = wp.media.frames.file_frame = wp.media({
+            title: jQuery(this).data('uploader_title'),
+            searchable: true,
+            button: {
+                text: 'Attach Selected Files'
+            },
+            multiple: true // Set to true to allow multiple files to be selected
+        });
+        file_frame_task.on('select', function() {
+            var selection = file_frame_task.state().get('selection');
+            var strAttachment = '';
+            selection.map(function(attachment) {
+                attachment = attachment.toJSON();
+                strAttachment = '<div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="'+attachment.id+'">';
+                strAttachment += '<a target="_blank" href="'+attachment.url+'"><img height="20px" width="20px" src="' +attachment.icon + '" > '+attachment.filename+'</a>';
+                strAttachment += '<a href="#" data-attachmentid="' + attachment.id +'" class="rtpm_delete_project_attachment right">x</a>';
+                strAttachment += '<input type="hidden" name="attachment[]" value="' + attachment.id +'" /></div>';
+
+                jQuery("#attachment-container .scroll-height").append(strAttachment);
+                $.ajax({
+                    url: ajaxurl,
+                    dataType: "json",
+                    type: 'post',
+                    data: {
+                        action:'rtpm_add_attachement',
+                        project_id: project_id,
+                        attachment_id:attachment.id
+                    },
+                    success: function (data) {
+
+                    }
+                });
+                // Do something with attachment.id and/or attachment.url here
+            });
+            // Do something with attachment.id and/or attachment.url here
+        });
+        file_frame_task.open();
+    });
+
+    jQuery(document).on('click', '.rtpm_delete_project_attachment',function(e) {
+        e.preventDefault();
+        var project_id = $("#add_project_attachment").data("projectid");
+        var attachment_id = $(this).data("attachmentid");
+        $.ajax({
+            url: ajaxurl,
+            type: 'post',
+            data: {
+                action:'rtpm_remove_attachment',
+                project_id: project_id,
+                attachment_id:attachment_id
+            },
+            success: function (data) {
+                $("#attachment-error").html('Deleted Sucessfully <a href="" class="close">&times;</a>');
+                $("#attachment-error").removeClass();
+                $("#attachment-error").addClass('alert-box success');
+            }
+        });
+        jQuery(this).parent().remove();
+
+    });
+
+
     //open model
     $(document).on("click",".add-task",function(e){
         $("#div-add-task").reveal({
             opened: function(){
-
+                /*$("input[name='post[post_title]']").val("");
+                $("textarea[name='post[post_content]']").text("");
+                $("input[name='post[post_date]']").val("");
+                $("input[name='post[post_duedate]']").val("");
+                $("select[name='post[post_author]']").val(0);
+                $("select[name='post[post_time_tracker]']").val(0);
+                $("select[name='post[post_status]']").val();*/
             }
         });
     });

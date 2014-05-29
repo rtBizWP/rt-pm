@@ -95,8 +95,24 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                 wp_enqueue_script( 'postbox' );
 
             }
-            //$this->localize_scripts();
+            $this->localize_scripts();
 		}
+
+        function localize_scripts() {
+            global $rt_pm_project;
+            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type );
+            if( wp_script_is( 'rtpm-admin-js' ) && isset( $_REQUEST['post_type'] ) && isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pagearray ) ) {
+                $user_edit = false;
+                if ( current_user_can( "edit_{$rt_pm_project->post_type}" ) ) {
+                    $user_edit = true;
+                }
+                wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
+                wp_localize_script( 'rtpm-admin-js', 'rtcrm_post_type', $_REQUEST['post_type'] );
+                wp_localize_script( 'rtpm-admin-js', 'rtcrm_user_edit', array($user_edit) );
+            } else {
+                wp_localize_script( 'rtpm-admin-js', 'rtcrm_user_edit', array('') );
+            }
+        }
 
 		function register_menu() {
 //			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );

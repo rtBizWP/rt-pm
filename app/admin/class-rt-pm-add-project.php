@@ -21,7 +21,8 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
 	class Rt_PM_Add_Project  {
 
 		public function __construct() {
-
+            add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
+            add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
 		}
 
         public function get_project_task_tab($labels,$user_edit){
@@ -32,6 +33,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
 
             //Check Post object is init or not
             if ( isset( $_POST['post'] ) ) {
+                $action_complete= false;
                 $newTask = $_POST['post'];
                 $creationdate = $newTask['post_date'];
                 if ( isset( $creationdate ) && $creationdate != '' ) {
@@ -93,7 +95,14 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+                    $_REQUEST["new"]=true;
                 }
+                /*$return = wp_redirect( admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") );
+                if( !$return ) {
+                    echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") . '"; </script> ';
+                }*/
+                $_REQUEST["{$task_post_type}_id"] = null;
+                $action_complete= true;
             }
 
             //Check for wp error
@@ -103,8 +112,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
 
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
             ///alert Notification
-            if (isset($_REQUEST["{$task_post_type}_id"])) {
-                $form_ulr .= "&{$task_post_type}_id=" . $_REQUEST["{$task_post_type}_id"];
+            if ($action_complete){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -119,6 +127,9 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         <a href="#" class="close">&times;</a>
                     </div>
                 <?php }
+            }
+            if (isset($_REQUEST["{$task_post_type}_id"])) {
+                $form_ulr .= "&{$task_post_type}_id=" . $_REQUEST["{$task_post_type}_id"];
                 $post = get_post($_REQUEST["{$task_post_type}_id"]);
                 if (!$post) {
                     ?>
@@ -140,7 +151,6 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 }
 
                 $create = new DateTime($post->post_date);
-
                 $modify = new DateTime($post->post_modified);
                 $createdate = $create->format("M d, Y h:i A");
                 $modifydate = $modify->format("M d, Y h:i A");
@@ -160,9 +170,32 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
             ?>
 
+            <?php if (isset($post->ID)){?>
+                <script>
+                    jQuery(document).ready(function($) {
+                        setTimeout(function() {
+                            $("#div-add-task").reveal({
+                                opened: function(){
+                                }
+                            });
+                        },10);
+                    });
+                </script>
+            <?php } ?>
+
             <div id="wp-custom-list-table" class="row">
-                <div class="row">
-                    <button class="right mybutton add-task" type="button" ><?php _e('Add Task'); ?></button>
+                <div style="max-width:none;" class="row">
+                    <div style="padding:0" class="large-6 columns"></div>
+                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                        <?php if( $user_edit ) { ?>
+                            <?php if (isset($_REQUEST["{$task_post_type}_id"])) {
+                                $btntitle = 'Update Task';
+                            }else{
+                                $btntitle = 'Add Task';
+                            } ?>
+                            <button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button>
+                        <?php } ?>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -174,11 +207,11 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 </div>
             </div>
 
-            <!--reveal-modal-add-task -->
-            <div id="div-add-task" class="reveal-modal large">
+                     <!--reveal-modal-add-task -->
+            <div id="div-add-task" class="reveal-modal">
                 <fieldset>
                     <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
-                    <form method="post" id="form-add-task" action="<?php echo $form_ulr; ?>">
+                    <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
@@ -192,7 +225,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <div class="row collapse rtpm-lead-content-wrapper">
+                        <div class="row collapse">
                             <div class="large-12 columns">
                                 <?php
                                 if( $user_edit ) {
@@ -203,7 +236,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                 ?>
                             </div>
                         </div>
-                        <div class="row collapse rtpm-post-author-wrapper">
+                        <div class="row collapse">
                             <div class="large-2 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
@@ -242,7 +275,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <div class="row collapse rtpm-post-author-wrapper">
+                        <div class="row collapse">
                             <div class="large-2 small-4 columns">
                                 <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
@@ -269,6 +302,42 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                         <option value="field_time" >Field Time</option>
                                     </select>
                                 <?php } ?>
+                            </div>
+                        </div>
+                        <div class="row collapse">
+                            <div class="small-4 large-4 columns">
+                                <span class="prefix" title="Status">Status</span>
+                            </div>
+                            <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                <?php
+                                if (isset($post->ID))
+                                    $pstatus = $post->post_status;
+                                else
+                                    $pstatus = "";
+                                $post_status = $rt_pm_task->get_custom_statuses();
+                                $custom_status_flag = true;
+                                ?>
+                                <?php if( $user_edit ) { ?>
+                                    <select id="rtpm_post_status" class="right" name="post[post_status]">
+                                        <?php foreach ($post_status as $status) {
+                                            if ($status['slug'] == $pstatus) {
+                                                $selected = 'selected="selected"';
+                                                $custom_status_flag = false;
+                                            } else {
+                                                $selected = '';
+                                            }
+                                            printf('<option value="%s" %s >%s</option>', $status['slug'], $selected, $status['name']);
+                                        } ?>
+                                        <?php if ( $custom_status_flag && isset( $post->ID ) ) { echo '<option selected="selected" value="'.$pstatus.'">'.$pstatus.'</option>'; } ?>
+                                    </select>
+                                <?php } else {
+                                    foreach ( $post_status as $status ) {
+                                        if($status['slug'] == $pstatus) {
+                                            echo '<span class="rtcrm_view_mode">'.$status['name'].'</span>';
+                                            break;
+                                        }
+                                    }
+                                } ?>
                             </div>
                         </div>
                         <div class="row collapse postbox">
@@ -302,6 +371,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
 
             //Check Post object is init or not
             if ( isset( $_POST['post'] ) ) {
+                $action_complete = false;
                 $newTimeEntry = $_POST['post'];
                 $creationdate = $newTimeEntry['post_date'];
                 if ( isset( $creationdate ) && $creationdate != '' ) {
@@ -336,7 +406,10 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     $post_id = $rt_pm_time_entries_model->update_timeentry($post,$where);
                 }else{
                     $post_id = $rt_pm_time_entries_model->add_timeentry($post);
+                    $_REQUEST["new"]=true;
                 }
+                $_REQUEST["{$timeentry_post_type}_id"] = null;
+                $action_complete= true;
             }
 
             //Check for wp error
@@ -344,11 +417,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }*/
 
-            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry");//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
-
-            ///alert Notification
-            if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
-                $form_ulr .= "&{$timeentry_post_type}_id=" . $_REQUEST["{$timeentry_post_type}_id"];
+            if ( $action_complete ){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -363,6 +432,12 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         <a href="#" class="close">&times;</a>
                     </div>
                 <?php }
+            }
+
+            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry");//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
+            ///alert Notification
+            if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
+                $form_ulr .= "&{$timeentry_post_type}_id=" . $_REQUEST["{$timeentry_post_type}_id"];
                 $post = $rt_pm_time_entries_model->get_timeentry($_REQUEST["{$timeentry_post_type}_id"]);
                 if (!$post) {
                     ?>
@@ -388,9 +463,29 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             }
             ?>
 
+            <?php if (isset($post->id)){?>
+                <script>
+                    jQuery(document).ready(function($) {
+                        setTimeout(function() {
+                            jQuery(".add-time-entry").trigger('click');
+                        },10);
+                    });
+                </script>
+            <?php } ?>
+
             <div id="wp-custom-list-table" class="row">
-                <div class="row">
-                    <button class="right mybutton add-time-entry" type="button" ><?php _e('Add Time Entry'); ?></button>
+                <div style="max-width:none;" class="row">
+                    <div style="padding:0" class="large-6 columns"></div>
+                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                        <?php if( $user_edit ) { ?>
+                            <?php if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
+                                $btntitle = 'Update Time Entry';
+                            }else{
+                                $btntitle = 'Add Time Entry';
+                            } ?>
+                            <button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
+                        <?php } ?>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -406,7 +501,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             <div id="div-add-time-entry" class="reveal-modal large">
                 <fieldset>
                     <legend><h4><i class="foundicon-address-book"></i> Add New Time Entry</h4></legend>
-                    <form method="post" id="form-add-task" action="<?php echo $form_ulr; ?>">
+                    <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->id) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
@@ -693,7 +788,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             ?>
             <div id="add-new-post" class="row">
                 <?php if( $user_edit ) { ?>
-                <form method="post" id="form-add-post" action="<?php echo $form_ulr; ?>">
+                <form method="post" id="form-add-post" data-posttype="<?php echo $post_type ?>" action="<?php echo $form_ulr; ?>">
                 <?php } ?>
                     <?php if (isset($post->ID) && $user_edit ) { ?>
                         <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
@@ -955,5 +1050,116 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 <?php } ?>
             </div> <?php
         }
-	}
+
+        function get_project_file_tab($labels,$user_edit){
+            $post_type=$_REQUEST['post_type'];
+            $projectid = $_REQUEST["{$post_type}_id"];
+
+            $attachments = array();
+            if ( isset( $projectid ) ) {
+                $attachments = get_posts( array(
+                    'posts_per_page' => -1,
+                    'post_parent' => $projectid,
+                    'post_type' => 'attachment',
+                ));
+            }
+            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
+            <div id="add-new-attachment" class="row">
+                <div id="attachment-error">
+
+                </div>
+                <div style="max-width:none;" class="row">
+                    <div style="padding:0" class="large-6 columns"></div>
+                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                        <?php if( $user_edit ) { ?>
+                            <button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
+                        <?php } ?>
+                    </div>
+                </div>
+                 <div class="row collapse postbox">
+                    <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
+                    <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>
+                    <div class="inside">
+                        <div class="row collapse" id="attachment-container">
+
+                            <div class="scroll-height">
+                                <?php foreach ($attachments as $attachment) { ?>
+                                    <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
+                                    <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+                                        <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+                                            <img height="20px" width="20px" src="<?php echo RT_CRM_URL . "assets/file-type/" . $extn . ".png"; ?>" />
+                                            <?php echo $attachment->post_title; ?>
+                                        </a>
+                                        <?php if( $user_edit ) { ?>
+                                            <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
+                                        <?php } ?>
+                                        <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php
+        }
+
+        public function attachment_added_ajax(){
+            if ( isset( $_POST['project_id'] ) ) {
+                $projectid = $_POST['project_id'];
+                // Attachments
+                $old_attachments = get_posts( array(
+                    'post_parent' => $projectid,
+                    'post_type' => 'attachment',
+                    'fields' => 'ids',
+                    'posts_per_page' => -1,
+                ));
+                if ( isset( $_POST['attachment_id'] ) ) {
+                    $new_attachment = $_POST['attachment_id'];
+                    if( !in_array( $new_attachment, $old_attachments ) ) {
+                        $file = get_post($new_attachment);
+                        $filepath = get_attached_file( $new_attachment );
+
+                        $post_attachment_hashes = get_post_meta( $projectid, '_rt_wp_pm_attachment_hash' );
+                        if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+                            return '2';
+                        }
+
+                        if( !empty( $file->post_parent ) ) {
+                            $args = array(
+                                'post_mime_type' => $file->post_mime_type,
+                                'guid' => $file->guid,
+                                'post_title' => $file->post_title,
+                                'post_content' => $file->post_content,
+                                'post_parent' => $projectid,
+                                'post_author' => get_current_user_id(),
+                            );
+                            wp_insert_attachment( $args, $file->guid, $projectid );
+
+                            add_post_meta( $projectid, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+
+                        } else {
+                            wp_update_post( array( 'ID' => $new_attachment, 'post_parent' => $_POST['project_id'] ) );
+                            $file = get_attached_file( $new_attachment );
+                            add_post_meta($projectid, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                        }
+                        return '1';
+                    }
+                    return '2';
+                }
+            }
+        }
+
+        public function attachment_remove_ajax(){
+            if ( isset( $_POST['project_id'] ) ) {
+                $projectid = $_POST['project_id'];
+                if ( isset( $_POST['attachment_id'] ) ) {
+                    $new_attachment = $_POST['attachment_id'];
+                    wp_update_post( array( 'ID' => $new_attachment, 'post_parent' => '0' ) );
+                    $filepath = get_attached_file( $new_attachment );
+                    delete_post_meta($_POST['project_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                }
+            }
+        }
+    }
 }
