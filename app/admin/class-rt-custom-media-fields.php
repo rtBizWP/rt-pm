@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * Don't load this file directly!
+ */
+if ( ! defined( 'ABSPATH' ) )
+	exit;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+/**
+ * Description of class-rt-pm-time-entries
+ *
+ * @author udit
+ */
+if ( ! class_exists( 'Rt_Custom_Media_Fields' ) ) {
+
+	class Rt_Custom_Media_Fields {
+		//put your code here
+
+        /*private $media_fields;
+        public $media_attributes_tag = 'media_tag';*/
+
+        public function __construct() {
+
+            add_action( 'init', array($this,'register_media_attributes') );
+
+		}
+
+        function register_media_attributes() {
+
+            $attachment_taxonomies = array();
+
+            // Tags
+            $labels = array(
+                'name'              => _x( 'Media Tags', 'taxonomy general name', 'attachment_taxonomies' ),
+                'singular_name'     => _x( 'Media Tag', 'taxonomy singular name', 'attachment_taxonomies' ),
+                'search_items'      => __( 'Search Media Tags', 'attachment_taxonomies' ),
+                'all_items'         => __( 'All Media Tags', 'attachment_taxonomies' ),
+                'parent_item'       => __( 'Parent Media Tag', 'attachment_taxonomies' ),
+                'parent_item_colon' => __( 'Parent Media Tag:', 'attachment_taxonomies' ),
+                'edit_item'         => __( 'Edit Media Tag', 'attachment_taxonomies' ),
+                'update_item'       => __( 'Update Media Tag', 'attachment_taxonomies' ),
+                'add_new_item'      => __( 'Add New Media Tag', 'attachment_taxonomies' ),
+                'new_item_name'     => __( 'New Media Tag Name', 'attachment_taxonomies' ),
+                'menu_name'         => __( 'Media Tags', 'attachment_taxonomies' ),
+            );
+
+            $args = array(
+                'hierarchical' => FALSE,
+                'labels'       => $labels,
+                'show_ui'      => TRUE,
+                'show_admin_column' => TRUE,
+                'query_var'    => TRUE,
+                'rewrite'      => TRUE,
+                'update_count_callback' => '_update_generic_term_count'
+            );
+
+            $attachment_taxonomies[] = array(
+                'taxonomy'  => 'attachment_tag',
+                'post_type' => 'attachment',
+                'args'      => $args
+            );
+
+            $attachment_taxonomies = apply_filters( 'rt_attachment_taxonomies', $attachment_taxonomies );
+            foreach ( $attachment_taxonomies as $attachment_taxonomy ) {
+                register_taxonomy(
+                    $attachment_taxonomy['taxonomy'],
+                    $attachment_taxonomy['post_type'],
+                    $attachment_taxonomy['args']
+                );
+            }
+        }
+	}
+}

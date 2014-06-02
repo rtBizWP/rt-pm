@@ -34,11 +34,11 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 while ($project_list_query->have_posts()) : $project_list_query->the_post(); ?>
                     <div class="large-3 small-4 columns">
                         <article id="rtpm-<?php the_id() ?>" <?php post_class( 'rtpm_admin ' ); ?>>
-                            <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
+                            <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&tab={$rt_pm_project->post_type}-task&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                 <h2><?php the_title(); ?></h2>
-                                <h4 class="rtpm-project-sub-title"><?php the_content(); ?></h4>
+                                <!--<h4 class="rtpm-project-sub-title"><?php /*the_content(); */?></h4>-->
                                 <div class="rtpm-project-detail">
-                                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                    <?php echo $this->get_the_project_excerpt( get_the_content() ); ?>
                                 </div>
                             </a>
                         </article>
@@ -47,6 +47,16 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 endwhile;
             }
             wp_reset_query();
+        }
+
+        function get_the_project_excerpt($str){
+            $excerpt = strip_shortcodes($str);
+            $excerpt = strip_tags($str);
+            $the_str = substr($excerpt, 0, 250);
+            if( strlen($str)> 250 ){
+                $the_str = $the_str . '...';
+            }
+            return $the_str;
         }
 
         public function ui_create_project($user_edit){

@@ -188,13 +188,13 @@ jQuery(document).ready(function($) {
         }
     }
 
-    jQuery(document).on('click', '.rtcrm_delete_attachment',function(e) {
+    jQuery(document).on('click', '.rtpm_delete_attachment',function(e) {
         e.preventDefault();
         jQuery(this).parent().remove();
     });
 
     var file_frame_task
-    jQuery('#add_lead_attachment').on('click', function(e) {
+    jQuery('#add_pm_attachment').on('click', function(e) {
         e.preventDefault();
         if (file_frame_task) {
             file_frame_task.open();
@@ -277,6 +277,10 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var project_id = $("#add_project_attachment").data("projectid");
         var attachment_id = $(this).data("attachmentid");
+        var r = confirm("Are you sure you want to remove this Attachment?");
+        if (r != true) {
+            return false;
+        }
         $.ajax({
             url: ajaxurl,
             type: 'post',

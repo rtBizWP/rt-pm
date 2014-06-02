@@ -383,6 +383,27 @@
     margin:1.25em 0 0;
 }
 
+.rtpm-container #attachment-search-row .hndle{
+    height: 40px;
+}
+
+.rtpm-container #attachment-search{
+    display:inline;
+    font-size: 14px;
+}
+
+.rtpm-container #attachment-search .mybutton{
+    height: 28px;
+}
+
+.rtpm-container #attachment-search .postform{
+    display: inline;
+    width: 200px;
+    float: right;
+    font-weight: normal;
+}
+
+
 
 .tabs {
     border-bottom: 1px solid #E6E6E6;

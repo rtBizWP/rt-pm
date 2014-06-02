@@ -53,6 +53,19 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
                 }
 
+                $duedate = $newTask['post_duedate'];
+                if ( isset( $duedate ) && $duedate != '' ) {
+                    try {
+                        $dr = date_create_from_format( 'M d, Y H:i A', $duedate );
+                        $UTC = new DateTimeZone('UTC');
+                        $dr->setTimezone($UTC);
+                        $timeStamp = $dr->getTimestamp();
+                        $newTask['$duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
+                    } catch ( Exception $e ) {
+                        $newTask['post_date'] = current_time( 'mysql' );
+                    }
+                }
+
                 // Post Data to be saved.
                 $post = array(
                     'post_author' => $newTask['post_author'],
@@ -96,7 +109,65 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         update_post_meta( $post_id, $key, $value );
                     }
                     $_REQUEST["new"]=true;
+                    $newTask['post_id']= $post_id;
                 }
+
+                // Attachments
+                $old_attachments = get_posts( array(
+                    'post_parent' => $newTask['post_id'],
+                    'post_type' => 'attachment',
+                    'fields' => 'ids',
+                    'posts_per_page' => -1,
+                ));
+                $new_attachments = array();
+                if ( isset( $_POST['attachment'] ) ) {
+                    $new_attachments = $_POST['attachment'];
+                    foreach ( $new_attachments as $attachment ) {
+                        if( !in_array( $attachment, $old_attachments ) ) {
+                            $file = get_post($attachment);
+                            $filepath = get_attached_file( $attachment );
+                            $post_attachment_hashes = get_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
+                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+                                continue;
+                            }
+                            if( !empty( $file->post_parent ) ) {
+                                $args = array(
+                                    'post_mime_type' => $file->post_mime_type,
+                                    'guid' => $file->guid,
+                                    'post_title' => $file->post_title,
+                                    'post_content' => $file->post_content,
+                                    'post_parent' => $newTask['post_id'],
+                                    'post_author' => get_current_user_id(),
+                                    'post_status' => 'inherit'
+                                );
+                                $new_attachments_id = wp_insert_attachment( $args, $file->guid, $newTask['post_id'] );
+                                /*$new_attach_data=wp_generate_attachment_metadata($new_attachments_id,$filepath);
+                                wp_update_attachment_metadata( $new_attachments_id, $new_attach_data );*/
+                                add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                            } else {
+                                wp_update_post( array( 'ID' => $attachment, 'post_parent' => $newTask['post_id'] ) );
+                                $filepath = get_attached_file( $attachment );
+                                add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                            }
+                        }
+                    }
+
+                    foreach ( $old_attachments as $attachment ) {
+                        if( !in_array( $attachment, $new_attachments ) ) {
+                            wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
+                            $filepath = get_attached_file( $attachment );
+                            delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                        }
+                    }
+                } else {
+                    foreach ( $old_attachments as $attachment ) {
+                        wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
+                        $filepath = get_attached_file( $attachment );
+                        delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                    }
+                    delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
+                }
+
                 /*$return = wp_redirect( admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") );
                 if( !$return ) {
                     echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") . '"; </script> ';
@@ -156,7 +227,6 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 $modifydate = $modify->format("M d, Y h:i A");
 
             }
-
             // get project meta
             if (isset($post->ID)) {
                 $post_author = $post->post_author;
@@ -340,16 +410,37 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                 } ?>
                             </div>
                         </div>
+                        <?php $attachments = array();
+                        if ( isset( $post->ID ) ) {
+                            $attachments = get_posts( array(
+                                'posts_per_page' => -1,
+                                'post_parent' => $post->ID,
+                                'post_type' => 'attachment',
+                            ));
+                        }
+                        ?>
                         <div class="row collapse postbox">
                             <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
                             <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>
                             <div class="inside">
                                 <div class="row collapse" id="attachment-container">
                                     <?php if( $user_edit ) { ?>
-                                        <a href="#" class="button" id="add_lead_attachment"><?php _e('Add'); ?></a>
+                                        <a href="#" class="button" id="add_pm_attachment"><?php _e('Add'); ?></a>
                                     <?php } ?>
                                     <div class="scroll-height">
-
+                                        <?php foreach ($attachments as $attachment) { ?>
+                                            <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
+                                            <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+                                                <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+                                                    <img height="20px" width="20px" src="<?php echo RT_PM_URL . "assets/file-type/" . $extn . ".png"; ?>" />
+                                                    <?php echo $attachment->post_title; ?>
+                                                </a>
+                                                <?php if( $user_edit ) { ?>
+                                                    <a href="#" class="rtpm_delete_attachment right">x</a>
+                                                <?php } ?>
+                                                <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -685,6 +776,10 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     }
                 }
                 $_REQUEST[$post_type."_id"] = $post_id;
+                $return = wp_redirect( admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") );
+                if( !$return ) {
+                    echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
+                }
             }
 
             //Check for wp error
@@ -1056,12 +1151,22 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             $projectid = $_REQUEST["{$post_type}_id"];
 
             $attachments = array();
+            $arg= array(
+                'posts_per_page' => -1,
+                'post_parent' => $projectid,
+                'post_type' => 'attachment',
+            );
+            if ( isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){
+                $arg=array_merge($arg, array('tax_query' => array(
+                    array(
+                        'taxonomy' => 'attachment_tag',
+                        'field' => 'term_id',
+                        'terms' => $_POST['attachment_tag'])
+                    ))
+                );
+            }
             if ( isset( $projectid ) ) {
-                $attachments = get_posts( array(
-                    'posts_per_page' => -1,
-                    'post_parent' => $projectid,
-                    'post_type' => 'attachment',
-                ));
+                $attachments = get_posts($arg );
             }
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
             <div id="add-new-attachment" class="row">
@@ -1076,25 +1181,45 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         <?php } ?>
                     </div>
                 </div>
-                 <div class="row collapse postbox">
+                 <div id="attachment-search-row" class="row collapse postbox">
                     <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
-                    <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>
+                    <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span>
+                        <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
+                            <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
+                            <?php
+                            wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_POST['attachment_tag']);
+                            ?>
+                        </form></h6>
                     <div class="inside">
                         <div class="row collapse" id="attachment-container">
 
                             <div class="scroll-height">
-                                <?php foreach ($attachments as $attachment) { ?>
-                                    <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
-                                    <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
-                                        <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
-                                            <img height="20px" width="20px" src="<?php echo RT_CRM_URL . "assets/file-type/" . $extn . ".png"; ?>" />
-                                            <?php echo $attachment->post_title; ?>
-                                        </a>
-                                        <?php if( $user_edit ) { ?>
-                                            <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
-                                        <?php } ?>
-                                        <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
-                                    </div>
+                                <?php if ( $attachments ){ ?>
+                                    <?php foreach ($attachments as $attachment) { ?>
+                                        <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
+                                        <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+                                            <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+                                                <img height="20px" width="20px" src="<?php echo RT_CRM_URL . "assets/file-type/" . $extn . ".png"; ?>" />
+                                                <?php echo $attachment->post_title; ?>
+                                            </a>
+                                            <?php if( $user_edit ) { ?>
+                                                <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
+                                            <?php } ?>
+                                            <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+                                        </div>
+                                    <?php } ?>
+                                <?php }else{ ?>
+                                    <?php if (  isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){ ?>
+                                        <div class="large-12 mobile-large-3 columns no-attachment-item">
+                                            <?php $term = get_term( $_POST['attachment_tag'], 'attachment_tag' ); ?>
+                                            Not Found Attachment<?php echo isset( $term )? ' of ' . $term->name . ' Term!' :'!' ?>
+                                        </div>
+                                    <?php }else{ ?>
+                                        <div class="large-12 mobile-large-3 columns no-attachment-item">
+                                            <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+                                            Attachment Not found!
+                                        </div>
+                                    <?php } ?>
                                 <?php } ?>
                             </div>
                         </div>
