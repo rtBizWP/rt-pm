@@ -797,10 +797,6 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
                     $data = array(
                         'post_completiondate' => $newProject['post_completiondate'],
-                        'post_address' => $newProject['post_address'],
-                        'post_lot_number' => $newProject['post_lot_number'],
-                        'post_dp_sp_number' => $newProject['post_dp_sp_number'],
-                        'post_mother_file' => $newProject['post_mother_file'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
                         'date_update' => current_time( 'mysql' ),
@@ -808,16 +804,14 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         'user_updated_by' => get_current_user_id(),
                     );
                     $post_id = @wp_update_post( $post );
+                    $rt_pm_project_type->save_project_type($post_id,$newProject);
+                    $data = apply_filters( 'rt_pm_project_detail_meta', $data);
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
                 }else{
                     $data = array(
                         'post_completiondate' => $newProject['post_completiondate'],
-                        'post_address' => $newProject['post_address'],
-                        'post_lot_number' => $newProject['post_lot_number'],
-                        'post_dp_sp_number' => $newProject['post_dp_sp_number'],
-                        'post_mother_file' => $newProject['post_mother_file'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
                         'date_update' => current_time( 'mysql' ),
@@ -826,6 +820,8 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         'user_created_by' => get_current_user_id(),
                     );
                     $post_id = @wp_insert_post($post);
+                    $rt_pm_project_type->save_project_type($post_id,$newProject);
+                    $data = apply_filters( 'rt_pm_project_detail_meta', $data);
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
@@ -895,10 +891,6 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
-                $post_address= get_post_meta($post->ID, 'post_address', true);
-                $post_lot_number = get_post_meta($post->ID, 'post_lot_number', true);
-                $post_dp_sp_number = get_post_meta($post->ID, 'post_dp_sp_number', true);
-                $post_mother_file = get_post_meta($post->ID, 'post_mother_file', true);
             } else {
                 $post_author = get_current_user_id();
             }
@@ -998,12 +990,17 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                                     <?php if ( $custom_status_flag && isset( $post->ID ) ) { echo '<option selected="selected" value="'.$pstatus.'">'.$pstatus.'</option>'; } ?>
                                                 </select>
                                             <?php } else {
+                                                $status_html='';
                                                 foreach ( $post_status as $status ) {
                                                     if($status['slug'] == $pstatus) {
-                                                        echo '<span class="rtcrm_view_mode">'.$status['name'].'</span>';
+                                                        $status_html = '<span class="rtcrm_view_mode">'.$status['name'].'</span>';
                                                         break;
                                                     }
                                                 }
+                                                if ( !isset( $status_html ) || empty( $status_html ) && ( isset( $pstatus ) && !empty( $pstatus ) ) ){
+                                                    $status_html = '<span class="rtcrm_view_mode">'.$pstatus.'</span>';
+                                                }
+                                                echo $status_html;
                                             } ?>
                                         </div>
                                     </div>
@@ -1017,7 +1014,14 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                         <div class="large-4 small-4 columns">
                                             <span class="prefix" title="<?php _e('Project Type'); ?>"><label><?php _e('Project Type'); ?></label></span>
                                         </div>
-                                        <div class="large-8 small-8 columns"><?php $rt_pm_project_type->get_project_types( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?></div>
+                                        <div class="large-8 small-8 columns">
+                                            <?php if( $user_edit ) {
+                                                $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit );
+                                            } else {
+                                                $project_type = $rt_pm_project_type->get_project_type_id(( isset( $post->ID ) ) ? $post->ID : ''); ?>
+                                                <span class="rtcrm_view_mode"><?php echo $project_type->name ?></span>
+                                            <?php } ?>
+                                        </div>
                                     </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
@@ -1075,45 +1079,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="row collapse postbox">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-idea"></i> Other Details</span></h6>
-                                <div class="inside">
-                                    <div class="row collapse">
-                                        <div class="small-4 large-4 columns">
-                                            <span style="height:50px;line-height:50px;" class="prefix" title="Address">Address</span>
-                                        </div>
-                                        <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <textarea style="height:50px;margin:0;" name="post[post_address]"><?php echo ( isset($post_address) ) ? $post_address : ''; ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                        <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Lot Number">Lot Number</span>
-                                        </div>
-                                        <div class="large-8 small-8 columns">
-                                            <input name="post[post_lot_number]" type="text" value="<?php echo ( isset($post_lot_number) ) ? $post_lot_number : ''; ?>" />
-                                        </div>
-                                    </div>
-                                    <div class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                        <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Dp/Sp Number">Dp/Sp Number</span>
-                                        </div>
-                                        <div class="large-8 small-8 columns">
-                                            <input name="post[post_dp_sp_number]" type="text" value="<?php echo ( isset($post_dp_sp_number) ) ? $post_dp_sp_number : ''; ?>" />
-                                        </div>
-                                    </div>
-                                    <div class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                        <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Mother File">Mother File Number</span>
-                                        </div>
-                                        <div class="large-8 small-8 columns">
-                                            <input name="post[post_mother_file]" type="text" value="<?php echo ( isset($post_mother_file) ) ? $post_mother_file : ''; ?>" />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                            <?php do_action( 'rt_pm_other_details', $user_edit, $post ); ?>
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">

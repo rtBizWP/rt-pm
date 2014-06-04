@@ -33,6 +33,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 			add_action( 'init', array( $this, 'admin_init' ), 5 );
 			add_action( 'init', array( $this, 'init' ), 6 );
+
+            do_action( 'rt_pm_init' );
 		}
 
 		function admin_init() {

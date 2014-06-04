@@ -55,19 +55,29 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 			));
 		}
 
-		function save_project_type( $post_id, $newLead ) {
-			if ( !isset( $newLead['project_type'] ) ) {
-				$newLead['project_type'] = array();
+		function save_project_type( $post_id, $newProject ) {
+			if ( !isset( $newProject['project_type'] ) ) {
+                $newProject['project_type'] = array();
 			}
-			$contacts = array_map('intval', $newLead['project_type']);
-			$contacts = array_unique($contacts);
-			wp_set_post_terms( $post_id, $contacts, rtpm_attribute_taxonomy_name( 'project_type' ) );
+			$project_type = array_map('intval', $newProject['project_type']);
+            $project_type = array_unique($project_type);
+			wp_set_post_terms( $post_id, $project_type, rtpm_attribute_taxonomy_name( 'project_type' ) );
 		}
+
+        function get_project_type_id( $post_id ) {
+            $selected_term=null;
+            $post_term = wp_get_post_terms( $post_id, rtpm_attribute_taxonomy_name( 'project_type' ), array( 'fields' => 'ids' ) );
+            if( !empty( $post_term ) ) {
+                $selected_term = $post_term[0];
+                return get_term_by('id', $selected_term, rtpm_attribute_taxonomy_name( 'project_type' ));
+            }
+            return null;
+        }
 
 		/**
 		 * Render Closing Reasons - DOM Element
 		 */
-		function get_project_types( $post_id, $user_edit = true ) {
+		function get_project_types_dropdown( $post_id, $user_edit = true ) {
 			global $rtpm_form;
 			$options = array();
 			$terms = get_terms( rtpm_attribute_taxonomy_name( 'project_type' ), array( 'hide_empty' => false ) );

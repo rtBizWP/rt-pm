@@ -285,8 +285,7 @@
 }
 /* line 296, ../sass/admin.scss */
 .rtpm-container .rtpm_attr_border {
-  border-left: 1px solid #d9d9d9;
-  border-right: 1px solid #d9d9d9;
+  border: 1px solid #d9d9d9;
 }
 /* line 301, ../sass/admin.scss */
 .rtpm-container .rtpm_public_link {
