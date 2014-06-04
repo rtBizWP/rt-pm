@@ -38,13 +38,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$this->register_custom_post( $menu_position );
 			$this->register_custom_statuses();
 
-			$settings = get_site_option( 'rt_pm_settings', false );
+			/*$settings = get_site_option( 'rt_pm_settings', false );
 			if ( isset( $settings['attach_contacts'] ) && $settings['attach_contacts'] == 'yes' && function_exists( 'rt_biz_register_person_connection' ) ) {
 				rt_biz_register_person_connection( $this->post_type, $this->labels['name'] );
 			}
 			if ( isset( $settings['attach_accounts'] ) && $settings['attach_accounts'] == 'yes' && function_exists( 'rt_biz_register_organization_connection' ) ) {
 				rt_biz_register_organization_connection( $this->post_type, $this->labels['name'] );
-			}
+			}*/
 
             global $rt_pm_project_type;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
@@ -71,7 +71,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         }
 
 		function register_custom_post( $menu_position ) {
-			$pm_logo_url = get_site_option( 'rtpm_logo_url' );
+            $logo_url = Rt_PM_Settings::$settings['logo_url'];
 
 			if ( empty( $pm_logo_url ) ) {
                 $pm_logo_url = RT_PM_URL.'app/assets/img/pm-16X16.png';
@@ -82,7 +82,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				'public' => false,
 				'publicly_queryable' => false,
 				'show_ui' => true, // Show the UI in admin panel
-				'menu_icon' => $pm_logo_url,
+				'menu_icon' => $logo_url,
 				'menu_position' => $menu_position,
 				'supports' => array('title', 'editor', 'comments', 'custom-fields'),
 				'capability_type' => $this->post_type,
@@ -214,11 +214,21 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          */
         function connect_post_to_entity( $post_type, $from = '', $to = '', $clear_old = false ) {
             if ( $clear_old ) {
-                p2p_delete_connections( $post_type.'_to_'.$this->post_type, array( 'from' => $from ) );
+                p2p_delete_connections( $this->post_type.'_to_'.$post_type, array( 'from' => $from ) );
             }
-            if ( ! p2p_connection_exists( $post_type.'_to_'.$this->post_type, array( 'from' => $from, 'to' => $to ) ) ) {
-                p2p_create_connection( $post_type.'_to_'.$this->post_type, array( 'from' => $from, 'to' => $to ) );
+            if ( ! p2p_connection_exists( $this->post_type.'_to_'.$post_type, array( 'from' => $from, 'to' => $to ) ) ) {
+                p2p_create_connection( $this->post_type.'_to_'.$post_type, array( 'from' => $from, 'to' => $to ) );
             }
+        }
+
+        /**
+         * Delete relationship between project and task
+         * @param $post_type
+         * @param string $from
+         * @param string $to
+         */
+        function remove_connect_post_to_entity( $post_type, $to = '') {
+                p2p_delete_connections( $this->post_type.'_to_'.$post_type, array( 'to' => $to ) );
         }
 
         /**

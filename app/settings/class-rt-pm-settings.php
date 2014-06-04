@@ -40,11 +40,9 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 		public function __construct() {
 
 			// Proceed only if Titan Framework Found
-
 			if ( ! $this->embedd_titan_framework() ) {
 				return;
 			}
-
 			// Init Titan Instance
 			self::$titan_obj = $this->get_settings_instance();
 
@@ -66,7 +64,7 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 		 */
 		function init_settings() {
 
-			global $rt_pm_admin;
+			global $rt_pm_admin,$rt_pm_project;
 
 			if ( ! isset( self::$titan_obj ) || empty( self::$titan_obj ) ) {
 				return;
@@ -77,7 +75,7 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 			$settings_page = self::$titan_obj->createAdminPanel( array(
 				'name' => __( 'Settings' ), // Name of the menu item
 				'title' => __( 'Settings' ), // Title displayed on the top of the admin panel
-				'parent' => Rt_PM_Admin::$pm_page_slug, // id of parent, if blank, then this is a top level menu
+				'parent' => 'edit.php?post_type='.$rt_pm_project->post_type,//Rt_PM_Admin::$pm_page_slug, // id of parent, if blank, then this is a top level menu
 				'id' => RT_WP_PM::$settings_page_slug, // Unique ID of the menu item
 				'capability' => $admin_cap, // User role
 				'position' => 10, // Menu position. Can be used for both top and sub level menus

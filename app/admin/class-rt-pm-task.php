@@ -50,7 +50,7 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
         }
 
         function register_custom_post( $menu_position ) {
-            $pm_logo_url = get_site_option( 'rtpm_logo_url' );
+            $logo_url = Rt_PM_Settings::$settings['logo_url'];
 
             if ( empty( $pm_logo_url ) ) {
                 $pm_logo_url = RT_PM_URL.'app/assets/img/pm-16X16.png';
@@ -61,7 +61,7 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                 'public' => false,
                 'publicly_queryable' => false,
                 'show_ui' => true, // Show the UI in admin panel
-                'menu_icon' => $pm_logo_url,
+                'menu_icon' => $logo_url,
                 'menu_position' => $menu_position,
                 'supports' => array('title', 'editor', 'comments', 'custom-fields'),
                 'capability_type' => $this->post_type,
@@ -104,9 +104,9 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
         function get_custom_statuses() {
             $this->statuses = array(
                 array(
-                    'slug' => 'ask_client',
-                    'name' => __( 'Ask-Client' ),
-                    'description' => __( 'Task is for client' ),
+                    'slug' => 'new',
+                    'name' => __( 'New' ),
+                    'description' => __( 'New Task is Created' ),
                 ),
                 array(
                     'slug' => 'assigned',
@@ -114,9 +114,14 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                     'description' => __( 'Task is assigned' ),
                 ),
                 array(
-                    'slug' => 'blocked',
-                    'name' => __( 'Blocked' ),
-                    'description' => __( 'Task is Blocked' ),
+                    'slug' => 'inprogress',
+                    'name' => __( 'Inprogress' ),
+                    'description' => __( 'Task is Inprogress' ),
+                ),
+                array(
+                    'slug' => 'ask_client',
+                    'name' => __( 'Ask-Client' ),
+                    'description' => __( 'Task is for client' ),
                 ),
                 array(
                     'slug' => 'confirmed',
@@ -129,19 +134,14 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                     'description' => __( 'Task is Duplicate' ),
                 ),
                 array(
+                    'slug' => 'blocked',
+                    'name' => __( 'Blocked' ),
+                    'description' => __( 'Task is Blocked' ),
+                ),
+                array(
                     'slug' => 'fixed',
                     'name' => __( 'Fixed' ),
                     'description' => __( 'Task is Fixed' ),
-                ),
-                array(
-                    'slug' => 'inprogress',
-                    'name' => __( 'Inprogress' ),
-                    'description' => __( 'Task is Inprogress' ),
-                ),
-                array(
-                    'slug' => 'new',
-                    'name' => __( 'New' ),
-                    'description' => __( 'New Task is Created' ),
                 ),
                 array(
                     'slug' => 'reopened',

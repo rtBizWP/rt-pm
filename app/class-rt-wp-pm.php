@@ -74,21 +74,34 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 		<?php }
 
 		function init_globals() {
-			global $rt_pm_attributes, $rt_pm_leads, $rt_pm_acl,
+			global $rtpm_form,
+                   $rt_pm_time_entries_model,$rtpm_custom_media_fields,
+                   $rt_pm_project_type,$rt_pm_add_project,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_acl,
+                   $rt_pm_settings;
+
 //					$rt_crm_gravity_form_importer, $rt_crm_settings, $rt_crm_logs,$taxonomy_metadata,
-                   $rt_pm_project, $rt_pm_task, $rt_pm_time_entries,$rtpm_form,$rtpm_custom_media_fields,
-					$rt_pm_time_entries_model,$rt_pm_project_type,$rt_pm_add_project,
 //					$rt_crm_mail_acl_model, $rt_crm_mail_thread_importer_model,
 //					$rt_crm_mail_message_model, $rt_crm_mail_outbound_model,
 //					$rt_crm_gravity_fields_mapping_model, $rt_crm_user_settings,
 //					$rt_crm_dashboard, $rt_crm_lead_history_model, $rt_reports,
 //					$rt_crm_accounts, $rt_crm_contacts, $rt_crm_closing_reason,
-					$rt_pm_imap_server_model, $rt_pm_gravity_form_mapper;
+//					$rt_pm_imap_server_model, $rt_pm_gravity_form_mapper;
 
             $rtpm_form = new Rt_Form();
 
 			$rt_pm_time_entries_model = new Rt_PM_Time_Entries_Model();
             $rtpm_custom_media_fields = new Rt_Custom_Media_Fields();
+
+            $rt_pm_project_type = new Rt_PM_Project_Type();
+            $rt_pm_add_project = new Rt_PM_Add_Project();
+            $rt_pm_project = new Rt_PM_Project();
+            $rt_pm_task = new Rt_PM_Task();
+            $rt_pm_time_entries = new Rt_PM_Time_Entries();
+            $rt_pm_acl = new Rt_PM_ACL();
+
+            $rt_pm_settings = new Rt_PM_Settings();
+
+
 //			$rt_crm_mail_accounts_model = new Rt_CRM_Mail_Accounts_Model();
 //			$rt_crm_mail_acl_model = new Rt_CRM_Mail_ACL_Model();
 //			$rt_crm_mail_thread_importer_model = new Rt_CRM_Mail_Thread_Importer_Model();
@@ -97,17 +110,10 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 //			$rt_crm_gravity_fields_mapping_model = new Rt_CRM_Gravity_Fields_Mapping_Model();
 //			$rt_crm_lead_history_model = new Rt_CRM_Lead_History_Model();
 //			$rt_crm_imap_server_model = new Rt_CRM_IMAP_Server_Model();
-//
 //			$taxonomy_metadata = new Taxonomy_Metadata();
 //			$taxonomy_metadata->activate();
-            $rt_pm_project_type = new Rt_PM_Project_Type();
 //			$rt_crm_closing_reason = new Rt_CRM_Closing_Reason();
 //			$rt_crm_attributes = new Rt_CRM_Attributes();
-            $rt_pm_add_project = new Rt_PM_Add_Project();
-			$rt_pm_project = new Rt_PM_Project();
-			$rt_pm_task = new Rt_PM_Task();
-			$rt_pm_time_entries = new Rt_PM_Time_Entries();
-			$rt_pm_acl = new Rt_PM_ACL();
 //			$rt_crm_roles = new Rt_CRM_Roles();
 //			$rt_crm_accounts = new Rt_CRM_Accounts();
 //			$rt_crm_contacts = new Rt_CRM_Contacts();
