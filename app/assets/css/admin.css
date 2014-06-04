@@ -403,7 +403,18 @@
     font-weight: normal;
 }
 
+.rtpm-container #div-add-external-link ul.media-term-list{
+    margin-left: 20px;
+}
 
+.rtpm-container #div-add-external-link ul.media-term-list li{
+    margin-right: 20px;
+    float: left;
+}
+
+.rtpm-container #div-add-external-link ul.media-term-list li span{
+    margin-left: 10px;
+}
 
 .tabs {
     border-bottom: 1px solid #E6E6E6;

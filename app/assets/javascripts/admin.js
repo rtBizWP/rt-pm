@@ -321,6 +321,13 @@ jQuery(document).ready(function($) {
             }
         });
     });
+    $(document).on("click",".add-external-link",function(e){
+        $("#div-add-external-link").reveal({
+            opened: function(){
+
+            }
+        });
+    });
 
 });
 
