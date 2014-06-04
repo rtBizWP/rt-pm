@@ -29,6 +29,7 @@ if ( ! class_exists( 'Rt_Custom_Media_Fields' ) ) {
         public function __construct() {
 
             add_action( 'init', array($this,'register_media_attributes') );
+            add_filter('wp_get_attachment_url', array($this,'media_link_updated'),10,2);
 
 		}
 
@@ -75,6 +76,13 @@ if ( ! class_exists( 'Rt_Custom_Media_Fields' ) ) {
                     $attachment_taxonomy['args']
                 );
             }
+        }
+
+        function media_link_updated($url, $post_ID) {
+            if ( get_post_meta( $post_ID, '_wp_attached_external_file', true) == 1){
+                $url = get_the_guid( $post_ID);
+            }
+            return $url;
         }
 	}
 }
