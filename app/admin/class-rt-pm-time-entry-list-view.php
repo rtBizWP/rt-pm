@@ -108,12 +108,28 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 
 		/**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
-		function prepare_items($project_id) {
-			global $wpdb;
+		function prepare_items() {
+			global $wpdb,$rt_pm_task;
             $screen = get_current_screen();
+
+            if ( ! isset( $_REQUEST["{$_REQUEST['post_type']}_id"] ) ){
+                return;
+            }
+            $project_id = $_REQUEST["{$_REQUEST['post_type']}_id"];
+
+            $task_post_type=$rt_pm_task->post_type;
+
 
 			/* -- Preparing your query -- */
             $query = "SELECT * FROM $this->table_name WHERE $this->project_id_key = $project_id";
+
+            if ( isset( $_REQUEST["{$task_post_type}_id"] ) ) {
+                $query .= " AND task_id = '".$_REQUEST["{$task_post_type}_id"]."'";
+            }
+
+            if ( isset( $_REQUEST["post_author"] ) ) {
+                $query .= " AND author = '".$_REQUEST["post_author"]."'";
+            }
 
 			/* -- Ordering parameters -- */
 			//Parameters that are going to be used to order the result
@@ -183,7 +199,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 		 * @return string, echo the markup of the rows */
 		function display_rows() {
 
-            global $wpdb,$rt_pm_project,$rt_pm_task;
+            global $wpdb,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries;
 
 			//Get the records registered in the prepare_items method
 			$records = $this->items;
@@ -216,14 +232,14 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 								echo '</th>';
 								break;
 							case "rtpm_task_id":
-								echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$rt_pm_task->post_type}_id={$rec->task_id}").'">'. get_the_title( $rec->task_id ).'</a>';
+								echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$rt_pm_task->post_type}_id={$rec->task_id}").'">'. get_the_title( $rec->task_id ).'</a>';
 								//.'< /td>';
 								break;
                             case "rtpm_message":
                                 echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">'.$rec->message.'</a>';
                                 $actions = array(
                                     'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">Edit</a>',
-                                    'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}&action=trash").'">Trash</a>',
+                                    'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}&action=delete").'">Delete</a>',
                                 );
                                 echo $this->row_actions( $actions );
                                 //.'< /td>';
@@ -240,7 +256,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                                 break;
                             case "rtpm_Duration":
                                 if(!empty($rec->time_duration)) {
-                                    echo '<td '.$attributes.'><span title="'.$rec->time_duration.'">'. $rec->time_duration .'</span>';
+                                    echo '<td '.$attributes.'><span title="'.$rec->time_duration.'">'. $rt_pm_time_entries->get_timer($rec->time_duration) .'</span>';
                                 } else
                                     echo '<td '.$attributes.'>-';
                                 //.'< /td>';
@@ -248,7 +264,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                             case "rtpm_created_by":
                                 if(!empty($rec->author)) {
                                     $user = get_user_by('id', $rec->author);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
+                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&post_author=".$rec->author);
                                     $url = add_query_arg( 'user_created_by', $temp['user_created_by'], $url );
                                     echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else

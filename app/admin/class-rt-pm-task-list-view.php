@@ -27,6 +27,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		var $post_statuses;
 		var $labels;
         var $project_id_key='post_project_id';
+        var $user_edit;
 
 		public function __construct() {
 
@@ -112,12 +113,35 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 
 		/**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
-		function prepare_items($project_id) {
+		function prepare_items($user_edit) {
 			global $wpdb;
             $screen = get_current_screen();
 
+            if ( ! isset( $_REQUEST["{$_REQUEST['post_type']}_id"] ) ){
+                return;
+            }
+            $project_id = $_REQUEST["{$_REQUEST['post_type']}_id"];
+            $this->user_edit = $user_edit;
+
+            $s = @$_POST['s'];
+
 			/* -- Preparing your query -- */
             $query = "SELECT * FROM $wpdb->posts INNER JOIN wp_postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$this->project_id_key' AND pm.meta_value='$project_id'";
+
+            if ( $s ) {
+                $query .= " AND ( ";
+                $query .= " $wpdb->posts.post_title LIKE '%{$s}%' ";
+                $query .= " OR $wpdb->posts.post_content LIKE '%{$s}%' ";
+                $query .= ') ';
+            }
+
+            if ( isset( $_GET['post_status'] ) ) {
+                $query .= " AND $wpdb->posts.post_status = '".$_REQUEST['post_status']."'";
+            }
+
+            if ( isset( $_GET['assignee'] ) ) {
+                $query .= " AND $wpdb->posts.post_author = '".$_REQUEST['assignee']."'";
+            }
 
 			/* -- Ordering parameters -- */
 			//Parameters that are going to be used to order the result
@@ -221,20 +245,38 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 								echo '</th>';
 								break;
 							case "rtpm_title":
-								echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}").'">'.$rec->post_title.'</a>';
-								$actions = array(
-									'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}").'">Edit</a>',
-									'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=trash").'">Trash</a>',
-								);
-								echo $this->row_actions( $actions );
+                                if ($this->user_edit){
+								    echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}").'">'.$rec->post_title.'</a>';
+                                }else{
+                                    echo '<td '.$attributes.'>'.$rec->post_title;
+                                }
+                                if ( $rec->post_status !='trash'){
+                                    $actions = array(
+                                        'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}").'">Edit</a>',
+                                        'timeentry'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->ID}").'&action=timeentry">Time Entry</a>',
+                                        'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=trash").'">Trash</a>',
+                                    );
+                                }else{
+                                    $actions = array(
+                                        'restore'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=restore").'">Restore</a>',
+                                        'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=delete").'">Delete</a>',
+                                    );
+                                }
+                                if ($this->user_edit){
+								    echo $this->row_actions( $actions );
+                                }
 								//.'< /td>';
 								break;
                             case "rtpm_assignee":
                                 if(!empty($rec->post_author)) {
                                     $user = get_user_by('id', $rec->post_author);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
+                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
                                     $url = add_query_arg( 'assignee', $rec->post_author, $url );
-                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    if ($this->user_edit){
+                                        echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    }else{
+                                        echo '<td '.$attributes.'>'.$user->display_name;
+                                    }
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -273,12 +315,20 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                             case "rtpm_status":
                                 if(!empty($rec->post_status)) {
                                     $status = $this->get_status_label($rec->post_status);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
+                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
                                     $url = add_query_arg( 'post_status', $rec->post_status, $url );
                                     if ( !empty( $status ) ) {
-                                        echo '<td '.$attributes.'><a href="'.$url.'">'.$status['name'].'</a>';
+                                        if ($this->user_edit){
+                                            echo '<td '.$attributes.'><a href="'.$url.'">'.$status['name'].'</a>';
+                                        }else{
+                                            echo '<td '.$attributes.'>'.$status['name'];
+                                        }
                                     } else {
-                                        echo '<td '.$attributes.'><a href="'.$url.'">'.$rec->post_status.'</a>';
+                                        if ($this->user_edit){
+                                            echo '<td '.$attributes.'><a href="'.$url.'">'.$rec->post_status.'</a>';
+                                        }else{
+                                            echo '<td '.$attributes.'>'.$rec->post_status;
+                                        }
                                     }
                                 } else {
                                     echo '<td '.$attributes.'>-';
@@ -290,7 +340,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                     $user = get_user_by('id', $temp['user_created_by']);
                                     $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
                                     $url = add_query_arg( 'user_created_by', $temp['user_created_by'], $url );
-                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    echo '<td '.$attributes.'>'.$user->display_name;
+                                    //echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
                                     echo '<td '.$attributes.'>-';
                                 //.'< /td>';
@@ -300,7 +351,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                     $user = get_user_by('id', $temp['user_updated_by']);
                                     $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
                                     $url = add_query_arg( 'user_updated_by  ', $temp['user_updated_by'], $url );
-                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    echo '<td '.$attributes.'>'.$user->display_name;
+                                    //echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
                                     echo '<td '.$attributes.'>-';
                                 //.'< /td>';
