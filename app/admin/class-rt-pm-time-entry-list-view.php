@@ -103,7 +103,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 			$actions = array(
 				'delete' => __( 'Trash' ),
 			);
-			//return $actions;
+			return $actions;
 		}
 
 		/**
