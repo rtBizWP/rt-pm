@@ -131,6 +131,10 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                 $query .= " AND author = '".$_REQUEST["post_author"]."'";
             }
 
+            if ( !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'admin') &&  !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'editor') && current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'author') ){
+                $query .= " AND author = '".get_current_user_id()."'";
+            }
+
 			/* -- Ordering parameters -- */
 			//Parameters that are going to be used to order the result
 
