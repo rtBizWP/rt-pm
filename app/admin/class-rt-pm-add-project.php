@@ -1015,12 +1015,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                             <span class="prefix" title="<?php _e('Project Type'); ?>"><label><?php _e('Project Type'); ?></label></span>
                                         </div>
                                         <div class="large-8 small-8 columns">
-                                            <?php if( $user_edit ) {
-                                                $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit );
-                                            } else {
-                                                $project_type = $rt_pm_project_type->get_project_type_id(( isset( $post->ID ) ) ? $post->ID : ''); ?>
-                                                <span class="rtcrm_view_mode"><?php echo $project_type->name ?></span>
-                                            <?php } ?>
+                                            <?php $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?>
                                         </div>
                                     </div>
                                     <div class="row collapse">

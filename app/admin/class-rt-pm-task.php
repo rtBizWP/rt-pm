@@ -60,7 +60,7 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                 'labels' => $this->labels,
                 'public' => false,
                 'publicly_queryable' => false,
-                'show_ui' => true, // Show the UI in admin panel
+                'show_ui' => false, // Show the UI in admin panel
                 'menu_icon' => $logo_url,
                 'menu_position' => $menu_position,
                 'supports' => array('title', 'editor', 'comments', 'custom-fields'),

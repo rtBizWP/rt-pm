@@ -39,10 +39,9 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
 
 		function hooks() {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles_scripts' ) );
-			add_action( 'admin_menu', array( $this, 'register_menu' ), 1 );
+//			add_action( 'admin_menu', array( $this, 'register_menu' ), 1 );
 //			add_action( 'admin_bar_menu', array( $this, 'register_toolbar_menu' ), 100 );
-
-			add_filter( 'custom_menu_order', array( $this, 'custom_pages_order' ) );
+//			add_filter( 'custom_menu_order', array( $this, 'custom_pages_order' ) );
 		}
 
 		function load_styles_scripts() {

@@ -29,6 +29,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		public function __construct() {
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
+            $this->get_custom_menu_order();
 			add_action( 'init', array( $this, 'init_project' ) );
 			$this->hooks();
 		}
@@ -52,6 +53,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function hooks() {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
+            add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
            // add_action( 'save_post', 'update_project_meta' );
 		}
@@ -148,6 +150,48 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			);
 			return $this->statuses;
 		}
+
+        function get_custom_menu_order(){
+            global $rt_pm_attributes;
+            $this->custom_menu_order = array(
+                'rtpm-all-'.$this->post_type,
+                'rtpm-add-'.$this->post_type,
+                'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
+                'rtpm-settings',
+            );
+        }
+
+        function custom_pages_order( $menu_order ) {
+            global $submenu;
+            global $menu;
+            if ( isset( $submenu['edit.php?post_type='.$this->post_type] ) && !empty( $submenu['edit.php?post_type='.$this->post_type] ) ) {
+                $module_menu = $submenu['edit.php?post_type='.$this->post_type];
+                unset($submenu['edit.php?post_type='.$this->post_type]);
+                unset($module_menu[5]);
+                unset($module_menu[10]);
+                $new_index = 5;
+                foreach ( $this->custom_menu_order as $item ) {
+                    foreach ( $module_menu as $p_key => $menu_item ) {
+                        if ( in_array( $item, $menu_item ) ) {
+                            if ( $item == 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type ) {
+                                $menu_item[0]= '--- '.$menu_item[0];
+                            }
+                            $submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
+                            unset ( $module_menu[$p_key] );
+                            $new_index += 5;
+                            break;
+                        }
+                    }
+                }
+                foreach( $module_menu as $p_key => $menu_item ) {
+                    $menu_item[0]= '--- '.$menu_item[0];
+                    $submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;
+                    unset ( $module_menu[$p_key] );
+                    $new_index += 5;
+                }
+            }
+            return $menu_order;
+        }
 
         /**
          * Prints the jQuery script to initiliase the metaboxes

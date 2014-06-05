@@ -19,6 +19,7 @@ if (!defined('ABSPATH'))
  */
 if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 	class Rt_PM_Project_Type {
+        static $project_type_tax = 'rt_project-type';
 		public function __construct() {
 
 		}
@@ -39,13 +40,13 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 				'choose_from_most_used' => __('Choose from the most used Project Type'),
 			);
 			$editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-			register_taxonomy(rtpm_attribute_taxonomy_name('project_type'), array( $post_type ), array(
+			register_taxonomy(self::$project_type_tax, array( $post_type ), array(
 				'hierarchical' => false,
 				'labels' => $labels,
 				'show_ui' => true,
 				'query_var' => true,
 				'update_count_callback' => 'rt_update_post_term_count',
-				'rewrite' => array('slug' => rtpm_attribute_taxonomy_name('project_type')),
+				'rewrite' => array('slug' => self::$project_type_tax),
 				'capabilities' => array(
 					'manage_terms' => $editor_cap,
 					'edit_terms' => $editor_cap,
@@ -80,8 +81,8 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 		function get_project_types_dropdown( $post_id, $user_edit = true ) {
 			global $rtpm_form;
 			$options = array();
-			$terms = get_terms( rtpm_attribute_taxonomy_name( 'project_type' ), array( 'hide_empty' => false ) );
-			$post_term = wp_get_post_terms( $post_id, rtpm_attribute_taxonomy_name( 'project_type' ), array( 'fields' => 'ids' ) );
+			$terms = get_terms( self::$project_type_tax, array( 'hide_empty' => false ) );
+			$post_term = wp_get_post_terms( $post_id, self::$project_type_tax, array( 'fields' => 'ids' ) );
 			// Default Selected Term for the attribute. can beset via settings -- later on
 			$selected_term = '-11111';
 			if( !empty( $post_term ) ) {
@@ -112,7 +113,7 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 				echo $rtpm_form->get_select( $args );
 			} else {
                 //TODO  attr not find
-				$term = get_term( $selected_term, rtpm_attribute_taxonomy_name( $attr->attribute_name ) );
+                $term = $this->get_project_type_id($post_id);
 				echo '<span class="rtcrm_view_mode">'.$term->name.'</span>';
 			}
 		}

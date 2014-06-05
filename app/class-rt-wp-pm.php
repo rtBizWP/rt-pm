@@ -49,7 +49,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 		function check_rt_biz_dependecy() {
             $flag = true;
             $used_function = array(
-                'rt_biz_get_access_role_cap'
+                'rt_biz_get_access_role_cap',
+                'rt_biz_sanitize_module_key'
             );
 
             foreach ( $used_function as $fn ) {

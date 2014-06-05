@@ -7,6 +7,10 @@
  */
     global $rt_pm_project;
     $projectTable = new Rt_PM_Project_List_View();
+    if (!isset( $_REQUEST['post_type'] )){
+        $_REQUEST['post_type'] = 'rt_project';
+    }
+    $post_type = $_REQUEST['post_type'];
 
     $user_edit = false;
     if ( current_user_can( "edit_{$post_type}" ) ) {
@@ -18,7 +22,6 @@
     }
 
     $error=$projectTable->page_action();
-    $post_type = $_REQUEST['post_type'];
     $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-all-{$post_type}");
 ?>
 <?php screen_icon(); ?>
