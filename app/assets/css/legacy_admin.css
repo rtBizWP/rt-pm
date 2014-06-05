@@ -5210,7 +5210,7 @@ kbd {
   position: relative;
   padding: 0.1875em 0.625em 0.25em;
   font-size: 0.875em;
-  background-color: #2ba6cb;
+  background-color: #f3f3f3;
   color: white;
 }
 /* line 77, ../../../../../.rvm/gems/ruby-2.0.0-p0/gems/zurb-foundation-4.1.6/scss/foundation/components/_labels.scss */
@@ -5824,7 +5824,7 @@ kbd {
 /* Tables */
 /* line 80, ../../../../../.rvm/gems/ruby-2.0.0-p0/gems/zurb-foundation-4.1.6/scss/foundation/components/_tables.scss */
 table {
-  background: white;
+  /*background: white;*/
   margin-bottom: 1.25em;
   border: solid 1px #dddddd;
 }
