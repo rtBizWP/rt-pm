@@ -80,16 +80,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                     wp_enqueue_script( 'jquery-ui-datepicker' );
                 }
 
-                global $wp_scripts;
-                if ( ! wp_script_is( 'jquery-ui-core' ) ) {
-                    $ui = $wp_scripts->query( 'jquery-ui-core' );
-                    // tell WordPress to load the Smoothness theme from Google CDN
-                    $protocol = is_ssl() ? 'https' : 'http';
-                    $url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.css";
-                    if ( ! wp_style_is( 'jquery-ui-smoothness' ) ) {
-                        wp_enqueue_style( 'jquery-ui-smoothness', $url, false, null );
-                    }
-                }
+				wp_enqueue_style('jquery-ui-css', RT_HRM_URL . 'app/assets/css/jquery-ui-1.9.2.custom.css', false, RT_PM_VERSION, 'all');
 
                 wp_enqueue_script( 'postbox' );
 
