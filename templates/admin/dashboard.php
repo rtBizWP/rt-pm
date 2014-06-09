@@ -50,7 +50,7 @@
 
     <div id="add-new-post" class="<?php echo $form_container_class ?>">
         <div class="inside">
-            <h4 class="hndle"><span><i class="general foundicon-tools"></i> Start a New Project</span></h4>
+            <h4 class="hndle"><span><i class="general foundicon-tools"></i> <?php _e( 'Start a New Project' ); ?></span></h4>
             <form method="post" id="form-add-project" action="<?php echo $form_ulr; ?>">
                 <?php $projectTable->ui_create_project($user_edit); ?>
             </form>

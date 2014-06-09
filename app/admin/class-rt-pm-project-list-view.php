@@ -74,13 +74,13 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     <input type="text" id="new_rt_ptoject_title" name="post[project_title]" value="" placeholder="Project Title">
                 </div>
                 <div class="large-12 small-12 columns">
-                    <textarea id="new_rt_project_contentt" rows="20" autocomplete="off" cols="40"  name="post[project_content]" placeholder="Details about Project"></textarea>
-                </div>
+					<textarea id="new_rt_project_contentt" rows="20" autocomplete="off" cols="40"  name="post[project_content]" placeholder="Project Description"></textarea>
+				</div>
                 <div class="large-5 small-12 columns">
-                    <h6 class="hndle"><span><i class="general foundicon-tools"></i> Assign Manager</span></h6>
-                    <div class="inside">
-                        <div class="large-12 mobile-large-3 columns">
-                            <?php if( $user_edit ) { ?>
+					<h6 class="hndle"><span><i class="general foundicon-tools"></i> <?php _e( 'Project Manager' ); ?></span></h6>
+					<div class="inside">
+						<div class="large-12 mobile-large-3 columns">
+							<?php if( $user_edit ) { ?>
                                 <select name="post[project_manager]" >
                                     <?php
                                     if (!empty($results)) {
@@ -117,7 +117,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 </div>
             </div>
             <div class="large-5 columns rtcrm-sticky">
-                    <input class="mybutton add-project right" type="submit" id="submit-project" name="project[submitted]" value="<?php _e("Add Project"); ?>">
+				<input class="mybutton add-project right" type="submit" id="submit-project" name="project[submitted]" value="<?php _e("Add Project"); ?>">
             </div>
         <?php }
 

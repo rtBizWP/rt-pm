@@ -615,3 +615,13 @@ ul.tabs-content.contained.vertical > li {
 .no-js ul.tabs-content > li {
     display: block;
 }
+
+#rtpm_status_detail span.prefix{
+    height:60px;
+    line-height:60px;
+}
+#rtpm_status_detail textarea {
+    height:60px;
+    margin:0;
+    resize: none;
+}

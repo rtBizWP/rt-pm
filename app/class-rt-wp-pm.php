@@ -25,7 +25,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		public function __construct() {
 
-			if( ! $this->check_rt_biz_dependecy() ) {
+			if ( ! $this->check_rt_biz_dependecy() ) {
 				return false;
 			}
 

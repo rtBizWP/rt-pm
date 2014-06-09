@@ -797,8 +797,10 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
                     $data = array(
                         'post_completiondate' => $newProject['post_completiondate'],
+						'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
+						'_rtpm_status_detail' => $newProject['status_detail'],
                         'date_update' => current_time( 'mysql' ),
                         'date_update_gmt' => gmdate('Y-m-d H:i:s'),
                         'user_updated_by' => get_current_user_id(),
@@ -812,8 +814,10 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 }else{
                     $data = array(
                         'post_completiondate' => $newProject['post_completiondate'],
+                        'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
+						'_rtpm_status_detail' => $newProject['status_detail'],
                         'date_update' => current_time( 'mysql' ),
                         'date_update_gmt' => gmdate('Y-m-d H:i:s'),
                         'user_updated_by' => get_current_user_id(),
@@ -891,6 +895,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
+                $estimationdate= get_post_meta($post->ID, 'post_estimationdate', true);
             } else {
                 $post_author = get_current_user_id();
             }
@@ -1004,12 +1009,18 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                             } ?>
                                         </div>
                                     </div>
-                                    <!--<div id="rtpm_closing_reason_wrapper" class="row collapse <?php /*echo ( $pstatus === 'closed' ) ? 'show' : 'hide'; */?> <?php /*echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; */?>">
+                                    <div id="rtpm_status_detail" class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="<?php /*_e('Closing Reason'); */?>"><label><?php /*_e('Closing Reason'); */?></label></span>
+                                            <span class="prefix" title="<?php _e('Status Detail'); ?>"><label><?php _e('Status Detail'); ?></label></span>
                                         </div>
-                                        <div class="large-8 small-8 columns"><?php /*$rt_crm_closing_reason->get_closing_reasons( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); */?></div>
-                                    </div>-->
+                                        <div class="large-8 small-8 columns">
+											<?php if( $user_edit ) { ?>
+											<textarea name="post[status_detail]"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></textarea>
+											<?php } else { ?>
+												<span><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></span>
+											<?php } ?>
+										</div>
+                                    </div>
                                     <div id="rtpm_project_type_wrapper" class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                         <div class="large-4 small-4 columns">
                                             <span class="prefix" title="<?php _e('Project Type'); ?>"><label><?php _e('Project Type'); ?></label></span>
@@ -1072,16 +1083,34 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                             <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                                         </div>
                                     </div>
+                                    <div class="row collapse">
+                                        <div class="large-4 small-4 columns">
+                                            <span class="prefix" title="Project Estimate"><label>Project Estimate</label></span>
+                                        </div>
+                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                            <?php if( $user_edit ) { ?>
+                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Estimation Date"
+                                                       value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>"
+                                                       title="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>">
+                                                <input name="post[post_estimationdate]" type="hidden" value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>" />
+                                            <?php } else { ?>
+                                                <span class="rtcrm_view_mode moment-from-now"><?php echo $estimationdate ?></span>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="large-1 mobile-large-1 columns">
+                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <?php do_action( 'rt_pm_other_details', $user_edit, $post ); ?>
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-4 mobile-large-1 columns">
-                                    <span class="prefix" title="Assigned To"><label for="post[post_author]"><strong>Assigned To</strong></label></span>
+                                <div class="large-5 mobile-large-3 columns">
+                                    <span class="prefix" title="Project Manager"><label for="post[post_author]"><strong>Project Manager</strong></label></span>
                                 </div>
-                                <div class="large-8 mobile-large-3 columns">
+                                <div class="large-7 mobile-large-5 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[project_manager]" >
                                             <?php
