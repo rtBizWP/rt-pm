@@ -801,6 +801,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
+						'_rtpm_project_budget' => $newProject['project_budget'],
                         'date_update' => current_time( 'mysql' ),
                         'date_update_gmt' => gmdate('Y-m-d H:i:s'),
                         'user_updated_by' => get_current_user_id(),
@@ -818,6 +819,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
+						'_rtpm_project_budget' => $newProject['project_budget'],
                         'date_update' => current_time( 'mysql' ),
                         'date_update_gmt' => gmdate('Y-m-d H:i:s'),
                         'user_updated_by' => get_current_user_id(),
@@ -1101,6 +1103,23 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                             <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                                         </div>
                                     </div>
+									<div class="row collapse">
+										<div class="large-4 mobile-large-1 columns">
+											<span class="prefix" title="Budget"><label for="project_budget">Budget</label></span>
+										</div>
+										<div class="large-7 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+											<?php if( $user_edit ) { ?>
+											<input type="text" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?>" />
+											<?php } else { ?>
+											<span class="rtcrm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>';
+											<?php } ?>
+										</div>
+										<?php if( $user_edit ) { ?>
+										<div class="large-1 mobile-large-1 columns">
+											<span class="postfix">$</span>
+										</div>
+										<?php } ?>
+									</div>
                                 </div>
                             </div>
                             <?php do_action( 'rt_pm_other_details', $user_edit, $post ); ?>
