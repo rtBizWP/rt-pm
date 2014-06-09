@@ -34,7 +34,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 			global $rt_pm_time_entries;
 			$this->table_name = rtpm_get_time_entry_table_name();
             $this->labels = $rt_pm_time_entries->labels;
-			$this->post_type = $rt_pm_time_entries->post_type;
+			$this->post_type = Rt_PM_Time_Entries::$post_type;
 			$args = array(
 				'singular'=> $this->labels['singular_name'], //Singular label
 				'plural' => $this->labels['all_items'], //plural label, also this well be one of the table css class
@@ -214,13 +214,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 			if ( ! empty( $records ) ) {
 				foreach( $records as $rec ) {
 					//Open the line
-                    $query = "SELECT * FROM $wpdb->postmeta m1 WHERE m1.post_id = $rec->ID";
-                    $task_meta = $wpdb->get_results( $query );
-                    $temp=null;
-                    foreach ( $task_meta as $meta ){
-                        $temp[$meta->meta_key]=$meta->meta_value;
-                    }
-					echo '<tr id="record_'.$rec->ID.'" class="'.(($i%2)?'alternate':'').'">';
+					echo '<tr id="record_'.$rec->id.'" class="'.(($i%2)?'alternate':'').'">';
 					foreach ( $columns as $column_name => $column_display_name ) {
 
 						$class = "class='$column_name column-$column_name'";
@@ -232,7 +226,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 						switch ( $column_name ) {
 							case "cb":
 								echo '<th scope="row" class="check-column">';
-									echo '<input type="checkbox" name="'.$this->post_type.'[]" id="cb-select-'.$rec->ID.'" value="'.$rec->ID.'" />';
+									echo '<input type="checkbox" name="'.$this->post_type.'[]" id="cb-select-'.$rec->id.'" value="'.$rec->id.'" />';
 								echo '</th>';
 								break;
 							case "rtpm_task_id":
@@ -269,7 +263,6 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                                 if(!empty($rec->author)) {
                                     $user = get_user_by('id', $rec->author);
                                     $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&post_author=".$rec->author);
-                                    $url = add_query_arg( 'user_created_by', $temp['user_created_by'], $url );
                                     echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
                                     echo '<td '.$attributes.'>-';

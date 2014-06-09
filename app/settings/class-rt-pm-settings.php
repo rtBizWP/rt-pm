@@ -57,8 +57,6 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 		 */
 		function load_settings() {
 			self::$settings['logo_url'] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'logo_url' ) : '';
-			self::$settings['office_time_rate'] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'office_time_rate' ) : '';
-			self::$settings['field_time_rate'] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'field_time_rate' ) : '';
 		}
 
 		/**
@@ -100,31 +98,6 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 			$general_tab->createOption( array(
 				'type' => 'save'
 			) );
-
-            $charge_rate_tab = $settings_page->createTab( array(
-                'name' => __( 'Charge Rate' ), // Name of the tab
-                'id' => 'charge_rate', // Unique ID of the tab
-                'title' => __( 'Charge Rate' ), // Title to display in the admin panel when tab is active
-            ) );
-            $charge_rate_tab->createOption( array(
-                'name' => __( 'Office Time' ), // Name of the option
-                'id' => 'office_time_rate', // Unique ID of the option
-                'type' => 'number', //
-                'default' => 0, // Menu icon for top level menus only
-                'example' => 'Every user will get this much amount per hour for Office Time', // An example value for this field, will be displayed in a <code>
-                'livepreview' => '', // jQuery script to update something in the site. For theme customizer only
-            ) );
-            $charge_rate_tab->createOption( array(
-                'name' => __( 'Field Time' ), // Name of the option
-                'id' => 'field_time_rate', // Unique ID of the option
-                'type' => 'number', //
-                'default' => 0, // Menu icon for top level menus only
-                'example' => 'Every user will get this much amount per hour for Field Time', // An example value for this field, will be displayed in a <code>
-                'livepreview' => '', // jQuery script to update something in the site. For theme customizer only
-            ) );
-            $charge_rate_tab    ->createOption( array(
-                'type' => 'save'
-            ) );
 		}
 
 		/**

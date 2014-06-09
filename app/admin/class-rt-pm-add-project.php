@@ -486,11 +486,11 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
             $post_type=$_REQUEST['post_type'];
             $task_post_type=$rt_pm_task->post_type;
             $timeentry_labels = $rt_pm_time_entries->labels;
-            $timeentry_post_type = $rt_pm_time_entries->post_type;
+            $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$timeentry_post_type.'_id'] ) ) {
-                wp_trash_post( $_REQUEST[$timeentry_post_type.'_id'] );
+                $rt_pm_time_entries_model->delete_timeentry( array( 'id' => $_REQUEST[$timeentry_post_type.'_id'] ) );
                 $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') );
                 if( !$return ) {
                     echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') . '"; </script> ';
@@ -525,7 +525,6 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                     'time_duration' => $newTimeEntry['post_duration'],
                     'timestamp' => $newTimeEntry['post_date'],
                     'author' => get_current_user_id(),
-                    'time_tracker' => $newTimeEntry['post_time_tracker'],
                 );
                 $updateFlag = false;
                 //check post request is for Update or insert
@@ -667,61 +666,24 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                             </div>
                             <div class="large-3 mobile-large-3 columns">
                                 <?php if( $user_edit ) { ?>
-                                    <select name="post[post_duration]" >
-                                        <?php
-                                        $arr_timer=$rt_pm_time_entries->get_timer_array();
-                                        foreach( $arr_timer as $timer_key => $timer_val ){ ?>
-                                            <option <?php echo isset($post) && $post->time_duration == $timer_key ? 'selected="selected"' :''; ?> value="<?php echo $timer_key; ?>" ><?php echo _e( $timer_val );  ?></option>
-                                        <?php }?>
-                                    </select>
+								<input type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
                                 <?php } ?>
                             </div>
                         </div>
                         <div class="row collapse rtpm-post-author-wrapper">
-                            <div class="large-3 mobile-large-1 columns">
+                            <div class="large-6 mobile-large-2 columns">
                                 <span class="prefix" title="Assigned To"><label for="post[post_timeentry_type]"><strong>Type</strong></label></span>
                             </div>
-                            <div class="large-3 mobile-large-3 columns">
+                            <div class="large-6 mobile-large-6 columns">
+								<?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
                                 <?php if( $user_edit ) { ?>
                                     <select name="post[post_timeentry_type]" >
-                                        <option <?php echo isset($post) && $post->type == 'regular' ? 'selected="selected"' :''; ?> value="regular" >Regular</option>
-                                        <option <?php echo isset($post) && $post->type == 'over_time' ? 'selected="selected"' :''; ?> value="over_time" >OverTime</option>
+									<?php foreach ( $terms as $term ) { ?>
+										<option <?php echo isset($post) && $post->type == $term->slug ? 'selected="selected"' :''; ?> value="<?php echo $term->slug; ?>" ><?php echo $term->name; ?></option>
+									<?php } ?>
                                     </select>
                                 <?php } ?>
                             </div>
-                            <div class="large-3 mobile-large-1 columns">
-                                <span class="prefix" title="Time Tracker"><label for="post[post_time_tracker]"><strong>Time Tracker</strong></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-3 columns">
-                                <?php if( $user_edit ) { ?>
-                                <select name="post[post_time_tracker]" >
-                                    <option <?php echo  isset($post) && $post->time_tracker == "office_time" ? 'selected="selectet"' : '';  ?> value="office_time" >Office Time</option>
-                                    <option <?php echo  isset($post) && $post->time_tracker == "field_time" ? 'selected="selectet"' : '';  ?> value="field_time" >Field Time</option>
-                                </select>
-                                <?php } ?>
-                             </div>
-
-                <!--<div class="large-3 mobile-large-1 columns">
-                    <span class="prefix" title="Assigned To"><label for="post[post_author]"><strong>Assigned To</strong></label></span>
-                </div>
-                <div class="large-3 mobile-large-3 columns">
-                    <?php /*if( $user_edit ) { */?>
-                        <select name="post[post_author]" >
-                            <?php
-                /*                                        if (!empty($results_member)) {
-                                                            foreach ($results_member as $author) {
-                                                                if ($author->ID == $post_author) {
-                                                                    $selected = " selected";
-                                                                } else {
-                                                                    $selected = " ";
-                                                                }
-                                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
-                                                            }
-                                                        }
-                                                        */?>
-                        </select>
-                    <?php /*} */?>
-                </div>-->
                         </div>
                         <div class="row collapse postbox">
                             <div class="large-12 columns">

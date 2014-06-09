@@ -4,7 +4,7 @@
   Plugin Name: WordPress PM
   Plugin URI: http://rtcamp.com/
   Description: Manage Projects, Tasks & Time Entries
-  Version: 0.0.2
+  Version: 0.0.4
   Author: rtCamp
   Author URI: http://rtcamp.com
   License: GPL
@@ -12,7 +12,7 @@
  */
 
 if ( !defined( 'RT_PM_VERSION' ) ) {
-	define( 'RT_PM_VERSION', '0.0.2' );
+	define( 'RT_PM_VERSION', '0.0.4' );
 }
 if ( !defined( 'RT_PM_TEXT_DOMAIN' ) ) {
 	define( 'RT_PM_TEXT_DOMAIN', 'rt_pm' );

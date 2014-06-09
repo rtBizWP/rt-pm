@@ -79,7 +79,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 		function init_globals() {
 			global $rtpm_form,
                    $rt_pm_time_entries_model,$rtpm_custom_media_fields,
-                   $rt_pm_project_type,$rt_pm_add_project,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_acl,
+                   $rt_pm_project_type,$rt_pm_add_project,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entry_type,$rt_pm_acl,
                    $rt_pm_settings;
 
 //					$rt_crm_gravity_form_importer, $rt_crm_settings, $rt_crm_logs,$taxonomy_metadata,
@@ -100,6 +100,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
             $rt_pm_project = new Rt_PM_Project();
             $rt_pm_task = new Rt_PM_Task();
             $rt_pm_time_entries = new Rt_PM_Time_Entries();
+			$rt_pm_time_entry_type = new Rt_PM_Time_Entry_Type();
             $rt_pm_acl = new Rt_PM_ACL();
 
             $rt_pm_settings = new Rt_PM_Settings();

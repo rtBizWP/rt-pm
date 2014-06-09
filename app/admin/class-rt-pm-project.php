@@ -68,7 +68,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
 
-           // $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.Rt_PM_Time_Entries::$post_type );
+			// $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
         }
 
@@ -152,11 +153,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 
         function get_custom_menu_order(){
-            global $rt_pm_attributes;
             $this->custom_menu_order = array(
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
+                'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type,
                 'rtpm-settings',
             );
         }
@@ -164,6 +165,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         function custom_pages_order( $menu_order ) {
             global $submenu;
             global $menu;
+
+			$dashed_menu_item = array(
+				'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
+				'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type,
+			);
+
             if ( isset( $submenu['edit.php?post_type='.$this->post_type] ) && !empty( $submenu['edit.php?post_type='.$this->post_type] ) ) {
                 $module_menu = $submenu['edit.php?post_type='.$this->post_type];
                 unset($submenu['edit.php?post_type='.$this->post_type]);
@@ -173,7 +180,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 foreach ( $this->custom_menu_order as $item ) {
                     foreach ( $module_menu as $p_key => $menu_item ) {
                         if ( in_array( $item, $menu_item ) ) {
-                            if ( $item == 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type ) {
+                            if ( in_array( $item, $dashed_menu_item )  ) {
                                 $menu_item[0]= '--- '.$menu_item[0];
                             }
                             $submenu['edit.php?post_type='.$this->post_type][$new_index] = $menu_item;

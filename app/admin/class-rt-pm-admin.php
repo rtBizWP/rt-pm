@@ -85,6 +85,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                 wp_enqueue_script( 'postbox' );
 
             }
+			wp_enqueue_script('rtpm-wp-menu-patch-js', RT_PM_URL . 'app/assets/javascripts/wp-menu-patch.js',array("jquery"), RT_PM_VERSION, true);
             $this->localize_scripts();
 		}
 
@@ -102,14 +103,16 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
             } else {
                 wp_localize_script( 'rtpm-admin-js', 'rtcrm_user_edit', array('') );
             }
+
+			if ( $_REQUEST['taxonomy'] == Rt_PM_Time_Entry_Type::$time_entry_type_tax && $_REQUEST['post_type'] == Rt_PM_Time_Entries::$post_type ) {
+				wp_localize_script( 'rtpm-wp-menu-patch-js', 'rtpm_time_entry_type_screen', admin_url( 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type ) );
+			}
         }
 
 		function register_menu() {
 //			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
 //			$editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 			$author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-
-
 
 			add_menu_page( __( 'PM' ), __( 'PM' ), $author_cap, self::$pm_page_slug, 'icon-url', self::$menu_position );
 		}

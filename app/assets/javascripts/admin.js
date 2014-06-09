@@ -309,7 +309,6 @@ jQuery(document).ready(function($) {
                 $("input[name='post[post_date]']").val("");
                 $("input[name='post[post_duedate]']").val("");
                 $("select[name='post[post_author]']").val(0);
-                $("select[name='post[post_time_tracker]']").val(0);
                 $("select[name='post[post_status]']").val();*/
             }
         });
