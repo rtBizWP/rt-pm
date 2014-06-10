@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Don't load this file directly!
  */
@@ -762,6 +762,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
 						'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
+						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
 						'_rtpm_project_budget' => $newProject['project_budget'],
                         'date_update' => current_time( 'mysql' ),
@@ -780,6 +781,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                         'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
+						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
 						'_rtpm_project_budget' => $newProject['project_budget'],
                         'date_update' => current_time( 'mysql' ),
@@ -860,6 +862,7 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
                 $estimationdate= get_post_meta($post->ID, 'post_estimationdate', true);
+				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
             } else {
                 $post_author = get_current_user_id();
             }
@@ -1110,24 +1113,32 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                     <?php } ?>
                                 </div>
                             </div>
-                            <div class="row collapse postbox">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Project Client</span></h6>
-                                <div class="inside">
-                                    <script>
-                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
-                                    </script>
-                                    <?php if ( $user_edit ) { ?>
-                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+                            <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
+                                <div class="large-5 mobile-large-3 columns">
+                                    <span class="prefix" title="Business Manager"><label for="post[business_manager]"><strong><?php _e('Business Manager'); ?></strong></label></span>
+                                </div>
+                                <div class="large-7 mobile-large-5 columns">
+                                    <?php if( $user_edit ) { ?>
+                                        <select name="post[business_manager]" >
+                                            <?php
+                                            if (!empty($results_member)) {
+                                                foreach ($results_member as $bm) {
+                                                    if ($bm->ID == $business_manager) {
+                                                        $selected = " selected";
+                                                    } else {
+                                                        $selected = " ";
+                                                    }
+                                                    echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     <?php } ?>
-                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
-                                        <?php echo $subProjectClientHTML; ?>
-                                    </ul>
                                 </div>
                             </div>
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Project Member</span></h6>
+                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Members'); ?></span></h6>
                                 <div class="inside">
                                     <script>
                                         var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
@@ -1139,6 +1150,21 @@ if ( !class_exists( 'Rt_PM_Add_Project' ) ) {
                                     <?php } ?>
                                     <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
                                         <?php echo $subProjectMemberHTML; ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row collapse postbox">
+                                <div class="handlediv" title="Click to toggle"><br></div>
+                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Clients'); ?></span></h6>
+                                <div class="inside">
+                                    <script>
+                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
+                                    </script>
+                                    <?php if ( $user_edit ) { ?>
+                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+                                    <?php } ?>
+                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
+                                        <?php echo $subProjectClientHTML; ?>
                                     </ul>
                                 </div>
                             </div>
