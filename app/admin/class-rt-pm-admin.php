@@ -80,7 +80,9 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                     wp_enqueue_script( 'jquery-ui-datepicker' );
                 }
 
-				wp_enqueue_style('jquery-ui-css', RT_HRM_URL . 'app/assets/css/jquery-ui-1.9.2.custom.css', false, RT_PM_VERSION, 'all');
+				if ( !  wp_style_is( 'rt-jquery-ui-css' ) ) {
+					wp_enqueue_style('rt-jquery-ui-css', RT_HRM_URL . 'app/assets/css/jquery-ui-1.9.2.custom.css', false, RT_PM_VERSION, 'all');
+				}
 
                 wp_enqueue_script( 'postbox' );
 
