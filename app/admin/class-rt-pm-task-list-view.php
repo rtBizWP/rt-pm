@@ -108,7 +108,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 			$actions = array(
 				'delete' => __( 'Trash' ),
 			);
-			//return $actions;
+			return $actions;
 		}
 
 		/**
