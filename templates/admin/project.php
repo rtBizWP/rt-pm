@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-    global $rt_pm_add_project;
+    global $rt_pm_project;
 
     $post_type=$_REQUEST['post_type'];
 
@@ -51,7 +51,7 @@
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-task"); ?>">Tasks</a></dd>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Attachments</a></dd>
-            <!--<dd <?php /*echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-reports' ? 'class="active"':'';  */?>><a href="<?php /*echo admin_url($ref_link . "tab={$post_type}-reports"); */?>">Project Reports</a></dd>-->
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ? 'class="active"':''; ?>><a href="<?php echo admin_url($ref_link . "tab={$post_type}-notification"); ?>">Notification</a></dd>
             <?php } ?>
             <dd <?php echo !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-details"); ?>">Details</a></dd>
         </dl>
@@ -60,16 +60,19 @@
             <div class="content active" >
                 <?php
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ){
-                        $rt_pm_add_project->get_project_task_tab($labels,$user_edit);
+                        $rt_pm_project->get_project_task_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ){
-                        $rt_pm_add_project->get_project_timeentry_tab($labels,$user_edit);
+                        $rt_pm_project->get_project_timeentry_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ){
-                        $rt_pm_add_project->get_project_file_tab($labels,$user_edit);
+                        $rt_pm_project->get_project_file_tab($labels,$user_edit);
                     }
-                    if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' )) {
-                        $rt_pm_add_project->get_project_description_tab($labels,$user_edit);
+                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ){
+                        $rt_pm_project->get_project_notification_tab($labels,$user_edit);
+                    }
+					if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' )) {
+                        $rt_pm_project->get_project_description_tab($labels,$user_edit);
                     }
 
                 ?>

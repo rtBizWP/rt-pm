@@ -28,7 +28,7 @@
 <div class="rtpm-container wrap">
     <h2>
         <?php echo $labels['all_items']; ?>
-        <button id="btn-add-new-post" class="add-new-h2"><?php _e( 'Add new' ); ?></button>
+        <a href="#" id="btn-add-new-post" class="add-new-h2"><?php _e( 'Add new' ); ?></a>
     </h2>
     <?php $form_container_class = 'large-12 small-12 columns rtpm-project-form-container ';
     if ( isset( $error ) && ! empty( $error )   ){
