@@ -35,6 +35,9 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 						'project_budget' => __( 'Project Budget' ),
 						'project_time' => __( 'Project Timesheet Cost' ),
 					),
+					'callback_function' => array( $this, 'time_entry_saved_action' ),
+					'priority' => 10,
+					'args' => 3,
 				),
 			);
 			$this->hooks = apply_filters( 'rt_pm_notification_hooks', $hooks );

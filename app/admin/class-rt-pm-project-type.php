@@ -104,7 +104,7 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 				);
 			}
 			$args = array(
-				'id' => 'rtcrm_project_type',
+				'id' => 'rtpm_project_type',
 				'name' => 'post[project_type][]',
 				'rtForm_options' => $options,
 			);
@@ -114,7 +114,7 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 			} else {
                 //TODO  attr not find
                 $term = $this->get_project_type_id($post_id);
-				echo '<span class="rtcrm_view_mode">'.$term->name.'</span>';
+				echo '<span class="rtpm_view_mode">'.$term->name.'</span>';
 			}
 		}
 	}

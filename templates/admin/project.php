@@ -32,7 +32,7 @@
                 ?>
                 <h4><i class="gen-enclosed <?php echo $post_icon; ?>"></i> <?php _e($page_title); ?></h4>
             </div>
-            <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+            <div style="padding:0;" class="large-6 columns">
                 <?php if(isset($post->ID) && current_user_can( "delete_{$post_type}s" ) ){ ?>
                     <button id="button-trash" type="button" class="right mybutton alert" ><?php _e("Trash"); ?></button>
                 <?php } ?>

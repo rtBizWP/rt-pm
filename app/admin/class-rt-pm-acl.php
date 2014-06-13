@@ -20,10 +20,10 @@ if ( ! defined( 'ABSPATH' ) )
 if ( ! class_exists( 'Rt_PM_ACL' ) ) {
 	class Rt_PM_ACL {
 		public function __construct() {
-			add_filter( 'rt_biz_modules', array( $this, 'register_rt_crm_module' ) );
+			add_filter( 'rt_biz_modules', array( $this, 'register_rt_pm_module' ) );
 		}
 
-		function register_rt_crm_module( $modules ) {
+		function register_rt_pm_module( $modules ) {
 			global $rt_pm_project,$rt_pm_task;
 			$module_key = ( function_exists( 'rt_biz_sanitize_module_key' ) ) ? rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) : '';
 			$modules[ $module_key ] = array(

@@ -63,17 +63,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-
-            $filter = add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
-            add_action( "load-$filter", array( $this, 'add_screen_options' ) );
-            add_action( 'admin_footer-'.$filter, array( $this, 'footer_scripts' ) );
-
-            $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
-            add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
-
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.Rt_PM_Time_Entries::$post_type );
-			// $screen_id = add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtcrm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
-            //add_action( 'admin_footer-'.$screen_id, array( $this, 'footer_scripts' ) );
         }
 
 		function register_custom_post( $menu_position ) {
@@ -204,14 +196,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         }
 
         /**
-         * Prints the jQuery script to initiliase the metaboxes
-         * Called on admin_footer-*
-         */
-        function footer_scripts() { ?>
-            <script> postboxes.add_postbox_toggles(pagenow);</script>
-        <?php }
-
-        /**
          * Custom list page for Projects
          */
 		function dashboard() {
@@ -221,20 +205,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             );
             rtpm_get_template( 'admin/dashboard.php', $args );
 		}
-
-        /**
-         * Add list view on dashboard
-         */
-        function add_screen_options() {
-            $option = 'per_page';
-            $args = array(
-                'label' => $this->labels['all_items'],
-                'default' => 10,
-                'option' => $this->post_type.'_per_page',
-            );
-            add_screen_option($option, $args);
-            //new Rt_CRM_Leads_List_View();
-        }
 
         /**
          * Custom page ui for Add Project
@@ -636,7 +606,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             <div id="wp-custom-list-table" class="row">
                 <div style="max-width:none;" class="row">
                     <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                    <div style="padding:0;" class="large-6 columns">
                         <?php if( $user_edit ) { ?>
                             <?php if (isset($_REQUEST["{$task_post_type}_id"])) {
                                 $btntitle = 'Update Task';
@@ -690,14 +660,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-2 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
-                                    <span class="rtcrm_view_mode moment-from-now"><?php echo $createdate ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns">
@@ -709,6 +679,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-3 mobile-large-3 columns">
                                 <?php if( $user_edit ) { ?>
                                     <select name="post[post_author]" >
+										<option value=""><?php _e( 'Select Assignee' ); ?></option>
                                         <?php
                                         if (!empty($results_member)) {
                                             foreach ($results_member as $author) {
@@ -729,14 +700,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-2 small-4 columns">
                                 <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>">
                                     <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
                                 <?php } else { ?>
-                                    <span class="rtcrm_view_mode moment-from-now"><?php echo $duedate ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns">
@@ -745,7 +716,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-3 mobile-large-1 columns">
                                 <span class="prefix" title="Status">Status</span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php
                                 if (isset($post->ID))
                                     $pstatus = $post->post_status;
@@ -770,7 +741,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php } else {
                                     foreach ( $post_status as $status ) {
                                         if($status['slug'] == $pstatus) {
-                                            echo '<span class="rtcrm_view_mode">'.$status['name'].'</span>';
+                                            echo '<span class="rtpm_view_mode">'.$status['name'].'</span>';
                                             break;
                                         }
                                     }
@@ -882,7 +853,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 }
 				
 				// Used for notification -- Regeistered in RT_PM_Notification
-				do_action( 'rt_pm_time_entry_saved', $newTimeEntry );
+				do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
                 $_REQUEST["{$timeentry_post_type}_id"] = null;
                 $action_complete= true;
             }
@@ -954,7 +925,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             <div id="wp-custom-list-table" class="row">
                 <div style="max-width:none;" class="row">
                     <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                    <div style="padding:0;" class="large-6 columns">
                         <?php if( $user_edit ) { ?>
                             <?php if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
                                 $btntitle = 'Update Time Entry';
@@ -995,14 +966,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-2 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
-                                    <span class="rtcrm_view_mode moment-from-now"><?php echo $createdate ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns">
@@ -1050,7 +1021,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         <?php }
 
         public function get_project_description_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_crm_closing_reason,$rt_pm_project_type;
+            global $rt_pm_project,$rt_pm_project_type;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -1144,10 +1115,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     }
                 }
                 $_REQUEST[$post_type."_id"] = $post_id;
-                $return = wp_redirect( admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
             }
 
             //Check for wp error
@@ -1286,7 +1254,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         <div class="small-4 large-4 columns">
                                             <span class="prefix" title="Status">Status</span>
                                         </div>
-                                        <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                        <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php
                                             if (isset($post->ID))
                                                 $pstatus = $post->post_status;
@@ -1312,12 +1280,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                                 $status_html='';
                                                 foreach ( $post_status as $status ) {
                                                     if($status['slug'] == $pstatus) {
-                                                        $status_html = '<span class="rtcrm_view_mode">'.$status['name'].'</span>';
+                                                        $status_html = '<span class="rtpm_view_mode">'.$status['name'].'</span>';
                                                         break;
                                                     }
                                                 }
                                                 if ( !isset( $status_html ) || empty( $status_html ) && ( isset( $pstatus ) && !empty( $pstatus ) ) ){
-                                                    $status_html = '<span class="rtcrm_view_mode">'.$pstatus.'</span>';
+                                                    $status_html = '<span class="rtpm_view_mode">'.$pstatus.'</span>';
                                                 }
                                                 echo $status_html;
                                             } ?>
@@ -1347,14 +1315,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         <div class="large-4 small-4 columns">
                                             <span class="prefix" title="Create Date"><label>Create Date</label></span>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
                                                 <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                             <?php } else { ?>
-                                                <span class="rtcrm_view_mode moment-from-now"><?php echo $createdate ?></span>
+                                                <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                             <?php } ?>
                                         </div>
                                         <div class="large-1 mobile-large-1 columns">
@@ -1366,12 +1334,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                             <div class="large-4 mobile-large-1 columns">
                                                 <span class="prefix" title="Modify Date"><label>Modify Date</label></span>
                                             </div>
-                                            <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                            <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                                 <?php if( $user_edit ) { ?>
                                                     <input class="moment-from-now"  type="text" placeholder="Modified on Date"  value="<?php echo $modifydate; ?>"
                                                            title="<?php echo $modifydate; ?>" readonly="readonly">
                                                 <?php } else { ?>
-                                                    <span class="rtcrm_view_mode moment-from-now"><?php echo $modifydate; ?></span>
+                                                    <span class="rtpm_view_mode moment-from-now"><?php echo $modifydate; ?></span>
                                                 <?php } ?>
                                             </div>
                                             <div class="large-1 mobile-large-1 columns">
@@ -1383,14 +1351,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         <div class="large-4 small-4 columns">
                                             <span class="prefix" title="Create Date"><label>Completion Date</label></span>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Completion Date"
                                                        value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>"
                                                        title="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>">
                                                 <input name="post[post_completiondate]" type="hidden" value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>" />
                                             <?php } else { ?>
-                                                <span class="rtcrm_view_mode moment-from-now"><?php echo $completiondate ?></span>
+                                                <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
                                             <?php } ?>
                                         </div>
                                         <div class="large-1 mobile-large-1 columns">
@@ -1401,14 +1369,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         <div class="large-4 small-4 columns">
                                             <span class="prefix" title="Project Estimate"><label>Project Estimate</label></span>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Estimation Date"
                                                        value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>"
                                                        title="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>">
                                                 <input name="post[post_estimationdate]" type="hidden" value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>" />
                                             <?php } else { ?>
-                                                <span class="rtcrm_view_mode moment-from-now"><?php echo $estimationdate ?></span>
+                                                <span class="rtpm_view_mode moment-from-now"><?php echo $estimationdate ?></span>
                                             <?php } ?>
                                         </div>
                                         <div class="large-1 mobile-large-1 columns">
@@ -1419,11 +1387,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 										<div class="large-4 mobile-large-1 columns">
 											<span class="prefix" title="Budget"><label for="project_budget">Budget</label></span>
 										</div>
-										<div class="large-7 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+										<div class="large-7 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 											<?php if( $user_edit ) { ?>
 											<input type="text" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?>" />
 											<?php } else { ?>
-											<span class="rtcrm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>';
+											<span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>';
 											<?php } ?>
 										</div>
 										<?php if( $user_edit ) { ?>
@@ -1444,6 +1412,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <div class="large-7 mobile-large-5 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[project_manager]" >
+											<option value=""><?php _e( 'Select PM' ); ?></option>
                                             <?php
                                             if (!empty($results_member)) {
                                                 foreach ($results_member as $author) {
@@ -1467,6 +1436,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <div class="large-7 mobile-large-5 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[business_manager]" >
+											<option value=""><?php _e( 'Select BM' ); ?></option>
                                             <?php
                                             if (!empty($results_member)) {
                                                 foreach ($results_member as $bm) {
@@ -1487,11 +1457,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <div class="handlediv" title="Click to toggle"><br></div>
                                 <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Members'); ?></span></h6>
                                 <div class="inside">
-                                    <script>
-                                        var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
-                                        var ac_auth_token = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_token', true); ?>';
-                                        var ac_default_project = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_default_project', true); ?>';
-                                    </script>
                                     <?php if ( $user_edit ) { ?>
                                         <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                                     <?php } ?>
@@ -1526,16 +1491,17 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="large-6 columns rtcrm-sticky right">
+                        <div class="large-6 columns right">
                             <?php
                             if (isset($post->ID)) {
-                                $save_button = "Update ".ucfirst($labels['name']);
+                                $save_button = __( 'Update' );
                             } else {
-                                $save_button = "Save ".ucfirst($labels['name']);
+                                $save_button = __( 'Save' );
                             }
                             ?>
                             <?php if( $user_edit ) { ?>
-                                <button class="right mybutton success" type="submit" ><?php _e($save_button); ?></button> &nbsp;&nbsp;
+							<button id="button-trash" class="right mybutton alert" data-href="<?php echo site_url().add_query_arg( array( 'action' => 'trash' ) ); ?>" class=""><?php _e( 'Trash' ); ?></button>
+							<button class="right mybutton success" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
                             <?php } ?>
                         </div>
                     </div>
@@ -1599,7 +1565,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 </div>
                 <div style="max-width:none;" class="row">
                     <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns rtcrm-sticky">
+                    <div style="padding:0;" class="large-6 columns">
                         <?php if( $user_edit ) { ?>
                             <button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
                             <button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
@@ -1681,7 +1647,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-3 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>Title</label></span>
                             </div>
-                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <input name="post[post_title]" type="text" value="" />
                             </div>
                         </div>
@@ -1689,7 +1655,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-3 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>External Link</label></span>
                             </div>
-                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <input name="post[post_link]" type="text" value="" />
                             </div>
                         </div>
@@ -1697,7 +1663,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             <div class="large-3 small-4 columns">
                                 <span class="prefix" title="Create Date"><label>Terms</label></span>
                             </div>
-                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtcrm_attr_border' : ''; ?>">
+                            <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php $media_terms= get_categories("taxonomy=attachment_tag&hide_empty=0&orderby=name");?>
                                 <ul class="media-term-list">
                                     <?php foreach ( $media_terms as $term ){?>

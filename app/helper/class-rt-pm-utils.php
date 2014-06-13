@@ -12,7 +12,7 @@ if (!defined('ABSPATH'))
  */
 
 /**
- * Description of Rt_CRM_Utils
+ * Description of Rt_PM_Utils
  *
  * @author Dipesh
  */

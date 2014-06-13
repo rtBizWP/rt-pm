@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) )
  */
 
 /**
- * Description of Rt_CRM_Leads_List_View
+ * Description of Rt_PM_Time_Entry_List_View
  *
  * @author udit
  */
@@ -72,7 +72,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                 'rtpm_task_id'=> __( 'Task' ),
                 'rtpm_create_date'=> __( 'Date' ),
 				'rtpm_Duration'=> __( 'Duration' ),
-				'rtpm_created_by'=> __( 'Created By' ),
+				'rtpm_created_by'=> __( 'Logged By' ),
 			);
 
 			return $columns;

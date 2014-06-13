@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) )
  */
 
 /**
- * Description of Rt_CRM_Leads_List_View
+ * Description of Rt_PM_Task_List_View
  *
  * @author udit
  */

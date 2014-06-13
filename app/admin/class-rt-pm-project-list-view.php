@@ -82,6 +82,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
 						<div class="large-12 mobile-large-3 columns">
 							<?php if( $user_edit ) { ?>
                                 <select name="post[project_manager]" >
+									<option value=""><?php _e( 'Select PM' ); ?></option>
                                     <?php
                                     if (!empty($results)) {
                                         foreach ($results as $author) {
@@ -102,11 +103,6 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 <div class="large-6 small-12 column">
                     <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
                     <div style="padding-bottom: 0" class="inside">
-                        <script>
-                            var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
-                            var ac_auth_token = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_token', true); ?>';
-                            var ac_default_project = '<?php echo get_user_meta(get_current_user_id(), 'rtcrm_activecollab_default_project', true); ?>';
-                        </script>
                         <?php if ( $user_edit ) { ?>
                             <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                         <?php } ?>
@@ -116,7 +112,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     </div>
                 </div>
             </div>
-            <div class="large-5 columns rtcrm-sticky">
+            <div class="large-5 columns">
 				<input class="mybutton add-project right" type="submit" id="submit-project" name="project[submitted]" value="<?php _e("Add Project"); ?>">
             </div>
         <?php }

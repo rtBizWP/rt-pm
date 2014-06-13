@@ -145,12 +145,13 @@ jQuery(document).ready(function($) {
             $(this).html(moment(new Date($(this).html())).fromNow());
     });
 
-    $("#button-trash").click(function(){
-        var r = confirm("Are you sure you want to move this project to trash?");
-        if (r != true) {
-            return false;
-        }
-        alert('Trashed!!!');
+	$("#button-trash").click(function(){
+		var r = confirm("Are you sure you want to move this project to trash?");
+		if (r != true) {
+			return false;
+		}
+		window.location = $(this).data('href');
+		return false;
     });
 
     $("#form-add-post").submit(function(e) {
@@ -215,7 +216,7 @@ jQuery(document).ready(function($) {
                 attachment = attachment.toJSON();
                 strAttachment = '<div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="'+attachment.id+'">';
                 strAttachment += '<a target="_blank" href="'+attachment.url+'"><img height="20px" width="20px" src="' +attachment.icon + '" > '+attachment.filename+'</a>';
-                strAttachment += '<a href="#" class="rtcrm_delete_attachment right">x</a>';
+                strAttachment += '<a href="#" class="rtpm_delete_attachment right">x</a>';
                 strAttachment += '<input type="hidden" name="attachment[]" value="' + attachment.id +'" /></div>';
 
                 jQuery("#attachment-container .scroll-height").append(strAttachment);

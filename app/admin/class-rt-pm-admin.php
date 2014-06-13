@@ -99,10 +99,10 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                     $user_edit = true;
                 }
                 wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
-                wp_localize_script( 'rtpm-admin-js', 'rtcrm_post_type', $_REQUEST['post_type'] );
-                wp_localize_script( 'rtpm-admin-js', 'rtcrm_user_edit', array($user_edit) );
+                wp_localize_script( 'rtpm-admin-js', 'rtpm_post_type', $_REQUEST['post_type'] );
+                wp_localize_script( 'rtpm-admin-js', 'rtpm_user_edit', array($user_edit) );
             } else {
-                wp_localize_script( 'rtpm-admin-js', 'rtcrm_user_edit', array('') );
+                wp_localize_script( 'rtpm-admin-js', 'rtpm_user_edit', array('') );
             }
 
 			if ( $_REQUEST['taxonomy'] == Rt_PM_Time_Entry_Type::$time_entry_type_tax ) {
