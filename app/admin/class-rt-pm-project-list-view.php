@@ -86,12 +86,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                     <?php
                                     if (!empty($results)) {
                                         foreach ($results as $author) {
-                                            if ($author->ID == get_current_user_id()) {
-                                                $selected = " selected";
-                                            } else {
-                                                $selected = " ";
-                                            }
-                                            echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                                            echo '<option value="' . $author->ID . '">' . $author->display_name . '</option>';
                                         }
                                     }
                                     ?>
@@ -130,7 +125,6 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     $project_meta['project_date'] = current_time( 'mysql' );
                     $project_meta['project_date_gmt'] = gmdate('Y-m-d H:i:s');
                     $newProject = array(
-                        'post_author' => $project_meta['project_manager'],
                         'post_date' => $project_meta['project_date'],
                         'post_date_gmt' => $project_meta['project_date_gmt'],
                         'post_content' => $project_meta['project_content'],
@@ -139,6 +133,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                         'post_type' => $rt_pm_project->post_type,
                     );
                     $newProjectID = wp_insert_post($newProject);
+					update_post_meta( $newProjectID, 'project_manager', $project_meta['project_manager'] );
                     update_post_meta( $newProjectID, 'project_member', $project_meta['project_member'] );
                     return 1;
                 }

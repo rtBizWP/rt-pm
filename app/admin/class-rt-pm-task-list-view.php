@@ -126,7 +126,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             $s = @$_POST['s'];
 
 			/* -- Preparing your query -- */
-            $query = "SELECT * FROM $wpdb->posts INNER JOIN wp_postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$this->project_id_key' AND pm.meta_value='$project_id'";
+            $query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$this->project_id_key' AND pm.meta_value='$project_id'";
 
             if ( $s ) {
                 $query .= " AND ( ";
@@ -140,11 +140,13 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             }
 
             if ( isset( $_GET['assignee'] ) ) {
-                $query .= " AND $wpdb->posts.post_author = '".$_REQUEST['assignee']."'";
+                $query .= " AND $wpdb->postmeta.meta_value = '".$_REQUEST['assignee']."'";
+                $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
 
             if ( !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'admin') &&  !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'editor') && current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'author') ){
-                $query .= " AND $wpdb->posts.post_author = '".get_current_user_id()."'";
+                $query .= " AND $wpdb->postmeta.meta_value = '".get_current_user_id()."'";
+                $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
 
 			/* -- Ordering parameters -- */
@@ -272,10 +274,10 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 								//.'< /td>';
 								break;
                             case "rtpm_assignee":
-                                if(!empty($rec->post_author)) {
-                                    $user = get_user_by('id', $rec->post_author);
+								if(!empty($temp['post_assignee'])) {
+                                    $user = get_user_by('id', $temp['post_assignee']);
                                     $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
-                                    $url = add_query_arg( 'assignee', $rec->post_author, $url );
+                                    $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
                                     if ($this->user_edit){
                                         echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                     }else{
@@ -340,10 +342,10 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 //.'< /td>';
                                 break;
                             case "rtpm_created_by":
-                                if(!empty($temp['user_created_by'])) {
-                                    $user = get_user_by('id', $temp['user_created_by']);
+                                if(!empty($rec->post_author)) {
+                                    $user = get_user_by('id', $rec->post_author);
                                     $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}");
-                                    $url = add_query_arg( 'user_created_by', $temp['user_created_by'], $url );
+                                    $url = add_query_arg( 'user_created_by', $rec->post_author, $url );
                                     echo '<td '.$attributes.'>'.$user->display_name;
                                     //echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else

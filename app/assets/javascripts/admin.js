@@ -154,6 +154,8 @@ jQuery(document).ready(function($) {
 		return false;
     });
 
+	$('a.close').on('click', function(e) { e.preventDefault(); $(this).parent().remove(); });
+
     $("#form-add-post").submit(function(e) {
         try {
             var eleAccountName = $("#new_" + $(this).data("posttype") + "_title");

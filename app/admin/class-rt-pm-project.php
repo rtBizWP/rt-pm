@@ -415,7 +415,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 // Post Data to be saved.
                 $post = array(
-                    'post_author' => $newTask['post_author'],
                     'post_content' => $newTask['post_content'],
                     'post_status' => $newTask['post_status'],
                     'post_title' => $newTask['post_title'],
@@ -430,6 +429,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $updateFlag = true;
                     $post = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
                     $data = array(
+						'post_assignee' => $newTask['post_assignee'],
                         'post_project_id' => $newTask['post_project_id'],
                         'post_duedate' => $newTask['post_duedate'],
                         'date_update' => current_time( 'mysql' ),
@@ -443,6 +443,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     }
                 }else{
                     $data = array(
+						'post_assignee' => $newTask['post_assignee'],
                         'post_project_id' => $newTask['post_project_id'],
                         'post_duedate' => $newTask['post_duedate'],
                         'date_update' => current_time( 'mysql' ),
@@ -579,12 +580,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             // get project meta
             if (isset($post->ID)) {
-                $post_author = $post->post_author;
                 $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
-            } else {
-                $post_author = get_current_user_id();
-            }
+				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
+			} else {
+				$post_assignee = '';
+			}
 
             //assign to
             $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
@@ -674,16 +675,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns">
-                                <span class="prefix" title="Assigned To"><label for="post[post_author]"><strong>Assigned To</strong></label></span>
+                                <span class="prefix" title="Assigned To"><label for="post[post_assignee]"><strong>Assigned To</strong></label></span>
                             </div>
                             <div class="large-3 mobile-large-3 columns">
                                 <?php if( $user_edit ) { ?>
-                                    <select name="post[post_author]" >
+                                    <select name="post[post_assignee]" >
 										<option value=""><?php _e( 'Select Assignee' ); ?></option>
                                         <?php
                                         if (!empty($results_member)) {
                                             foreach ($results_member as $author) {
-                                                if ($author->ID == $post_author) {
+                                                if ($author->ID == $post_assignee) {
                                                     $selected = " selected";
                                                 } else {
                                                     $selected = " ";
@@ -901,11 +902,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             // get project meta
             if (isset($post->id)) {
-                $post_author = $post->author;
                 $_REQUEST["{$post_type}_id"]=$post->project_id;
                 $task_id=$post->task_id;
             } else {
-                $post_author = get_current_user_id();
                 if ( isset ( $_REQUEST["{$task_post_type}_id"] ) ) {
                     $task_id= $_REQUEST["{$task_post_type}_id"];
                 }
@@ -1061,7 +1060,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 // Post Data to be saved.
                 $post = array(
-                    'post_author' => $newProject['project_manager'],
                     'post_content' => $newProject['post_content'],
                     'post_status' => $newProject['post_status'],
                     'post_title' => $newProject['post_title'],
@@ -1076,6 +1074,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $updateFlag = true;
                     $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
                     $data = array(
+						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
 						'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
@@ -1095,6 +1094,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     }
                 }else{
                     $data = array(
+						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
                         'post_estimationdate' => $newProject['post_estimationdate'],
                         'project_client' => $newProject['project_client'],
@@ -1173,6 +1173,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             // get project meta
             if (isset($post->ID)) {
                 $post_author = $post->post_author;
+				$project_manager = get_post_meta( $post->ID, "project_manager", true );
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
@@ -1407,7 +1408,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-5 mobile-large-3 columns">
-                                    <span class="prefix" title="Project Manager"><label for="post[post_author]"><strong>Project Manager</strong></label></span>
+                                    <span class="prefix" title="Project Manager"><label for="post[project_manager]"><strong>Project Manager</strong></label></span>
                                 </div>
                                 <div class="large-7 mobile-large-5 columns">
                                     <?php if( $user_edit ) { ?>
@@ -1416,7 +1417,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                             <?php
                                             if (!empty($results_member)) {
                                                 foreach ($results_member as $author) {
-                                                    if ($author->ID == $post_author) {
+                                                    if ($author->ID == $project_manager) {
                                                         $selected = " selected";
                                                     } else {
                                                         $selected = " ";
@@ -1500,7 +1501,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             }
                             ?>
                             <?php if( $user_edit ) { ?>
+								<?php if(isset($post->ID)) { ?>
 							<button id="button-trash" class="right mybutton alert" data-href="<?php echo site_url().add_query_arg( array( 'action' => 'trash' ) ); ?>" class=""><?php _e( 'Trash' ); ?></button>
+								<?php } ?>
 							<button class="right mybutton success" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
                             <?php } ?>
                         </div>
@@ -1867,8 +1870,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							<?php
 								switch( $r['user'] ) {
 									case '{{project_manager}}':
-										$project = get_post( $project_id );
-										$project_manager = get_user_by( 'id', $project->post_author );
+										$project_manager = get_user_by( 'id', get_post_meta( $project_id, 'project_manager', true ) );
 										echo $project_manager->display_name;
 										break;
 									case '{{business_manager}}':
