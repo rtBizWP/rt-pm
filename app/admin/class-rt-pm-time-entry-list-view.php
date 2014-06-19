@@ -70,6 +70,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 				//'cb' => '<input type="checkbox" />',
 				'rtpm_message'=> __( 'Time Entry Message' ),
                 'rtpm_task_id'=> __( 'Task' ),
+				'rtpm_time_entry_type' => __( 'Type' ),
                 'rtpm_create_date'=> __( 'Date' ),
 				'rtpm_Duration'=> __( 'Duration' ),
 				'rtpm_created_by'=> __( 'Logged By' ),
@@ -126,6 +127,10 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
             if ( isset( $_REQUEST["{$task_post_type}_id"] ) ) {
                 $query .= " AND task_id = '".$_REQUEST["{$task_post_type}_id"]."'";
             }
+
+			if ( isset( $_REQUEST['time_entry_type'] ) ) {
+				$query .= " AND type = '".$_REQUEST['time_entry_type']."'";
+			}
 
             if ( isset( $_REQUEST["post_author"] ) ) {
                 $query .= " AND author = '".$_REQUEST["post_author"]."'";
@@ -241,6 +246,14 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                                 );
                                 echo $this->row_actions( $actions );
                                 //.'< /td>';
+								break;
+							case 'rtpm_time_entry_type':
+								$term = get_term_by( 'slug', $rec->type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+								if ( $term ) {
+									echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&time_entry_type={$rec->type}").'">'.$term->name.'</a>';
+								} else {
+									echo '<td '.$attributes.'>-';
+								}
 								break;
                             case "rtpm_create_date":
                                 $date = date_parse($rec->timestamp);

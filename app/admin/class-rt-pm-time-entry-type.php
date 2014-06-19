@@ -52,7 +52,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entry_Type' ) ) {
 			<tr class="form-field">
 			<th scope="row" valign="top"><label for="term_meta[time_entry_charge_rate]"><?php _e( 'Charge Rate' ); ?></label></th>
 				<td>
-					<input type="number" min="0" name="term_meta[time_entry_charge_rate]" id="term_meta[time_entry_charge_rate]" value="<?php echo $term_meta['time_entry_charge_rate'] ?>" />
+					<input type="number" min="0" name="term_meta[time_entry_charge_rate]" id="term_meta[time_entry_charge_rate]" value="<?php echo $term_meta['time_entry_charge_rate']; ?>" />
 					<p class="description"><?php _e( 'Global Charge Rate for Time Entry Type' ); ?></p>
 				</td>
 			</tr>
@@ -71,6 +71,11 @@ if ( ! class_exists( 'Rt_PM_Time_Entry_Type' ) ) {
 				// Save the option array.
 				update_option( "rtpm_taxonomy_$t_id", $term_meta );
 			}
+		}
+
+		static function get_charge_rate_meta_field( $term_id ) {
+			$term_meta = get_option( "rtpm_taxonomy_$term_id" );
+			return floatval( $term_meta['time_entry_charge_rate'] );
 		}
 
 		function add_meta_field_columns( $columns ) {

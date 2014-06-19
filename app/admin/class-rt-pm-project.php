@@ -39,14 +39,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$this->register_custom_post( $menu_position );
 			$this->register_custom_statuses();
 
-			/*$settings = get_site_option( 'rt_pm_settings', false );
-			if ( isset( $settings['attach_contacts'] ) && $settings['attach_contacts'] == 'yes' && function_exists( 'rt_biz_register_person_connection' ) ) {
-				rt_biz_register_person_connection( $this->post_type, $this->labels['name'] );
-			}
-			if ( isset( $settings['attach_accounts'] ) && $settings['attach_accounts'] == 'yes' && function_exists( 'rt_biz_register_organization_connection' ) ) {
-				rt_biz_register_organization_connection( $this->post_type, $this->labels['name'] );
-			}*/
-
             global $rt_pm_project_type;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
 		}
@@ -352,7 +344,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-                wp_trash_post( $_REQUEST[$task_post_type.'_id'] );
+                wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
                 $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') );
                 if( !$return ) {
                     echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
@@ -516,11 +508,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
                 }
 
-                /*$return = wp_redirect( admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task") . '"; </script> ';
-                }*/
-                $_REQUEST["{$task_post_type}_id"] = null;
+				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task" ) . '";</script> ';
+				$_REQUEST["{$task_post_type}_id"] = null;
                 $action_complete= true;
             }
 
@@ -855,14 +844,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				
 				// Used for notification -- Regeistered in RT_PM_Notification
 				do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
+
+				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" ) . '";</script> ';
                 $_REQUEST["{$timeentry_post_type}_id"] = null;
                 $action_complete= true;
             }
-
-            //Check for wp error
-            /*if ( is_wp_error( $post_id ) ) {
-                wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
-            }*/
 
             if ( $action_complete ){
                 if (isset($_REQUEST["new"])) {
@@ -935,6 +921,31 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php } ?>
                     </div>
                 </div>
+				
+				<?php
+				$project_current_budget_cost = 0;
+				$project_current_time_cost = 0;
+				$time_entries = $rt_pm_time_entries_model->get_by_project_id( $_REQUEST["{$post_type}_id"] );
+				if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
+					foreach ( $time_entries['result'] as $time_entry ) {
+						$type = $time_entry['type'];
+						$term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+						$project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
+						$project_current_time_cost += $time_entry['time_duration'];
+					}
+				}
+				?>
+
+				<div class="row">
+					<div class="large-3 columns right">
+						<strong><?php _e( 'Current Time Cost:'); ?></strong>
+						<span><?php echo $project_current_time_cost.__(' hours'); ?></span>
+					</div>
+					<div class="large-3 columns right">
+						<strong><?php _e( 'Current Budget Cost:'); ?></strong>
+						<span><?php echo $project_current_budget_cost; ?></span>
+					</div>
+				</div>
 
                 <div class="row">
                     <?php
@@ -1076,7 +1087,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
-						'post_estimationdate' => $newProject['post_estimationdate'],
+						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
 						'business_manager' => $newProject['business_manager'],
@@ -1096,7 +1107,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
-                        'post_estimationdate' => $newProject['post_estimationdate'],
+                        'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
 						'business_manager' => $newProject['business_manager'],
@@ -1177,7 +1188,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
-                $estimationdate= get_post_meta($post->ID, 'post_estimationdate', true);
 				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
             } else {
                 $post_author = get_current_user_id();
@@ -1368,20 +1378,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Project Estimate"><label>Project Estimate</label></span>
+                                            <span class="prefix" title="Estimated Time (in hours)"><label>Estimated Time</label></span>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                        <div class="large-8 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Estimation Date"
-                                                       value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>"
-                                                       title="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>">
-                                                <input name="post[post_estimationdate]" type="hidden" value="<?php echo ( isset($estimationdate) ) ? $estimationdate : ''; ?>" />
+                                                <input name="post[project_estimated_time]" type="text" value="<?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, 'project_estimated_time', true ) : ''; ?>" />
                                             <?php } else { ?>
-                                                <span class="rtpm_view_mode moment-from-now"><?php echo $estimationdate ?></span>
+                                                <span class="rtpm_view_mode moment-from-now"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, 'project_estimated_time', true ) : ''; ?></span>
                                             <?php } ?>
-                                        </div>
-                                        <div class="large-1 mobile-large-1 columns">
-                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                                         </div>
                                     </div>
 									<div class="row collapse">
@@ -1492,7 +1496,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="large-6 columns right">
+                        <div class="large-3 columns right">
                             <?php
                             if (isset($post->ID)) {
                                 $save_button = __( 'Update' );
@@ -1501,10 +1505,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             }
                             ?>
                             <?php if( $user_edit ) { ?>
+							<button class="mybutton success push-3" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 								<?php if(isset($post->ID)) { ?>
-							<button id="button-trash" class="right mybutton alert" data-href="<?php echo site_url().add_query_arg( array( 'action' => 'trash' ) ); ?>" class=""><?php _e( 'Trash' ); ?></button>
+							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo site_url().add_query_arg( array( 'action' => 'trash' ) ); ?>" class=""><?php _e( 'Trash' ); ?></button>
 								<?php } ?>
-							<button class="right mybutton success" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
                             <?php } ?>
                         </div>
                     </div>
@@ -1690,6 +1694,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			global $rt_biz_notification_rules_model, $rt_pm_notification;
 			$project_id = $_REQUEST["{$this->post_type}_id"];
 			$users = Rt_PM_Utils::get_pm_rtcamp_user();
+			$operators = $rt_pm_notification->get_operators();
+			$post_type = $_REQUEST['post_type'];
 
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' ) {
 				if ( isset( $_REQUEST['rule_id'] ) ) {
@@ -1742,10 +1748,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						'operator' => $operator,
 						'value' => $value,
 						'value_type' => $value_type,
+						'subject' => $operators[$operator]['subject'],
+						'message' => $operators[$operator]['message'],
 						'user' => $user,
 					);
 					$rt_biz_notification_rules_model->insert( $data );
 				}
+				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
 			}
 			$rules = $rt_biz_notification_rules_model->get_by_entity_id( $project_id );
 			?>
@@ -1778,9 +1787,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							</div>
 							<div class="large-2 columns">
 								<select name="rtpm_nr_operator" required="required">
-									<option value=""><?php _e( 'Operators' ) ?></option>
-									<?php foreach ( $rt_pm_notification->get_operators() as $operator ) { ?>
-									<option value="<?php echo $operator; ?>"><?php echo $operator; ?></option>
+									<option value=""><?php _e( 'Operators' ); ?></option>
+									<?php foreach ( $operators as $key => $operator ) { ?>
+									<option value="<?php echo $key; ?>"><?php echo $key; ?></option>
 									<?php } ?>
 								</select>
 							</div>
@@ -1878,6 +1887,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 										echo $business_manager->display_name;
 										break;
 									default:
+										$user = get_user_by( 'id', $r['user'] );
+										echo $user->display_name;
 										break;
 								}
 							?>
