@@ -72,6 +72,9 @@
 	
 	#add-notification-rule {
 		margin-bottom: 20px;
+		.row {
+			max-width: 100%;
+		}
 	}
 	
 	.rtpm-delete {

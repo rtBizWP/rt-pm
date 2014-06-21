@@ -345,29 +345,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
-                $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
+				die();
             }
 
             //restore action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'restore' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_untrash_post( $_REQUEST[$task_post_type.'_id'] );
-                $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
+				die();
             }
 
             //Delete action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
                 $rt_pm_project->remove_connect_post_to_entity($task_post_type,$_REQUEST[$task_post_type.'_id']);
-                $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
+                die();
             }
 
             //Check Post object is init or not
@@ -511,6 +505,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task" ) . '";</script> ';
 				$_REQUEST["{$task_post_type}_id"] = null;
                 $action_complete= true;
+				die();
             }
 
             //Check for wp error
@@ -796,10 +791,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$timeentry_post_type.'_id'] ) ) {
                 $rt_pm_time_entries_model->delete_timeentry( array( 'id' => $_REQUEST[$timeentry_post_type.'_id'] ) );
-                $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') . '"; </script> ';
+                die();
             }
 
             //Check Post object is init or not
@@ -848,6 +841,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" ) . '";</script> ';
                 $_REQUEST["{$timeentry_post_type}_id"] = null;
                 $action_complete= true;
+				die();
             }
 
             if ( $action_complete ){
@@ -1042,10 +1036,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$post_type.'_id'] ) ) {
                 wp_trash_post( $_REQUEST[$post_type.'_id'] );
-                $return = wp_redirect( admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) );
-                if( !$return ) {
-                    echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
-                }
+				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
+                die();
             }
 
             //Check Post object is init or not
@@ -1127,6 +1119,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 }
                 $_REQUEST[$post_type."_id"] = $post_id;
 				echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
+				die();
             }
 
             //Check for wp error
@@ -1706,9 +1699,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			if ( isset( $_POST['rtpm_add_notification_rule'] ) ) {
 
 				$error = array();
+				$rule_type = '';
+				$schedule = ( ! empty( $_POST['rtpm_nr_schedule'] ) ) ? $_POST['rtpm_nr_schedule'] : NULL;
+				$period = ( ! empty( $_POST['rtpm_nr_period'] ) ) ? $_POST['rtpm_nr_period'] : NULL;
+				$period_type = ( ! empty( $_POST['rtpm_nr_period_type'] ) ) ? $_POST['rtpm_nr_period_type'] : NULL;
 				$context = '';
 				$operator = '';
-				$value = '';
+				$value = $_POST['rtpm_nr_value'];
 				$value_type = '';
 				$user = '';
 
@@ -1722,11 +1719,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				} else {
 					$operator = $_POST['rtpm_nr_operator'];
 				}
-				if ( empty( $_POST['rtpm_nr_value'] ) ) {
-					$error[] = '<div class="error"><p>'.__('Value is required').'</p></div>';
-				} else {
-					$value = $_POST['rtpm_nr_value'];
-				}
 				if ( empty( $_POST['rtpm_nr_value_type'] ) ) {
 					$error[] = '<div class="error"><p>'.__('Value Type is required').'</p></div>';
 				} else {
@@ -1737,10 +1729,27 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				} else {
 					$user = $_POST['rtpm_nr_user'];
 				}
+				if ( empty( $_POST['rtpm_nr_type'] ) || ! in_array( $_POST['rtpm_nr_type'], array( 'triggered', 'periodic' ) ) ) {
+					$error[] = '<div class="error"><p>'.__('User is required').'</p></div>';
+				} else {
+					$rule_type = $_POST['rtpm_nr_type'];
+				}
+
+				if ( $rule_type == 'periodic' ) {
+					if ( empty( $period_type ) ) {
+						$error[] = '<div class="error"><p>'.__('Period Type is required').'</p></div>';
+					}
+					if ( empty( $schedule ) ) {
+						$error[] = '<div class="error"><p>'.__('Schedule is required').'</p></div>';
+					}
+				}
 
 				if ( empty( $error ) ) {
 					$data = array(
-						'rule_type' => 'triggered',
+						'rule_type' => $rule_type,
+						'schedule' => $schedule,
+						'period' => $period,
+						'period_type' => $period_type,
 						'module' => RT_PM_TEXT_DOMAIN,
 						'entity' => $this->post_type,
 						'entity_id' => $project_id,
@@ -1753,8 +1762,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						'user' => $user,
 					);
 					$rt_biz_notification_rules_model->insert( $data );
+				} else {
+					$_SESSION['rtpm_errors'] = $error;
 				}
 				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
+				die();
 			}
 			$rules = $rt_biz_notification_rules_model->get_by_entity_id( $project_id );
 			?>
@@ -1767,6 +1779,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				</h2>
 				<?php if ( $user_edit ) { ?>
 				<?php
+					$error = $_SESSION['rtpm_errors'];
+					unset( $_SESSION['rtpm_errors'] );
 					if( ! empty( $error ) ) {
 						foreach ( $error as $e ) {
 							echo $e;
@@ -1776,6 +1790,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				<div id="add-notification-rule" class="hide">
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
+						<input type="hidden" name="rtpm_nr_type" value="triggered" />
 						<div class="row">
 							<div class="large-3 columns">
 								<select name="rtpm_nr_context" required="required">
@@ -1794,7 +1809,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 								</select>
 							</div>
 							<div class="large-1 columns">
-								<input type="text" name="rtpm_nr_value" required="required" />
+								<input type="text" name="rtpm_nr_value" />
 							</div>
 							<div class="large-2 columns">
 								<select name="rtpm_nr_value_type" required="required">
@@ -1804,6 +1819,69 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 								</select>
 							</div>
 							<div class="large-3 columns">
+								<select name="rtpm_nr_user" required="required">
+									<option value=""><?php _e( 'Select User to Notify' ); ?></option>
+									<option value="{{project_manager}}"><?php _e( '{{project_manager}}' ); ?></option>
+									<option value="{{business_manager}}"><?php _e( '{{business_manager}}' ); ?></option>
+									<?php foreach ( $users as $u ) { ?>
+									<option value="<?php echo $u->ID; ?>"><?php echo $u->display_name; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<div class="large-1 columns">
+								<input type="submit" class="button-primary" value="<?php _e( 'Add' ); ?>">
+							</div>
+						</div>
+					</form>
+					<form method="post">
+						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
+						<input type="hidden" name="rtpm_nr_type" value="periodic" />
+						<div class="row">
+							<div class="large-2 columns">
+								<select name="rtpm_nr_schedule" required="required">
+									<option value=""><?php _e( 'Schedule' ); ?></option>
+									<?php foreach ( wp_get_schedules() as $key => $schedule ) { ?>
+									<option value="<?php echo $key; ?>"><?php echo $schedule['display']; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<div class="large-2 columns">
+								<select name="rtpm_nr_context" required="required">
+									<option value=""><?php _e( 'Contexts' ) ?></option>
+									<?php foreach ( $rt_pm_notification->get_contexts( 'periodic' ) as $key => $label ) { ?>
+									<option value="<?php echo $key; ?>"><?php echo $label; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<div class="large-1 columns">
+								<select name="rtpm_nr_operator" required="required">
+									<option value=""><?php _e( 'Operators' ); ?></option>
+									<?php foreach ( $operators as $key => $operator ) { ?>
+									<option value="<?php echo $key; ?>"><?php echo $key; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<div class="large-1 columns">
+								<input type="text" name="rtpm_nr_value" placeholder="<?php _e( 'Value' ); ?>" />
+							</div>
+							<div class="large-1 columns">
+								<select name="rtpm_nr_value_type" required="required">
+									<option value=""><?php _e( 'Value Type' ); ?></option>
+									<option value="absolute"><?php _e('Absolute'); ?></option>
+									<option value="percentage"><?php _e('Percentage'); ?></option>
+								</select>
+							</div>
+							<div class="large-1 columns">
+								<input type="text" name="rtpm_nr_period" placeholder="<?php _e( 'Period' ); ?>" />
+							</div>
+							<div class="large-1 columns">
+								<select name="rtpm_nr_period_type" required="required">
+									<option value=""><?php _e( 'Period Type' ); ?></option>
+									<option value="before"><?php _e( 'Before' ); ?></option>
+									<option value="after"><?php _e( 'After' ); ?></option>
+								</select>
+							</div>
+							<div class="large-2 columns">
 								<select name="rtpm_nr_user" required="required">
 									<option value=""><?php _e( 'Select User to Notify' ); ?></option>
 									<option value="{{project_manager}}"><?php _e( '{{project_manager}}' ); ?></option>
@@ -1831,10 +1909,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				<table class="wp-list-table widefat rt-notification-rules" cellspacing="0">
 					<thead>
 						<tr>
+							<th scope='col' id='rtpm_rule_type' class='manage-column column-rtpm_rule_type'  style=""><span>Rule Type</span></th>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
 							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
 							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
 							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
 							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
 							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
 							<th scope='col' id='rtpm_delete_rule' class='manage-column column-rtpm_delete_rule'  style=""><span>&nbsp;</span></th>
 						</tr>
@@ -1842,10 +1924,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 					<tfoot>
 						<tr>
+							<th scope='col' id='rtpm_rule_type' class='manage-column column-rtpm_rule_type'  style=""><span>Rule Type</span></th>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
 							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
 							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
 							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
 							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
 							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
 							<th scope='col' id='rtpm_rule_actions' class='manage-column column-rtpm_rule_actions'  style=""><span>&nbsp;</span></th>
 						</tr>
@@ -1855,14 +1941,39 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						<?php if ( $rules['total'] && ! empty( $rules['result'] ) ) { ?>
 							<?php foreach ( $rules['result'] as $r ) { ?>
 						<tr>
+							<td class="rtpm_rule_type column-rtpm_rule_type">
+							<?php
+								switch( $r['rule_type'] ) {
+									case 'triggered':
+										_e('Triggered');
+										break;
+									case 'periodic':
+										_e('Periodic');
+										break;
+									default:
+										do_action( 'rtpm_notification_echo_rule_type', $r['rule_type'] );
+										break;
+								}
+							?>
+							</td>
+							<td class="rtpm_schedule column-rtpm_schedule">
+							<?php
+								$schedules = wp_get_schedules();
+								echo ( ! empty( $schedules[$r['schedule']]['display'] ) ) ? $schedules[$r['schedule']]['display'] : __( 'NA' );
+							?>
+							</td>
 							<td class='rtpm_context column-rtpm_context'>
 							<?php
-								$context = $rt_pm_notification->get_context_label( $r['context'] );
+								$context = $rt_pm_notification->get_context_label( $r['context'], $r['rule_type'] );
 								echo $context;
 							?>
 							</td>
 							<td class='rtpm_operator column-rtpm_operator'><?php echo $r['operator']; ?></td>
-							<td class='rtpm_value column-rtpm_value'><?php echo $r['value']; ?></td>
+							<td class='rtpm_value column-rtpm_value'>
+							<?php
+								echo ( ! empty( $r['value'] ) ) ? $r['value'] : __( 'Nill' );
+							?>
+							</td>
 							<td class='rtpm_value_type column-rtpm_value_type'>
 							<?php
 								switch( $r['value_type'] ) {
@@ -1872,6 +1983,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 									case 'absolute' :
 										_e( 'Absolute' );
 										break;
+								}
+							?>
+							</td>
+							<td class="rtpm_period column-rtpm_period">
+							<?php
+								if ( $r['rule_type'] == 'triggered' ) {
+									_e('NA');
+								} else {
+									echo ( ! empty( $r['period'] ) ) ? $r['period'] : __( 'Nill' );
+								}
+							?>
+							</td>
+							<td class="rtpm_period_type column-rtpm_period_type">
+							<?php
+								if ( $r['rule_type'] == 'triggered' ) {
+									_e('NA');
+								} else {
+									echo ucfirst( $r['period_type'] );
 								}
 							?>
 							</td>

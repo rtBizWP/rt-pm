@@ -44,6 +44,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 			global $rt_pm_admin;
 			$rt_pm_admin = new Rt_PM_Admin();
+
+			session_start();
 		}
 
 		function check_rt_biz_dependecy() {

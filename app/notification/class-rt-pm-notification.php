@@ -23,10 +23,20 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 	class RT_PM_Notification {
 
 		var $hooks = array();
+		var $timely_context = array();
 
 		public function __construct() {
 			$this->register_hooks();
+			$this->register_timely_contexts();
 			$this->execute_hooks();
+		}
+
+		function register_timely_contexts() {
+			$contexts = array(
+				'project_assignee' => __( 'Project Assignee' ),
+				'task_due_date' => __( 'Task Due Date' ),
+			);
+			$this->timely_context = apply_filters( 'rt_pm_notification_timely_context', $contexts );
 		}
 
 		function register_hooks() {
@@ -54,16 +64,27 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 			return $this->hooks;
 		}
 
-		function get_contexts() {
+		function get_contexts( $type = 'triggered' ) {
 			$contexts = array();
-			foreach ( $this->hooks as $hook ) {
-				$contexts = array_merge( $contexts, $hook['contexts'] );
+
+			switch( $type ) {
+				case 'triggered':
+					foreach ( $this->hooks as $hook ) {
+						$contexts = array_merge( $contexts, $hook['contexts'] );
+					}
+					break;
+				case 'periodic':
+					$contexts = $this->timely_context;
+					break;
+				default:
+					$contexts = apply_filters( 'rtpm_notification_get_contexts', $contexts );
+					break;
 			}
 			return $contexts;
 		}
 
-		function get_context_label( $context ) {
-			$contexts = $this->get_contexts();
+		function get_context_label( $context, $type = 'triggered' ) {
+			$contexts = $this->get_contexts( $type );
 			return $contexts[$context];
 		}
 
