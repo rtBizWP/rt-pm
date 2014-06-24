@@ -72,27 +72,32 @@
   float: none;
 }
 /* line 73, ../sass/admin.scss */
+.rtpm-container #rtpm_project_cost_report {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+/* line 78, ../sass/admin.scss */
 .rtpm-container #add-notification-rule {
   margin-bottom: 20px;
 }
-/* line 75, ../sass/admin.scss */
+/* line 80, ../sass/admin.scss */
 .rtpm-container #add-notification-rule .row {
   max-width: 100%;
 }
-/* line 80, ../sass/admin.scss */
+/* line 85, ../sass/admin.scss */
 .rtpm-container .rtpm-delete {
   color: red;
 }
-/* line 85, ../sass/admin.scss */
+/* line 90, ../sass/admin.scss */
 .rtpm-container .rtpm-projects .rtpm-project-detail {
   color: #B6B6b4;
   margin: 10px 0;
 }
-/* line 89, ../sass/admin.scss */
+/* line 94, ../sass/admin.scss */
 .rtpm-container .removeMeta {
   padding: 8px 15px 6px;
 }
-/* line 92, ../sass/admin.scss */
+/* line 97, ../sass/admin.scss */
 .rtpm-container #followup_wrapper .row {
   width: auto;
   margin-left: -0.9375em;
@@ -101,78 +106,78 @@
   margin-bottom: 0;
   max-width: none;
 }
-/* line 100, ../sass/admin.scss */
+/* line 105, ../sass/admin.scss */
 .rtpm-container .clearfix {
   clear: both;
 }
-/* line 103, ../sass/admin.scss */
+/* line 108, ../sass/admin.scss */
 .rtpm-container input, .rtpm-container select, .rtpm-container ul {
   margin: 0px;
 }
-/* line 106, ../sass/admin.scss */
+/* line 111, ../sass/admin.scss */
 .rtpm-container .comment_attechment li, .rtpm-container #divAccountsList li, .rtpm-container #divContactsList li {
   list-style: none;
 }
-/* line 109, ../sass/admin.scss */
+/* line 114, ../sass/admin.scss */
 .rtpm-container .rtpm-stars {
   height: 14px;
   margin: 5px 5px;
 }
-/* line 112, ../sass/admin.scss */
+/* line 117, ../sass/admin.scss */
 .rtpm-container .rtpm-stars li {
   list-style: none;
 }
-/* line 116, ../sass/admin.scss */
+/* line 121, ../sass/admin.scss */
 .rtpm-container .attachment-item {
   margin-top: 5px;
 }
-/* line 119, ../sass/admin.scss */
+/* line 124, ../sass/admin.scss */
 .rtpm-container #add_lead_attachment {
   margin-bottom: 5px;
 }
-/* line 122, ../sass/admin.scss */
+/* line 127, ../sass/admin.scss */
 .rtpm-container .rtpm_delete_attachment {
   color: red;
   margin-right: 5px;
 }
-/* line 126, ../sass/admin.scss */
+/* line 131, ../sass/admin.scss */
 .rtpm-container .rtpm_view_mode {
   text-align: center;
 }
-/* line 129, ../sass/admin.scss */
+/* line 134, ../sass/admin.scss */
 .rtpm-container .rtpm_attachment {
   height: 20px;
   overflow: hidden;
   display: inline-block;
 }
-/* line 134, ../sass/admin.scss */
+/* line 139, ../sass/admin.scss */
 .rtpm-container #lead_attach_file {
   width: auto;
   padding: 0;
 }
-/* line 138, ../sass/admin.scss */
+/* line 143, ../sass/admin.scss */
 .rtpm-container .followup-scroll-height {
   max-height: 400px;
   overflow-y: auto;
   margin: 5px 10px 10px 0px;
   padding-left: 25px;
 }
-/* line 145, ../sass/admin.scss */
+/* line 150, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-user-gravatar {
   display: inline-block;
 }
-/* line 147, ../sass/admin.scss */
+/* line 152, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-user-gravatar .th.radius {
   -webkit-border-radius: 50%;
   border-radius: 50%;
   border-width: 3px;
 }
-/* line 151, ../sass/admin.scss */
+/* line 156, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-user-gravatar .th.radius img {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
-/* line 157, ../sass/admin.scss */
+/* line 162, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-participant {
   max-height: 10px;
   overflow: hidden;
@@ -180,22 +185,22 @@
   font-size: x-small;
   padding-left: 15px;
 }
-/* line 164, ../sass/admin.scss */
+/* line 169, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-users {
   display: inline-block;
   width: 50%;
 }
-/* line 168, ../sass/admin.scss */
+/* line 173, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-info {
   display: inline-block;
   font-size: small;
   width: 25%;
 }
-/* line 173, ../sass/admin.scss */
+/* line 178, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-actions {
   display: inline-block;
 }
-/* line 176, ../sass/admin.scss */
+/* line 181, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-date {
   background: #e26143;
   text-align: center;
@@ -206,7 +211,7 @@
   display: inline-block;
   float: left;
 }
-/* line 185, ../sass/admin.scss */
+/* line 190, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-date .comment-month {
   color: #fff;
   text-transform: uppercase;
@@ -215,7 +220,7 @@
   margin: 0;
   padding: 2px 0;
 }
-/* line 193, ../sass/admin.scss */
+/* line 198, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-date .comment-day {
   font-size: 15px;
   line-height: 1;
@@ -227,23 +232,23 @@
   border-radius: 0 0 3px 3px;
   margin: 0;
 }
-/* line 204, ../sass/admin.scss */
+/* line 209, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-date .comment-year {
   font-size: 10px;
   margin: 0;
   padding: 0;
 }
-/* line 210, ../sass/admin.scss */
+/* line 215, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-meta {
   display: inline-block;
   width: 95%;
   float: right;
 }
-/* line 215, ../sass/admin.scss */
+/* line 220, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-skip-date {
   margin-left: 40px;
 }
-/* line 218, ../sass/admin.scss */
+/* line 223, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-header {
   cursor: pointer;
   background-color: #F5F5F5;
@@ -252,7 +257,7 @@
   padding-bottom: 3px;
   max-height: 57px;
 }
-/* line 226, ../sass/admin.scss */
+/* line 231, ../sass/admin.scss */
 .rtpm-container #commentlist .comment-wrapper {
   display: block;
   background-color: #FFF;
@@ -265,12 +270,12 @@
   margin: 1px 0;
   display: none;
 }
-/* line 238, ../sass/admin.scss */
+/* line 243, ../sass/admin.scss */
 .rtpm-container #commentlist .rtpm_privacy {
   display: inline-block;
   margin-left: 5px;
 }
-/* line 243, ../sass/admin.scss */
+/* line 248, ../sass/admin.scss */
 .rtpm-container #load_more_btn {
   margin-top: 10px;
   margin-bottom: 0;
@@ -282,40 +287,40 @@
   background: linear-gradient(#f5f5f5, #e9e9e9);
   border: none;
 }
-/* line 253, ../sass/admin.scss */
+/* line 258, ../sass/admin.scss */
 .rtpm-container #load_more_btn:active {
   box-shadow: inset 0px 0px 2px #5A5A5A;
 }
-/* line 257, ../sass/admin.scss */
+/* line 262, ../sass/admin.scss */
 .rtpm-container .rtpm-participant-list li .row.collapse .large-9.columns {
   overflow: hidden;
 }
-/* line 260, ../sass/admin.scss */
+/* line 265, ../sass/admin.scss */
 .rtpm-container small.error {
   margin-top: auto;
 }
-/* line 263, ../sass/admin.scss */
+/* line 268, ../sass/admin.scss */
 .rtpm-container .rtpm_attr_border {
   border: 1px solid #d9d9d9;
 }
-/* line 266, ../sass/admin.scss */
+/* line 271, ../sass/admin.scss */
 .rtpm-container .rtpm_public_link {
   margin: 3% 5px 3%;
   display: inline-block;
 }
-/* line 270, ../sass/admin.scss */
+/* line 275, ../sass/admin.scss */
 .rtpm-container #rtpm-status {
   margin: 15px 0;
 }
-/* line 273, ../sass/admin.scss */
+/* line 278, ../sass/admin.scss */
 .rtpm-container #subscriber_user_ac {
   margin-bottom: 10px;
 }
-/* line 276, ../sass/admin.scss */
+/* line 281, ../sass/admin.scss */
 .rtpm-container .meta-box-sortables div.postbox {
   margin-bottom: 25px;
 }
-/* line 278, ../sass/admin.scss */
+/* line 283, ../sass/admin.scss */
 .rtpm-container .meta-box-sortables div.postbox h6 {
   border-bottom: 1px solid #eee;
   padding: 5px;
@@ -324,103 +329,103 @@
   color: #444;
   font-size: 12px;
 }
-/* line 286, ../sass/admin.scss */
+/* line 291, ../sass/admin.scss */
 .rtpm-container .meta-box-sortables div.postbox button {
   height: 26px;
   line-height: 8px;
 }
-/* line 292, ../sass/admin.scss */
+/* line 297, ../sass/admin.scss */
 .rtpm-container #add-new-post .rtpm-lead-content-wrapper, .rtpm-container #add-new-post .rtpm-post-author-wrapper {
   margin-bottom: 25px;
 }
-/* line 295, ../sass/admin.scss */
+/* line 300, ../sass/admin.scss */
 .rtpm-container #add-new-post .postbox select {
   height: 26.5px;
 }
-/* line 299, ../sass/admin.scss */
+/* line 304, ../sass/admin.scss */
 .rtpm-container .mceEditor td.mceIframeContainer iframe {
   min-height: 170px;
 }
-/* line 302, ../sass/admin.scss */
+/* line 307, ../sass/admin.scss */
 .rtpm-container .wp-editor-container textarea.wp-editor-area {
   min-height: 178px;
 }
-/* line 306, ../sass/admin.scss */
+/* line 311, ../sass/admin.scss */
 .rtpm-container #wp-custom-list-table .fixed {
   position: relative;
   z-index: 0;
 }
-/* line 310, ../sass/admin.scss */
+/* line 315, ../sass/admin.scss */
 .rtpm-container #wp-custom-list-table table [class*="column"] + [class*="column"]:last-child {
   float: none;
 }
-/* line 313, ../sass/admin.scss */
+/* line 318, ../sass/admin.scss */
 .rtpm-container #wp-custom-list-table .bulkactions {
   width: 350px;
 }
-/* line 316, ../sass/admin.scss */
+/* line 321, ../sass/admin.scss */
 .rtpm-container #wp-custom-list-table .search-box * {
   display: inline-block;
   max-width: 150px;
 }
-/* line 321, ../sass/admin.scss */
+/* line 326, ../sass/admin.scss */
 .rtpm-container #add-new-attachment .scroll-height {
   max-height: none;
   overflow-y: visible;
 }
 
-/* line 327, ../sass/admin.scss */
+/* line 332, ../sass/admin.scss */
 .wp-admin .rtpm-container select {
   height: 2.0125em;
 }
 
-/* line 332, ../sass/admin.scss */
+/* line 337, ../sass/admin.scss */
 .rtpm-container .reveal-modal {
   padding-bottom: 0px;
 }
-/* line 334, ../sass/admin.scss */
+/* line 339, ../sass/admin.scss */
 .rtpm-container .reveal-modal .mceEditor td.mceIframeContainer iframe, .rtpm-container .reveal-modal .wp-editor-container textarea.wp-editor-area {
   min-height: 100px;
 }
-/* line 337, ../sass/admin.scss */
+/* line 342, ../sass/admin.scss */
 .rtpm-container .reveal-modal .mybutton {
   margin: 1.25em 0 0;
 }
-/* line 341, ../sass/admin.scss */
+/* line 346, ../sass/admin.scss */
 .rtpm-container #attachment-search-row .hndle {
   height: 40px;
 }
-/* line 344, ../sass/admin.scss */
+/* line 349, ../sass/admin.scss */
 .rtpm-container #attachment-search {
   display: inline;
   font-size: 14px;
 }
-/* line 347, ../sass/admin.scss */
+/* line 352, ../sass/admin.scss */
 .rtpm-container #attachment-search .mybutton {
   height: 28px;
 }
-/* line 350, ../sass/admin.scss */
+/* line 355, ../sass/admin.scss */
 .rtpm-container #attachment-search .postform {
   display: inline;
   width: 200px;
   float: right;
   font-weight: normal;
 }
-/* line 357, ../sass/admin.scss */
+/* line 362, ../sass/admin.scss */
 .rtpm-container #div-add-external-link ul.media-term-list {
   margin-left: 20px;
 }
-/* line 359, ../sass/admin.scss */
+/* line 364, ../sass/admin.scss */
 .rtpm-container #div-add-external-link ul.media-term-list li {
   margin-right: 20px;
   float: left;
 }
-/* line 362, ../sass/admin.scss */
+/* line 367, ../sass/admin.scss */
 .rtpm-container #div-add-external-link ul.media-term-list li span {
   margin-left: 10px;
 }
 
-/* line 369, ../sass/admin.scss */
+/* line 374, ../sass/admin.scss */
 .tabs {
   border-bottom: 1px solid #E6E6E6;
   display: block;
@@ -429,12 +434,12 @@
   margin-bottom: 0px;
   padding: 0;
 }
-/* line 376, ../sass/admin.scss */
+/* line 381, ../sass/admin.scss */
 .tabs.contained {
   margin-bottom: 0;
   margin-left: 0;
 }
-/* line 380, ../sass/admin.scss */
+/* line 385, ../sass/admin.scss */
 .tabs dt, .tabs li.section-title {
   color: #B3B3B3;
   cursor: default;
@@ -448,18 +453,18 @@
   text-transform: uppercase;
   width: auto;
 }
-/* line 393, ../sass/admin.scss */
+/* line 398, ../sass/admin.scss */
 .tabs dt:first-child, .tabs li.section-title:first-child {
   padding: 0 9px 0 0;
 }
-/* line 396, ../sass/admin.scss */
+/* line 401, ../sass/admin.scss */
 .tabs dd, .tabs li {
   display: block;
   float: left;
   margin: 0;
   padding: 0;
 }
-/* line 402, ../sass/admin.scss */
+/* line 407, ../sass/admin.scss */
 .tabs dd a, .tabs li a {
   color: #6F6F6F;
   display: block;
@@ -468,17 +473,17 @@
   line-height: 40px;
   padding: 0 23.8px;
 }
-/* line 410, ../sass/admin.scss */
+/* line 415, ../sass/admin.scss */
 .tabs dd a:focus, .tabs li a:focus {
   color: #2BA6CB;
   font-weight: bold;
 }
-/* line 414, ../sass/admin.scss */
+/* line 419, ../sass/admin.scss */
 .tabs dd:hover, .tabs li:hover, .tabs dd.active, .tabs li.active {
   border-top: 3px solid #2BA6CB;
   margin-top: -3px;
 }
-/* line 418, ../sass/admin.scss */
+/* line 423, ../sass/admin.scss */
 .tabs dd:hover a, .tabs li:hover a, .tabs dd.active a, .tabs li.active a {
   background: none repeat scroll 0 0 #FFFFFF;
   border-left: 1px solid #E6E6E6;
@@ -487,25 +492,25 @@
   cursor: default;
   font-weight: bold;
 }
-/* line 426, ../sass/admin.scss */
+/* line 431, ../sass/admin.scss */
 .tabs dd:first-child, .tabs li:first-child {
   margin-left: 0;
 }
-/* line 429, ../sass/admin.scss */
+/* line 434, ../sass/admin.scss */
 .tabs.vertical {
   border-bottom: 1px solid #E6E6E6;
   height: auto;
 }
-/* line 432, ../sass/admin.scss */
+/* line 437, ../sass/admin.scss */
 .tabs.vertical dt, .tabs.vertical dd, .tabs.vertical li {
   float: none;
   height: auto;
 }
-/* line 436, ../sass/admin.scss */
+/* line 441, ../sass/admin.scss */
 .tabs.vertical dd, .tabs.vertical li {
   border-left: 3px solid #CCCCCC;
 }
-/* line 439, ../sass/admin.scss */
+/* line 444, ../sass/admin.scss */
 .tabs.vertical dd a, .tabs.vertical li a {
   -moz-border-bottom-colors: none;
   -moz-border-left-colors: none;
@@ -524,13 +529,13 @@
   line-height: 1;
   padding: 15px 20px;
 }
-/* line 457, ../sass/admin.scss */
+/* line 462, ../sass/admin.scss */
 .tabs.vertical dd.active, .tabs.vertical li.active {
   border-left: 4px solid #1A1A1A;
   border-top: 1px solid #4D4D4D;
   margin-top: 0;
 }
-/* line 462, ../sass/admin.scss */
+/* line 467, ../sass/admin.scss */
 .tabs.vertical dd.active a, .tabs.vertical li.active a {
   background: none repeat scroll 0 0 #4D4D4D;
   border: medium none;
@@ -541,24 +546,24 @@
   position: static;
   top: 0;
 }
-/* line 472, ../sass/admin.scss */
+/* line 477, ../sass/admin.scss */
 .tabs.vertical dd:first-child a.active, .tabs.vertical li:first-child a.active {
   margin: 0;
 }
-/* line 476, ../sass/admin.scss */
+/* line 481, ../sass/admin.scss */
 .tabs.pill {
   border-bottom: medium none;
   margin-bottom: 10px;
 }
-/* line 479, ../sass/admin.scss */
+/* line 484, ../sass/admin.scss */
 .tabs.pill dd, .tabs.pill li {
   margin-right: 10px;
 }
-/* line 482, ../sass/admin.scss */
+/* line 487, ../sass/admin.scss */
 .tabs.pill dd:last-child, .tabs.pill li:last-child {
   margin-right: 0;
 }
-/* line 485, ../sass/admin.scss */
+/* line 490, ../sass/admin.scss */
 .tabs.pill dd a, .tabs.pill li a {
   background: none repeat scroll 0 0 #E6E6E6;
   border-radius: 1000px;
@@ -566,80 +571,80 @@
   height: 26px;
   line-height: 26px;
 }
-/* line 492, ../sass/admin.scss */
+/* line 497, ../sass/admin.scss */
 .tabs.pill dd.active, .tabs.pill li.active {
   border: medium none;
   margin-top: 0;
 }
-/* line 496, ../sass/admin.scss */
+/* line 501, ../sass/admin.scss */
 .tabs.pill dd.active a, .tabs.pill li.active a {
   background-color: #2BA6CB;
   border: medium none;
   color: #FFFFFF;
 }
-/* line 501, ../sass/admin.scss */
+/* line 506, ../sass/admin.scss */
 .tabs.pill.contained {
   border-bottom: 1px solid #EEEEEE;
   margin-bottom: 0;
 }
-/* line 506, ../sass/admin.scss */
+/* line 511, ../sass/admin.scss */
 .tabs.pill.two-up dd, .tabs.pill.two-up li {
   margin-right: 0;
 }
-/* line 511, ../sass/admin.scss */
+/* line 516, ../sass/admin.scss */
 .tabs.pill.three-up dd, .tabs.pill.three-up li {
   margin-right: 0;
 }
-/* line 516, ../sass/admin.scss */
+/* line 521, ../sass/admin.scss */
 .tabs.pill.four-up dd, .tabs.pill.four-up li {
   margin-right: 0;
 }
-/* line 521, ../sass/admin.scss */
+/* line 526, ../sass/admin.scss */
 .tabs.pill.five-up dd, .tabs.pill.five-up li {
   margin-right: 0;
 }
-/* line 527, ../sass/admin.scss */
+/* line 532, ../sass/admin.scss */
 .tabs.two-up dt a, .tabs.two-up dd a, .tabs.two-up li a {
   overflow: hidden;
   padding: 0 17px;
   text-align: center;
 }
-/* line 534, ../sass/admin.scss */
+/* line 539, ../sass/admin.scss */
 .tabs.three-up dt a, .tabs.three-up dd a, .tabs.three-up li a {
   overflow: hidden;
   padding: 0 17px;
   text-align: center;
 }
-/* line 541, ../sass/admin.scss */
+/* line 546, ../sass/admin.scss */
 .tabs.four-up dt a, .tabs.four-up dd a, .tabs.four-up li a {
   overflow: hidden;
   padding: 0 17px;
   text-align: center;
 }
-/* line 548, ../sass/admin.scss */
+/* line 553, ../sass/admin.scss */
 .tabs.five-up dt a, .tabs.five-up dd a, .tabs.five-up li a {
   overflow: hidden;
   padding: 0 17px;
   text-align: center;
 }
-/* line 555, ../sass/admin.scss */
+/* line 560, ../sass/admin.scss */
 .tabs.two-up dt, .tabs.two-up dd, .tabs.two-up li {
   width: 50%;
 }
-/* line 560, ../sass/admin.scss */
+/* line 565, ../sass/admin.scss */
 .tabs.three-up dt, .tabs.three-up dd, .tabs.three-up li {
   width: 33.33%;
 }
-/* line 565, ../sass/admin.scss */
+/* line 570, ../sass/admin.scss */
 .tabs.four-up dt, .tabs.four-up dd, .tabs.four-up li {
   width: 25%;
 }
-/* line 570, ../sass/admin.scss */
+/* line 575, ../sass/admin.scss */
 .tabs.five-up dt, .tabs.five-up dd, .tabs.five-up li {
   width: 20%;
 }
 
-/* line 576, ../sass/admin.scss */
+/* line 581, ../sass/admin.scss */
 .tabs-content {
   display: block;
   margin: 1px;
@@ -647,7 +652,7 @@
   background-color: #ffffff;
 }
 
-/* line 583, ../sass/admin.scss */
+/* line 588, ../sass/admin.scss */
 ui.tabs-content {
   display: block;
   margin: 0 0 20px;
@@ -656,19 +661,19 @@ ui.tabs-content {
   margin: 0 2px;
 }
 
-/* line 592, ../sass/admin.scss */
+/* line 597, ../sass/admin.scss */
 ul.tabs-content > li {
   display: none;
 }
-/* line 594, ../sass/admin.scss */
+/* line 599, ../sass/admin.scss */
 ul.tabs-content > li.active {
   display: block;
 }
-/* line 598, ../sass/admin.scss */
+/* line 603, ../sass/admin.scss */
 ul.tabs-content.contained {
   padding: 0;
 }
-/* line 600, ../sass/admin.scss */
+/* line 605, ../sass/admin.scss */
 ul.tabs-content.contained > li {
   -moz-border-bottom-colors: none;
   -moz-border-left-colors: none;
@@ -680,22 +685,22 @@ ul.tabs-content.contained > li {
   border-width: 0 1px 1px;
   padding: 20px;
 }
-/* line 611, ../sass/admin.scss */
+/* line 616, ../sass/admin.scss */
 ul.tabs-content.contained.vertical > li {
   border-width: 1px;
 }
 
-/* line 617, ../sass/admin.scss */
+/* line 622, ../sass/admin.scss */
 .no-js ul.tabs-content > li {
   display: block;
 }
 
-/* line 622, ../sass/admin.scss */
+/* line 627, ../sass/admin.scss */
 #rtpm_status_detail span.prefix {
   height: 60px;
   line-height: 60px;
 }
-/* line 626, ../sass/admin.scss */
+/* line 631, ../sass/admin.scss */
 #rtpm_status_detail textarea {
   height: 60px;
   margin: 0;
