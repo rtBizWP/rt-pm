@@ -153,6 +153,11 @@ if( !class_exists( 'Rt_PM_Task' ) ) {
                     'name' => __( 'Verified' ),
                     'description' => __( 'Task is verified' ),
                 ),
+                array(
+                    'slug' => 'completed',
+                    'name' => __( 'Completed' ),
+                    'description' => __( 'Task is completed' ),
+                ),
             );
             return $this->statuses;
         }

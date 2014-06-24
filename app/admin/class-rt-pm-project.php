@@ -332,7 +332,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         }
 
         public function get_project_task_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_task;
+            global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -345,6 +345,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
+				$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
 				die();
             }
@@ -393,9 +394,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         $UTC = new DateTimeZone('UTC');
                         $dr->setTimezone($UTC);
                         $timeStamp = $dr->getTimestamp();
-                        $newTask['$duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
+                        $newTask['post_duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
                     } catch ( Exception $e ) {
-                        $newTask['post_date'] = current_time( 'mysql' );
+                        $newTask['post_duedate'] = current_time( 'mysql' );
                     }
                 }
 
@@ -687,7 +688,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>">
                                     <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
@@ -1025,7 +1026,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         <?php }
 
         public function get_project_description_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_project_type;
+            global $rt_pm_project,$rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -1035,7 +1036,20 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$post_type.'_id'] ) ) {
-                wp_trash_post( $_REQUEST[$post_type.'_id'] );
+                wp_delete_post( $_REQUEST[$post_type.'_id'] );
+				$args = array(
+					'post_type' =>  $rt_pm_task->post_type,
+					'post_status' => 'any',
+					'meta_query' => array(
+						'key' => Rt_PM_Task_List_View::$project_id_key,
+						'value' => array( $_REQUEST[$post_type.'_id'] ),
+					),
+				);
+				$tasks = get_posts( $args );
+				foreach ( $tasks as $t ) {
+					wp_delete_post( $t );
+				}
+				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
                 die();
             }
@@ -1692,6 +1706,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' ) {
 				if ( isset( $_REQUEST['rule_id'] ) ) {
+					$rule = $rt_biz_notification_rules_model->get( array( 'id' => $_REQUEST['rule_id'] ) );
+					$rule = $rule[0];
+					if ( $rule->rule_type == 'periodic' ) {
+						wp_clear_scheduled_hook( 'rt_pm_timely_notification_'.$rule->id, array( $rule ) );
+					}
 					$rt_biz_notification_rules_model->delete( array( 'id' => $_REQUEST['rule_id'] ) );
 				}
 			}

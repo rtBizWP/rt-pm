@@ -26,7 +26,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		var $post_type;
 		var $post_statuses;
 		var $labels;
-        var $project_id_key='post_project_id';
+        static $project_id_key = 'post_project_id';
         var $user_edit;
 
 		public function __construct() {
@@ -126,7 +126,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             $s = @$_POST['s'];
 
 			/* -- Preparing your query -- */
-            $query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$this->project_id_key' AND pm.meta_value='$project_id'";
+			$project_id_key = self::$project_id_key;
+            $query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$project_id_key' AND pm.meta_value='$project_id'";
 
             if ( $s ) {
                 $query .= " AND ( ";
@@ -292,7 +293,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 $date = date_parse($rec->post_date);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($rec->post_date);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_date.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+                                    echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -302,7 +303,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 $date = date_parse($rec->post_modified);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($rec->post_modified);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_modified.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+                                    echo '<td '.$attributes.'><span title="'.$rec->post_modified.'" class="moment-from-now">' . $rec->post_modified . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -312,7 +313,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 $date = date_parse($temp['post_duedate']);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($temp['post_duedate']);
-                                    echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+                                    echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }

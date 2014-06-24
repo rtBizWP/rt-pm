@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
                 if( $(this).hasClass("moment-from-now") ) {
                     var oldDate = $(this).attr("title");
 
-                    if( newDate != "" ) {
+                    if( newDate != "" && moment(newDate).isValid() ) {
                         $(this).val(moment(new Date(newDate)).fromNow());
                         $(this).attr("title",newDate);
 

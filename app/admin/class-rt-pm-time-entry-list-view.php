@@ -27,7 +27,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
         var $post_type;
 		var $post_statuses;
 		var $labels;
-        var $project_id_key='project_id';
+        static $project_id_key='project_id';
 
 		public function __construct() {
 
@@ -122,7 +122,8 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 
 
 			/* -- Preparing your query -- */
-            $query = "SELECT * FROM $this->table_name WHERE $this->project_id_key = $project_id";
+			$project_id_key = self::$project_id_key;
+            $query = "SELECT * FROM $this->table_name WHERE $project_id_key = $project_id";
 
             if ( isset( $_REQUEST["{$task_post_type}_id"] ) ) {
                 $query .= " AND task_id = '".$_REQUEST["{$task_post_type}_id"]."'";

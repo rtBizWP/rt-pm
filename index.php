@@ -77,3 +77,33 @@ function rt_pm_init() {
 
 }
 add_action( 'rt_biz_init', 'rt_pm_init', 1 );
+
+add_action( 'init', 'rt_pm_timely_notification_init' );
+function rt_pm_timely_notification_init() {
+
+	global $rt_biz_notification_rules_model, $rt_pm_notification;
+
+	if ( ! isset( $rt_biz_notification_rules_model ) || ! isset( $rt_pm_notification ) ) {
+		return;
+	}
+
+	$rules = $rt_biz_notification_rules_model->get( array( 'rule_type' => 'periodic' ) );
+
+	foreach ( $rules as $r ) {
+		add_action( 'rt_pm_timely_notification_'.$r->id, array( $rt_pm_notification, 'exec_timely_notification_actions' ) );
+	}
+}
+
+register_deactivation_hook( __FILE__, 'rt_pm_deactivate' );
+function rt_pm_deactivate() {
+
+	if ( ! class_exists( 'RT_Biz_Notification_Rules_Model' ) ) {
+		return;
+	}
+	$rt_biz_notification_rules_model = new RT_Biz_Notification_Rules_Model();
+	$rules = $rt_biz_notification_rules_model->get( array( 'rule_type' => 'periodic' ) );
+
+	foreach ( $rules as $r ) {
+		wp_clear_scheduled_hook( 'rt_pm_timely_notification_'.$r->id, array( $r ) );
+	}
+}
