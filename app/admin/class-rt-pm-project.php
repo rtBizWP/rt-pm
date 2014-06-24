@@ -27,15 +27,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		var $custom_menu_order = array();
 
 		public function __construct() {
-			$this->get_custom_labels();
-			$this->get_custom_statuses();
-            $this->get_custom_menu_order();
 			add_action( 'init', array( $this, 'init_project' ) );
 			$this->hooks();
 		}
 
 		function init_project() {
 			$menu_position = 31;
+			$this->get_custom_labels();
+			$this->get_custom_statuses();
+            $this->get_custom_menu_order();
 			$this->register_custom_post( $menu_position );
 			$this->register_custom_statuses();
 
@@ -55,7 +55,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'dashboard' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-dashboard', array( $this, 'dashboard_ui' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Projects' ), __( 'Projects' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.Rt_PM_Time_Entries::$post_type );
         }
@@ -63,8 +64,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		function register_custom_post( $menu_position ) {
             $logo_url = Rt_PM_Settings::$settings['logo_url'];
 
-			if ( empty( $pm_logo_url ) ) {
-                $pm_logo_url = RT_PM_URL.'app/assets/img/pm-16X16.png';
+			if ( empty( $logo_url ) ) {
+                $logo_url = RT_PM_URL.'app/assets/img/pm-16X16.png';
 			}
 
 			$args = array(
@@ -93,10 +94,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 
 		function get_custom_labels() {
+			$menu_label = Rt_PM_Settings::$settings['menu_label'];
 			$this->labels = array(
 				'name' => __( 'Project' ),
 				'singular_name' => __( 'Project' ),
-				'menu_name' => __( 'PM' ),
+				'menu_name' => $menu_label,
 				'all_items' => __( 'Projects' ),
 				'add_new' => __( 'Add Project' ),
 				'add_new_item' => __( 'Add Project' ),
@@ -141,6 +143,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         function get_custom_menu_order(){
             $this->custom_menu_order = array(
+				'rtpm-dashboard',
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
@@ -190,11 +193,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         /**
          * Custom list page for Projects
          */
-		function dashboard() {
+		function projects_list_view() {
             $args = array(
                 'post_type' => $this->post_type,
                 'labels' => $this->labels,
             );
+            rtpm_get_template( 'admin/projects-list-view.php', $args );
+		}
+
+		function dashboard_ui() {
+			$args = array();
             rtpm_get_template( 'admin/dashboard.php', $args );
 		}
 
