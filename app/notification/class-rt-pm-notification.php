@@ -446,6 +446,9 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 				case 'percentage':
 					$diff = $task_due_date->diff( $task_create_date );
 					$hours = ( $diff->d * 24 ) + $diff->h;
+					if ( $diff->invert ) {
+						$hours *= -1;
+					}
 					$value = $hours * $rule['value'] / 100;
 					break;
 				default:
@@ -456,6 +459,9 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 			if ( ! empty( $value ) ) {
 				$diff = $current_date->diff( $task_create_date );
 				$project_current_hours = ( $diff->d * 24 ) + $diff->h;
+				if ( $diff->invert ) {
+					$project_current_hours *= -1;
+				}
 				switch ( $rule['operator'] ) {
 					case '<':
 						if ( $project_current_hours < $value ) {
@@ -494,22 +500,27 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 			} else {
 				switch ( $rule['period_type'] ) {
 					case 'before':
-						$diff = $task_due_date->diff( $current_date );
+						$diff = $current_date->diff( $task_due_date );
 						$hours = ( $diff->d * 24 ) + $diff->h;
+						if ( $diff->invert ) {
+							$hours *= -1;
+						}
 						if ( $hours <= $rule['period'] ) {
 							$flag = true;
 						}
 						break;
 					case 'after':
-						$diff = $current_date->diff( $task_due_date );
+						$diff = $task_due_date->diff( $current_date );
 						$hours = ( $diff->d * 24 ) + $diff->h;
+						if ( $diff->invert ) {
+							$hours *= -1;
+						}
 						if ( $hours >= $rule['period'] ) {
 							$flag = true;
 						}
 						break;
 				}
 			}
-
 			return $flag;
 		}
 
@@ -521,15 +532,21 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 
 			switch ( $rule['period_type'] ) {
 				case 'before':
-					$diff = $project_last_update_date->diff( $current_date );
+					$diff = $current_date->diff( $project_last_update_date );
 					$hours = ( $diff->d * 24 ) + $diff->h;
+					if ( $diff->invert ) {
+						$hours *= -1;
+					}
 					if ( ( ( empty( $rule['value'] ) && empty( $project_assignee ) ) || ( $project_assignee == $rule['value'] ) ) && $hours <= $rule['period'] ) {
 						$flag = true;
 					}
 					break;
 				case 'after':
-					$diff = $current_date->diff( $project_last_update_date );
+					$diff = $project_last_update_date->diff( $current_date );
 					$hours = ( $diff->d * 24 ) + $diff->h;
+					if ( $diff->invert ) {
+						$hours *= -1;
+					}
 					if ( ( ( empty( $rule['value'] ) && empty( $project_assignee ) ) || ( $project_assignee == $rule['value'] ) ) && $hours >= $rule['period'] ) {
 						$flag = true;
 					}
