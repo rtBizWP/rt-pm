@@ -35,12 +35,17 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     <div class="large-3 small-4 columns">
                         <article id="rtpm-<?php the_id() ?>" <?php post_class( 'rtpm_admin ' ); ?>>
                             <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&tab={$rt_pm_project->post_type}-task&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
-                                <h2><?php the_title(); ?></h2>
-                                <!--<h4 class="rtpm-project-sub-title"><?php /*the_content(); */?></h4>-->
-                                <div class="rtpm-project-detail">
-                                    <?php echo $this->get_the_project_excerpt( get_the_content() ); ?>
-                                </div>
+                                <h2><?php echo '#'; the_ID(); echo ' : '; the_title(); ?></h2>
                             </a>
+							<div><strong><?php _e( 'Status : ' ); ?></strong><?php echo ucfirst( get_post_status( get_the_ID() ) ); ?></div>
+							<div><strong><?php _e( 'Project Manager : ' ); ?></strong><?php $pm = get_user_by( 'id', get_post_meta( get_the_ID(), 'project_manager', true ) ); echo $pm->display_name; ?></div>
+							<div><strong><?php _e( 'Business Manager : ' ); ?></strong><?php $bm = get_user_by( 'id', get_post_meta( get_the_ID(), 'business_manager', true ) ); echo $bm->display_name; ?></div>
+							<br />
+							<div><strong><?php _e( 'Commenced on : ' ); ?></strong><?php $dt = new DateTime( get_post_field( 'post_date', get_the_ID() ) ); echo $dt->format( 'Y-m-d' ); ?></div>
+							<div><strong><?php _e( 'Due on : ' ); ?></strong><?php if ( get_post_meta( get_the_ID(), 'post_duedate', true ) ) { $dt = new DateTime( get_post_meta( get_the_ID(), 'post_duedate', true ) ); echo $dt->format( 'Y-m-d' ); } ?></div>
+							<div class="rtpm-project-detail">
+								<?php echo $this->get_the_project_excerpt( get_the_content() ); ?>
+							</div>
                         </article>
                     </div>
                 <?php

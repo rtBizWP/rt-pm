@@ -1109,6 +1109,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
+                        'post_duedate' => $newProject['post_duedate'],
 						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
@@ -1129,6 +1130,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
                         'post_completiondate' => $newProject['post_completiondate'],
+                        'post_duedate' => $newProject['post_duedate'],
                         'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_member' => $newProject['project_member'],
@@ -1211,6 +1213,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
+                $duedate= get_post_meta($post->ID, 'post_duedate', true);
 				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
             } else {
                 $post_author = get_current_user_id();
@@ -1393,6 +1396,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                                 <input name="post[post_completiondate]" type="hidden" value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>" />
                                             <?php } else { ?>
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="large-1 mobile-large-1 columns">
+                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
+                                        </div>
+                                    </div>
+                                    <div class="row collapse">
+                                        <div class="large-4 small-4 columns">
+                                            <span class="prefix" title="Due Date"><label>Due Date</label></span>
+                                        </div>
+                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                            <?php if( $user_edit ) { ?>
+                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
+                                                       value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>"
+                                                       title="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>">
+                                                <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>" />
+                                            <?php } else { ?>
+                                                <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
                                             <?php } ?>
                                         </div>
                                         <div class="large-1 mobile-large-1 columns">
