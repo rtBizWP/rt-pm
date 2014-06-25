@@ -946,7 +946,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					</div>
 					<div class="large-3 columns">
 						<strong><?php _e( 'Project Budget:'); ?></strong>
-						<span><?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ).__(' hours'); ?></span>
+						<span><?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></span>
 					</div>
 					<div class="large-3 columns">
 						<strong><?php _e( 'Total Time spent:'); ?></strong>
@@ -1841,7 +1841,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="triggered" />
-						<div class="row pull-1">
+						<div class="row">
 							<div class="large-3 columns">
 								<select name="rtpm_nr_context" required="required">
 									<option value=""><?php _e( 'Contexts' ) ?></option>
@@ -2006,7 +2006,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="periodic" />
-						<div class="row pull-1">
+						<div class="row">
 							<div class="large-2 columns">
 								<select name="rtpm_nr_schedule" required="required">
 									<option value=""><?php _e( 'Schedule' ); ?></option>
