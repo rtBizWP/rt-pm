@@ -1824,16 +1824,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
 				die();
 			}
-			$rules = $rt_biz_notification_rules_model->get_by_entity_id( $project_id );
 			?>
 			<div class="wrap rtpm-notification-rules">
-				<h2>
-					<?php echo _e( 'Notification Rules' ); ?>
-					<?php if ( $user_edit ) { ?>
-					<a href="#" id="btn-add-new-notification-rule" class="add-new-h2">Add new</a>
-					<?php } ?>
-				</h2>
-				<?php if ( $user_edit ) { ?>
 				<?php
 					$error = $_SESSION['rtpm_errors'];
 					unset( $_SESSION['rtpm_errors'] );
@@ -1843,11 +1835,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						}
 					}
 				?>
-				<div id="add-notification-rule" class="hide">
+				<h6><?php _e( 'Triggered Notifications' ); ?></h6>
+				<?php if ( $user_edit ) { ?>
+				<div class="add-notification-rule">
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="triggered" />
-						<div class="row">
+						<div class="row pull-1">
 							<div class="large-3 columns">
 								<select name="rtpm_nr_context" required="required">
 									<option value=""><?php _e( 'Contexts' ) ?></option>
@@ -1889,10 +1883,130 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							</div>
 						</div>
 					</form>
+				</div>
+				<?php } ?>
+				<table class="wp-list-table widefat rt-notification-rules" cellspacing="0">
+					<thead>
+						<tr>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
+							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
+							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
+							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
+							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
+							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
+							<th scope='col' id='rtpm_delete_rule' class='manage-column column-rtpm_delete_rule'  style=""><span>&nbsp;</span></th>
+						</tr>
+					</thead>
+
+					<tfoot>
+						<tr>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
+							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
+							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
+							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
+							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
+							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
+							<th scope='col' id='rtpm_rule_actions' class='manage-column column-rtpm_rule_actions'  style=""><span>&nbsp;</span></th>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<?php
+						$rules = $rt_biz_notification_rules_model->get( array( 'entity_id' => $project_id, 'rule_type' => 'triggered' ) );
+						?>
+						<?php if ( ! empty( $rules ) ) { ?>
+							<?php foreach ( $rules as $r ) { ?>
+						<tr>
+							<td class="rtpm_schedule column-rtpm_schedule">
+							<?php
+								$schedules = wp_get_schedules();
+								echo ( ! empty( $schedules[$r->schedule]['display'] ) ) ? $schedules[$r->schedule]['display'] : __( 'NA' );
+							?>
+							</td>
+							<td class='rtpm_context column-rtpm_context'>
+							<?php
+								$context = $rt_pm_notification->get_context_label( $r->context, $r->rule_type );
+								echo $context;
+							?>
+							</td>
+							<td class='rtpm_operator column-rtpm_operator'><?php echo $r->operator; ?></td>
+							<td class='rtpm_value column-rtpm_value'>
+							<?php
+								echo ( ! empty( $r->value ) ) ? $r->value : __( 'Nill' );
+							?>
+							</td>
+							<td class='rtpm_value_type column-rtpm_value_type'>
+							<?php
+								switch( $r->value_type ) {
+									case 'percentage' :
+										_e( 'Percentage' );
+										break;
+									case 'absolute' :
+										_e( 'Absolute' );
+										break;
+								}
+							?>
+							</td>
+							<td class="rtpm_period column-rtpm_period">
+							<?php
+								if ( $r->rule_type == 'triggered' ) {
+									_e('NA');
+								} else {
+									echo ( ! empty( $r->period ) ) ? $r->period : __( 'Nill' );
+								}
+							?>
+							</td>
+							<td class="rtpm_period_type column-rtpm_period_type">
+							<?php
+								if ( $r->rule_type == 'triggered' ) {
+									_e('NA');
+								} else {
+									echo ucfirst( $r->period_type );
+								}
+							?>
+							</td>
+							<td class='rtpm_user column-rtpm_user'>
+							<?php
+								switch( $r->user ) {
+									case '{{project_manager}}':
+										$project_manager = get_user_by( 'id', get_post_meta( $project_id, 'project_manager', true ) );
+										echo $project_manager->display_name;
+										break;
+									case '{{business_manager}}':
+										$business_manager = get_user_by( 'id', get_post_meta( $project_id, 'business_manager', true ) );
+										echo $business_manager->display_name;
+										break;
+									default:
+										$user = get_user_by( 'id', $r->user );
+										echo $user->display_name;
+										break;
+								}
+							?>
+							</td>
+							<td class='rtpm_rule_actions column-rtpm_rule_actions'>
+								<a class="rtpm-delete" href="<?php echo add_query_arg( array( 'action' => 'delete', 'rule_id' => $r->id ) ); ?>"><?php _e( 'Delete' ) ?></a>
+							</td>
+						</tr>
+							<?php } ?>
+						<?php } else { ?>
+						<tr><td colspan="6"><?php echo _e( 'No Rules Found !' ); ?></td></tr>
+						<?php } ?>
+					</tbody>
+				</table>
+				<br />
+				<hr />
+				<br />
+				<h6 class="current"><?php _e( 'Periodic Notifications' ); ?></h6>
+				<?php if ( $user_edit ) { ?>
+				<div class="add-notification-rule">
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="periodic" />
-						<div class="row">
+						<div class="row pull-1">
 							<div class="large-2 columns">
 								<select name="rtpm_nr_schedule" required="required">
 									<option value=""><?php _e( 'Schedule' ); ?></option>
@@ -1953,19 +2067,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						</div>
 					</form>
 				</div>
-				<script>
-					jQuery(document).ready(function($) {
-						$('#btn-add-new-notification-rule').click(function(e) {
-							e.preventDefault();
-							$('#add-notification-rule').slideToggle();
-						});
-					});
-				</script>
 				<?php } ?>
 				<table class="wp-list-table widefat rt-notification-rules" cellspacing="0">
 					<thead>
 						<tr>
-							<th scope='col' id='rtpm_rule_type' class='manage-column column-rtpm_rule_type'  style=""><span>Rule Type</span></th>
 							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
 							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
 							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
@@ -1980,7 +2085,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 					<tfoot>
 						<tr>
-							<th scope='col' id='rtpm_rule_type' class='manage-column column-rtpm_rule_type'  style=""><span>Rule Type</span></th>
 							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
 							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
 							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
@@ -1993,46 +2097,34 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						</tr>
 					</tfoot>
 
-					<tbody id="the-list">
-						<?php if ( $rules['total'] && ! empty( $rules['result'] ) ) { ?>
-							<?php foreach ( $rules['result'] as $r ) { ?>
+					<tbody>
+						<?php
+						$rules = $rt_biz_notification_rules_model->get( array( 'entity_id' => $project_id, 'rule_type' => 'periodic' ) );
+						?>
+						<?php if ( ! empty( $rules ) ) { ?>
+							<?php foreach ( $rules as $r ) { ?>
 						<tr>
-							<td class="rtpm_rule_type column-rtpm_rule_type">
-							<?php
-								switch( $r['rule_type'] ) {
-									case 'triggered':
-										_e('Triggered');
-										break;
-									case 'periodic':
-										_e('Periodic');
-										break;
-									default:
-										do_action( 'rtpm_notification_echo_rule_type', $r['rule_type'] );
-										break;
-								}
-							?>
-							</td>
 							<td class="rtpm_schedule column-rtpm_schedule">
 							<?php
 								$schedules = wp_get_schedules();
-								echo ( ! empty( $schedules[$r['schedule']]['display'] ) ) ? $schedules[$r['schedule']]['display'] : __( 'NA' );
+								echo ( ! empty( $schedules[$r->schedule]['display'] ) ) ? $schedules[$r->schedule]['display'] : __( 'NA' );
 							?>
 							</td>
 							<td class='rtpm_context column-rtpm_context'>
 							<?php
-								$context = $rt_pm_notification->get_context_label( $r['context'], $r['rule_type'] );
+								$context = $rt_pm_notification->get_context_label( $r->context, $r->rule_type );
 								echo $context;
 							?>
 							</td>
-							<td class='rtpm_operator column-rtpm_operator'><?php echo $r['operator']; ?></td>
+							<td class='rtpm_operator column-rtpm_operator'><?php echo $r->operator; ?></td>
 							<td class='rtpm_value column-rtpm_value'>
 							<?php
-								echo ( ! empty( $r['value'] ) ) ? $r['value'] : __( 'Nill' );
+								echo ( ! empty( $r->value ) ) ? $r->value : __( 'Nill' );
 							?>
 							</td>
 							<td class='rtpm_value_type column-rtpm_value_type'>
 							<?php
-								switch( $r['value_type'] ) {
+								switch( $r->value_type ) {
 									case 'percentage' :
 										_e( 'Percentage' );
 										break;
@@ -2044,25 +2136,25 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							</td>
 							<td class="rtpm_period column-rtpm_period">
 							<?php
-								if ( $r['rule_type'] == 'triggered' ) {
+								if ( $r->rule_type == 'triggered' ) {
 									_e('NA');
 								} else {
-									echo ( ! empty( $r['period'] ) ) ? $r['period'] : __( 'Nill' );
+									echo ( ! empty( $r->period ) ) ? $r->period : __( 'Nill' );
 								}
 							?>
 							</td>
 							<td class="rtpm_period_type column-rtpm_period_type">
 							<?php
-								if ( $r['rule_type'] == 'triggered' ) {
+								if ( $r->rule_type == 'triggered' ) {
 									_e('NA');
 								} else {
-									echo ucfirst( $r['period_type'] );
+									echo ucfirst( $r->period_type );
 								}
 							?>
 							</td>
 							<td class='rtpm_user column-rtpm_user'>
 							<?php
-								switch( $r['user'] ) {
+								switch( $r->user ) {
 									case '{{project_manager}}':
 										$project_manager = get_user_by( 'id', get_post_meta( $project_id, 'project_manager', true ) );
 										echo $project_manager->display_name;
@@ -2072,14 +2164,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 										echo $business_manager->display_name;
 										break;
 									default:
-										$user = get_user_by( 'id', $r['user'] );
+										$user = get_user_by( 'id', $r->user );
 										echo $user->display_name;
 										break;
 								}
 							?>
 							</td>
 							<td class='rtpm_rule_actions column-rtpm_rule_actions'>
-								<a class="rtpm-delete" href="<?php echo add_query_arg( array( 'action' => 'delete', 'rule_id' => $r['id'] ) ); ?>"><?php _e( 'Delete' ) ?></a>
+								<a class="rtpm-delete" href="<?php echo add_query_arg( array( 'action' => 'delete', 'rule_id' => $r->id ) ); ?>"><?php _e( 'Delete' ) ?></a>
 							</td>
 						</tr>
 							<?php } ?>
@@ -2087,9 +2179,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						<tr><td colspan="6"><?php echo _e( 'No Rules Found !' ); ?></td></tr>
 						<?php } ?>
 					</tbody>
-
 				</table>
-
 			</div>
 		<?php }
 
