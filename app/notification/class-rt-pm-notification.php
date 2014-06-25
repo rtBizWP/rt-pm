@@ -135,13 +135,13 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 					case 'project_budget':
 						$rule_budget = $this->calculate_rule_budget( $project_id, $r->value, $r->value_type );
 						if ( $this->check_project_budget( $project_id, $rule_budget, $r->operator ) ) {
-							$this->add_notification( $this->get_context_label( $r->context, $r['rule_type'] ), $r->value, $r->value_type, $r->subject, $r->message, $r->user, $project_id, $link );
+							$this->add_notification( $this->get_context_label( $r->context, $r->rule_type ), $r->value, $r->value_type, $r->subject, $r->message, $r->user, $project_id, $link );
 						}
 						break;
 					case 'project_time':
 						$rule_time = $this->calculate_rule_time( $project_id, $r->value, $r->value_type );
 						if ( $this->check_project_time( $project_id, $rule_time, $r->operator ) ) {
-							$this->add_notification( $this->get_context_label( $r->context, $r['rule_type'] ), $r->value, $r->value_type, $r->subject, $r->message, $r->user, $project_id, $link );
+							$this->add_notification( $this->get_context_label( $r->context, $r->rule_type ), $r->value, $r->value_type, $r->subject, $r->message, $r->user, $project_id, $link );
 						}
 						break;
 					default:
