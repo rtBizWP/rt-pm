@@ -1260,7 +1260,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
                     <?php } ?>
                     <div class="row">
-                        <div class="large-6 small-12 columns ui-sortable meta-box-sortables">
+                        <div class="large-5 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse postbox">
                                 <div class="large-12 columns">
                                     <?php if( $user_edit ) { ?>
@@ -1282,7 +1282,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 </div>
                             </div>
                         </div>
-                        <div class="large-3 small-12 columns ui-sortable meta-box-sortables">
+                        <div class="large-4 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
                                 <h6 class="hndle"><span><i class="foundicon-idea"></i> Project Information</span></h6>
@@ -1455,10 +1455,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-5 mobile-large-3 columns">
+                                <div class="large-6 mobile-large-6 columns">
                                     <span class="prefix" title="Project Manager"><label for="post[project_manager]"><strong>Project Manager</strong></label></span>
                                 </div>
-                                <div class="large-7 mobile-large-5 columns">
+                                <div class="large-6 mobile-large-6 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[project_manager]" >
 											<option value=""><?php _e( 'Select PM' ); ?></option>
@@ -1479,10 +1479,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 </div>
                             </div>
                             <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-5 mobile-large-3 columns">
+                                <div class="large-6 mobile-large-6 columns">
                                     <span class="prefix" title="Business Manager"><label for="post[business_manager]"><strong><?php _e('Business Manager'); ?></strong></label></span>
                                 </div>
-                                <div class="large-7 mobile-large-5 columns">
+                                <div class="large-6 mobile-large-6 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[business_manager]" >
 											<option value=""><?php _e( 'Select BM' ); ?></option>
