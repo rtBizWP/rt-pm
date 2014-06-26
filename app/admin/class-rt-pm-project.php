@@ -942,11 +942,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				<div id="rtpm_project_cost_report" class="row collapse">
 					<div class="large-3 columns">
 						<strong><?php _e( 'Total Project Cost:'); ?></strong>
-						<span><?php echo $project_current_budget_cost; ?></span>
+						<span><?php echo '$ '.$project_current_budget_cost; ?></span>
 					</div>
 					<div class="large-3 columns">
 						<strong><?php _e( 'Project Budget:'); ?></strong>
-						<span><?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></span>
+						<span><?php echo '$ '.floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></span>
 					</div>
 					<div class="large-3 columns">
 						<strong><?php _e( 'Total Time spent:'); ?></strong>
