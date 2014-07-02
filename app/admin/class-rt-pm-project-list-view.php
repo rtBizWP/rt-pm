@@ -34,7 +34,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 while ($project_list_query->have_posts()) : $project_list_query->the_post(); ?>
                     <div class="large-3 small-4 columns">
                         <article id="rtpm-<?php the_id() ?>" <?php post_class( 'rtpm_admin ' ); ?>>
-                            <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&tab={$rt_pm_project->post_type}-task&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
+                            <a href="<?php echo  admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=".get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                 <h2><?php echo '#'; the_ID(); echo ' : '; the_title(); ?></h2>
                             </a>
 							<div><strong><?php _e( 'Status : ' ); ?></strong><?php echo ucfirst( get_post_status( get_the_ID() ) ); ?></div>
