@@ -148,6 +148,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'rtpm-add-'.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type,
+				'rtpm-user-reports',
                 'rtpm-settings',
             );
         }
@@ -597,31 +598,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 </script>
             <?php } ?>
 
-            <div id="wp-custom-list-table" class="row">
-                <div style="max-width:none;" class="row">
-                    <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns">
-                        <?php if( $user_edit ) { ?>
-                            <?php if (isset($_REQUEST["{$task_post_type}_id"])) {
-                                $btntitle = 'Update Task';
-                            }else{
-                                $btntitle = 'Add Task';
-                            } ?>
-                            <button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <?php
-                    $rtpm_task_list= new Rt_PM_Task_List_View();
-                    $rtpm_task_list->prepare_items($user_edit);
-                    $rtpm_task_list->display();
-                    ?>
-                </div>
+            <div id="wp-custom-list-table">
+			<?php
+				if( $user_edit ) {
+					if (isset($_REQUEST["{$task_post_type}_id"])) {
+						$btntitle = 'Update Task';
+					}else{
+						$btntitle = 'Add Task';
+					}
+				?><button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button><?php
+				}
+				$rtpm_task_list= new Rt_PM_Task_List_View();
+				$rtpm_task_list->prepare_items($user_edit);
+				$rtpm_task_list->display();
+			?>
             </div>
 
-                     <!--reveal-modal-add-task -->
+			<!--reveal-modal-add-task -->
             <div id="div-add-task" class="reveal-modal">
                 <fieldset>
                     <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
@@ -910,22 +903,17 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 </script>
             <?php } ?>
 
-            <div id="wp-custom-list-table" class="row">
-                <div style="max-width:none;" class="row">
-                    <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns">
-                        <?php if( $user_edit ) { ?>
-                            <?php if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
-                                $btntitle = 'Update Time Entry';
-                            }else{
-                                $btntitle = 'Add Time Entry';
-                            } ?>
-                            <button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
-                        <?php } ?>
-                    </div>
-                </div>
-				
-				<?php
+            <div id="wp-custom-list-table">
+			<?php
+				if( $user_edit ) {
+					if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
+						$btntitle = 'Update Time Entry';
+					}else{
+						$btntitle = 'Add Time Entry';
+					}
+					?><div class="row"><button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button></div><?php
+				}
+
 				$project_current_budget_cost = 0;
 				$project_current_time_cost = 0;
 				$time_entries = $rt_pm_time_entries_model->get_by_project_id( $_REQUEST["{$post_type}_id"] );
@@ -937,7 +925,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						$project_current_time_cost += $time_entry['time_duration'];
 					}
 				}
-				?>
+			?>
 
 				<div id="rtpm_project_cost_report" class="row collapse">
 					<div class="large-3 columns">
@@ -958,14 +946,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					</div>
 				</div>
 
-                <div class="row">
-                    <?php
-                    $rtpm_time_entry_list= new Rt_PM_Time_Entry_List_View();
-                    $rtpm_time_entry_list->prepare_items();
-                    $rtpm_time_entry_list->display();
-                    ?>
-                </div>
-            </div>
+				<?php
+				$rtpm_time_entry_list= new Rt_PM_Time_Entry_List_View();
+				$rtpm_time_entry_list->prepare_items();
+				$rtpm_time_entry_list->display();
+				?>
+			</div>
 
             <!--reveal-modal-add-task -->
             <div id="div-add-time-entry" class="reveal-modal large">
@@ -1610,83 +1596,79 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $attachments = get_posts($arg );
             }
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
-            <div id="add-new-attachment" class="row">
-                <div id="attachment-error">
+			<div id="wp-custom-list-table">
+				<div id="attachment-error" class="row"></div>
+				<div class="row">
+				<?php if( $user_edit ) { ?>
+					<button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
+					<button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
+				<?php } ?>
+				</div>
 
-                </div>
-                <div style="max-width:none;" class="row">
-                    <div style="padding:0" class="large-6 columns"></div>
-                    <div style="padding:0;" class="large-6 columns">
-                        <?php if( $user_edit ) { ?>
-                            <button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
-                            <button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
-                        <?php } ?>
-                    </div>
-                </div>
-                 <div id="attachment-search-row" class="row collapse postbox">
-                    <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
-                    <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span>
-                        <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
-                            <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
-                            <?php
-                            wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
-                            ?>
-                        </form></h6>
-                    <div class="inside">
-                        <div class="row collapse" id="attachment-container">
+				<div id="attachment-search-row" class="row collapse postbox">
+				   <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
+				   <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span>
+					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
+						   <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
+						   <?php
+						   wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+						   ?>
+					   </form></h6>
+				   <div class="inside">
+					   <div class="row collapse" id="attachment-container">
 
-                            <div class="scroll-height">
-                                <?php if ( $attachments ){ ?>
-                                    <?php foreach ($attachments as $attachment) { ?>
-                                        <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1];
-                                            if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) == 1){
-                                                $extn ='unknown';
-                                            }
-                                        ?>
-                                        <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
-                                            <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
-                                                <img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" />
-                                                <?php echo $attachment->post_title; ?>
-                                            </a>
-                                            <?php $taxonomies=get_attachment_taxonomies($attachment);
-                                            $taxonomies=get_the_terms($attachment,$taxonomies);
-                                            $term_html = '';
-                                            if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
-                                                <div style="display:inline-flex;margin-left: 20px;" class="attachment-meta">[&nbsp;
-                                                    <?php foreach( $taxonomies as $taxonomy){
-                                                        if ( !empty($term_html) ){
-                                                            $term_html.=',&nbsp;';
-                                                        }
-                                                        $term_html .= '<a href="'.admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files&attachment_tag={$taxonomy->term_id}").'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
-                                                    }
-                                                    echo $term_html;?>&nbsp;]
-                                                </div>
-                                            <?php } ?>
-                                            <?php if( $user_edit ) { ?>
-                                                <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
-                                            <?php } ?>
-                                            <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
-                                           <?php /*var_dump( get_post_meta($attachment, '_flagExternalLink') ) */?>
-                                        </div>
-                                    <?php } ?>
-                                <?php }else{ ?>
-                                    <?php if (  isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){ ?>
-                                        <div class="large-12 mobile-large-3 columns no-attachment-item">
-                                            <?php $term = get_term( $_POST['attachment_tag'], 'attachment_tag' ); ?>
-                                            Not Found Attachment<?php echo isset( $term )? ' of ' . $term->name . ' Term!' :'!' ?>
-                                        </div>
-                                    <?php }else{ ?>
-                                        <div class="large-12 mobile-large-3 columns no-attachment-item">
-                                            <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
-                                            Attachment Not found!
-                                        </div>
-                                    <?php } ?>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+						   <div class="scroll-height">
+							   <?php if ( $attachments ){ ?>
+								   <?php foreach ($attachments as $attachment) { ?>
+									   <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1];
+										   if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) == 1){
+											   $extn ='unknown';
+										   }
+									   ?>
+									   <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+										   <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+											   <img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" />
+											   <?php echo $attachment->post_title; ?>
+										   </a>
+										   <?php $taxonomies=get_attachment_taxonomies($attachment);
+										   $taxonomies=get_the_terms($attachment,$taxonomies);
+										   $term_html = '';
+										   if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
+											   <div style="display:inline-flex;margin-left: 20px;" class="attachment-meta">[&nbsp;
+												   <?php foreach( $taxonomies as $taxonomy){
+													   if ( !empty($term_html) ){
+														   $term_html.=',&nbsp;';
+													   }
+													   $term_html .= '<a href="'.admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files&attachment_tag={$taxonomy->term_id}").'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
+												   }
+												   echo $term_html;?>&nbsp;]
+											   </div>
+										   <?php } ?>
+										   <?php if( $user_edit ) { ?>
+											   <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
+										   <?php } ?>
+										   <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+										  <?php /*var_dump( get_post_meta($attachment, '_flagExternalLink') ) */?>
+									   </div>
+								   <?php } ?>
+							   <?php }else{ ?>
+								   <?php if (  isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){ ?>
+									   <div class="large-12 mobile-large-3 columns no-attachment-item">
+										   <?php $term = get_term( $_POST['attachment_tag'], 'attachment_tag' ); ?>
+										   Not Found Attachment<?php echo isset( $term )? ' of ' . $term->name . ' Term!' :'!' ?>
+									   </div>
+								   <?php }else{ ?>
+									   <div class="large-12 mobile-large-3 columns no-attachment-item">
+										   <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+										   Attachment Not found!
+									   </div>
+								   <?php } ?>
+							   <?php } ?>
+						   </div>
+					   </div>
+				   </div>
+			   </div>
+		   </div>
 
             <!--reveal-modal-add-external file -->
             <div id="div-add-external-link" class="reveal-modal large">

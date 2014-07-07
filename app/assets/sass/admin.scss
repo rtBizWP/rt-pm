@@ -65,6 +65,12 @@
 
 .rtpm-container {
 	
+	.rtpm-user-report-query {
+		.row {
+			max-width: 100%;
+		}
+	}
+	
 	.rtpm-notification-rules {
 		table.wp-list-table [class*="column"] + [class*="column"]:last-child {
 			float:none;
@@ -309,6 +315,9 @@
 		min-height: 178px;
 	}
 	#wp-custom-list-table {
+		.row {
+			max-width: 100%;
+		}
 		.fixed {
 			position: relative;
 			z-index: 0;
@@ -323,10 +332,11 @@
 			display: inline-block;
 			max-width: 150px;
 		}
-	}
-	#add-new-attachment .scroll-height {
-		max-height: none;
-		overflow-y: visible;
+		
+		.scroll-height {
+			overflow-y:auto;
+			max-height: none;
+		}
 	}
 }
 

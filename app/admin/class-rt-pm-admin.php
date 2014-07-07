@@ -34,7 +34,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
 
 		function load_styles_scripts() {
             global $rt_pm_project;
-            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type );
+            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type, 'rtpm-user-reports' );
             if ( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pagearray ) ) {
                 wp_enqueue_script('jquery-ui-timepicker-addon', RT_PM_URL . 'app/assets/javascripts/jquery-ui-timepicker-addon.js',array("jquery-ui-datepicker","jquery-ui-slider"), RT_PM_VERSION, true);
 

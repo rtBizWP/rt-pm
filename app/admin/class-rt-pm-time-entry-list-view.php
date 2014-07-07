@@ -27,14 +27,16 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
         var $post_type;
 		var $post_statuses;
 		var $labels;
-        static $project_id_key='project_id';
 
-		public function __construct() {
+		var $global_report;
+
+		public function __construct( $global_report = false ) {
 
 			global $rt_pm_time_entries;
 			$this->table_name = rtpm_get_time_entry_table_name();
             $this->labels = $rt_pm_time_entries->labels;
 			$this->post_type = Rt_PM_Time_Entries::$post_type;
+			$this->global_report = $global_report;
 			$args = array(
 				'singular'=> $this->labels['singular_name'], //Singular label
 				'plural' => $this->labels['all_items'], //plural label, also this well be one of the table css class
@@ -76,6 +78,10 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 				'rtpm_created_by'=> __( 'Logged By' ),
 			);
 
+			if ( $this->global_report ) {
+				$columns = array_slice( $columns, 0, 3, true ) + array(	'rtpm_project_id' => __( 'Project' ) ) + array_slice( $columns, 3, count( $columns )-1, true );
+			}
+
 			return $columns;
 		}
 
@@ -111,7 +117,6 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 		 * Prepare the table with different parameters, pagination, columns and table elements */
 		function prepare_items() {
 			global $wpdb,$rt_pm_task;
-            $screen = get_current_screen();
 
             if ( ! isset( $_REQUEST["{$_REQUEST['post_type']}_id"] ) ){
                 return;
@@ -122,8 +127,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 
 
 			/* -- Preparing your query -- */
-			$project_id_key = self::$project_id_key;
-            $query = "SELECT * FROM $this->table_name WHERE $project_id_key = $project_id";
+            $query = "SELECT * FROM $this->table_name WHERE project_id = $project_id";
 
             if ( isset( $_REQUEST["{$task_post_type}_id"] ) ) {
                 $query .= " AND task_id = '".$_REQUEST["{$task_post_type}_id"]."'";
@@ -140,6 +144,79 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
             if ( !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'admin') &&  !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'editor') && current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'author') ){
                 $query .= " AND author = '".get_current_user_id()."'";
             }
+
+			/* -- Ordering parameters -- */
+			//Parameters that are going to be used to order the result
+
+            $orderby = (! empty( $_GET["orderby"] ))? filter_var($_GET["orderby"], FILTER_SANITIZE_STRING):'ASC';
+			$order = ! empty( $_GET["order"] ) ? filter_var($_GET["order"], FILTER_SANITIZE_STRING): '';
+
+            if ( ! empty( $orderby ) & ! empty( $order ) ) {
+				$query.=' ORDER BY '.$orderby.' '.$order;
+			}
+
+			/* -- Pagination parameters -- */
+			//Number of elements in your table?
+			$totalitems = $wpdb->query( $query );
+			//return the total number of affected rows
+
+			//How many to display per page?
+			//$perpage = 25;
+			$perpage = 25;
+
+			//Which page is this?
+			$paged = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+			//Page Number
+			if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) { $paged=1; }
+			//How many pages do we have in total?
+			$totalpages = ceil( $totalitems / $perpage );
+			//adjust the query to take pagination into account
+			if ( ! empty( $paged ) && ! empty( $perpage ) ) {
+				$offset = ( $paged - 1 ) * $perpage;
+				$query .= ' LIMIT ' . (int) $offset . ' , ' . (int) $perpage;
+			}
+
+			/* -- Register the pagination -- */
+			$this->set_pagination_args(
+				array(
+					'total_items' => $totalitems,
+					'total_pages' => $totalpages,
+					'per_page' => $perpage,
+				)
+			);
+			//The pagination links are automatically built according to those parameters
+
+			/* -- Register the Columns -- */
+            $columns = $this->get_columns();
+			$hidden = array();
+			$sortable = $this->get_sortable_columns();
+			$this->_column_headers = array($columns, $hidden, $sortable);
+
+			/* -- Fetch the items -- */
+            $this->items = $wpdb->get_results( $query );
+		}
+
+		/**
+		 * Prepare the table with different parameters, pagination, columns and table elements */
+		function prepare_global_items() {
+			global $wpdb,$rt_pm_task;
+
+            $task_post_type=$rt_pm_task->post_type;
+
+			/* -- Preparing your query -- */
+            $query = "SELECT * FROM $this->table_name WHERE 1=1";
+
+			if ( ! empty( $_REQUEST['rtpm_user'] ) ) {
+				$query .= " AND author = '".$_REQUEST["rtpm_user"]."'";
+			}
+
+			if ( ! empty( $_REQUEST['rtpm_time_entry_type'] ) ) {
+				$query .= " AND type = '".$_REQUEST['rtpm_time_entry_type']."'";
+			}
+
+			if ( ! empty( $_REQUEST['rtpm_project'] ) ) {
+				$query .= " AND project_id = '".$_REQUEST['rtpm_project']."'";
+			}
 
 			/* -- Ordering parameters -- */
 			//Parameters that are going to be used to order the result
@@ -236,11 +313,15 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 								echo '</th>';
 								break;
 							case "rtpm_task_id":
-								echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$rt_pm_task->post_type}_id={$rec->task_id}").'">'. get_the_title( $rec->task_id ).'</a>';
+								echo '<td '.$attributes.'>'.'<a href="'.add_query_arg( $rt_pm_task->post_type.'_id', $rec->task_id ).'">'. get_the_title( $rec->task_id ).'</a>';
+								//.'< /td>';
+								break;
+							case "rtpm_project_id":
+								echo '<td '.$attributes.'>'.'<a href="'.add_query_arg( $rt_pm_project->post_type.'_id', $rec->project_id ).'">'. get_the_title( $rec->project_id ).'</a>';
 								//.'< /td>';
 								break;
                             case "rtpm_message":
-                                echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">'.$rec->message.'</a>';
+                                echo '<td '.$attributes.'>'.$rec->message;
                                 $actions = array(
                                     'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">Edit</a>',
                                     'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}&action=delete").'">Delete</a>',
@@ -251,7 +332,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 							case 'rtpm_time_entry_type':
 								$term = get_term_by( 'slug', $rec->type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
 								if ( $term ) {
-									echo '<td '.$attributes.'>'.'<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&time_entry_type={$rec->type}").'">'.$term->name.'</a>';
+									echo '<td '.$attributes.'>'.'<a href="'.add_query_arg( 'time_entry_type', $rec->type ).'">'.$term->name.'</a>';
 								} else {
 									echo '<td '.$attributes.'>-';
 								}
@@ -276,7 +357,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                             case "rtpm_created_by":
                                 if(!empty($rec->author)) {
                                     $user = get_user_by('id', $rec->author);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&post_author=".$rec->author);
+                                    $url = add_query_arg( 'post_author', $rec->author );
                                     echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
                                     echo '<td '.$attributes.'>-';
