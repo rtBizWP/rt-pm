@@ -51,7 +51,48 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
             add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
+
+			// CRM Lead to PM Project - Link Hook
+			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
+			add_action( 'init', array( $this, 'convert_lead_to_project' ) );
 		}
+
+		function convert_lead_to_project() {
+			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
+				return;
+			}
+
+			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
+			$lead = get_post( $lead_id );
+
+			$project = array();
+			$project['post_title'] = $lead->post_title;
+			$project['post_type'] = $this->post_type;
+			$project['post_status'] = 'new';
+			$project['post_content'] = $lead->post_content;
+			$project['post_date'] = current_time( 'mysql' );
+			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+			$project_id = wp_insert_post( $project );
+
+			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
+
+			wp_safe_redirect( add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) ) );
+			die();
+		}
+
+		function crm_to_pm_link( $lead_id, $user_edit ) {
+			if ( ! $user_edit ) {
+				return;
+			} ?>
+			<div class="row collapse">
+				<div class="large-4 mobile-large-1 columns">
+					<span class="prefix" title="<?php echo Rt_PM_Settings::$settings['menu_label']; ?>"><label><?php echo Rt_PM_Settings::$settings['menu_label']; ?></label></span>
+				</div>
+				<div class="large-8 mobile-large-3 columns">
+					<div class="rtcrm_attr_border"><a class="rtcrm_public_link" target="_blank" href="<?php echo add_query_arg( array( 'rt_pm_convert_to_project' => $lead_id ) ); ?>"><?php _e( 'Convert to Project' ); ?></a></div>
+				</div>
+			</div>
+		<?php }
 
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
