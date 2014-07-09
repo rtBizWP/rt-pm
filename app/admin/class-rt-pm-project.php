@@ -1531,8 +1531,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Members'); ?></span></h6>
-                                <div class="inside">
+						                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e( 'Team Members' ); ?></span></h6>
+			                                <div class="inside">
                                     <?php if ( $user_edit ) { ?>
                                         <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                                     <?php } ?>
