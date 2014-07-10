@@ -38,11 +38,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                 <h2><?php echo '#'; the_ID(); echo ' : '; the_title(); ?></h2>
                             </a>
 							<div><strong><?php _e( 'Status : ' ); ?></strong><?php echo ucfirst( get_post_status( get_the_ID() ) ); ?></div>
+							<div><strong><?php _e( 'Type : ' ); ?></strong><?php $post_term = wp_get_post_terms( get_the_ID(), Rt_PM_Project_Type::$project_type_tax, array( 'fields' => 'ids' ) ); if ( ! empty( $post_term ) ) { $term = get_term_by( 'id', $post_term[0], Rt_PM_Project_Type::$project_type_tax ); echo $term->name; } ?></div>
 							<div><strong><?php _e( 'Project Manager : ' ); ?></strong><?php $pm = get_user_by( 'id', get_post_meta( get_the_ID(), 'project_manager', true ) ); echo $pm->display_name; ?></div>
 							<div><strong><?php _e( 'Business Manager : ' ); ?></strong><?php $bm = get_user_by( 'id', get_post_meta( get_the_ID(), 'business_manager', true ) ); echo $bm->display_name; ?></div>
 							<br />
 							<div><strong><?php _e( 'Commenced on : ' ); ?></strong><?php $dt = new DateTime( get_post_field( 'post_date', get_the_ID() ) ); echo $dt->format( 'Y-m-d' ); ?></div>
 							<div><strong><?php _e( 'Due on : ' ); ?></strong><?php if ( get_post_meta( get_the_ID(), 'post_duedate', true ) ) { $dt = new DateTime( get_post_meta( get_the_ID(), 'post_duedate', true ) ); echo $dt->format( 'Y-m-d' ); } ?></div>
+							<?php do_action( 'rt_pm_project_list_view_details', get_the_ID() ) ?>
+							<br />
 							<div class="rtpm-project-detail">
 								<?php echo $this->get_the_project_excerpt( get_the_content() ); ?>
 							</div>
