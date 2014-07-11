@@ -56,6 +56,47 @@ jQuery(document).ready(function($) {
 
     }
 
+    //autocomplete project organization
+    try {
+        if (arr_project_organization != undefined) {
+            jQuery("#project_org_search_account").autocomplete({
+                source: function (request, response) {
+                    var term = $.ui.autocomplete.escapeRegex(request.term)
+                        , startsWithMatcher = new RegExp("^" + term, "i")
+                        , startsWith = $.grep(arr_project_organization, function (value) {
+                            return startsWithMatcher.test(value.label || value.value || value);
+                        })
+                        , containsMatcher = new RegExp(term, "i")
+                        , contains = $.grep(arr_project_organization, function (value) {
+                            return $.inArray(value, startsWith) < 0 &&
+                                containsMatcher.test(value.label || value.value || value);
+                        });
+
+                    response(startsWith.concat(contains));
+                },
+                focus: function(event, ui) {
+
+                },
+                select: function(event, ui) {
+                    if (jQuery("#project-org-auth-" + ui.item.id).length < 1) {
+                        jQuery("#divAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></li>")
+                    }
+                    jQuery("#project_org_search_account").val("");
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-project-client =-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
+            };
+
+            jQuery(document).on('click', "a[href=#removeProjectOrganization]", function(e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });
+
+        }
+    } catch (e) {
+
+    }
     //autocomplete project client
     try {
         if (arr_project_client_user != undefined) {
@@ -64,11 +105,41 @@ jQuery(document).ready(function($) {
                     var term = $.ui.autocomplete.escapeRegex(request.term)
                         , startsWithMatcher = new RegExp("^" + term, "i")
                         , startsWith = $.grep(arr_project_client_user, function (value) {
+							if ( $("input[name*='post\[project_organization\]']").length > 0 ) {
+								org = new Array();
+								$.each( $("input[name*='post\[project_organization\]']"), function(i,item) {
+									org.push( parseInt( $(item).val() ) );
+								} );
+								flag = false;
+								for(i=0;i<org.length;i++) {
+									if(!$.inArray(org[i],value.organization)) {
+										flag = true;
+									}
+								}
+								if(!flag) {
+									return false;
+								}
+							}
                             return startsWithMatcher.test(value.label || value.value || value);
                         })
                         , containsMatcher = new RegExp(term, "i")
                         , contains = $.grep(arr_project_client_user, function (value) {
-                            return $.inArray(value, startsWith) < 0 &&
+							if ( $("input[name*='post\[project_organization\]']").length > 0 ) {
+								org = new Array();
+								$.each( $("input[name*='post\[project_organization\]']"), function(i,item) {
+									org.push( parseInt( $(item).val() ) );
+								} );
+								flag = false;
+								for(i=0;i<org.length;i++) {
+									if(!$.inArray(org[i],value.organization)) {
+										flag = true;
+									}
+								}
+								if(!flag) {
+									return false;
+								}
+							}
+							return $.inArray(value, startsWith) < 0 &&
                                 containsMatcher.test(value.label || value.value || value);
                         });
 

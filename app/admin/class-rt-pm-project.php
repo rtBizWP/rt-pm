@@ -26,6 +26,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		var $statuses = array();
 		var $custom_menu_order = array();
 
+		var $organization_email_key = 'account_email';
+		var $contact_email_key = 'contact_email';
+
 		public function __construct() {
 			add_action( 'init', array( $this, 'init_project' ) );
 			$this->hooks();
@@ -1139,6 +1142,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         'post_duedate' => $newProject['post_duedate'],
 						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
+                        'project_organization' => $newProject['project_organization'],
                         'project_member' => $newProject['project_member'],
 						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
@@ -1160,6 +1164,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         'post_duedate' => $newProject['post_duedate'],
                         'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
+                        'project_organization' => $newProject['project_organization'],
                         'project_member' => $newProject['project_member'],
 						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
@@ -1239,6 +1244,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				$project_manager = get_post_meta( $post->ID, "project_manager", true );
                 $project_member = get_post_meta($post->ID, "project_member", true);
                 $project_client = get_post_meta($post->ID, "project_client", true);
+				$project_organization = get_post_meta($post->ID, "project_organization", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
                 $duedate= get_post_meta($post->ID, 'post_duedate', true);
 				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
@@ -1248,7 +1254,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //project manager & project members
             $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
-            $arrProjectMember[] = array();
+            $arrProjectMember = array();
             $subProjectMemberHTML = "";
             if( !empty( $results_member ) ) {
                 foreach ( $results_member as $author ) {
@@ -1264,17 +1270,40 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Project client
             $results_client = Rt_PM_Utils::get_pm_client_user();
-            $arrProjectClient[] = array();
+            $arrProjectClient = array();
             $subProjectClientHTML = "";
             if( !empty( $results_client ) ) {
                 foreach ( $results_client as $client ) {
+					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
                     if ($project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                            . "' class='contact-list'>" . get_avatar($client->user_email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
+                            . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' /></li>";
                     }
-                    $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($client->user_email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID));
+					$connection = rt_biz_get_organization_to_person_connection( $client->ID );
+					$org = array();
+					foreach ( $connection as $c ) {
+						$org[] = $c->ID;
+					}
+                    $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
+                }
+            }
+
+			//Project organization
+            $results_organization = Rt_PM_Utils::get_pm_organizations();
+            $arrProjectOrganizations = array();
+            $subProjectOrganizationsHTML = "";
+            if( !empty( $results_organization ) ) {
+                foreach ( $results_organization as $organization ) {
+					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
+                    if ($project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
+                        $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
+                            . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
+                            . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
+                                        <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
+                    }
+                    $arrProjectOrganizations[] = array("id" => $organization->ID, "label" => $organization->post_title, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($organization->ID));
                 }
             }
 
@@ -1529,18 +1558,36 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     <?php } ?>
                                 </div>
                             </div>
-                            <div class="row collapse postbox">
+							<div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
-						                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e( 'Team Members' ); ?></span></h6>
-			                                <div class="inside">
-                                    <?php if ( $user_edit ) { ?>
-                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
-                                    <?php } ?>
-                                    <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
-                                        <?php echo $subProjectMemberHTML; ?>
-                                    </ul>
-                                </div>
+								<h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e( 'Team Members' ); ?></span></h6>
+								<div class="inside">
+									<script>
+                                        var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
+                                    </script>
+									<?php if ( $user_edit ) { ?>
+									<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
+									<?php } ?>
+									<ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
+										<?php echo $subProjectMemberHTML; ?>
+									</ul>
+								</div>
                             </div>
+							<div class="row collapse postbox">
+								<div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
+								<h6 class="hndle"><span><i class="foundicon-globe"></i> <?php _e( "Organization" ); ?></span></h6>
+								<div class="inside">
+									<script>
+                                        var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
+                                    </script>
+								<?php if ( $user_edit ) { ?>
+									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
+								<?php } ?>
+									<ul id="divAccountsList" class="block-grid large-1-up">
+										<?php echo $subProjectOrganizationsHTML; ?>
+									</ul>
+								</div>
+							</div>
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
                                 <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Clients'); ?></span></h6>

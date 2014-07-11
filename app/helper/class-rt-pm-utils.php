@@ -27,6 +27,11 @@ if( !class_exists( 'Rt_PM_Utils' ) ) {
 			return $users;
 		}
 
+		public static function get_pm_organizations() {
+			$organizations = rt_biz_get_organizations();
+			return $organizations;
+		}
+
         public static function get_pm_client_user() {
             $users = rt_biz_get_clients( );
             return $users;
