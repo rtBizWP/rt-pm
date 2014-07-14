@@ -79,3 +79,7 @@ function rtpm_get_settings() {
 	$settings = get_site_option( 'rt_pm_settings', $default );
 	return $settings;
 }
+
+function rtpm_update_settings( $key, $value ) {
+	
+}
