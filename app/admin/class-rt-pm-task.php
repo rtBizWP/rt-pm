@@ -33,7 +33,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$this->register_custom_post( $menu_position );
 			$this->register_custom_statuses();
 
-			$settings = get_site_option( 'rt_pm_settings', false );
+			$settings = rtpm_get_settings();
 			if ( isset( $settings[ 'attach_contacts' ] ) && $settings[ 'attach_contacts' ] == 'yes' ) {
 				rt_biz_register_person_connection( $this->post_type, $this->labels[ 'name' ] );
 			}
