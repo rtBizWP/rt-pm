@@ -1,12 +1,12 @@
 <?php
 
 /*
-  Plugin Name: WordPress PM
-  Plugin URI: http://rtcamp.com/
-  Description: Manage Projects, Tasks & Time Entries
+  Plugin Name: Voxxi PM
+  Plugin URI: mailto:support@voxxi.me
+  Description: Part of the Voxxi Business Suite
   Version: 0.0.4
-  Author: rtCamp
-  Author URI: http://rtcamp.com
+  Author: Voxxi
+  Author URI: http://voxxi.me
   License: GPL
   Text Domain: rt_pm
  */
