@@ -83,7 +83,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			die();
 		}
 
-		function crm_to_pm_link( $lead_id, $user_edit ) {
+		function crm_to_pm_link( $lead, $user_edit ) {
+			if ( ! isset( $lead->ID ) ) {
+				return;
+			}
+
 			if ( ! $user_edit ) {
 				return;
 			} ?>
@@ -92,7 +96,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					<span class="prefix" title="<?php echo Rt_PM_Settings::$settings['menu_label']; ?>"><label><?php echo Rt_PM_Settings::$settings['menu_label']; ?></label></span>
 				</div>
 				<div class="large-8 mobile-large-3 columns">
-					<div class="rtcrm_attr_border"><a class="rtcrm_public_link" target="_blank" href="<?php echo add_query_arg( array( 'rt_pm_convert_to_project' => $lead_id ) ); ?>"><?php _e( 'Convert to Project' ); ?></a></div>
+					<div class="rtcrm_attr_border"><a class="rtcrm_public_link" target="_blank" href="<?php echo add_query_arg( array( 'rt_pm_convert_to_project' => $lead->ID ) ); ?>"><?php _e( 'Convert to Project' ); ?></a></div>
 				</div>
 			</div>
 		<?php }
