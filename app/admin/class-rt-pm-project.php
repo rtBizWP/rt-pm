@@ -103,7 +103,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-dashboard', array( $this, 'dashboard_ui' ) );
+//            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-dashboard', array( $this, 'dashboard_ui' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Projects' ), __( 'Projects' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.Rt_PM_Time_Entries::$post_type );
