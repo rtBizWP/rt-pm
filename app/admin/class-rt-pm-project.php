@@ -81,7 +81,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_date'] = current_time( 'mysql' );
 			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
 			$project_id = wp_insert_post( $project );
-
+                        update_post_meta( $project_id, '_rtpm_project_budget', get_post_meta($lead_id, 'project_budget', true) );
+                       
 			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
 			wp_safe_redirect( add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) ) );
