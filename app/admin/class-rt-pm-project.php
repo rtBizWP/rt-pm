@@ -2268,14 +2268,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 function project_list_switch_view() {
                         if (isset($_GET["post_type"]) && $_GET["post_type"] == "rt_project") {
                             if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
-                                header("location: edit.php?post_type=rt_project&page=rtpm-add-rt_project");
+                                wp_redirect("edit.php?post_type=rt_project&page=rtpm-add-rt_project");
                             }
                             if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
-                                header("location: edit.php?post_type=rt_project&page=rtpm-all-rt_project&mode=cart");
+                               wp_redirect("edit.php?post_type=rt_project&page=rtpm-all-rt_project");
                             }
                         }
-                         edit_post_link();
-                    }
+               }
                     
              function project_listview_editlink($url,$post_id,$contexts){
                  if (isset($_GET['post_type']) && $_GET['post_type']=='rt_project') {
