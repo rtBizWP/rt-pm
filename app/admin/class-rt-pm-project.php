@@ -62,6 +62,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         add_action("init",  array( $this,"project_list_switch_view"));
                         add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
                         add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
+                        add_filter( 'bulk_actions-' . 'edit-rt_project', '__return_empty_array' );
         }
 
 		function convert_lead_to_project() {
