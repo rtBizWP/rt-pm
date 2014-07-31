@@ -58,7 +58,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			// CRM Lead to PM Project - Link Hook
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'init', array( $this, 'convert_lead_to_project' ) );
-		}
+                        
+                        add_action("init",  array( $this,"project_list_switch_view"));
+                        add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
+                        add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
+        }
 
 		function convert_lead_to_project() {
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
@@ -1191,7 +1195,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             //Check for wp error
-            if ( is_wp_error( $post_id ) ) {
+            if ( isset($post_id) && is_wp_error( $post_id ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
@@ -1262,7 +1266,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $subProjectMemberHTML = "";
             if( !empty( $results_member ) ) {
                 foreach ( $results_member as $author ) {
-                    if ($project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
+                    if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
                             . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
@@ -1279,7 +1283,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( !empty( $results_client ) ) {
                 foreach ( $results_client as $client ) {
 					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
-                    if ($project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
+                    if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
                             . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
@@ -1301,7 +1305,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( !empty( $results_organization ) ) {
                 foreach ( $results_organization as $organization ) {
 					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
-                    if ($project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
+                    if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
                         $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
                             . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                             . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
@@ -1511,7 +1515,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 									</div>
                                 </div>
                             </div>
-                            <?php do_action( 'rt_pm_other_details', $user_edit, $post ); ?>
+                            <?php 
+                            global $post;
+                            do_action( 'rt_pm_other_details', $user_edit, $post ); 
+                            ?>
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
@@ -2256,6 +2263,31 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				</table>
 			</div>
 		<?php }
-
+                
+                function project_list_switch_view() {
+                        if (isset($_GET["post_type"]) && $_GET["post_type"] == "rt_project") {
+                            if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
+                                header("location: edit.php?post_type=rt_project&page=rtpm-add-rt_project");
+                            }
+                            if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
+                                header("location: edit.php?post_type=rt_project&page=rtpm-all-rt_project&mode=cart");
+                            }
+                        }
+                         edit_post_link();
+                    }
+                    
+             function project_listview_editlink($url,$post_id,$contexts){
+                 if (isset($_GET['post_type']) && $_GET['post_type']=='rt_project') {
+                      $url=admin_url("edit.php?post_type=rt_project&&page=rtpm-add-rt_project&rt_project_id=".$post_id);
+                 } 
+                 return $url;  
+             }
+             
+             function project_listview_action($actions, $post){
+                  if (isset($_GET['post_type']) && $_GET['post_type']=='rt_project') {
+                       $actions=array('edit'=>'<a href="'.  admin_url("edit.php?post_type=rt_project&&page=rtpm-add-rt_project&rt_project_id=".$post->ID) . '" title="Edit this item">Edit</a>');
+                  }
+                return $actions;
+             }
     }
 }
