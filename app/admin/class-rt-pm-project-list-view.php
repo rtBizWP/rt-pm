@@ -2,7 +2,7 @@
 /**
  * Don't load this file directly!
  */
-if (!defined('ABSPATH'))
+if ( ! defined( 'ABSPATH' ) )
     exit;
 
 /*
@@ -17,22 +17,20 @@ if (!defined('ABSPATH'))
  * @author dipesh
  */
 
-if (!class_exists('Rt_PM_Project_List_View')) {
-
-    class Rt_PM_Project_List_View {
+if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
+	class Rt_PM_Project_List_View  {
 
         public function __construct() {
             
         }
 
-        public function table_view() {
-
+        public function table_view(){
             global $rt_pm_project;
-            $args = array('post_type' => $rt_pm_project->post_type);
+            $args = array( 'post_type' => $rt_pm_project->post_type );
             $project_list_query = null;
             $project_list_query = new WP_Query($args);
 
-            if ($project_list_query->have_posts()) {
+            if ( $project_list_query->have_posts() ) {
                 ?>
                 <div class="tablenav top">
                     <div class="view-switch">
@@ -94,26 +92,25 @@ if (!class_exists('Rt_PM_Project_List_View')) {
             wp_reset_query();
         }
 
-        function get_the_project_excerpt($str) {
+        function get_the_project_excerpt($str){
             $excerpt = strip_shortcodes($str);
             $excerpt = strip_tags($str);
             $the_str = substr($excerpt, 0, 250);
-            if (strlen($str) > 250) {
+            if( strlen($str)> 250 ){
                 $the_str = $the_str . '...';
             }
             return $the_str;
         }
 
-        public function ui_create_project($user_edit) {
+        public function ui_create_project($user_edit){
             $results = Rt_PM_Utils::get_pm_rtcamp_user();
             $arrProjectMember[] = array();
             $subProjectMemberHTML = "";
-            if (!empty($results)) {
-                foreach ($results as $author) {
-                    $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link' => get_edit_user_link($author->ID));
+            if( !empty( $results ) ) {
+                foreach ( $results as $author ) {
+                    $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
                 }
-            }
-            ?>
+            }?>
 
             <div class="large-12 small-12 columns ui-sortable meta-box-sortables">
                 <div class="large-8 small-8 columns">
@@ -123,12 +120,12 @@ if (!class_exists('Rt_PM_Project_List_View')) {
                     <textarea id="new_rt_project_contentt" rows="20" autocomplete="off" cols="40"  name="post[project_content]" placeholder="Project Description"></textarea>
                 </div>
                 <div class="large-5 small-12 columns">
-                    <h6 class="hndle"><span><i class="general foundicon-tools"></i> <?php _e('Project Manager'); ?></span></h6>
+					<h6 class="hndle"><span><i class="general foundicon-tools"></i> <?php _e( 'Project Manager' ); ?></span></h6>
                     <div class="inside">
                         <div class="large-12 mobile-large-3 columns">
-            <?php if ($user_edit) { ?>
+							<?php if( $user_edit ) { ?>
                                 <select name="post[project_manager]" >
-                                    <option value=""><?php _e('Select PM'); ?></option>
+									<option value=""><?php _e( 'Select PM' ); ?></option>
                                     <?php
                                     if (!empty($results)) {
                                         foreach ($results as $author) {
@@ -144,7 +141,7 @@ if (!class_exists('Rt_PM_Project_List_View')) {
                 <div class="large-6 small-12 column">
                     <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
                     <div style="padding-bottom: 0" class="inside">
-                        <?php if ($user_edit) { ?>
+                        <?php if ( $user_edit ) { ?>
                             <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                             <?php } ?>
                         <ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
@@ -156,21 +153,20 @@ if (!class_exists('Rt_PM_Project_List_View')) {
             <div class="large-5 columns">
                 <input class="mybutton add-project right" type="submit" id="submit-project" name="project[submitted]" value="<?php _e("Add Project"); ?>">
             </div>
-            <?php
-        }
+        <?php }
 
-        public function page_action() {
+        public function page_action(){
             global $rt_pm_project;
             $error = "";
-            if (!isset($_REQUEST['post_type']) || $_REQUEST['post_type'] != $rt_pm_project->post_type) {
+            if ( !isset($_REQUEST['post_type']) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
             }
-            if (isset($_POST['post'])) {
+            if ( isset( $_POST['post'] ) ) {
                 $project_meta = $_REQUEST['post'];
-                if (!isset($project_meta['project_title']) || empty($project_meta['project_title'])) {
-                    $error = "Please Enter Project Title";
-                } else {
-                    $project_meta['project_date'] = current_time('mysql');
+                if( !isset( $project_meta['project_title'] ) || empty( $project_meta['project_title'] ) ){
+                    $error= "Please Enter Project Title";
+                }else{
+                    $project_meta['project_date'] = current_time( 'mysql' );
                     $project_meta['project_date_gmt'] = gmdate('Y-m-d H:i:s');
                     $newProject = array(
                         'post_date' => $project_meta['project_date'],
@@ -181,14 +177,11 @@ if (!class_exists('Rt_PM_Project_List_View')) {
                         'post_type' => $rt_pm_project->post_type,
                     );
                     $newProjectID = wp_insert_post($newProject);
-                    update_post_meta($newProjectID, 'project_manager', $project_meta['project_manager']);
-                    //update_post_meta( $newProjectID, 'project_member', $project_meta['project_member'] );
+                    update_post_meta( $newProjectID, 'project_manager', $project_meta['project_manager'] );
                     return 1;
                 }
             }
             return $error;
         }
-
     }
-
 }
