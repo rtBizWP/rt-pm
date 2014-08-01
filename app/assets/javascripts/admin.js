@@ -206,6 +206,11 @@ jQuery(document).ready(function($) {
             $(this).datepicker("setDate",new Date($(this).attr("title")));
         }
     });
+    
+    $(".datepicker-toggle").click(function(e) {
+        $(this).parent("div").prev().find(".hasDatepicker").click();
+        $(this).parent("div").prev().find(".hasDatepicker").datepicker("show");
+    });
 
     $(".moment-from-now").each(function() {
         if($(this).is("input[type='text']") && $(this).val()!="")
@@ -401,8 +406,8 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
-});
+    
+    });
 
 
 
