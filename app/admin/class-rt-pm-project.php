@@ -93,6 +93,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                      
                             $filepath = get_attached_file( $attachment );
                             $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
+                                
+                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+                                continue;
+                            }
+                            
                             $file = get_post($attachment);
                             if( !empty( $file->post_parent ) ) {
                                  $args = array(
@@ -111,7 +116,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			
                         }
                         
-                        update_post_meta( $project_id, '_rtpm_project_budget', get_post_meta($lead_id, 'project_budget', true) );
+                        update_post_meta( $project_id, '_rtpm_project_budget', get_post_meta($lead_id, 'budget', true) );
                        
 			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
@@ -1548,7 +1553,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 </div>
                             </div>
                             <?php 
-                            global $post;
                             do_action( 'rt_pm_other_details', $user_edit, $post ); 
                             ?>
                         </div>
