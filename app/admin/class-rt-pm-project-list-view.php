@@ -34,8 +34,8 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 ?>
                 <div class="tablenav top">
                     <div class="view-switch">
-                        <a href="<?php echo admin_url("edit.php?post_type=rt_project&mode=list"); ?>" <img id="view-switch-list" src="wp-includes/images/blank.gif" width="20" height="20" title="List View" alt="List View"></a>
-                        <a href="<?php echo admin_url("edit.php?post_type=rt_project&page=rtpm-all-rt_project"); ?>"  class="current"><img id="view-switch-excerpt" src="wp-includes/images/blank.gif" width="20" height="20" title="Excerpt View" alt="Excerpt View"></a>
+                        <a href="<?php echo admin_url("edit.php?post_type=rt_project&mode=list"); ?>" <img id="view-switch-list" src="<?php echo esc_url( includes_url( 'images/blank.gif' ) ); ?>" width="20" height="20" title="List View" alt="List View"></a>
+                        <a href="<?php echo admin_url("edit.php?post_type=rt_project&page=rtpm-all-rt_project"); ?>"  class="current"><img id="view-switch-excerpt" src="<?php echo esc_url( includes_url( 'images/blank.gif' ) ); ?>" width="20" height="20" title="Excerpt View" alt="Excerpt View"></a>
                     </div>
                 </div>
                 <?php
