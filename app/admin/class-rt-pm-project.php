@@ -1594,7 +1594,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							</div>
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Clients'); ?></span></h6>
+                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Organization Contacts'); ?></span></h6>
                                 <div class="inside">
                                     <script>
                                         var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
