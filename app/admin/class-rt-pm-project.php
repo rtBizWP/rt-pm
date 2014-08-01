@@ -80,7 +80,37 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_content'] = $lead->post_content;
 			$project['post_date'] = current_time( 'mysql' );
 			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-			$project_id = wp_insert_post( $project );
+                        $project_id = wp_insert_post( $project );
+                        
+                        $attachments = get_posts( array(
+                            'post_parent' => $lead_id,
+                            'post_type' => 'attachment',
+                            'fields' => 'ids',
+                            'posts_per_page' => -1,
+                        )); 
+                        
+                        foreach ( $attachments as $attachment ) {
+                     
+                            $filepath = get_attached_file( $attachment );
+                            $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
+                            $file = get_post($attachment);
+                            if( !empty( $file->post_parent ) ) {
+                                 $args = array(
+                                'post_mime_type' => $file->post_mime_type,
+                                'guid' => $file->guid,
+                                'post_title' => $file->post_title,
+                                'post_content' => $file->post_content,
+                                'post_parent' => $project_id,
+                                'post_author' => get_current_user_id(),
+                            );
+                           
+                            wp_insert_attachment( $args, $file->guid, $project_id );
+                           
+                            add_post_meta( $project_id, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                          }
+			
+                        }
+                        
                         update_post_meta( $project_id, '_rtpm_project_budget', get_post_meta($lead_id, 'project_budget', true) );
                        
 			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
@@ -1712,7 +1742,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
 						   <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
 						   <?php
-						   wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+                                                   if ( isset( $_REQUEST['attachment_tag'] ) ) {                                         
+                                                        wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+                                                   }
 						   ?>
 					   </form></h6>
 				   <div class="inside">
@@ -1732,7 +1764,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 											   <?php echo $attachment->post_title; ?>
 										   </a>
 										   <?php $taxonomies=get_attachment_taxonomies($attachment);
-										   $taxonomies=get_the_terms($attachment,$taxonomies);
+										   $taxonomies=get_the_terms($attachment,$taxonomies[0]);
 										   $term_html = '';
 										   if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
 											   <div style="display:inline-flex;margin-left: 20px;" class="attachment-meta">[&nbsp;
