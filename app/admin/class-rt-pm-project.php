@@ -608,13 +608,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             //Check for wp error
-            if ( is_wp_error( $post_id ) ) {
+            if ( isset( $post_id ) && is_wp_error( $post_id ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
             ///alert Notification
-            if ($action_complete){
+            if ( isset( $action_complete ) && $action_complete){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -740,7 +740,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
@@ -780,7 +780,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>">
+                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
                                     <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
@@ -935,7 +935,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				die();
             }
 
-            if ( $action_complete ){
+            if ( isset( $action_complete ) && $action_complete ){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -982,7 +982,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
             ?>
 
-            <?php if (isset($post->id) || ($_REQUEST["action"]=="timeentry")){?>
+            <?php if (isset($post->id) || ( isset( $_REQUEST["action"] ) && $_REQUEST["action"]=="timeentry")){?>
                 <script>
                     jQuery(document).ready(function($) {
                         setTimeout(function() {
@@ -1066,7 +1066,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
