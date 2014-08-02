@@ -57,7 +57,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			// CRM Lead to PM Project - Link Hook
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
-			add_action( 'init', array( $this, 'convert_lead_to_project' ) );
+			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
                         
                         add_action("init",  array( $this,"project_list_switch_view"));
                         add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
@@ -69,10 +69,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
 			}
-
+                        
 			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
-			$lead = get_post( $lead_id );
-
+			$lead = get_post( $lead_id );       
+        
 			$project = array();
 			$project['post_title'] = $lead->post_title;
 			$project['post_type'] = $this->post_type;
@@ -87,7 +87,31 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             'post_type' => 'attachment',
                             'fields' => 'ids',
                             'posts_per_page' => -1,
-                        )); 
+                        ));
+                        
+                        $lead_term = rt_biz_get_post_for_organization_connection( $lead->ID, $lead->post_type );
+                         
+                        $project_organization=array();
+                        foreach ($lead_term as $tterm) {
+                            array_push($project_organization,$tterm->p2p_to);
+                        }
+                        
+                        $lead_term = rt_biz_get_post_for_person_connection( $lead->ID, $lead->post_type );
+								
+                        $project_client=array();
+                        foreach ($lead_term as $tterm) {
+                              array_push($project_client,$tterm->p2p_to);                                  
+                        }
+                        
+                         $data = array(		
+                        'project_organization' => $project_organization,
+                        'project_client' => $project_client
+                        );
+                   
+                
+                        foreach ( $data as $key=>$value ) {
+                             update_post_meta( $project_id, $key, $value );
+                        }
                         
                         foreach ( $attachments as $attachment ) {
                      
@@ -1188,7 +1212,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_organization' => $newProject['project_organization'],
-                        'project_member' => $newProject['project_member'],
+                        'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : '',
 						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
 						'_rtpm_project_budget' => $newProject['project_budget'],
