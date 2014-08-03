@@ -71,12 +71,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                 <br />
                                 <div><strong><?php _e('Commenced on : '); ?></strong><?php
                                     $dt = new DateTime(get_post_field('post_date', get_the_ID()));
-                                    echo !empty($dt->format('Y-m-d'))?$dt->format('Y-m-d'):"";
+									$format = $dt->format('Y-m-d');
+                                    echo !empty($format)?$format:"";
                                     ?></div>
                                 <div><strong><?php _e('Due on : '); ?></strong><?php
                                     if (get_post_meta(get_the_ID(), 'post_duedate', true)) {
                                         $dt = new DateTime(get_post_meta(get_the_ID(), 'post_duedate', true));
-                                        echo !empty($dt->format('Y-m-d'))?$dt->format('Y-m-d'):"";
+										$format = $dt->format('Y-m-d');
+										echo !empty($format)?$format:"";
                                     }
                                     ?></div>
                         <?php do_action('rt_pm_project_list_view_details', get_the_ID()) ?>
