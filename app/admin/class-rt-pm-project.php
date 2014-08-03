@@ -62,7 +62,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         add_action("init",  array( $this,"project_list_switch_view"));
                         add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
                         add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
-                        add_filter( 'bulk_actions-' . 'edit-rt_project', '__return_empty_array' );
+                        add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
         }
 
 		function convert_lead_to_project() {
@@ -139,9 +139,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                           }
 			
                         }
-                        
-                        update_post_meta( $project_id, '_rtpm_project_budget', get_post_meta($lead_id, 'budget', true) );
-                       
+
 			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
 			wp_safe_redirect( add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) ) );
@@ -2327,28 +2325,33 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		<?php }
                 
                 function project_list_switch_view() {
-                        if (isset($_GET["post_type"]) && $_GET["post_type"] == "rt_project") {
+                        if (isset($_GET["post_type"]) && $_GET["post_type"] == $this->post_type) {
                             if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
-                                wp_redirect("edit.php?post_type=rt_project&page=rtpm-add-rt_project");
+                                wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type");
                             }
                             if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
-                               wp_redirect("edit.php?post_type=rt_project&page=rtpm-all-rt_project");
+                               wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-all-$this->post_type");
                             }
                         }
                }
                     
              function project_listview_editlink($url,$post_id,$contexts){
-                 if (isset($_GET['post_type']) && $_GET['post_type']=='rt_project') {
-                      $url=admin_url("edit.php?post_type=rt_project&&page=rtpm-add-rt_project&rt_project_id=".$post_id);
+                 if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post_id);
                  } 
                  return $url;  
              }
              
              function project_listview_action($actions, $post){
-                  if (isset($_GET['post_type']) && $_GET['post_type']=='rt_project') {
-                       $actions=array('edit'=>'<a href="'.  admin_url("edit.php?post_type=rt_project&&page=rtpm-add-rt_project&rt_project_id=".$post->ID) . '" title="Edit this item">Edit</a>');
+                  if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post->ID) . '" title="Edit this item">Edit</a>';
                   }
                 return $actions;
              }
+
+		function project_bulk_actions( $bulk_actions ) {
+			unset( $bulk_actions[ 'edit' ] );
+			return $bulk_actions;
+		}
     }
 }

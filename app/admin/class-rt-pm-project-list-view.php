@@ -172,12 +172,13 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                         'post_date' => $project_meta['project_date'],
                         'post_date_gmt' => $project_meta['project_date_gmt'],
                         'post_content' => $project_meta['project_content'],
-                        'post_status' => 'New',
+                        'post_status' => 'new',
                         'post_title' => $project_meta['project_title'],
                         'post_type' => $rt_pm_project->post_type,
                     );
                     $newProjectID = wp_insert_post($newProject);
                     update_post_meta( $newProjectID, 'project_manager', $project_meta['project_manager'] );
+					update_post_meta( $newProjectID, 'project_member', $project_meta['project_member'] );
                     return 1;
                 }
             }
