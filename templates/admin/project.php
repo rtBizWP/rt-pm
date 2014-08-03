@@ -30,7 +30,7 @@
                     $page_title = "Add ".ucfirst($labels['name']);
                 }
                 ?>
-                <h4><i class="gen-enclosed <?php echo $post_icon; ?>"></i> <?php echo '#'.$_REQUEST["{$post_type}_id"].' : '; _e($page_title); ?></h4>
+                <h4><i class="gen-enclosed <?php echo $post_icon; ?>"></i> <?php echo isset($_REQUEST["{$post_type}_id"])?'#'.$_REQUEST["{$post_type}_id"].' : ':""; _e($page_title); ?></h4>
             </div>
             <div style="padding:0;" class="large-6 columns">
                 <?php if(isset($post->ID) && current_user_can( "delete_{$post_type}s" ) ){ ?>
@@ -46,7 +46,7 @@
 
 		?>
         <dl class="tabs five-up">
-			<dd <?php echo ( ! isset( $_REQUEST['tab'] ) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ) ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-details"); ?>">Details</a></dd>
+			<dd <?php echo ( ! isset( $_REQUEST['tab'] ) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ) ? 'class="active"':'';  ?> ><a href="<?php echo isset($ref_link)?admin_url($ref_link . "tab={$post_type}-details"):""; ?>">Details</a></dd>
             <?php if ( !$is_new_project_page) { ?>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Attachments</a></dd>
 			<dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
