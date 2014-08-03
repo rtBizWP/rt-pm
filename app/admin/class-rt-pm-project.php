@@ -57,17 +57,22 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			// CRM Lead to PM Project - Link Hook
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
-			add_action( 'init', array( $this, 'convert_lead_to_project' ) );
-		}
+			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
+                        
+                        add_action("init",  array( $this,"project_list_switch_view"));
+                        add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
+                        add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
+                        add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
+        }
 
 		function convert_lead_to_project() {
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
 			}
-
+                        
 			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
-			$lead = get_post( $lead_id );
-
+			$lead = get_post( $lead_id );       
+        
 			$project = array();
 			$project['post_title'] = $lead->post_title;
 			$project['post_type'] = $this->post_type;
@@ -75,7 +80,65 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_content'] = $lead->post_content;
 			$project['post_date'] = current_time( 'mysql' );
 			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-			$project_id = wp_insert_post( $project );
+                        $project_id = wp_insert_post( $project );
+                        
+                        $attachments = get_posts( array(
+                            'post_parent' => $lead_id,
+                            'post_type' => 'attachment',
+                            'fields' => 'ids',
+                            'posts_per_page' => -1,
+                        ));
+                        
+                        $lead_term = rt_biz_get_post_for_organization_connection( $lead->ID, $lead->post_type );
+                         
+                        $project_organization=array();
+                        foreach ($lead_term as $tterm) {
+                            array_push($project_organization,$tterm->p2p_to);
+                        }
+                        
+                        $lead_term = rt_biz_get_post_for_person_connection( $lead->ID, $lead->post_type );
+								
+                        $project_client=array();
+                        foreach ($lead_term as $tterm) {
+                              array_push($project_client,$tterm->p2p_to);                                  
+                        }
+                        
+                         $data = array(		
+                        'project_organization' => $project_organization,
+                        'project_client' => $project_client
+                        );
+                   
+                
+                        foreach ( $data as $key=>$value ) {
+                             update_post_meta( $project_id, $key, $value );
+                        }
+                        
+                        foreach ( $attachments as $attachment ) {
+                     
+                            $filepath = get_attached_file( $attachment );
+                            $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
+                                
+                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+                                continue;
+                            }
+                            
+                            $file = get_post($attachment);
+                            if( !empty( $file->post_parent ) ) {
+                                 $args = array(
+                                'post_mime_type' => $file->post_mime_type,
+                                'guid' => $file->guid,
+                                'post_title' => $file->post_title,
+                                'post_content' => $file->post_content,
+                                'post_parent' => $project_id,
+                                'post_author' => get_current_user_id(),
+                            );
+                           
+                            wp_insert_attachment( $args, $file->guid, $project_id );
+                           
+                            add_post_meta( $project_id, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+                          }
+			
+                        }
 
 			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
@@ -567,13 +630,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             //Check for wp error
-            if ( is_wp_error( $post_id ) ) {
+            if ( isset( $post_id ) && is_wp_error( $post_id ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
             ///alert Notification
-            if ($action_complete){
+            if ( isset( $action_complete ) && $action_complete){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -699,7 +762,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
@@ -739,7 +802,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>">
+                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
                                     <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
@@ -894,7 +957,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				die();
             }
 
-            if ( $action_complete ){
+            if ( isset( $action_complete ) && $action_complete ){
                 if (isset($_REQUEST["new"])) {
                     ?>
                     <div class="alert-box success">
@@ -941,7 +1004,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
             ?>
 
-            <?php if (isset($post->id) || ($_REQUEST["action"]=="timeentry")){?>
+            <?php if (isset($post->id) || ( isset( $_REQUEST["action"] ) && $_REQUEST["action"]=="timeentry")){?>
                 <script>
                     jQuery(document).ready(function($) {
                         setTimeout(function() {
@@ -1025,7 +1088,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
@@ -1147,7 +1210,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_organization' => $newProject['project_organization'],
-                        'project_member' => $newProject['project_member'],
+                        'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : '',
 						'business_manager' => $newProject['business_manager'],
 						'_rtpm_status_detail' => $newProject['status_detail'],
 						'_rtpm_project_budget' => $newProject['project_budget'],
@@ -1191,7 +1254,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             //Check for wp error
-            if ( is_wp_error( $post_id ) ) {
+            if ( isset($post_id) && is_wp_error( $post_id ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
@@ -1262,7 +1325,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $subProjectMemberHTML = "";
             if( !empty( $results_member ) ) {
                 foreach ( $results_member as $author ) {
-                    if ($project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
+                    if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
                             . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
@@ -1279,7 +1342,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( !empty( $results_client ) ) {
                 foreach ( $results_client as $client ) {
 					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
-                    if ($project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
+                    if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
                             . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
@@ -1301,7 +1364,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( !empty( $results_organization ) ) {
                 foreach ( $results_organization as $organization ) {
 					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
-                    if ($project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
+                    if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
                         $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
                             . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                             . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
@@ -1511,7 +1574,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 									</div>
                                 </div>
                             </div>
-                            <?php do_action( 'rt_pm_other_details', $user_edit, $post ); ?>
+                            <?php 
+                            do_action( 'rt_pm_other_details', $user_edit, $post ); 
+                            ?>
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
@@ -1703,7 +1768,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
 						   <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
 						   <?php
-						   wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+                                                   if ( isset( $_REQUEST['attachment_tag'] ) ) {                                         
+                                                        wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+                                                   }
 						   ?>
 					   </form></h6>
 				   <div class="inside">
@@ -1723,7 +1790,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 											   <?php echo $attachment->post_title; ?>
 										   </a>
 										   <?php $taxonomies=get_attachment_taxonomies($attachment);
-										   $taxonomies=get_the_terms($attachment,$taxonomies);
+										   $taxonomies=get_the_terms($attachment,$taxonomies[0]);
 										   $term_html = '';
 										   if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
 											   <div style="display:inline-flex;margin-left: 20px;" class="attachment-meta">[&nbsp;
@@ -2256,6 +2323,35 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				</table>
 			</div>
 		<?php }
+                
+                function project_list_switch_view() {
+                        if (isset($_GET["post_type"]) && $_GET["post_type"] == $this->post_type) {
+                            if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
+                                wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type");
+                            }
+                            if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
+                               wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-all-$this->post_type");
+                            }
+                        }
+               }
+                    
+             function project_listview_editlink($url,$post_id,$contexts){
+                 if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post_id);
+                 } 
+                 return $url;  
+             }
+             
+             function project_listview_action($actions, $post){
+                  if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post->ID) . '" title="Edit this item">Edit</a>';
+                  }
+                return $actions;
+             }
 
+		function project_bulk_actions( $bulk_actions ) {
+			unset( $bulk_actions[ 'edit' ] );
+			return $bulk_actions;
+		}
     }
 }

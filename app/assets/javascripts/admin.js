@@ -206,6 +206,11 @@ jQuery(document).ready(function($) {
             $(this).datepicker("setDate",new Date($(this).attr("title")));
         }
     });
+    
+    $(".datepicker-toggle").click(function(e) {
+        $(this).parent("div").prev().find(".hasDatepicker").click();
+        $(this).parent("div").prev().find(".hasDatepicker").datepicker("show");
+    });
 
     $(".moment-from-now").each(function() {
         if($(this).is("input[type='text']") && $(this).val()!="")
@@ -234,7 +239,34 @@ jQuery(document).ready(function($) {
                 addError(eleAccountName, "Please Enter the Title");
                 return false;
             }
+            
+            var eleCreateDate = $("#create_" + $(this).data("posttype") + "_date");
+            
+            if ($(this).data("posttype")=="rt_task") {   
+                
+                var eleDueDate = $("#due_" + $(this).data("posttype") + "_date");   
+                
+                if ( $(eleDueDate).datepicker( "getDate" ) <= $(eleCreateDate).datepicker( "getDate" ) ) {
+                     addError(eleDueDate, "Please Enter valid Date");
+                     return false;
+                }
+                
+                removeError(eleDueDate);
+            }else if ($(this).data("posttype")=="rt_time_entry") {
+                
+                var curDate = new Date();
+                
+                if ( curDate < $(eleCreateDate).datepicker( "getDate" ) ) {
+                     addError(eleCreateDate, "Please Enter valid Date");
+                     return false;
+                }
+                
+                removeError(eleCreateDate);
+                
+            }
+            
             removeError(eleAccountName);
+           
         } catch (e) {
             console.log(e);
             return false;
@@ -401,8 +433,8 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
-});
+    
+    });
 
 
 
