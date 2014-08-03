@@ -1786,7 +1786,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         </div>
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="Create Date"><label>Terms</label></span>
+                                <span class="prefix" title="Create Date"><label>Categories</label></span>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php $media_terms= get_categories("taxonomy=attachment_tag&hide_empty=0&orderby=name");?>

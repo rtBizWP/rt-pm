@@ -39,17 +39,17 @@ if ( ! class_exists( 'Rt_Custom_Media_Fields' ) ) {
 
             // Tags
             $labels = array(
-                'name'              => _x( 'Media Tags', 'taxonomy general name', 'attachment_taxonomies' ),
-                'singular_name'     => _x( 'Media Tag', 'taxonomy singular name', 'attachment_taxonomies' ),
-                'search_items'      => __( 'Search Media Tags', 'attachment_taxonomies' ),
-                'all_items'         => __( 'All Media Tags', 'attachment_taxonomies' ),
-                'parent_item'       => __( 'Parent Media Tag', 'attachment_taxonomies' ),
-                'parent_item_colon' => __( 'Parent Media Tag:', 'attachment_taxonomies' ),
-                'edit_item'         => __( 'Edit Media Tag', 'attachment_taxonomies' ),
-                'update_item'       => __( 'Update Media Tag', 'attachment_taxonomies' ),
-                'add_new_item'      => __( 'Add New Media Tag', 'attachment_taxonomies' ),
-                'new_item_name'     => __( 'New Media Tag Name', 'attachment_taxonomies' ),
-                'menu_name'         => __( 'Media Tags', 'attachment_taxonomies' ),
+                'name'              => _x( 'Categories', 'taxonomy general name', 'attachment_taxonomies' ),
+                'singular_name'     => _x( 'Category', 'taxonomy singular name', 'attachment_taxonomies' ),
+                'search_items'      => __( 'Search Categories', 'attachment_taxonomies' ),
+                'all_items'         => __( 'All Categories', 'attachment_taxonomies' ),
+                'parent_item'       => __( 'Parent Category', 'attachment_taxonomies' ),
+                'parent_item_colon' => __( 'Parent Category:', 'attachment_taxonomies' ),
+                'edit_item'         => __( 'Edit Category', 'attachment_taxonomies' ),
+                'update_item'       => __( 'Update Category', 'attachment_taxonomies' ),
+                'add_new_item'      => __( 'Add New Category', 'attachment_taxonomies' ),
+                'new_item_name'     => __( 'New Category Name', 'attachment_taxonomies' ),
+                'menu_name'         => __( 'Categories', 'attachment_taxonomies' ),
             );
 
             $args = array(
