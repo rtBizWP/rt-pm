@@ -29,12 +29,13 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
         static $project_id_key = 'post_project_id';
         var $user_edit;
 
-		public function __construct() {
+		public function __construct( $user_edit ) {
 
 			global $rt_pm_task;
 			$this->labels = $rt_pm_task->labels;
 			$this->post_type = $rt_pm_task->post_type;
 			$this->post_statuses = $rt_pm_task->get_custom_statuses();
+			$this->user_edit = $user_edit;
 			$args = array(
 				'singular'=> $this->labels['singular_name'], //Singular label
 				'plural' => $this->labels['all_items'], //plural label, also this well be one of the table css class
@@ -113,7 +114,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 
 		/**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
-		function prepare_items($user_edit) {
+		function prepare_items() {
 			global $wpdb;
             $screen = get_current_screen();
 
