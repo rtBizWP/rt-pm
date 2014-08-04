@@ -719,8 +719,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					}
 				?><button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button><?php
 				}
-				$rtpm_task_list= new Rt_PM_Task_List_View();
-				$rtpm_task_list->prepare_items($user_edit);
+				$rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
+				$rtpm_task_list->prepare_items();
 				$rtpm_task_list->display();
 			?>
             </div>
@@ -1075,8 +1075,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php } ?>
                         <div class="row collapse">
                             <?php
-                            $rtpm_task_list= new Rt_PM_Task_List_View();
-                            $rtpm_task_list->prepare_items($user_edit);
+                            $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
+                            $rtpm_task_list->prepare_items();
                             $rtpm_task_list->get_drop_down($task_id);
                             ?>
                         </div>
