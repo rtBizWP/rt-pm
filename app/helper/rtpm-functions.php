@@ -65,8 +65,8 @@ function rtpm_attribute_taxonomy_name( $name ) {
 }
 
 function rtpm_get_time_entry_table_name() {
-	global $wpdb, $blog_id;
-	return $wpdb->prefix . ( ( is_multisite() ) ? $blog_id . '_' : '' ) . 'rt_wp_pm_time_entries';
+	global $rt_pm_time_entries_model;
+	return $rt_pm_time_entries_model->table_name;
 }
 
 function rtpm_get_settings() {
