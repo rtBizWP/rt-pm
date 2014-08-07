@@ -35,7 +35,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 
 		function init_project() {
-			$menu_position = 31;
+			$menu_position = 34;
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
             $this->get_custom_menu_order();
