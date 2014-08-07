@@ -2337,14 +2337,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     
              function project_listview_editlink($url,$post_id,$contexts){
                  if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post_id);
+                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post_id);
                  } 
                  return $url;  
              }
              
              function project_listview_action($actions, $post){
                   if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&$this->post_type_id=".$post->ID) . '" title="Edit this item">Edit</a>';
+                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post->ID) . '" title="Edit this item">Edit</a>';
                   }
                 return $actions;
              }
