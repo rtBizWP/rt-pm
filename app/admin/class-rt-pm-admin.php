@@ -34,7 +34,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
 
 		function load_styles_scripts() {
             global $rt_pm_project;
-            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type, 'rtpm-user-reports' );
+            $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type, Rt_PM_User_Reports::$user_reports_page_slug );
             if ( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pagearray ) ) {
                 wp_enqueue_script('jquery-ui-timepicker-addon', RT_PM_URL . 'app/assets/javascripts/jquery-ui-timepicker-addon.js',array("jquery-ui-datepicker","jquery-ui-slider"), RT_PM_VERSION, true);
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
             }
 
 			if (isset($_REQUEST['taxonomy']) && $_REQUEST['taxonomy'] == Rt_PM_Time_Entry_Type::$time_entry_type_tax ) {
-				wp_localize_script( 'rtpm-wp-menu-patch-js', 'rtpm_time_entry_type_screen', admin_url( 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type ) );
+				wp_localize_script( 'rtpm-wp-menu-patch-js', 'rtpm_time_entry_type_screen', admin_url( 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax ) );
 			}
         }
 	}
