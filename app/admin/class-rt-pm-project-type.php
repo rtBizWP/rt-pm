@@ -45,7 +45,7 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 				'labels' => $labels,
 				'show_ui' => true,
 				'query_var' => true,
-				'update_count_callback' => 'rt_update_post_term_count',
+				'update_count_callback' => 'rtpm_update_post_term_count',
 				'rewrite' => array('slug' => self::$project_type_tax),
 				'capabilities' => array(
 					'manage_terms' => $editor_cap,
