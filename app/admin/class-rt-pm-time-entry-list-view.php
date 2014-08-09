@@ -323,8 +323,8 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                             case "rtpm_message":
                                 echo '<td '.$attributes.'>'.$rec->message;
                                 $actions = array(
-                                    'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">Edit</a>',
-                                    'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}&action=delete").'">Delete</a>',
+                                    'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$rec->project_id}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}").'">Edit</a>',
+                                    'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$rec->project_id}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->id}&action=delete").'">Delete</a>',
                                 );
                                 echo $this->row_actions( $actions );
                                 //.'< /td>';

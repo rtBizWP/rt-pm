@@ -83,3 +83,37 @@ function rtpm_get_settings() {
 function rtpm_update_settings( $key, $value ) {
 	
 }
+
+function rtpm_update_post_term_count( $terms, $taxonomy ) {
+	global $wpdb;
+
+	$object_types = (array) $taxonomy->object_type;
+
+	foreach ( $object_types as &$object_type )
+		list( $object_type ) = explode( ':', $object_type );
+
+	$object_types = array_unique( $object_types );
+
+	if ( false !== ( $check_attachments = array_search( 'attachment', $object_types ) ) ) {
+		unset( $object_types[ $check_attachments ] );
+		$check_attachments = true;
+	}
+
+	if ( $object_types )
+		$object_types = esc_sql( array_filter( $object_types, 'post_type_exists' ) );
+
+	foreach ( (array) $terms as $term ) {
+		$count = 0;
+
+		// Attachments can be 'inherit' status, we need to base count off the parent's status if so
+		if ( $check_attachments )
+			$count += (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts p1 WHERE p1.ID = $wpdb->term_relationships.object_id  AND post_type = 'attachment' AND term_taxonomy_id = %d", $term ) );
+
+		if ( $object_types )
+			$count += (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id  AND post_type IN ('" . implode("', '", $object_types ) . "') AND term_taxonomy_id = %d", $term ) );
+
+		do_action( 'edit_term_taxonomy', $term, $taxonomy );
+		$wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
+		do_action( 'edited_term_taxonomy', $term, $taxonomy );
+	}
+}

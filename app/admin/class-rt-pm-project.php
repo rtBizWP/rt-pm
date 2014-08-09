@@ -26,6 +26,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		var $statuses = array();
 		var $custom_menu_order = array();
 
+		static $dashboard_slug = 'rtpm-dashboard';
+
 		var $organization_email_key = 'account_email';
 		var $contact_email_key = 'contact_email';
 
@@ -166,10 +168,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-//            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, 'rtpm-dashboard', array( $this, 'dashboard_ui' ) );
+//            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Projects' ), __( 'Projects' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
-			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.Rt_PM_Time_Entries::$post_type );
+			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
         }
 
 		function register_custom_post( $menu_position ) {
@@ -254,12 +256,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         function get_custom_menu_order(){
             $this->custom_menu_order = array(
-				'rtpm-dashboard',
+				self::$dashboard_slug,
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
-                'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type,
-				'rtpm-user-reports',
+                'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax,
+				Rt_PM_User_Reports::$user_reports_page_slug,
                 'rtpm-settings',
             );
         }
@@ -270,7 +272,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			$dashed_menu_item = array(
 				'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
-				'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax.'&post_type='.  Rt_PM_Time_Entries::$post_type,
+				'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax,
 			);
 
             if ( isset( $submenu['edit.php?post_type='.$this->post_type] ) && !empty( $submenu['edit.php?post_type='.$this->post_type] ) ) {
@@ -1575,7 +1577,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 </div>
                             </div>
                             <?php 
-                            do_action( 'rt_pm_other_details', $user_edit, $post ); 
+							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
                             ?>
                         </div>
                         <div class="large-3 columns ui-sortable meta-box-sortables">
