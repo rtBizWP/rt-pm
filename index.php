@@ -2,7 +2,7 @@
 
 /*
   Plugin Name: Voxxi PM
-  Plugin URI: mailto:support@voxxi.me
+  Plugin URI: http://voxxi.me
   Description: Part of the Voxxi Business Suite
   Version: 0.0.4
   Author: Voxxi
