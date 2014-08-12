@@ -33,7 +33,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		public function __construct() {
 			add_action( 'init', array( $this, 'init_project' ) );
-			$this->hooks();
 		}
 
 		function init_project() {
@@ -46,6 +45,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             global $rt_pm_project_type;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
+
+			$this->hooks();
 		}
 
 		function hooks() {
