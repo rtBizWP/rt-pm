@@ -33,7 +33,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		public function __construct() {
 			add_action( 'init', array( $this, 'init_project' ) );
-			$this->hooks();
 		}
 
 		function init_project() {
@@ -46,6 +45,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             global $rt_pm_project_type;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
+
+			$this->hooks();
 		}
 
 		function hooks() {
@@ -169,8 +170,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Projects' ), __( 'Projects' ), $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, __('Add ' . ucfirst( $this->labels['name'] ) ), __('Add ' . ucfirst( $this->labels['name'] ) ), $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['new_item'], $this->labels['new_item'], $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $author_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
         }
 

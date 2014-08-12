@@ -107,3 +107,12 @@ function rt_pm_deactivate() {
 		wp_clear_scheduled_hook( 'rt_pm_timely_notification_'.$r->id, array( $r ) );
 	}
 }
+
+function rt_pm_check_dependency() {
+	global $rt_wp_pm;
+	if ( empty( $rt_wp_pm ) ) {
+		rt_pm_include();
+		$rt_wp_pm = new RT_WP_PM();
+	}
+}
+add_action( 'init', 'rt_pm_check_dependency' );
