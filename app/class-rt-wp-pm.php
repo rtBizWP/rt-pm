@@ -25,6 +25,10 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		public function __construct() {
 
+			if ( ! $this->check_rt_biz_dependecy() ) {
+				return false;
+			}
+
 			$this->init_globals();
 
 			add_action( 'init', array( $this, 'admin_init' ), 5 );
@@ -44,6 +48,35 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			session_start();
 		}
 
+		function check_rt_biz_dependecy() {
+            $flag = true;
+            $used_function = array(
+                'rt_biz_get_access_role_cap',
+                'rt_biz_sanitize_module_key'
+            );
+
+            foreach ( $used_function as $fn ) {
+                if ( ! function_exists( $fn ) ) {
+                    $flag = false;
+                }
+            }
+
+            if ( ! class_exists( 'Rt_Biz' ) ) {
+                $flag = false;
+            }
+
+            if ( ! $flag ) {
+                add_action( 'admin_notices', array( $this, 'rt_biz_admin_notice' ) );
+            }
+
+            return $flag;
+		}
+
+		function rt_biz_admin_notice() { ?>
+			<div class="updated">
+				<p><?php _e( sprintf( 'WordPress PM : It seems that rtBiz plugin is not installed or activated. Please %s / %s it.', '<a href="'.admin_url( 'plugin-install.php?tab=search&s=rt-contacts' ).'">'.__( 'install' ).'</a>', '<a href="'.admin_url( 'plugins.php' ).'">'.__( 'activate' ).'</a>' ) ); ?></p>
+			</div>
+		<?php }
 
 		function init_globals() {
 			global $rtpm_form,

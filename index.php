@@ -107,35 +107,3 @@ function rt_pm_deactivate() {
 		wp_clear_scheduled_hook( 'rt_pm_timely_notification_'.$r->id, array( $r ) );
 	}
 }
-
-
-add_action('admin_init', 'check_rt_pm_dependecy');
-function check_rt_pm_dependecy() {
-            $flag = true;
-            $used_function = array(
-                'rt_biz_get_access_role_cap',
-                'rt_biz_sanitize_module_key'
-            );
-
-            foreach ( $used_function as $fn ) {
-                if ( ! function_exists( $fn ) ) {
-                    $flag = false;
-                }
-            }
-
-            if ( ! class_exists( 'Rt_Biz' ) ) {
-                $flag = false;
-            }
-
-            if ( ! $flag ) {
-                add_action( 'admin_notices',  'rt_pm_admin_notice' );
-            }
-
-            return $flag;
-}
-
-		function rt_pm_admin_notice() { ?>
-			<div class="updated">
-				<p><?php _e( sprintf( 'WordPress PM : It seems that rtBiz plugin is not installed or activated. Please %s / %s it.', '<a href="'.admin_url( 'plugin-install.php?tab=search&s=rt-contacts' ).'">'.__( 'install' ).'</a>', '<a href="'.admin_url( 'plugins.php' ).'">'.__( 'activate' ).'</a>' ) ); ?></p>
-			</div>
-		<?php }
