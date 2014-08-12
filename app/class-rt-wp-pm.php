@@ -61,6 +61,10 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
                 }
             }
 
+            if ( ! class_exists( 'Rt_Biz' ) ) {
+                $flag = false;
+            }
+
             if ( ! $flag ) {
                 add_action( 'admin_notices', array( $this, 'rt_biz_admin_notice' ) );
             }
@@ -70,7 +74,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		function rt_biz_admin_notice() { ?>
 			<div class="updated">
-				<p><?php _e( sprintf( 'rtPM : It seems that rtBiz plugin is not installed or activated. Please %s / %s it.', '<a href="'.admin_url( 'plugin-install.php?tab=search&s=rt-biz' ).'">'.__( 'install' ).'</a>', '<a href="'.admin_url( 'plugins.php' ).'">'.__( 'activate' ).'</a>' ) ); ?></p>
+				<p><?php _e( sprintf( 'WordPress PM : It seems that rtBiz plugin is not installed or activated. Please %s / %s it.', '<a href="'.admin_url( 'plugin-install.php?tab=search&s=rt-contacts' ).'">'.__( 'install' ).'</a>', '<a href="'.admin_url( 'plugins.php' ).'">'.__( 'activate' ).'</a>' ) ); ?></p>
 			</div>
 		<?php }
 
