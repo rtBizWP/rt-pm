@@ -78,15 +78,6 @@ function rt_pm_init() {
 }
 add_action( 'rt_biz_init', 'rt_pm_init', 1 );
 
-function rt_pm_check_dependency() {
-	global $rt_wp_pm;
-	if ( empty( $rt_wp_pm ) ) {
-		rt_pm_include();
-		$rt_wp_pm = new RT_WP_PM();
-	}
-}
-add_action( 'init', 'rt_pm_check_dependency' );
-
 add_action( 'init', 'rt_pm_timely_notification_init' );
 function rt_pm_timely_notification_init() {
 
