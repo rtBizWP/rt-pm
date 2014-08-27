@@ -143,6 +143,9 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                 <div class="large-6 small-12 column">
                     <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e("Project Members"); ?></span></h6>
                     <div style="padding-bottom: 0" class="inside">
+                        <script>
+                                        var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
+                        </script>
                         <?php if ( $user_edit ) { ?>
                             <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
                             <?php } ?>
