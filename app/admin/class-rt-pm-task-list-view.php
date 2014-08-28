@@ -122,7 +122,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                 return;
             }
             $project_id = $_REQUEST["{$_REQUEST['post_type']}_id"];
-            $this->user_edit = $user_edit;
+           // $this->user_edit = $user_edit;
 
             $s = @$_POST['s'];
 
