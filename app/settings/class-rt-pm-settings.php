@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Don't load this file directly!
  */
@@ -56,8 +57,8 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 		 *  Load Settings
 		 */
 		function load_settings() {
-			self::$settings['menu_label'] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'menu_label' ) : '';
-			self::$settings['logo_url'] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'logo_url' ) : '';
+			self::$settings[ 'menu_label' ] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'menu_label' ) : '';
+			self::$settings[ 'logo_url' ] = ( isset( self::$titan_obj ) && ! empty( self::$titan_obj ) ) ? self::$titan_obj->getOption( 'logo_url' ) : '';
 		}
 
 		/**
@@ -76,17 +77,17 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 			$settings_page = self::$titan_obj->createAdminPanel( array(
 				'name' => __( 'Settings' ), // Name of the menu item
 				'title' => __( 'Settings' ), // Title displayed on the top of the admin panel
-				'parent' => 'edit.php?post_type='.$rt_pm_project->post_type,//Rt_PM_Admin::$pm_page_slug, // id of parent, if blank, then this is a top level menu
+				'parent' => 'edit.php?post_type=' . $rt_pm_project->post_type, //Rt_PM_Admin::$pm_page_slug, // id of parent, if blank, then this is a top level menu
 				'id' => RT_WP_PM::$settings_page_slug, // Unique ID of the menu item
 				'capability' => $admin_cap, // User role
 				'position' => 10, // Menu position. Can be used for both top and sub level menus
 				'use_form' => true, // If false, options will not be wrapped in a form
-			) );
+					) );
 			$general_tab = $settings_page->createTab( array(
 				'name' => __( 'General' ), // Name of the tab
 				'id' => 'general', // Unique ID of the tab
 				'title' => __( 'General' ), // Title to display in the admin panel when tab is active
-			) );
+					) );
 			$general_tab->createOption( array(
 				'name' => __( 'Menu Label' ), // Name of the option
 				'desc' => 'This label will be used for the Menu Item label for rtPM', // Description of the option
@@ -169,9 +170,11 @@ if ( ! class_exists( 'Rt_PM_Settings' ) ) {
 
 			// Use the embedded Titan Framework
 			if ( ! class_exists( 'TitanFramework' ) ) {
-				require_once( RT_HRM_PATH . 'app/vendor/titan-framework/titan-framework.php' );
+				require_once( RT_PM_PATH . 'app/vendor/titan-framework/titan-framework.php' );
 			}
 			return true;
 		}
+
 	}
+
 }
