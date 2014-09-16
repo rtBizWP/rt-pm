@@ -26,6 +26,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
 			add_action( 'init', array( $this, 'init_task' ) );
+                        add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 		}
 
 		function init_task() {
@@ -157,6 +158,44 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			);
 			return $this->statuses;
 		}
+                
+                                
+                function search( $query, $args = array() ) {
+                   
+			$query_args = array(
+				'post_type' => $this->post_type,
+				'post_status' => 'any',
+				'posts_per_page' => -1,
+				's' => $query,
+			);
+			$args = array_merge( $query_args, $args );
+			$entity = new WP_Query( $args );
+
+			return $entity->posts;
+		}
+                
+                function get_autocomplate_task(){
+                    
+                    if (!isset($_POST["query"])) {
+				wp_die("Opss!! Invalid request");
+			}
+
+			$tasks = $this->search( $_POST['query'] );
+			$result = array();
+			foreach ( $tasks as $task ) {
+				$result[] = array(
+					'label' => $task->post_title,
+					'id' => $task->ID,
+					'slug' => $task->post_name,
+					'url' => admin_url( "edit.php?". $task->post_type."=" . $task->ID  ),
+				);
+			}
+
+			echo json_encode($result);
+			die(0);
+                    
+                }
+ 
 
 	}
 
