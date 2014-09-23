@@ -57,7 +57,7 @@ function rt_pm_include() {
 
 	include_once RT_PM_PATH_HELPER . 'rtpm-functions.php';
 
-	global $rtpm_app_autoload, $rtpm_admin_autoload, $rtpm_models_autoload, $rtpm_helper_autoload, $rtpm_form_autoload, $rtpm_settings_autoload, $rtpm_notification_autoload;
+	global $rtpm_app_autoload, $rtpm_admin_autoload, $rtpm_models_autoload, $rtpm_helper_autoload, $rtpm_form_autoload, $rtpm_settings_autoload, $rtpm_notification_autoload, $rtpm_buddypress_autoload;
 	$rtpm_app_autoload = new RT_WP_Autoload( RT_PM_PATH_APP );
 	$rtpm_admin_autoload = new RT_WP_Autoload( RT_PM_PATH_ADMIN );
 	$rtpm_models_autoload = new RT_WP_Autoload( RT_PM_PATH_MODELS );
@@ -66,6 +66,7 @@ function rt_pm_include() {
 	$rtpm_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
     $rtpm_settings_autoload = new RT_WP_Autoload( RT_PM_PATH . 'app/settings/' );
 //	$rtpm_reports_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtreports/' );
+	$rtpm_buddypress_autoload = new RT_WP_Autoload( RT_PM_PATH . 'app/buddypress-components/rt-pm-componet/' );
 }
 
 function rt_pm_init() {
