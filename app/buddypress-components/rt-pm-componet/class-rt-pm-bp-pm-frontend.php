@@ -12,13 +12,13 @@ if ( ! defined( 'ABSPATH' ) )
  */
 
 /**
- * Description of Rt_Hrm_Bp_Hrm_Frontend
+ * Description of Rt_PM_Bp_PM_Frontend
  *
  * @author kishore
  */
 if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
     /**
-     * Class Rt_HRM_Admin
+     * Class Rt_PM_Bp_PM_Frontend
      */
     class Rt_PM_Bp_PM_Frontend extends Rt_PM_Admin {
 

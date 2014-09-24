@@ -25,9 +25,9 @@
 				</div>
 				<!-- code for Projects -->
 				<?php
-					global $rt_pm_project, $bp, $wpdb,  $wp_query;
-					if (isset($_GET['rt_project_id'])) 
-						$rt_pm_project->custom_page_ui();
+					global $rt_pm_project, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query;
+					if (isset($_GET['rt_project_id']) || isset($_GET['post_type'])) 
+						$rt_pm_bp_pm_project->custom_page_ui();
 					else {
 					$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 					
