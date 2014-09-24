@@ -8,7 +8,10 @@
 
     global $rt_pm_project;
 
-    $post_type=$_REQUEST['post_type'];
+    if (!isset( $_REQUEST['post_type'] )){
+        $_REQUEST['post_type'] = 'rt_project';
+    }
+    $post_type = $_REQUEST['post_type'];
 
     $user_edit = false;
     if ( current_user_can( "edit_{$post_type}" ) ) {

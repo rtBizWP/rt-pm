@@ -140,34 +140,34 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			);
 
 			// Add a few subnav items
-			$sub_nav[] = array(
-				'name'            =>  __( 'Details' ),
-				'slug'            => 'details',
-				'parent_url'      => $people_link,
-				'parent_slug'     =>  $this->id,
-				'screen_function' => 'bp_pm_details',
-				'position'        => 20,
-			);
+			// $sub_nav[] = array(
+				// 'name'            =>  __( 'Details' ),
+				// 'slug'            => 'details',
+				// 'parent_url'      => $people_link,
+				// 'parent_slug'     =>  $this->id,
+				// 'screen_function' => 'bp_pm_details',
+				// 'position'        => 20,
+			// );
                         
 			// Add a few subnav items
-			$sub_nav[] = array(
-				'name'            =>  __( 'Attachments' ),
-				'slug'            => 'attachments',
-				'parent_url'      => $people_link,
-				'parent_slug'     =>  $this->id,
-				'screen_function' => 'bp_pm_attachments',
-				'position'        => 30,
-			);
+			// $sub_nav[] = array(
+				// 'name'            =>  __( 'Attachments' ),
+				// 'slug'            => 'attachments',
+				// 'parent_url'      => $people_link,
+				// 'parent_slug'     =>  $this->id,
+				// 'screen_function' => 'bp_pm_attachments',
+				// 'position'        => 30,
+			// );
 			
 			// Add a few subnav items
-			$sub_nav[] = array(
-				'name'            =>  __( 'Tasks' ),
-				'slug'            => 'tasks',
-				'parent_url'      => $people_link,
-				'parent_slug'     =>  $this->id,
-				'screen_function' => 'bp_pm_tasks',
-				'position'        => 40,
-			);
+			// $sub_nav[] = array(
+				// 'name'            =>  __( 'Tasks' ),
+				// 'slug'            => 'tasks',
+				// 'parent_url'      => $people_link,
+				// 'parent_slug'     =>  $this->id,
+				// 'screen_function' => 'bp_pm_tasks',
+				// 'position'        => 40,
+			// );
 
 			parent::setup_nav( $main_nav, $sub_nav );
 

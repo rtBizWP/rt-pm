@@ -19,11 +19,16 @@
 				<div class="item-list-tabs no-ajax" id="subnav">
 					<ul>
 						<?php bp_get_options_nav() ?>
+						<li class="" id=""><input type="button"  data-reveal-id="add-new-leave-modal" value="Add New" />  </li>
+						<li id=""><input type="button"  data-reveal-id="add-archives-modal" value="Archives" /> </li>
 					</ul>
 				</div>
 				<!-- code for Projects -->
 				<?php
 					global $rt_pm_project, $bp, $wpdb,  $wp_query;
+					if (isset($_GET['rt_project_id'])) 
+						$rt_pm_project->custom_page_ui();
+					else {
 					$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 					
 					$posts_per_page = get_option( 'posts_per_page' );
@@ -118,7 +123,7 @@
 									?>
 									<tr class="lists-data">
 										<td align="center" scope="row"><?php the_title();
-										edit_post_link('Edit', '<br /><span>', '</span>&nbsp;&#124;'); ?>
+										printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) ); ?>
 										<a href="<?php the_permalink();?>">View</a>
 										</td>
 										<td align="center" scope="row">
@@ -143,7 +148,7 @@
 					</table>
 					<?php if ( $max_num_pages > 1 ) { ?>
 					<ul id="leave-pagination"><li id="prev"><a class="page-link">Previous</a></li><li id="next"><a class="page-link next">Next</a></li></ul>
-					<?php } ?>
+					<?php }} ?>
 			</div><!-- #item-body -->
 
 		</div><!-- .padder -->
