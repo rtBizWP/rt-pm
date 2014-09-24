@@ -43,18 +43,19 @@
         </div>
         <?php
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
+		$bp_bp_nav_link = $bp->bp_nav[82]['link'];
         if (!$is_new_project_page) {
-            $ref_link = "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&";
+            $ref_link = "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&";
         }
 
 		?>
         <dl class="tabs five-up">
 			<dd <?php echo ( ! isset( $_REQUEST['tab'] ) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ) ? 'class="active"':'';  ?> ><a href="<?php echo isset($ref_link)?admin_url($ref_link . "tab={$post_type}-details"):""; ?>">Details</a></dd>
             <?php if ( !$is_new_project_page) { ?>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Attachments</a></dd>
-			<dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-task"); ?>">Tasks</a></dd>
-            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ? 'class="active"':''; ?>><a href="<?php echo admin_url($ref_link . "tab={$post_type}-notification"); ?>">Notification</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-files"; ?>">Attachments</a></dd>
+			<dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-timeentry"; ?>">Time Entries</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-task"; ?>">Tasks</a></dd>
+            <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ? 'class="active"':''; ?>><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-notification"; ?>">Notification</a></dd>
             <?php } ?>            
         </dl>
 

@@ -43,7 +43,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			$this->register_custom_post( $menu_position );
 			$this->register_custom_statuses();
 
-            global $rt_pm_project_type;
+            global $rt_pm_project_type, $bp;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
 
 			$this->hooks();
@@ -986,7 +986,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
         <?php }
 
         public function get_project_description_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model;
+            global $rt_pm_project,$rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model, $bp;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -1096,7 +1096,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     }
                 }
                 $_REQUEST[$post_type."_id"] = $post_id;
-				echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
+				$bp_bp_nav_link = $bp->bp_nav[82]['link'];
+				$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
+				// echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
+				echo '<script> window.location="' . $bp_bp_nav_link .'"; </script> ';
 				die();
             }
 
@@ -1105,7 +1108,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}");
+            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}");
+			$form_ulr = $bp->bp_nav[82]['link'];
+			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}";
 
             ///alert Notification
             if (isset($_REQUEST["{$post_type}_id"])) {
@@ -1599,7 +1604,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             if ( isset( $projectid ) ) {
                 $attachments = get_posts($arg );
             }
-            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
+			$form_ulr = $bp->bp_nav[82]['link'];
+			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
+            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
 			<div id="wp-custom-list-table">
 				<div id="attachment-error" class="row"></div>
 				<div class="row">
@@ -1809,7 +1816,11 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				} else {
 					$_SESSION['rtpm_errors'] = $error;
 				}
-				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
+				$bp_bp_nav_link = $bp->bp_nav[82]['link'];
+				$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification";
+				
+				// echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
+				echo '<script>window.location="' . $bp_bp_nav_link . '";</script> ';
 				die();
 			}
 			?>

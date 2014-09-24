@@ -22,7 +22,7 @@
 						global $rt_pm_project, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query;
 						bp_get_options_nav();
 						?>
-						<li class="" id=""><a href="<?php echo $bp->bp_nav[82]['link'];?>/pm/?post_type=rt_project&action=addnew">addnew</a></li>
+						<li class="" id=""><a href="<?php echo $bp->bp_nav[82]['link'];?>/?post_type=rt_project&action=addnew">addnew</a></li>
 						<li id=""><input type="button"  data-reveal-id="add-archives-modal" value="Archives" /> </li>
 					</ul>
 				</div>
