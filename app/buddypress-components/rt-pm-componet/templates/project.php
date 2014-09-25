@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-    global $rt_pm_project, $rt_pm_bp_pm_project;
+    global $rt_pm_project,$rt_pm_bp_pm, $rt_pm_bp_pm_project;
 
     if (!isset( $_REQUEST['post_type'] )){
         $_REQUEST['post_type'] = 'rt_project';
@@ -43,7 +43,7 @@
         </div>
         <?php
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
-		$bp_bp_nav_link = $bp->bp_nav[82]['link'];
+		$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
         if (!$is_new_project_page) {
             $ref_link = "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&";
         }

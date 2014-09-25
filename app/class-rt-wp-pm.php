@@ -101,8 +101,9 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			$rt_pm_help = new RT_PM_Help();
 			$rt_pm_bp_pm = new RT_PM_Bp_PM();
 			$rt_pm_bp_pm_frontend = new Rt_PM_Bp_PM_Frontend();
-			if ( ! is_admin() )
+			if ( ! is_admin() ){
 				$rt_pm_bp_pm_project = new Rt_PM_Bp_PM_Project();
+			}
 		}
 
 		function init() {
