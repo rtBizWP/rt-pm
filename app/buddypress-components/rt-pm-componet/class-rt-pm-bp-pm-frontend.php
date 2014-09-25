@@ -47,6 +47,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_enqueue_script('foundation-modernizr-js', RT_PM_URL . 'app/assets/javascripts/vendor/custom.modernizr.js', array(), "", false);
                 wp_enqueue_script('foundation-js', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
                 wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/assets/javascripts/admin.js',array("foundation-js"), RT_PM_VERSION, true);
+				// Code for front-end pagination
+				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/assets/javascripts/frontend.js','jquery', RT_PM_VERSION, true);
                 wp_enqueue_script('moment-js', RT_PM_URL . 'app/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
 
                 if( !wp_script_is('jquery-ui-accordion') ) {
@@ -83,7 +85,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
 		}
 
         function localize_scripts() {
-            global $rt_pm_project;
+            global $rt_pm_project, $rt_pm_bp_pm;
              $user_edit = false;
                 if ( current_user_can( "edit_{$rt_pm_project->post_type}" ) ) {
                     $user_edit = true;
@@ -91,6 +93,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
                 wp_localize_script( 'rtpm-admin-js', 'rtpm_post_type', $_REQUEST['post_type'] );
                 wp_localize_script( 'rtpm-admin-js', 'rtpm_user_edit', array($user_edit) );
+				wp_localize_script( 'rtpm-frontend-js', 'rtpmurl', $rt_pm_bp_pm->get_component_root_url() );
 
 			// if (isset($_REQUEST['taxonomy']) && $_REQUEST['taxonomy'] == Rt_PM_Time_Entry_Type::$time_entry_type_tax ) {
 				// wp_localize_script( 'rtpm-wp-menu-patch-js', 'rtpm_time_entry_type_screen', admin_url( 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax ) );

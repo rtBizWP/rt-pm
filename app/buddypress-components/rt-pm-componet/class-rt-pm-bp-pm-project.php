@@ -299,7 +299,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
         }
 
 		public function get_project_task_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model;
+            global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -470,7 +470,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
                 }
 
-				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task" ) . '";</script> ';
+				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task"  . '";</script> ';
 				$_REQUEST["{$task_post_type}_id"] = null;
                 $action_complete= true;
 				die();
@@ -481,7 +481,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
+            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
+			$form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task";
             ///alert Notification
             if ( isset( $action_complete ) && $action_complete){
                 if (isset($_REQUEST["new"])) {
@@ -737,7 +738,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
         <?php }
 		
         public function get_project_timeentry_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model;
+            global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -798,7 +799,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				// Used for notification -- Regeistered in RT_PM_Notification
 				do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
 
-				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" ) . '";</script> ';
+				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" . '";</script> ';
                 $_REQUEST["{$timeentry_post_type}_id"] = null;
                 $action_complete= true;
 				die();
@@ -821,7 +822,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 <?php }
             }
 
-            $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry");//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
+            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry");//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
+            $form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry";//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
             ///alert Notification
             if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
                 $form_ulr .= "&{$timeentry_post_type}_id=" . $_REQUEST["{$timeentry_post_type}_id"];
@@ -1010,7 +1012,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					wp_delete_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
-				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
                 die();
             }
 
@@ -1548,7 +1550,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						<?php if( $user_edit ) { ?>
 						<?php if(isset($post->ID)) { ?>
 						<div class="large-1 columns left">
-							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo site_url().add_query_arg( array( 'action' => 'trash' ) ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url() ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
 						</div>
 						<?php } ?>
 						<div class="large-1 columns right">
@@ -1736,7 +1738,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
         }
 
 		function get_project_notification_tab( $labels, $user_edit ) {
-			global $rt_biz_notification_rules_model, $rt_pm_notification;
+			global $rt_biz_notification_rules_model, $rt_pm_notification, $rt_pm_bp_pm;
 			$project_id = $_REQUEST["{$this->post_type}_id"];
 			$users = Rt_PM_Utils::get_pm_rtcamp_user();
 			$operators = $rt_pm_notification->get_operators();
@@ -1823,7 +1825,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$_SESSION['rtpm_errors'] = $error;
 				}
 				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
-				$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification";
+				$bp_bp_nav_link .= "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification";
 				
 				// echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
 				echo '<script>window.location="' . $bp_bp_nav_link . '";</script> ';

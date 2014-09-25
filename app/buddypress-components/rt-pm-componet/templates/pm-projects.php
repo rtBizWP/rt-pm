@@ -23,14 +23,14 @@
 						bp_get_options_nav();
 						?>
 						<li class="" id=""><a href="<?php echo add_query_arg( array( 'post_type' => 'rt_project' ,'action' => 'addnew' ), $rt_pm_bp_pm->get_component_root_url() );?>">Add New</a></li>
-						<li id=""><input type="button"  data-reveal-id="add-archives-modal" value="Archives" /> </li>
+						<li id=""><a href="<?php echo add_query_arg( array( 'post_type' => 'rt_project' ,'action' => 'archives' ), $rt_pm_bp_pm->get_component_root_url() );?>">Archives</a> </li>
 					</ul>
 				</div>
 				<!-- code for Projects -->
 				<?php
 					//global $rt_pm_project, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query;
 					
-					if (isset($_GET['rt_project_id']) || isset($_GET['post_type'])){
+					if (isset($_GET['rt_project_id']) || isset($_GET['post_type']) && ($_GET['action'] != 'archives')){
 						$rt_pm_bp_pm_project->custom_page_ui();
 					} else {
 						$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
@@ -50,13 +50,18 @@
 						if ($offset <=0) {
 							$offset = 0;
 						}
+						if ($_GET['action'] == 'archives'){
+							$post_status = 'trash';
+						} else {
+							$post_status = 'any';
+						}
 						
 						$args = array(
 							'post_type' => $rt_pm_project->post_type,
 							// 'meta_key'   => $meta_key,
 							'orderby' => 'meta_value_num',
 							'order'      => $order,
-							'post_status' => 'any',
+							'post_status' => $post_status,
 							'posts_per_page' => $posts_per_page,
 							'offset' => $offset
 						);
