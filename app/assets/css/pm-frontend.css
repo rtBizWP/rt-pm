@@ -12,7 +12,7 @@
 
 /* Table tablenav css
 ------------------------------------------------------------------------*/
-.tablenav .no-pages, .tablenav .one-page .pagination-links {
+#wp-custom-list-table  .tablenav .no-pages, .tablenav .one-page .pagination-links {
     display: none;
 }
 .tablenav-pages .current-page {

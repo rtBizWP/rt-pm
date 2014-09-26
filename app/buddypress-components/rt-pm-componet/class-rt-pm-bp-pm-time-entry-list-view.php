@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) )
  */
 
 /**
- * Description of Rt_PM_Time_Entry_List_View
+ * Copy of Rt_PM_Time_Entry_List_View
  *
- * @author udit
+ * @author kishore
  */
 
 if( ! class_exists( 'WP_List_Table' ) )
