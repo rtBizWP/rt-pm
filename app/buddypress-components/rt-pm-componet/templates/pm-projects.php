@@ -132,8 +132,8 @@
 										?>
 										<tr class="lists-data">
 											<td align="center" scope="row"><?php the_title();
-											printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) ); ?>
-											<a href="<?php the_permalink();?>">View</a>
+											printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) );
+											printf( __('<br /><span><a href="%s">View</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) ); ?>
 											</td>
 											<td align="center" scope="row">
 												<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>

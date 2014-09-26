@@ -1428,14 +1428,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 											<?php if( $user_edit ) { ?>
 											<input type="text" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?>" />
 											<?php } else { ?>
-											<span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>';
+											<span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>
 											<?php } ?>
 										</div>
-										<?php if( $user_edit ) { ?>
+										<?php //if( $user_edit ) { ?>
 										<div class="large-1 mobile-large-1 columns">
 											<span class="postfix">$</span>
 										</div>
-										<?php } ?>
+										<?php // } ?>
 									</div>
                                 </div>
                             </div>
@@ -1465,7 +1465,22 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                             }
                                             ?>
                                         </select>
-                                    <?php } ?>
+                                    <?php 
+										} else {
+											if (!empty($results_member)) {
+                                                foreach ($results_member as $author) {
+                                                    if ($author->ID == $project_manager) {
+                                                        $selected = " selected";
+														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
+														'<span class="rtpm_view_mode">' . $author->display_name . '</span>' .
+														'</div>';
+                                                    }
+                                                    
+                                                                                        
+                                                }
+                                            }
+										} 
+									?>
                                 </div>
                             </div>
                             <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
@@ -1489,7 +1504,20 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                             }
                                             ?>
                                         </select>
-                                    <?php } ?>
+                                    <?php 
+										} else {
+											if (!empty($results_member)) {
+                                                foreach ($results_member as $bm) {
+                                                    if ($bm->ID == $business_manager) {
+                                                        $selected = " selected";
+														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
+														'<span class="rtpm_view_mode">' . $bm->display_name . '</span>' .
+														'</div>';
+                                                    }
+                                                }
+                                            }
+										} 
+									?>
                                 </div>
                             </div>
 							<div class="row collapse postbox">

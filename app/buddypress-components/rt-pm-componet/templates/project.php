@@ -14,10 +14,12 @@
     $post_type = $_REQUEST['post_type'];
 
     $user_edit = false;
-    if ( current_user_can( "edit_{$post_type}" ) ) {
-        $user_edit = 'true';
+	if ( $_REQUEST['action'] == 'view' && current_user_can( "read_{$post_type}" ) ){
+		 $user_edit = false;
+	} else  if ( current_user_can( "edit_{$post_type}" ) ) {
+        $user_edit = true;
     } else if ( current_user_can( "read_{$post_type}" ) ) {
-        $user_edit = 'false';
+        $user_edit = false;
     } else {
         wp_die("Opsss!! You are in restricted area");
     }?>
