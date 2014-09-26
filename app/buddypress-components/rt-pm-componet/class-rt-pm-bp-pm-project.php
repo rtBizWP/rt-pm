@@ -64,9 +64,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			
 			// add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
 			// add_action( 'wp_ajax_nopriv__ajax_fetch_custom_list', array( $this, '_ajax_fetch_custom_list_callback' ) );
-			
-			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
-			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
         }
 
 		//function _ajax_fetch_custom_list_callback() {
@@ -489,7 +486,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
 			$form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task";
             ///alert Notification
             if ( isset( $action_complete ) && $action_complete){
@@ -830,7 +826,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 <?php }
             }
 
-            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry");//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
             $form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry";//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
             ///alert Notification
             if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
@@ -1108,7 +1103,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 $_REQUEST[$post_type."_id"] = $post_id;
 				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
 				$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
-				// echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
 				echo '<script> window.location="' . $bp_bp_nav_link .'"; </script> ';
 				die();
             }
@@ -1118,7 +1112,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}");
 			$form_ulr = add_query_arg( array( 'post_type' => $post_type ), $rt_pm_bp_pm->get_component_root_url() );
 
             ///alert Notification
@@ -1651,7 +1644,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             }
 			$form_ulr = $rt_pm_bp_pm->get_component_root_url();
 			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
-            // $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files");?>
+           ?>
 			<div id="wp-custom-list-table">
 				<div id="attachment-error" class="row"></div>
 				<div class="row">
@@ -1697,9 +1690,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 													   if ( !empty($term_html) ){
 														   $term_html.=',&nbsp;';
 													   }
-													   $term_html .= '<a href="'.admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files&attachment_tag={$taxonomy->term_id}").'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
+													   $term_html .= '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'?post_type='.$post_type.'&'.$post_type.'_id='.$_REQUEST["{$post_type}_id"].'&tab='.$post_type.'-files&attachment_tag='.$taxonomy->term_id.'"'.'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
 												   }
 												   echo $term_html;?>&nbsp;]
+												   
 											   </div>
 										   <?php } ?>
 										   <?php if( $user_edit ) { ?>
@@ -1863,8 +1857,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				}
 				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
 				$bp_bp_nav_link .= "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification";
-				
-				// echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification" ) . '";</script> ';
 				echo '<script>window.location="' . $bp_bp_nav_link . '";</script> ';
 				die();
 			}
