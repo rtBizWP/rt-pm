@@ -1,0 +1,62 @@
+.error small, small.error {
+    background: none repeat scroll 0 0 #C60F13;
+    color: #FFFFFF;
+    display: block;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-bottom: 1em;
+    margin-top: 0.688em;
+    padding: 0.375em 0.25em;
+}
+
+
+/* Table tablenav css
+------------------------------------------------------------------------*/
+.tablenav .no-pages, .tablenav .one-page .pagination-links {
+    display: none;
+}
+.tablenav-pages .current-page {
+    padding-top: 0;
+    text-align: center;
+	display: none;
+}
+.tablenav .tablenav-pages {
+    color: #555;
+    cursor: default;
+    display: block;
+    float: right;
+    font-size: 12px;
+    height: 30px;
+    line-height: 30px;
+}
+
+.tablenav .displaying-num {
+    color: #777;
+    font-size: 12px;
+    font-style: italic;
+    margin-right: 2px;
+}
+.tablenav .tablenav-pages a.disabled, .tablenav .tablenav-pages a.disabled:active, .tablenav .tablenav-pages a.disabled:focus, .tablenav .tablenav-pages a.disabled:hover {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.05);
+    color: #aaa;
+}
+.tablenav .tablenav-pages a {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    font-weight: 400;
+    padding: 0 10px 3px;
+}
+.tablenav .tablenav-pages a, .tablenav-pages span.current {
+    padding: 3px 6px;
+    text-decoration: none;
+}
+.tablenav-pages a {
+    font-weight: 600;
+    margin-right: 1px;
+    padding: 0 2px;
+}
+/** Leave listing **/
+
+.deletepostlink {
+	color: #C60F13;
+}
