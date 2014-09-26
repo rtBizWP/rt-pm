@@ -94,7 +94,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
                 wp_localize_script( 'rtpm-admin-js', 'rtpm_post_type', $_REQUEST['post_type'] );
                 wp_localize_script( 'rtpm-admin-js', 'rtpm_user_edit', array($user_edit) );
-				wp_localize_script( 'rtpm-frontend-js', 'rtpmurl', $rt_pm_bp_pm->get_component_root_url() );
+				wp_localize_script( 'rtpm-frontend-js', 'rtpmurl', RT_PM_URL );
 
 			// if (isset($_REQUEST['taxonomy']) && $_REQUEST['taxonomy'] == Rt_PM_Time_Entry_Type::$time_entry_type_tax ) {
 				// wp_localize_script( 'rtpm-wp-menu-patch-js', 'rtpm_time_entry_type_screen', admin_url( 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax ) );

@@ -50,25 +50,23 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		}
 
 		function hooks() {
-			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
-            add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
-            add_action( 'p2p_init', array( $this, 'create_connection' ) );
-           // add_action( 'save_post', 'update_project_meta' );
+			// add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
+            // add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
+            // add_action( 'p2p_init', array( $this, 'create_connection' ) );
+            // add_action( 'save_post', 'update_project_meta' );
 
-			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
-            add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
+			// add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
+            // add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
 
 			// CRM Lead to PM Project - Link Hook
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
-                        
-            add_action("init",  array( $this,"project_list_switch_view"));
-            add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
-            add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
-            add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
 			
-			//add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
-			//add_action( 'wp_ajax_nopriv__ajax_fetch_custom_list', array( $this, '_ajax_fetch_custom_list_callback' ) );
+			// add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
+			// add_action( 'wp_ajax_nopriv__ajax_fetch_custom_list', array( $this, '_ajax_fetch_custom_list_callback' ) );
+			
+			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
+			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
         }
 
 		//function _ajax_fetch_custom_list_callback() {
@@ -2229,34 +2227,5 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			</div>
 		<?php }
                 
-                function project_list_switch_view() {
-                        if (isset($_GET["post_type"]) && $_GET["post_type"] == $this->post_type) {
-                            if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
-                                wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type");
-                            }
-                            if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
-                               wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-all-$this->post_type");
-                            }
-                        }
-               }
-                    
-             function project_listview_editlink($url,$post_id,$contexts){
-                 if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post_id);
-                 } 
-                 return $url;  
-             }
-             
-             function project_listview_action($actions, $post){
-                  if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post->ID) . '" title="Edit this item">Edit</a>';
-                  }
-                return $actions;
-             }
-
-		function project_bulk_actions( $bulk_actions ) {
-			unset( $bulk_actions[ 'edit' ] );
-			return $bulk_actions;
-		}
-    }
+	}
 }

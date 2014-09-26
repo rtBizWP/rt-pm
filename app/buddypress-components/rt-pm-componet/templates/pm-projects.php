@@ -86,13 +86,13 @@
 									<th align="center" scope="row">
 										<?php esc_html_e('Business Manager', 'rt_pm');?>
 									</th>
-									<th align="center" scope="row" data-sorting-type="ASC" data-attr-type="startdate">
+									<th align="center" class="order startdate" scope="row" data-sorting-type="ASC" data-attr-type="startdate">
 										<?php esc_html_e('Start Date', 'rt_hrm');?>
 										<span>
 											<i class="fa fa-caret-down"></i>
 										</span>
 									</th>
-									<th align="center" scope="row" data-sorting-type="ASC" data-attr-type="enddate">
+									<th align="center" class="order enddate" scope="row" data-sorting-type="ASC" data-attr-type="enddate">
 										<?php esc_html_e('End Date', 'rt_hrm');?>
 										<span>
 											<i class="fa fa-caret-down"></i>
@@ -108,13 +108,13 @@
 										$get_user_meta = get_post_meta($get_the_id);
 										$project_manager_id = get_post_meta( $get_the_id, 'project_manager', true );
 										$business_manager_id = get_post_meta( $get_the_id, 'business_manager', true );
-										$leave_duration_value = get_post_meta( $get_the_id, 'leave-duration', true );
-										$leave_duration_type = get_term_by('slug', $leave_duration_value, 'rt-leave-type');
+										$project_end_date_valueduration_value = get_post_meta( $get_the_id, 'leave-duration', true );
+										$project_end_date_valueduration_type = get_term_by('slug', $project_end_date_valueduration_value, 'rt-leave-type');
 										
-										$leave_start_date_value = get_post_meta( $get_the_id, 'leave-start-date', true );
-										$leave_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
-										$leave_end_date_value = strtotime( $leave_end_date_value );
-										$leave_end_date_value = date( 'd-m-Y', (int) $leave_end_date_value );
+										$project_end_date_valuestart_date_value = get_post_meta( $get_the_id, 'leave-start-date', true );
+										$project_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
+										$project_end_date_value = strtotime( $project_end_date_value );
+										$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
 										
 										$project_manager_info = get_user_by( 'id', $project_manager_id );
 										if ( ! empty( $project_manager_info->user_nicename ) ){							
@@ -133,7 +133,10 @@
 										<tr class="lists-data">
 											<td align="center" scope="row"><?php the_title();
 											printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) );
-											printf( __('<br /><span><a href="%s">View</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) ); ?>
+											printf( __('<span><a href="%s">View</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) );
+											printf( __('<span><a href="%s">Archive</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) ); 
+											printf( __('<span><a class="deletepostlink" href="%s">Delete</a></span>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
+											?>
 											</td>
 											<td align="center" scope="row">
 												<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>
@@ -141,7 +144,7 @@
 											<td align="center" scope="row"><?php echo $project_manager_nicename; ?></td>
 											<td align="center" scope="row"><?php echo $business_manager_nicename; ?></td>
 											<td align="center" scope="row"><?php echo the_date('d-m-Y');?></td>
-											<td align="center" scope="row"><?php echo $leave_end_date_value;?></td>
+											<td align="center" scope="row"><?php echo $project_end_date_value;?></td>
 										</tr>
 										<?php
 										} 
@@ -156,7 +159,7 @@
 							</tbody>
 						</table>
 						<?php if ( $max_num_pages > 1 ) { ?>
-						<ul id="leave-pagination"><li id="prev"><a class="page-link">Previous</a></li><li id="next"><a class="page-link next">Next</a></li></ul>
+						<ul id="projects-pagination"><li id="prev"><a class="page-link">Previous</a></li><li id="next"><a class="page-link next">Next</a></li></ul>
 						<?php }
 					} 
 					?>

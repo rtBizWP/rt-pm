@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
 		 *
 		 */
 		init : function(){
-            //rtHRMFrontend.leaveListing();
+            rtHRMFrontend.leaveListing();
 			//rtHRMFrontend.requestsListing();
 		},
         leaveListing : function(){
@@ -14,17 +14,17 @@ jQuery(document).ready(function($) {
 			var attr = "";
 			var max_num_pages = 999999;
 			if ( 1 == paged ){
-				$( "#leave-pagination li#prev" ).hide();
+				$( "#projects-pagination li#prev" ).hide();
 			} else {
-				$( "#leave-pagination li#prev" ).show();
+				$( "#projects-pagination li#prev" ).show();
 			}
 			if ( max_num_pages == paged ){
-				$( "#leave-pagination li#next" ).hide();
+				$( "#projects-pagination li#next" ).hide();
 			} else {
-				$( "#leave-pagination li#next" ).show();
+				$( "#projects-pagination li#next" ).show();
 			}
 			
-			$( ".leave-lists .lists-header th.order" ).click(function() {
+			$( ".projects-lists .lists-header th.order" ).click(function() {
 				order = $(this).data("sorting-type");
 				attr =  $(this).data("attr-type");
 				
@@ -38,60 +38,60 @@ jQuery(document).ready(function($) {
 					$(this).append( '<span><i class="fa fa-caret-up"></i></span>' );
 					$(this).data( "sorting-type", "DESC" );
 				}
-				$( ".leave-lists tr.lists-data" ).remove();
+				$( ".projects-lists tr.lists-data" ).remove();
 				$.ajax({
 					url: ajaxurl,
 					dataType: "json",
 					type: 'POST',
 					data: {
-						action: "leave_listing_info",
+						action: "projects_listing_info",
 						order:  order,
 						attr:  attr,
 						paged: paged
 					},
 					beforeSend : function(){
-						$( ".leave-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
+                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},
 					success: function( data ) {
 						$.each( data, function( i, val ) {
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="leavetype">' + data[i].leavetype + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<a href="' + data[i].permalink + '">View</a></td><td>' + data[i].leavestartdate + '</td><td>' + data[i].leaveenddate + '</td><td class="' + data[i].poststatus + '">' + data[i].poststatus + '</td></tr>' );
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
-							$( ".leave-lists tr.lists-data" ).remove();
-							$( "ul#leave-pagination" ).remove();
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Leave Listing</td></tr>' );
-							$( ".leave-lists #loading" ).remove();
+							$( ".projects-lists tr.lists-data" ).remove();
+							$( "ul#projects-pagination" ).remove();
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
+							$( ".projects-lists #loading" ).remove();
 							
 						} else {
-							$( ".leave-lists #loading" ).remove();
+							$( ".projects-lists #loading" ).remove();
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".leave-lists #loading" ).remove();
+					    $( ".projects-lists #loading" ).remove();
 						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
 					}
 				});
 				
 			});
-			$( "#leave-pagination li#next" ).click(function() {
+			$( "#projects-pagination li#next" ).click(function() {
 				paged++;
-				$( ".leave-lists tr.lists-data" ).remove();
+				$( ".projects-lists tr.lists-data" ).remove();
 				$.ajax({
 					url: ajaxurl,
 					dataType: "json",
 					type: 'POST',
 					data: {
-						action: "leave_listing_info",
+						action: "projects_listing_info",
 						order:  order,
 						attr:  attr,
 						paged: paged
 					},
 					beforeSend : function(){
-						$( ".leave-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
+                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},
@@ -100,50 +100,50 @@ jQuery(document).ready(function($) {
 							max_num_pages = data[0].max_num_pages;
 						}
 						if ( max_num_pages == paged ){
-							$( "#leave-pagination li#next" ).hide();
+							$( "#projects-pagination li#next" ).hide();
 						} else {
-							$( "#leave-pagination li#next" ).show();
+							$( "#projects-pagination li#next" ).show();
 						}
 						if ( 1 == paged ){
-							$( "#leave-pagination li#prev" ).hide();
+							$( "#projects-pagination li#prev" ).hide();
 						} else {
-							$( "#leave-pagination li#prev" ).show();
+							$( "#projects-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="leavetype">' + data[i].leavetype + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<a href="' + data[i].permalink + '">View</a></td><td>' + data[i].leavestartdate + '</td><td>' + data[i].leaveenddate + '</td><td class="' + data[i].poststatus + '">' + data[i].poststatus + '</td></tr>' );
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
-							$( ".leave-lists tr.lists-data" ).remove();
-							$( "ul#leave-pagination" ).remove();
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Leave Listing</td></tr>' );
-							$( ".leave-lists #loading" ).remove();
+							$( ".lprojects-lists tr.lists-data" ).remove();
+							$( "ul#projects-pagination" ).remove();
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
+							$( ".projects-lists #loading" ).remove();
 							
 						} else {
-							$( ".leave-lists #loading" ).remove();
+							$( ".projects-lists #loading" ).remove();
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".leave-lists #loading" ).remove();
+					    $( ".projects-lists #loading" ).remove();
 						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
 					}
 				});
 			});
-			$( "#leave-pagination li#prev" ).click(function() {
+			$( "#projects-pagination li#prev" ).click(function() {
 				paged--;
-				$( ".leave-lists tr.lists-data" ).remove();
+				$( ".projects-lists tr.lists-data" ).remove();
 				$.ajax({
 					url: ajaxurl,
 					dataType: "json",
 					type: 'POST',
 					data: {
-						action: "leave_listing_info",
+						action: "projects_listing_info",
 						order:  order,
 						attr:  attr,
 						paged: paged
 					},
 					beforeSend : function(){
-						$( ".leave-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
+                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},
@@ -152,30 +152,30 @@ jQuery(document).ready(function($) {
 							max_num_pages = data[0].max_num_pages;
 						}
 						if ( max_num_pages == paged ){
-							$( "#leave-pagination li#next" ).hide();
+							$( "#projects-pagination li#next" ).hide();
 						} else {
-							$( "#leave-pagination li#next" ).show();
+							$( "#projects-pagination li#next" ).show();
 						}
 						if ( 1 == paged ){
-							$( "#leave-pagination li#prev" ).hide();
+							$( "#projects-pagination li#prev" ).hide();
 						} else {
-							$( "#leave-pagination li#prev" ).show();
+							$( "#projects-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="leavetype">' + data[i].leavetype + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<a href="' + data[i].permalink + '">View</a></td><td>' + data[i].leavestartdate + '</td><td>' + data[i].leaveenddate + '</td><td class="' + data[i].poststatus + '">' + data[i].poststatus + '</td></tr>' );
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
-							$( ".leave-lists tr.lists-data" ).remove();
-							$( "ul#leave-pagination" ).remove();
-							$( ".leave-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Leave Listing</td></tr>' );
-							$( ".leave-lists #loading" ).remove();
+							$( ".projects-lists tr.lists-data" ).remove();
+							$( "ul#projects-pagination" ).remove();
+							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
+							$( ".projects-lists #loading" ).remove();
 							
 						} else {
-							$( ".leave-lists #loading" ).remove();
+							$( ".projects-lists #loading" ).remove();
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".leave-lists #loading" ).remove();
+					    $( ".projects-lists #loading" ).remove();
 						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
 					}
 				});
@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
 					},
 					beforeSend : function(){
 						$( ".requests-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+                            '<img src="' + rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},
@@ -262,7 +262,7 @@ jQuery(document).ready(function($) {
 					},
 					beforeSend : function(){
 						$( ".requests-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+                            '<img src="' + rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},
@@ -314,7 +314,7 @@ jQuery(document).ready(function($) {
 					},
 					beforeSend : function(){
 						$( ".requests-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' + rthrmurl +'app/assets/img/loading.gif"/>' +
+                            '<img src="' + rtpmurl +'app/assets/img/loading.gif"/>' +
                             '</td></tr>'
 						);
 					},

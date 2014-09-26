@@ -62,10 +62,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
                         
-                        add_action("init",  array( $this,"project_list_switch_view"));
-                        add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
-                        add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
-                        add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
+            add_action("init",  array( $this,"project_list_switch_view"));
+            add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
+            add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
+            add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
+			
+			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
+			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
         }
 
 		function convert_lead_to_project() {
@@ -2327,34 +2330,157 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			</div>
 		<?php }
                 
-                function project_list_switch_view() {
-                        if (isset($_GET["post_type"]) && $_GET["post_type"] == $this->post_type) {
-                            if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
-                                wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type");
-                            }
-                            if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
-                               wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-all-$this->post_type");
-                            }
-                        }
-               }
+		function project_list_switch_view() {
+			if (isset($_GET["post_type"]) && $_GET["post_type"] == $this->post_type) {
+			    if (strpos($_SERVER['SCRIPT_NAME'], "post-new.php")) {
+			        wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type");
+			    }
+			    if (isset($_GET["mode"]) && $_GET["mode"] == "excerpt") {
+			       wp_redirect("edit.php?post_type=$this->post_type&page=rtpm-all-$this->post_type");
+			    }
+			}
+		}
                     
-             function project_listview_editlink($url,$post_id,$contexts){
-                 if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                      $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post_id);
-                 } 
-                 return $url;  
-             }
+	     function project_listview_editlink($url,$post_id,$contexts){
+	         if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+	              $url=admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post_id);
+	         } 
+	         return $url;  
+	     }
              
-             function project_listview_action($actions, $post){
-                  if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
-                       $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post->ID) . '" title="Edit this item">Edit</a>';
-                  }
-                return $actions;
-             }
+         function project_listview_action($actions, $post){
+              if (isset($_GET['post_type']) && $_GET['post_type']==$this->post_type) {
+                   $actions[ 'edit' ] = '<a href="'.  admin_url("edit.php?post_type=$this->post_type&page=rtpm-add-$this->post_type&{$this->post_type}_id=".$post->ID) . '" title="Edit this item">Edit</a>';
+              }
+            return $actions;
+         }
 
 		function project_bulk_actions( $bulk_actions ) {
 			unset( $bulk_actions[ 'edit' ] );
 			return $bulk_actions;
+		}
+		
+				/**
+		 * projects_listing
+		 *
+		 * @access public
+		 * @param  void
+		 * @return json json_encode($arrReturn)
+		 */
+		function projects_listing() {
+			global $rt_pm_project,$rt_pm_bp_pm, $bp, $wpdb, $wp_query, $paged;
+			
+			// Get post data
+			$post_data = array();
+			
+			$order = stripslashes( trim( $_POST['order'] ) );
+			$attr = stripslashes( trim( $_POST['attr'] ) );
+			$paged = stripslashes( trim( $_POST['paged'] ) ) ? stripslashes( trim( $_POST['paged'] ) ) : 1;
+			
+			$orderby = 'meta_value_num';
+			
+			$meta_key = 'leave-start-date';
+			if ( $attr == "startdate" ){
+				$meta_key = 'leave-start-date';
+			} else if( $attr == "enddate" ) {
+				$meta_key = 'leave-end-date';
+			} else if( $attr == "leavetype" ) {
+				$meta_key = 'leave-start-date';
+				$orderby = 'rt-leave-type';
+			}
+
+			$posts_per_page = get_option( 'posts_per_page' );
+			
+			$offset = ( $paged - 1 ) * $posts_per_page;
+			if ($offset <=0) {
+				$offset = 0;
+			}
+			
+			$post_status = 'any';
+			
+			$post_meta = $wpdb->get_row( "SELECT * from {$wpdb->postmeta} WHERE meta_key = 'rt_biz_contact_user_id' and meta_value = {$bp->displayed_user->id} ");
+			
+			$args = array(
+				'post_type' => $rt_pm_project->post_type,
+				// 'meta_key'   => $meta_key,
+				'orderby' => 'meta_value_num',
+				'order'      => $order,
+				'post_status' => $post_status,
+				'posts_per_page' => $posts_per_page,
+				'offset' => $offset
+			);
+			
+			// print_r($args);
+			
+			// The Query
+			$the_query = new WP_Query( $args );
+			
+			$max_num_pages =  $the_query->max_num_pages;
+			
+			$arrReturn = array();
+			
+			// The Loop
+			if ( $the_query->have_posts() ) {
+				
+				while ( $the_query->have_posts() ) {
+					$the_query->the_post();
+					$get_the_id =  get_the_ID();
+					$get_user_meta = get_post_meta($get_the_id);
+					$project_manager_id = get_post_meta( $get_the_id, 'project_manager', true );
+					$business_manager_id = get_post_meta( $get_the_id, 'business_manager', true );
+					
+					$project_start_date_value = get_the_date('d-m-Y');
+					$project_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
+					$project_end_date_value = strtotime( $project_end_date_value );
+					$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+					
+					$project_manager_info = get_user_by( 'id', $project_manager_id );
+					if ( ! empty( $project_manager_info->user_nicename ) ){							
+						$project_manager_nicename = $project_manager_info->user_nicename;
+					}
+					
+					$business_manager_info = get_user_by( 'id', $business_manager_id );
+					if ( ! empty( $business_manager_info->user_nicename ) ){							
+						$business_manager_nicename = $business_manager_info->user_nicename;
+					}
+					
+					//Returns Array of Term Names for "rt_project-type"
+					$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
+					//if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0];
+										
+					$get_post_status = get_post_status();
+					$get_edit_post_link = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$get_permalink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$delete_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					
+					$arrReturn[] = array(
+						"postname" => get_the_title(),
+						"projectstartdate" => $project_start_date_value, 
+						"projectenddate" => $project_end_date_value, 
+						"poststatus" => $get_post_status,
+						"editpostlink" => $get_edit_post_link,
+						"permalink" => $get_permalink,
+						"deletepostlink" => $delete_postlink,
+						"projecttype" => $rt_project_type_list[0],
+						"projectmanagernicename" => $project_manager_nicename,
+						"businessmanagernicename" => $business_manager_nicename,
+						"max_num_pages" => $max_num_pages,
+						"order" => $order,
+						"attr" => $attr
+					);
+					
+				}
+				
+			} else {
+				// no posts found
+			}
+			
+			/* Restore original Post Data */
+			wp_reset_postdata();
+			header('Content-Type: application/json');
+            echo json_encode($arrReturn);
+            die(0);
+
 		}
     }
 }
