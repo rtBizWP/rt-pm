@@ -66,7 +66,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
             add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
             add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
+			
+			//add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
+			//add_action( 'wp_ajax_nopriv__ajax_fetch_custom_list', array( $this, '_ajax_fetch_custom_list_callback' ) );
         }
+
+		//function _ajax_fetch_custom_list_callback() {
+ 
+		   // $rtpm_bp_pm_time_entry_list = new Rt_PM_BP_PM_Time_Entry_List_View();
+		    //$rtpm_bp_pm_time_entry_list->ajax_response();
+		//}
+		
 
 		function convert_lead_to_project() {
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {

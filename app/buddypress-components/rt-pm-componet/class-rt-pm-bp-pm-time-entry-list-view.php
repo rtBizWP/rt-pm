@@ -51,6 +51,66 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 			);
 			parent::__construct( $args );
 		}
+		
+		/*
+		 * The AJAX Response nonce
+		 */
+		public function display() {
+ 
+		    wp_nonce_field( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce' );
+		 
+		    echo '<input id="order" type="hidden" name="order" value="' . $this->_pagination_args['order'] . '" />';
+		    echo '<input id="orderby" type="hidden" name="orderby" value="' . $this->_pagination_args['orderby'] . '" />';
+		 
+		    parent::display();
+		}
+		
+		/*
+		 * The AJAX Response
+		 */
+		public function ajax_response() {
+ 
+		    check_ajax_referer( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce' );
+		 
+		    $this->prepare_items();
+		 
+		    extract( $this->_args );
+		    extract( $this->_pagination_args, EXTR_SKIP );
+		 
+		    ob_start();
+		    if ( ! empty( $_REQUEST['no_placeholder'] ) )
+		        $this->display_rows();
+		    else
+		        $this->display_rows_or_placeholder();
+		    $rows = ob_get_clean();
+		 
+		    ob_start();
+		    $this->print_column_headers();
+		    $headers = ob_get_clean();
+		 
+		    ob_start();
+		    $this->pagination('top');
+		    $pagination_top = ob_get_clean();
+		 
+		    ob_start();
+		    $this->pagination('bottom');
+		    $pagination_bottom = ob_get_clean();
+		 
+		    $response = array( 'rows' => $rows );
+		    $response['pagination']['top'] = $pagination_top;
+		    $response['pagination']['bottom'] = $pagination_bottom;
+		    $response['column_headers'] = $headers;
+		 
+		    if ( isset( $total_items ) )
+		        $response['total_items_i18n'] = sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) );
+		 
+		    if ( isset( $total_pages ) ) {
+		        $response['total_pages'] = $total_pages;
+		        $response['total_pages_i18n'] = number_format_i18n( $total_pages );
+		    }
+		 
+		    die( json_encode( $response ) );
+		}
 
 		/**
 		* Add extra markup in the toolbars before or after the list
@@ -188,6 +248,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 					'total_items' => $totalitems,
 					'total_pages' => $totalpages,
 					'per_page' => $perpage,
+					// Set ordering values if needed (useful for AJAX)
+			        'orderby'   => ! empty( $_REQUEST['orderby'] ) && '' != $_REQUEST['orderby'] ? $_REQUEST['orderby'] : 'rtpm_message',
+			        'order'     => ! empty( $_REQUEST['order'] ) && '' != $_REQUEST['order'] ? $_REQUEST['order'] : 'asc'
+    
 				)
 			);
 			//The pagination links are automatically built according to those parameters

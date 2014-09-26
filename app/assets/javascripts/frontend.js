@@ -1,13 +1,5 @@
 jQuery(document).ready(function($) {
 
-	$("#front-button-trash").click(function(){
-		var r = confirm("Are you sure you want to move this project to trash???");
-		if (r != true) {
-			return false;
-		}
-		window.location = $(this).data('href');
-		return false;
-    });
 	var rtHRMFrontend = {
 		/**
 		 *

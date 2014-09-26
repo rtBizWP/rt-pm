@@ -282,9 +282,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 								//.'< /td>';
 								break;
                             case "rtpm_assignee":
-								if(!empty($temp['post_assignee'])) {
+								if(!empty($temp['post_assignee'])) { // Need to check replaced url 
                                     $user = get_user_by('id', $temp['post_assignee']);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
+                                    $url = $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
                                     $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
                                     if ($this->user_edit){
                                         echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
@@ -329,7 +329,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_status":
                                 if(!empty($rec->post_status)) {
                                     $status = $this->get_status_label($rec->post_status);
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
+                                     $url = $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
                                     $url = add_query_arg( 'post_status', $rec->post_status, $url );
                                     if ( !empty( $status ) ) {
                                         if ($this->user_edit){
