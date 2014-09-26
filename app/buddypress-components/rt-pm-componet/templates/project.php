@@ -69,7 +69,7 @@
                         $rt_pm_bp_pm_project->get_project_timeentry_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ){
-                        $rt_pm_project->get_project_file_tab($labels,$user_edit);
+                        $rt_pm_bp_pm_project->get_project_file_tab($labels,$user_edit);
                     }
                     if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ){
                         $rt_pm_bp_pm_project->get_project_notification_tab($labels,$user_edit);

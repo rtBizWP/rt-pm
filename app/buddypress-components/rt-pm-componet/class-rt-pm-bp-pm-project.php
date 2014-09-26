@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) )
 /**
  * Description of Rt_PM_Bp_PM_Project
  *
- * @author udit
+ * @author kishore
  */
 if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	class Rt_PM_Bp_PM_Project extends Rt_PM_Project {
@@ -62,10 +62,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
                         
-                        add_action("init",  array( $this,"project_list_switch_view"));
-                        add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
-                        add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
-                        add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
+            add_action("init",  array( $this,"project_list_switch_view"));
+            add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
+            add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
+            add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
         }
 
 		function convert_lead_to_project() {
@@ -752,7 +752,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$timeentry_post_type.'_id'] ) ) {
                 $rt_pm_time_entries_model->delete_timeentry( array( 'id' => $_REQUEST[$timeentry_post_type.'_id'] ) );
-				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry') . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url(). '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry' . '"; </script> ';
                 die();
             }
 
@@ -907,9 +907,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				</div>
 
 				<?php
-				$rtpm_time_entry_list= new Rt_PM_Time_Entry_List_View();
-				$rtpm_time_entry_list->prepare_items();
-				$rtpm_time_entry_list->display();
+				$rtpm_bp_pm_time_entry_list = new Rt_PM_BP_PM_Time_Entry_List_View();
+				$rtpm_bp_pm_time_entry_list->prepare_items();
+				$rtpm_bp_pm_time_entry_list->display();
 				?>
 			</div>
 
@@ -998,7 +998,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$post_type.'_id'] ) ) {
-                wp_delete_post( $_REQUEST[$post_type.'_id'] );
+                wp_trash_post( $_REQUEST[$post_type.'_id'] );
 				$args = array(
 					'post_type' =>  $rt_pm_task->post_type,
 					'post_status' => 'any',
@@ -1009,7 +1009,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				);
 				$tasks = get_posts( $args );
 				foreach ( $tasks as $t ) {
-					wp_delete_post( $t );
+					wp_trash_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
 				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
@@ -1566,6 +1566,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
         }
 
         function get_project_file_tab($labels,$user_edit){
+        	global $rt_pm_bp_pm;
             $post_type=$_REQUEST['post_type'];
             $projectid = $_REQUEST["{$post_type}_id"];
 
