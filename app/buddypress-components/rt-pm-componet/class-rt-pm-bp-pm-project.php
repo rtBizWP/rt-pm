@@ -1018,6 +1018,50 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
                 die();
             }
+			
+			//Archive action
+            if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'archive' && isset( $_REQUEST[$post_type.'_id'] ) ) {
+                wp_trash_post( $_REQUEST[$post_type.'_id'] );
+				$args = array(
+					'post_type' =>  $rt_pm_task->post_type,
+					'post_status' => 'any',
+					'meta_query' => array(
+						'key' => Rt_PM_Task_List_View::$project_id_key,
+						'value' => array( $_REQUEST[$post_type.'_id'] ),
+					),
+				);
+				$tasks = get_posts( $args );
+				foreach ( $tasks as $t ) {
+					// wp_trash_post( $t );
+				}
+				// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
+                die();
+            }
+
+			//UnArchive action
+            if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset( $_REQUEST[$post_type.'_id'] ) ) {
+				$unarchive_post = array(
+					'ID'           => $_REQUEST[$post_type.'_id'],
+					'post_status' => 'closed'
+				);
+                wp_update_post( $unarchive_post );
+				$args = array(
+					'post_type' =>  $rt_pm_task->post_type,
+					'post_status' => 'any',
+					'meta_query' => array(
+						'key' => Rt_PM_Task_List_View::$project_id_key,
+						'value' => array( $_REQUEST[$post_type.'_id'] ),
+					),
+				);
+				$tasks = get_posts( $args );
+				foreach ( $tasks as $t ) {
+					//wp_delete_post( $t );
+				}
+				// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
+                die();
+            }
 
             //Check Post object is init or not
             if ( isset( $_POST['post'] ) ) {

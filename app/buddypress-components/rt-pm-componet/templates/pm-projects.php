@@ -52,8 +52,12 @@
 						}
 						if ($_GET['action'] == 'archives'){
 							$post_status = 'trash';
+							$archive = 'unarchive';
+							$archive_text = __('Unarchive');
 						} else {
-							$post_status = 'any';
+							$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
+							$archive = 'archive';
+							$archive_text = __('Archive');
 						}
 						
 						$args = array(
@@ -134,7 +138,7 @@
 											<td align="center" scope="row"><?php the_title();
 											printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) );
 											printf( __('<span><a href="%s">View</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) );
-											printf( __('<span><a href="%s">Archive</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) ); 
+											printf( __('<span><a href="%s">'.$archive_text.'</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
 											printf( __('<span><a class="deletepostlink" href="%s">Delete</a></span>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 											?>
 											</td>
