@@ -1001,7 +1001,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$post_type.'_id'] ) ) {
-                wp_trash_post( $_REQUEST[$post_type.'_id'] );
+                wp_delete_post( $_REQUEST[$post_type.'_id'] );
 				$args = array(
 					'post_type' =>  $rt_pm_task->post_type,
 					'post_status' => 'any',
@@ -1012,7 +1012,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				);
 				$tasks = get_posts( $args );
 				foreach ( $tasks as $t ) {
-					wp_trash_post( $t );
+					wp_delete_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
 				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
