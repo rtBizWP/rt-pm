@@ -2386,23 +2386,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			
 			// Get post data
 			$post_data = array();
+			$order = 'DESC';
+			$attr = 'startdate';
 			
 			$order = stripslashes( trim( $_POST['order'] ) );
 			$attr = stripslashes( trim( $_POST['attr'] ) );
 			$paged = stripslashes( trim( $_POST['paged'] ) ) ? stripslashes( trim( $_POST['paged'] ) ) : 1;
-			
-			$orderby = 'meta_value_num';
-			
-			$meta_key = 'leave-start-date';
-			if ( $attr == "startdate" ){
-				$meta_key = 'leave-start-date';
-			} else if( $attr == "enddate" ) {
-				$meta_key = 'leave-end-date';
-			} else if( $attr == "leavetype" ) {
-				$meta_key = 'leave-start-date';
-				$orderby = 'rt-leave-type';
-			}
-
+						
 			$posts_per_page = get_option( 'posts_per_page' );
 			
 			$offset = ( $paged - 1 ) * $posts_per_page;
@@ -2410,19 +2400,31 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				$offset = 0;
 			}
 			
-			$post_status = 'any';
+			$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
 			
-			$post_meta = $wpdb->get_row( "SELECT * from {$wpdb->postmeta} WHERE meta_key = 'rt_biz_contact_user_id' and meta_value = {$bp->displayed_user->id} ");
 			
-			$args = array(
-				'post_type' => $rt_pm_project->post_type,
-				// 'meta_key'   => $meta_key,
-				'orderby' => 'meta_value_num',
-				'order'      => $order,
-				'post_status' => $post_status,
-				'posts_per_page' => $posts_per_page,
-				'offset' => $offset
-			);
+			$meta_key = 'post_duedate';
+			if ( $attr == "startdate" ){
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					//'meta_key'   => 'post_duedate',
+					//'orderby' => 'meta_value',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "enddate" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'meta_key'   => 'post_duedate',
+					'orderby' => 'meta_value',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			}
 			
 			// print_r($args);
 			

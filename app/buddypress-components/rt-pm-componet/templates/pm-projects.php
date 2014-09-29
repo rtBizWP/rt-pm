@@ -39,12 +39,7 @@
 						
 						$order = 'DESC';
 						$attr = 'startdate';
-						$meta_key = 'leave-start-date';
-						if ( $attr == "startdate" ){
-							$meta_key = 'leave-start-date';
-						} else if( $attr == "enddate" ) {
-							$meta_key = 'leave-end-date';
-						}
+						
 				
 						$offset = ( $paged - 1 ) * $posts_per_page;
 						if ($offset <=0) {
@@ -54,28 +49,33 @@
 							$post_status = 'trash';
 							$archive = 'unarchive';
 							$archive_text = __('Unarchive');
+							$projectslists = 'projects-archives-lists';
 						} else {
 							$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
 							$archive = 'archive';
 							$archive_text = __('Archive');
+							$projectslists = 'projects-lists';
 						}
 						
+						$meta_key = 'post_duedate';
 						$args = array(
 							'post_type' => $rt_pm_project->post_type,
-							// 'meta_key'   => $meta_key,
-							'orderby' => 'meta_value_num',
+							//'meta_key'   => 'post_duedate',
+							//'orderby' => 'meta_value',
 							'order'      => $order,
 							'post_status' => $post_status,
 							'posts_per_page' => $posts_per_page,
 							'offset' => $offset
 						);
+					
+						
 						// The Query
 						$the_query = new WP_Query( $args );
 						
 						$max_num_pages =  $the_query->max_num_pages;
 						
 						?>
-						<table cellspacing="0" class="projects-lists">
+						<table cellspacing="0" class="<?php echo $projectslists; ?>">
 							<tbody>
 								<tr class="lists-header">
 									<th align="center" scope="row">
@@ -147,7 +147,7 @@
 											</td>
 											<td align="center" scope="row"><?php echo $project_manager_nicename; ?></td>
 											<td align="center" scope="row"><?php echo $business_manager_nicename; ?></td>
-											<td align="center" scope="row"><?php echo the_date('d-m-Y');?></td>
+											<td align="center" scope="row"><?php echo get_the_date('d-m-Y');?></td>
 											<td align="center" scope="row"><?php echo $project_end_date_value;?></td>
 										</tr>
 										<?php
