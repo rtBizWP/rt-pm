@@ -2374,7 +2374,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			return $bulk_actions;
 		}
 		
-				/**
+		/**
 		 * projects_listing
 		 *
 		 * @access public
@@ -2404,11 +2404,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			
 			
 			$meta_key = 'post_duedate';
-			if ( $attr == "startdate" ){
+			if ( $attr == "title" ){
 				$args = array(
 					'post_type' => $rt_pm_project->post_type,
 					//'meta_key'   => 'post_duedate',
-					//'orderby' => 'meta_value',
+					'orderby' => 'title',
 					'order'      => $order,
 					'post_status' => $post_status,
 					'posts_per_page' => $posts_per_page,
@@ -2419,6 +2419,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					'post_type' => $rt_pm_project->post_type,
 					'meta_key'   => 'post_duedate',
 					'orderby' => 'meta_value',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
 					'order'      => $order,
 					'post_status' => $post_status,
 					'posts_per_page' => $posts_per_page,

@@ -78,8 +78,11 @@
 						<table cellspacing="0" class="<?php echo $projectslists; ?>">
 							<tbody>
 								<tr class="lists-header">
-									<th align="center" scope="row">
+									<th align="center" class="order title" scope="row" data-sorting-type="ASC" data-attr-type="title">
 										<?php esc_html_e('Name', 'rt_pm');?>
+										<span>
+											<i class="fa fa-caret-down"></i>
+										</span>
 									</th>
 									<th align="center" scope="row">
 										<?php esc_html_e('Type', 'rt_pm');?>
