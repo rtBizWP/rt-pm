@@ -69,6 +69,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			
 			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
 			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
+			
+			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );
         }
 
 		function convert_lead_to_project() {
@@ -2424,6 +2426,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					'posts_per_page' => $posts_per_page,
 					'offset' => $offset
 				);
+			} else if( $attr == "projecttype" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'rt_project-type',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
 			} else {
 				$args = array(
 					'post_type' => $rt_pm_project->post_type,
@@ -2505,6 +2516,25 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             echo json_encode($arrReturn);
             die(0);
 
+		}
+
+		function pm_project_type_orderby( $orderby, $wp_query ) {
+			global $wpdb;
+		
+			if ( isset( $wp_query->query['orderby'] ) && 'rt_project-type' == $wp_query->query['orderby'] ) {
+				$orderby = "(
+					SELECT GROUP_CONCAT(name ORDER BY name ASC)
+					FROM $wpdb->term_relationships
+					INNER JOIN $wpdb->term_taxonomy USING (term_taxonomy_id)
+					INNER JOIN $wpdb->terms USING (term_id)
+					WHERE $wpdb->posts.ID = object_id
+					AND taxonomy = 'rt_project-type'
+					GROUP BY object_id
+				) ";
+				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+			}
+		
+			return $orderby;
 		}
     }
 }

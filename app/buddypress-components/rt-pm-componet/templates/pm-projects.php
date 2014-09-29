@@ -84,8 +84,11 @@
 											<i class="fa fa-caret-down"></i>
 										</span>
 									</th>
-									<th align="center" scope="row">
+									<th align="center" class="order projecttype" scope="row" data-sorting-type="ASC" data-attr-type="projecttype">
 										<?php esc_html_e('Type', 'rt_pm');?>
+										<span>
+											<i class="fa fa-caret-down"></i>
+										</span>
 									</th>
 									<th align="center" scope="row">
 										<?php esc_html_e('Project Manager', 'rt_pm');?>
