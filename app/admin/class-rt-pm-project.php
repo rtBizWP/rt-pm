@@ -1193,6 +1193,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $newProject['post_date'] = current_time( 'mysql' );
                     $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
                 }
+				
+				// Change format for post_duedate
+				$postduedate = $newProject['post_duedate'];
+				if ( isset( $postduedate ) && $postduedate != '' ) {
+					$dr = date_create_from_format( 'M d, Y H:i A', $postduedate );
+					$UTC = new DateTimeZone('UTC');
+					$dr->setTimezone($UTC);
+					$timeStamp = $dr->getTimestamp();
+					$newProject['post_duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
+				}
 
                 // Post Data to be saved.
                 $post = array(
@@ -1320,6 +1330,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				$project_organization = get_post_meta($post->ID, "project_organization", true);
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
                 $duedate= get_post_meta($post->ID, 'post_duedate', true);
+				if ( ! empty( $duedate ) ){
+					$duedate = new DateTime($duedate); // date formating hack
+					$duedate = $duedate->format("M d, Y h:i A"); // date formating hack
+				}
 				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
             } else {
                 $post_author = get_current_user_id();
