@@ -78,11 +78,11 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_title'=> __( 'Title' ),
 				'rtpm_assignee'=> __( 'Assignee' ),
 				'rtpm_create_date'=> __( 'Created' ),
-				'rtpm_update_date'=> __( 'Last Updated' ),
+				'rtpm_update_date'=> __( 'Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
 				'rtpm_status'=> __( 'Status' ),
 				'rtpm_created_by'=> __( 'Created By' ),
-				'rtpm_updated_by'=> __( 'Last Updated By' ),
+				'rtpm_updated_by'=> __( 'Updated By' ),
 			);
 
 			return $columns;
@@ -97,7 +97,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_assignee'=> array('post_author', false),
 				'rtpm_create_date'=> array('post_date', false),
 				'rtpm_update_date'=> array('post_modified', false),
+				'rtpm_Due_date'=> array('post_duedate', false),
 				'rtpm_status'=> array('post_status', false),
+				//'rtpm_created_by'=> array('post_author', false),
+				//'rtpm_updated_by'=> array('post_author', false),
 			);
 			return $sortable;
 		}

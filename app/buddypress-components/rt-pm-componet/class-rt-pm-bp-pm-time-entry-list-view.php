@@ -157,8 +157,12 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 		public function get_sortable_columns() {
 			$sortable = array(
 				//'rtpm_title'=> array('task_id', false),
-				'rtpm_create_date'=> array('timestamp', false),
-				'rtpm_created_by'=> array('author', false),
+				'rtpm_task_id'=> array('task_id', false),
+				'rtpm_time_entry_type' => array('type', false),
+				'rtpm_message' => array('message', false),
+				'rtpm_create_date' => array('timestamp', false),
+				'rtpm_Duration'=> array('time_duration', false),
+				'rtpm_created_by' => array('author', false),
 			);
 			return $sortable;
 		}

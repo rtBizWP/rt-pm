@@ -55,6 +55,151 @@
     margin-right: 1px;
     padding: 0 2px;
 }
+
+/**___________________**/
+.sorting-indicator {
+	display: none;
+	width: 10px;
+	height: 4px;
+	margin-top: 8px;
+	margin-left: 7px;
+}
+
+.sorting-indicator:before {
+	background: none;
+	content: '\f142';
+	font: normal 20px/1 'dashicons';
+	speak: none;
+	display: inline-block;
+	padding: 0;
+	top: -4px;
+	left: -8px;
+	color: #444;
+	line-height: 10px;
+	position: relative;
+	vertical-align: top;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none !important;
+	color: #444;
+}
+
+.column-comments .sorting-indicator:before {
+	top: 0;
+	left: -10px;
+}
+
+th.sorted.asc .sorting-indicator:before,
+th.desc:hover span.sorting-indicator:before {
+	content: '\f142';
+}
+
+th.sorted.desc .sorting-indicator:before,
+th.asc:hover span.sorting-indicator:before {
+	content: '\f140';
+}
+
+tr.wp-locked .locked-indicator {
+	margin-left: 6px;
+	height: 20px;
+	width: 16px;
+}
+
+tr.wp-locked .locked-indicator:before {
+	color: #888;
+	content: '\f160';
+	display: inline-block;
+	float: left;
+	font: normal 20px/1 'dashicons';
+	speak: none;
+	vertical-align: middle;
+	margin-left: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+tr.wp-locked .check-column label,
+tr.wp-locked .check-column input[type="checkbox"],
+tr.wp-locked .row-actions .inline,
+tr.wp-locked .row-actions .trash {
+	display: none;
+}
+
+tr .locked-info {
+	height: 0;
+	opacity: 0;
+}
+
+tr.wp-locked .locked-info {
+	margin-top: 8px;
+	height: auto;
+	opacity: 1;
+}
+
+.locked-text {
+	vertical-align: top;
+}
+
+tr.locked-info, tr.wp-locked .locked-info {
+	-webkit-transition: height 1s, opacity 0.5s;
+	transition: height 1s, opacity 0.5s;
+}
+
+.fixed .column-comments .sorting-indicator {
+	margin-top: 3px;
+}
+
+#menu-locations-wrap .widefat {
+	width: 60%;
+}
+
+.widefat th.sortable,
+.widefat th.sorted {
+	padding: 0;
+}
+
+th.sortable a,
+th.sorted a {
+	display: block;
+	overflow: hidden;
+	padding: 7px 7px 8px 10px;
+}
+
+th.manage-column a,
+th.sortable a:hover,
+th.sortable a:active,
+th.sortable a:focus {
+	color: #333;
+}
+
+th.sortable a:focus {
+	background: #e1e1e1;
+}
+
+.fixed .column-comments.sortable a,
+.fixed .column-comments.sorted a {
+	padding: 8px 0;
+}
+
+th.sortable a span,
+th.sorted a span {
+	float: left;
+	cursor: pointer;
+}
+
+th.sorted.asc .sorting-indicator,
+th.desc:hover span.sorting-indicator {
+	display: block;
+	background-position: 0 0;
+}
+
+th.sorted.desc .sorting-indicator,
+th.asc:hover span.sorting-indicator {
+	display: block;
+	background-position: -7px 0;
+}
+
+
 /** Leave listing **/
 
 .deletepostlink {
