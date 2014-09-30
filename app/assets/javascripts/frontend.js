@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
 					},
 					success: function( data ) {
 						$.each( data, function( i, val ) {
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-lists tr.lists-data" ).remove();
@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
 							$( "#projects-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-lists tr.lists-data" ).remove();
@@ -162,7 +162,7 @@ jQuery(document).ready(function($) {
 							$( "#projects-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-lists tr.lists-data" ).remove();
@@ -187,14 +187,14 @@ jQuery(document).ready(function($) {
 			var attr = "";
 			var max_num_pages = 999999;
 			if ( 1 == paged ){
-				$( "#projects-pagination li#prev" ).hide();
+				$( "#projects-archives-pagination li#prev" ).hide();
 			} else {
-				$( "#projects-pagination li#prev" ).show();
+				$( "#projects-archives-pagination li#prev" ).show();
 			}
 			if ( max_num_pages == paged ){
-				$( "#projects-pagination li#next" ).hide();
+				$( "#projects-archives-pagination li#next" ).hide();
 			} else {
-				$( "#projects-pagination li#next" ).show();
+				$( "#projects-archives-pagination li#next" ).show();
 			}
 			
 			$( ".projects-archives-lists .lists-header th.order" ).click(function() {
@@ -230,7 +230,7 @@ jQuery(document).ready(function($) {
 					},
 					success: function( data ) {
 						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-archives-lists tr.lists-data" ).remove();
@@ -249,7 +249,7 @@ jQuery(document).ready(function($) {
 				});
 				
 			});
-			$( "#projects-pagination li#next" ).click(function() {
+			$( "#projects-archives-pagination li#next" ).click(function() {
 				paged++;
 				$( ".projects-archives-lists tr.lists-data" ).remove();
 				$.ajax({
@@ -273,21 +273,21 @@ jQuery(document).ready(function($) {
 							max_num_pages = data[0].max_num_pages;
 						}
 						if ( max_num_pages == paged ){
-							$( "#projects-pagination li#next" ).hide();
+							$( "#projects-archives-pagination li#next" ).hide();
 						} else {
-							$( "#projects-pagination li#next" ).show();
+							$( "#projects-archives-pagination li#next" ).show();
 						}
 						if ( 1 == paged ){
-							$( "#projects-pagination li#prev" ).hide();
+							$( "#projects-archives-pagination li#prev" ).hide();
 						} else {
-							$( "#projects-pagination li#prev" ).show();
+							$( "#projects-archives-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-archives-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
+							$( "ul#projects-archives-pagination" ).remove();
 							$( ".projects-archives-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
 							$( ".projects-archives-lists #loading" ).remove();
 							
@@ -301,7 +301,7 @@ jQuery(document).ready(function($) {
 					}
 				});
 			});
-			$( "#projects-pagination li#prev" ).click(function() {
+			$( "#projects-archives-pagination li#prev" ).click(function() {
 				paged--;
 				$( ".projects-archives-lists tr.lists-data" ).remove();
 				$.ajax({
@@ -325,21 +325,21 @@ jQuery(document).ready(function($) {
 							max_num_pages = data[0].max_num_pages;
 						}
 						if ( max_num_pages == paged ){
-							$( "#projects-pagination li#next" ).hide();
+							$( "#projects-archives-pagination li#next" ).hide();
 						} else {
-							$( "#projects-pagination li#next" ).show();
+							$( "#projects-archives-pagination li#next" ).show();
 						}
 						if ( 1 == paged ){
-							$( "#projects-pagination li#prev" ).hide();
+							$( "#projects-archives-pagination li#prev" ).hide();
 						} else {
-							$( "#projects-pagination li#prev" ).show();
+							$( "#projects-archives-pagination li#prev" ).show();
 						}
 						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
+							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
 						});
 						if ( data.length === 0 ){
 							$( ".projects-archives-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
+							$( "ul#projects-archives-pagination" ).remove();
 							$( ".projects-archives-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
 							$( ".projects-archives-lists #loading" ).remove();
 							

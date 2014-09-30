@@ -2498,20 +2498,25 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					$project_manager_info = get_user_by( 'id', $project_manager_id );
 					if ( ! empty( $project_manager_info->user_nicename ) ){							
 						$project_manager_nicename = $project_manager_info->display_name;
+					} else {
+						$project_manager_nicename = "";
 					}
 					
 					$business_manager_info = get_user_by( 'id', $business_manager_id );
 					if ( ! empty( $business_manager_info->user_nicename ) ){							
 						$business_manager_nicename = $business_manager_info->display_name;
+					} else {
+						$business_manager_nicename = "";
 					}
 					
 					//Returns Array of Term Names for "rt_project-type"
 					$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
-					//if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0];
+					if ( empty( $rt_project_type_list ) ) $rt_project_type_list[0] = "";
 										
 					$get_post_status = get_post_status();
 					$get_edit_post_link = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					$get_permalink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$archive_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'archive' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					$delete_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					
 					$arrReturn[] = array(
@@ -2521,6 +2526,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						"poststatus" => $get_post_status,
 						"editpostlink" => $get_edit_post_link,
 						"permalink" => $get_permalink,
+						"archive_postlink" => $archive_postlink,
 						"deletepostlink" => $delete_postlink,
 						"projecttype" => $rt_project_type_list[0],
 						"projectmanagernicename" => $project_manager_nicename,
@@ -2661,20 +2667,25 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					$project_manager_info = get_user_by( 'id', $project_manager_id );
 					if ( ! empty( $project_manager_info->user_nicename ) ){							
 						$project_manager_nicename = $project_manager_info->display_name;
+					} else {
+						$project_manager_nicename = "";
 					}
 					
 					$business_manager_info = get_user_by( 'id', $business_manager_id );
 					if ( ! empty( $business_manager_info->user_nicename ) ){							
 						$business_manager_nicename = $business_manager_info->display_name;
+					} else {
+						$business_manager_nicename = "";
 					}
 					
 					//Returns Array of Term Names for "rt_project-type"
 					$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
-					//if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0];
+					if ( empty( $rt_project_type_list ) ) $rt_project_type_list[0] = "";
 										
 					$get_post_status = get_post_status();
 					$get_edit_post_link = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					$get_permalink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$unarchive_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'unarchive' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					$delete_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ), $rt_pm_bp_pm->get_component_root_url() ) );
 					
 					$arrReturn[] = array(
@@ -2685,6 +2696,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 						"editpostlink" => $get_edit_post_link,
 						"permalink" => $get_permalink,
 						"deletepostlink" => $delete_postlink,
+						"unarchivepostlink" => $unarchive_postlink,
 						"projecttype" => $rt_project_type_list[0],
 						"projectmanagernicename" => $project_manager_nicename,
 						"businessmanagernicename" => $business_manager_nicename,

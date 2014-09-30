@@ -50,11 +50,13 @@
 							$archive = 'unarchive';
 							$archive_text = __('Unarchive');
 							$projectslists = 'projects-archives-lists';
+							$projects_pagination = 'projects-archives-pagination';
 						} else {
 							$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
 							$archive = 'archive';
 							$archive_text = __('Archive');
 							$projectslists = 'projects-lists';
+							$projects_pagination = 'projects-pagination';
 						}
 						
 						$meta_key = 'post_duedate';
