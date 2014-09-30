@@ -1043,7 +1043,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset( $_REQUEST[$post_type.'_id'] ) ) {
 				$unarchive_post = array(
 					'ID'           => $_REQUEST[$post_type.'_id'],
-					'post_status' => 'closed'
+					'post_status' => 'active'
 				);
                 wp_update_post( $unarchive_post );
 				$args = array(
