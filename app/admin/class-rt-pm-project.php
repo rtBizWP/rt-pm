@@ -70,7 +70,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
 			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
 			
-			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );
+			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );    // Added the hack for sorting
+			add_filter( 'posts_orderby', array( $this, 'pm_project_manager_orderby' ), 10, 2 ); // Added the hack for sorting
+			add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
         }
 
 		function convert_lead_to_project() {
@@ -2387,7 +2389,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			global $rt_pm_project,$rt_pm_bp_pm, $bp, $wpdb, $wp_query, $paged;
 			
 			// Get post data
-			$post_data = array();
 			$order = 'DESC';
 			$attr = 'startdate';
 			
@@ -2435,6 +2436,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					'posts_per_page' => $posts_per_page,
 					'offset' => $offset
 				);
+			} else if( $attr == "projectmanager" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'project_manager',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "businessmanager" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'business_manager',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
 			} else {
 				$args = array(
 					'post_type' => $rt_pm_project->post_type,
@@ -2444,8 +2463,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					'offset' => $offset
 				);
 			}
-			
-			// print_r($args);
 			
 			// The Query
 			$the_query = new WP_Query( $args );
@@ -2471,12 +2488,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					
 					$project_manager_info = get_user_by( 'id', $project_manager_id );
 					if ( ! empty( $project_manager_info->user_nicename ) ){							
-						$project_manager_nicename = $project_manager_info->user_nicename;
+						$project_manager_nicename = $project_manager_info->display_name;
 					}
 					
 					$business_manager_info = get_user_by( 'id', $business_manager_id );
 					if ( ! empty( $business_manager_info->user_nicename ) ){							
-						$business_manager_nicename = $business_manager_info->user_nicename;
+						$business_manager_nicename = $business_manager_info->display_name;
 					}
 					
 					//Returns Array of Term Names for "rt_project-type"
@@ -2518,6 +2535,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		}
 
+		/**
+		 * pm_project_type_orderby
+		 *
+		 * @access public
+		 * @param  void
+		 * @return sql $orderby
+		 */
 		function pm_project_type_orderby( $orderby, $wp_query ) {
 			global $wpdb;
 		
@@ -2530,6 +2554,56 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					WHERE $wpdb->posts.ID = object_id
 					AND taxonomy = 'rt_project-type'
 					GROUP BY object_id
+				) ";
+				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+			}
+		
+			return $orderby;
+		}
+		
+		/**
+		 * pm_project_manager_orderby
+		 *
+		 * @access public
+		 * @param  void
+		 * @return sql $orderby
+		 */
+		function pm_project_manager_orderby( $orderby, $wp_query ) {
+			global $wpdb;
+		
+			if ( isset( $wp_query->query['orderby'] ) && 'project_manager' == $wp_query->query['orderby'] ) {
+				$orderby = "(
+					SELECT GROUP_CONCAT( display_name ORDER BY display_name ASC) 
+					FROM $wpdb->postmeta
+					INNER JOIN $wpdb->users ON $wpdb->users.ID=$wpdb->postmeta.meta_value
+					WHERE $wpdb->postmeta.meta_key = 'project_manager'
+					AND $wpdb->posts.ID = post_id
+					GROUP BY $wpdb->users.display_name
+				) ";
+				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+			}
+		
+			return $orderby;
+		}
+		
+		/**
+		 * pm_business_manager_orderby
+		 *
+		 * @access public
+		 * @param  void
+		 * @return sql $orderby
+		 */
+		function pm_business_manager_orderby( $orderby, $wp_query ) {
+			global $wpdb;
+		
+			if ( isset( $wp_query->query['orderby'] ) && 'business_manager' == $wp_query->query['orderby'] ) {
+				$orderby = "(
+					SELECT GROUP_CONCAT( display_name ORDER BY display_name ASC ) 
+					FROM $wpdb->postmeta
+					INNER JOIN $wpdb->users ON $wpdb->users.ID=$wpdb->postmeta.meta_value
+					WHERE $wpdb->postmeta.meta_key = 'business_manager'
+					AND $wpdb->posts.ID = post_id
+					GROUP BY $wpdb->users.display_name
 				) ";
 				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
 			}

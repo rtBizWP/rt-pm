@@ -61,7 +61,7 @@
 						$args = array(
 							'post_type' => $rt_pm_project->post_type,
 							//'meta_key'   => 'post_duedate',
-							//'orderby' => 'meta_value',
+							//'orderby' => 'rt_project-type',
 							'order'      => $order,
 							'post_status' => $post_status,
 							'posts_per_page' => $posts_per_page,
@@ -90,11 +90,17 @@
 											<i class="fa fa-caret-down"></i>
 										</span>
 									</th>
-									<th align="center" scope="row">
+									<th align="center" class="order projectmanager" scope="row" data-sorting-type="ASC" data-attr-type="projectmanager">
 										<?php esc_html_e('Project Manager', 'rt_pm');?>
+										<span>
+											<i class="fa fa-caret-down"></i>
+										</span>
 									</th>
-									<th align="center" scope="row">
+									<th align="center" class="order projectmanager" scope="row" data-sorting-type="ASC" data-attr-type="businessmanager">
 										<?php esc_html_e('Business Manager', 'rt_pm');?>
+										<span>
+											<i class="fa fa-caret-down"></i>
+										</span>
 									</th>
 									<th align="center" class="order startdate" scope="row" data-sorting-type="ASC" data-attr-type="startdate">
 										<?php esc_html_e('Start Date', 'rt_hrm');?>
@@ -128,12 +134,12 @@
 										
 										$project_manager_info = get_user_by( 'id', $project_manager_id );
 										if ( ! empty( $project_manager_info->user_nicename ) ){							
-											$project_manager_nicename = $project_manager_info->user_nicename;
+											$project_manager_nicename = $project_manager_info->display_name;
 										}
 										
 										$business_manager_info = get_user_by( 'id', $business_manager_id );
 										if ( ! empty( $business_manager_info->user_nicename ) ){							
-											$business_manager_nicename = $business_manager_info->user_nicename;
+											$business_manager_nicename = $business_manager_info->display_name;
 										}
 										
 										//Returns Array of Term Names for "rt-leave-type"
