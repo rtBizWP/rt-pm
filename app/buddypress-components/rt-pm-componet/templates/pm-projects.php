@@ -124,13 +124,12 @@
 										$get_user_meta = get_post_meta($get_the_id);
 										$project_manager_id = get_post_meta( $get_the_id, 'project_manager', true );
 										$business_manager_id = get_post_meta( $get_the_id, 'business_manager', true );
-										$project_end_date_valueduration_value = get_post_meta( $get_the_id, 'leave-duration', true );
-										$project_end_date_valueduration_type = get_term_by('slug', $project_end_date_valueduration_value, 'rt-leave-type');
 										
-										$project_end_date_valuestart_date_value = get_post_meta( $get_the_id, 'leave-start-date', true );
 										$project_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
-										$project_end_date_value = strtotime( $project_end_date_value );
-										$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+										if (! empty($project_end_date_value)) {
+											$project_end_date_value = strtotime( $project_end_date_value );
+											$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+										}
 										
 										$project_manager_info = get_user_by( 'id', $project_manager_id );
 										if ( ! empty( $project_manager_info->user_nicename ) ){							
@@ -160,7 +159,7 @@
 											<td align="center" scope="row"><?php echo $project_manager_nicename; ?></td>
 											<td align="center" scope="row"><?php echo $business_manager_nicename; ?></td>
 											<td align="center" scope="row"><?php echo get_the_date('d-m-Y');?></td>
-											<td align="center" scope="row"><?php echo $project_end_date_value;?></td>
+											<td align="center" scope="row"><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td>
 										</tr>
 										<?php
 										} 

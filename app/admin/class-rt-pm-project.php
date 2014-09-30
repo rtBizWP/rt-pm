@@ -70,6 +70,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
 			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
 			
+			add_action( 'wp_ajax_archive_projects_listing_info', array( $this, 'archive_projects_listing' ) );
+			add_action( 'wp_ajax_nopriv_archive_projects_listing_info', array( $this, 'archive_projects_listing' ) );
+			
 			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );    // Added the hack for sorting
 			add_filter( 'posts_orderby', array( $this, 'pm_project_manager_orderby' ), 10, 2 ); // Added the hack for sorting
 			add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
@@ -2464,6 +2467,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				);
 			}
 			
+			//echo "<pre>";
+			//print_r($args);
+			//echo "</pre>";
+			
 			// The Query
 			$the_query = new WP_Query( $args );
 			
@@ -2483,8 +2490,173 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					
 					$project_start_date_value = get_the_date('d-m-Y');
 					$project_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
-					$project_end_date_value = strtotime( $project_end_date_value );
-					$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+					if (! empty($project_end_date_value)) {
+						$project_end_date_value = strtotime( $project_end_date_value );
+						$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+					}
+					
+					$project_manager_info = get_user_by( 'id', $project_manager_id );
+					if ( ! empty( $project_manager_info->user_nicename ) ){							
+						$project_manager_nicename = $project_manager_info->display_name;
+					}
+					
+					$business_manager_info = get_user_by( 'id', $business_manager_id );
+					if ( ! empty( $business_manager_info->user_nicename ) ){							
+						$business_manager_nicename = $business_manager_info->display_name;
+					}
+					
+					//Returns Array of Term Names for "rt_project-type"
+					$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
+					//if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0];
+										
+					$get_post_status = get_post_status();
+					$get_edit_post_link = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$get_permalink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					$delete_postlink = esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ), $rt_pm_bp_pm->get_component_root_url() ) );
+					
+					$arrReturn[] = array(
+						"postname" => get_the_title(),
+						"projectstartdate" => $project_start_date_value, 
+						"projectenddate" => $project_end_date_value, 
+						"poststatus" => $get_post_status,
+						"editpostlink" => $get_edit_post_link,
+						"permalink" => $get_permalink,
+						"deletepostlink" => $delete_postlink,
+						"projecttype" => $rt_project_type_list[0],
+						"projectmanagernicename" => $project_manager_nicename,
+						"businessmanagernicename" => $business_manager_nicename,
+						"max_num_pages" => $max_num_pages,
+						"order" => $order,
+						"attr" => $attr
+					);
+					
+				}
+				
+			} else {
+				// no posts found
+			}
+			
+			/* Restore original Post Data */
+			wp_reset_postdata();
+			header('Content-Type: application/json');
+            echo json_encode($arrReturn);
+            die(0);
+
+		}
+
+		/**
+		 * archive_projects_listing
+		 *
+		 * @access public
+		 * @param  void
+		 * @return json json_encode($arrReturn)
+		 */
+		function archive_projects_listing() {
+			global $rt_pm_project,$rt_pm_bp_pm, $bp, $wpdb, $wp_query, $paged;
+			
+			// Get post data
+			$order = 'DESC';
+			$attr = 'startdate';
+			
+			$order = stripslashes( trim( $_POST['order'] ) );
+			$attr = stripslashes( trim( $_POST['attr'] ) );
+			$paged = stripslashes( trim( $_POST['paged'] ) ) ? stripslashes( trim( $_POST['paged'] ) ) : 1;
+						
+			$posts_per_page = get_option( 'posts_per_page' );
+			
+			$offset = ( $paged - 1 ) * $posts_per_page;
+			if ($offset <=0) {
+				$offset = 0;
+			}
+			
+			$post_status = 'trash';
+			
+			
+			$meta_key = 'post_duedate';
+			if ( $attr == "title" ){
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					//'meta_key'   => 'post_duedate',
+					'orderby' => 'title',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "enddate" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'meta_key'   => 'post_duedate',
+					'orderby' => 'meta_value',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "projecttype" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'rt_project-type',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "projectmanager" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'project_manager',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else if( $attr == "businessmanager" ) {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'orderby' => 'business_manager',
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			} else {
+				$args = array(
+					'post_type' => $rt_pm_project->post_type,
+					'order'      => $order,
+					'post_status' => $post_status,
+					'posts_per_page' => $posts_per_page,
+					'offset' => $offset
+				);
+			}
+			
+			//echo "<pre>";
+			//print_r($args);
+			//echo "</pre>";
+			
+			// The Query
+			$the_query = new WP_Query( $args );
+			
+			$max_num_pages =  $the_query->max_num_pages;
+			
+			$arrReturn = array();
+			
+			// The Loop
+			if ( $the_query->have_posts() ) {
+				
+				while ( $the_query->have_posts() ) {
+					$the_query->the_post();
+					$get_the_id =  get_the_ID();
+					$get_user_meta = get_post_meta($get_the_id);
+					$project_manager_id = get_post_meta( $get_the_id, 'project_manager', true );
+					$business_manager_id = get_post_meta( $get_the_id, 'business_manager', true );
+					
+					$project_start_date_value = get_the_date('d-m-Y');
+					$project_end_date_value = get_post_meta( $get_the_id, 'post_duedate', true );
+					if (! empty($project_end_date_value)) {
+						$project_end_date_value = strtotime( $project_end_date_value );
+						$project_end_date_value = date( 'd-m-Y', (int) $project_end_date_value );
+					}
 					
 					$project_manager_info = get_user_by( 'id', $project_manager_id );
 					if ( ! empty( $project_manager_info->user_nicename ) ){							
