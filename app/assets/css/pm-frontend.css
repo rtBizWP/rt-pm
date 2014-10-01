@@ -213,7 +213,9 @@ table tr.even, table tr.alt, table tr:nth-of-type(2n) {
 table.projects-lists tr td,
 table.projects-lists tr th,
 table.projects-archives-lists tr td,
-table.projects-archives-lists tr th {
+table.projects-archives-lists tr th,
+table.wp-list-table tr td,
+table.wp-list-table tr th {
 	border-left: 1px solid #eee;
     border-right: 1px solid #eee;
 }
