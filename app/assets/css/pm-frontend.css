@@ -200,8 +200,28 @@ th.asc:hover span.sorting-indicator {
 	background-position: -0 0;
 }
 
-/** Leave listing **/
+/** listing **/
 
 .deletepostlink {
 	color: #C60F13;
+}
+
+/*** Table **/
+table tr.even, table tr.alt, table tr:nth-of-type(2n) {
+    background: none repeat scroll 0 0 #f9f9f9;
+}
+table.projects-lists tr td,
+table.projects-lists tr th,
+table.projects-archives-lists tr td,
+table.projects-archives-lists tr th {
+	border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+#projects-pagination > li,
+#requests-pagination > li  {
+    display: inline-table;
+}
+#item-body ul#projects-pagination,
+#item-body ul#requests-pagination {
+    float: right;
 }
