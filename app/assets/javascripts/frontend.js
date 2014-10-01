@@ -13,8 +13,8 @@ jQuery(document).ready(function($) {
 		 *
 		 */
 		init : function(){
-            rtPMFrontend.projectsListing();
-			rtPMFrontend.archiveProjectsListing();
+            //rtPMFrontend.projectsListing();
+			//rtPMFrontend.archiveProjectsListing();
 		},
         projectsListing : function(){
 			var paged = 1;

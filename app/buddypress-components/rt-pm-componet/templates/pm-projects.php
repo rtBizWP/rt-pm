@@ -34,11 +34,32 @@
 						$rt_pm_bp_pm_project->custom_page_ui();
 					} else {
 						$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+						$paged = $page = max( 1, get_query_var('paged') );
 						
 						$posts_per_page = get_option( 'posts_per_page' );
 						
 						$order = 'DESC';
 						$attr = 'startdate';
+						
+						$meta_key = 'post_duedate';
+						$orderby = 'meta_value';
+						
+						if( isset( $_GET['orderby'] ) ) {
+	                        $meta_key = $args['orderby'] = $_GET['orderby'];
+	                        $order = $args['order'] =  $_GET['order'];
+	                	}
+						if( $meta_key == "rt_project-type" ) {
+							$meta_key = 'post_duedate';
+							$orderby = 'rt_project-type';
+						}
+						if( $meta_key == "title" ) {
+							$meta_key = 'post_duedate';
+							$orderby = 'title';
+						}
+						if( $meta_key == "date" ) {
+							$meta_key = 'post_duedate';
+							$orderby = 'date';
+						}
 						
 				
 						$offset = ( $paged - 1 ) * $posts_per_page;
@@ -59,27 +80,99 @@
 							$projects_pagination = 'projects-pagination';
 						}
 						
-						$meta_key = 'post_duedate';
+						
 						$args = array(
 							'post_type' => $rt_pm_project->post_type,
-							//'meta_key'   => 'post_duedate',
-							//'orderby' => 'rt_project-type',
+							'meta_key'   => $meta_key,
+							'orderby' => $orderby,
 							'order'      => $order,
 							'post_status' => $post_status,
 							'posts_per_page' => $posts_per_page,
 							'offset' => $offset
 						);
+						
+						/*echo "<pre>";
+						print_r($args);
+						echo "</pre>";*/
+						
+						$columns = array(
+		                    array(
+		                            'column_label' => __( 'Name', RT_PM_TEXT_DOMAIN ) ,
+		                            'sortable' => true,
+		                            'orderby' => 'title',
+		                            'order' => 'asc'
+		                    ),
+		                    array(
+		                            'column_label' => __( 'Type', RT_PM_TEXT_DOMAIN ) ,
+		                            'sortable' => true,
+		                            'orderby' => 'rt_project-type',
+		                            'order' => 'asc'
+		                    ),
+		                    array(
+		                            'column_label' => __( 'Project Manager', RT_PM_TEXT_DOMAIN ) ,
+		                            'sortable' => true,
+		                            'orderby' => 'project_manager',
+		                            'order' => 'asc'
+		                          
+		                    ),
+		                    array(
+		                            'column_label' => __( 'Business Manager', RT_HRM_TEXT_DOMAIN ),
+		                            'sortable' => true,
+		                            'orderby' => 'business_manager',
+		                            'order' => 'asc'
+		                    ),
+		                    array(
+		                            'column_label' => __( 'Start Date', RT_PM_TEXT_DOMAIN ) ,
+		                            'sortable' => true,
+		                            'orderby' => 'date',
+		                            'order' => 'asc'
+		                    ),
+		                    array(
+		                            'column_label' => __( 'End Date', RT_HRM_TEXT_DOMAIN ) ,
+		                            'sortable' => true,
+		                            'orderby' => 'post_duedate',
+		                            'order' => 'asc'
+		                    ),
+		
+		            	);
 					
 						
 						// The Query
 						$the_query = new WP_Query( $args );
 						
-						$max_num_pages =  $the_query->max_num_pages;
+						$totalPage= $max_num_pages =  $the_query->max_num_pages;
 						
 						?>
 						<table cellspacing="0" class="<?php echo $projectslists; ?>">
 							<tbody>
 								<tr class="lists-header">
+			                      <?php foreach ( $columns as $column ) {
+			                      ?>
+			                            <td>
+			                                <?php
+			                                if(  $column['sortable']  ) {
+			
+			                                        if ( isset( $_GET['orderby'] ) && $column['orderby']  == $_GET['orderby'] ) {
+			                                           
+			                                            $current_order = $_GET['order'];
+			                                           
+			                                            $order = 'asc' == $current_order ? 'desc' : 'asc';
+			                                            
+			                                            printf( __('<a href="%s">%s <i class="fa fa-sort-%s"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => $order ) ) ), $column['column_label'], $order );
+			                                            
+			                                        }else{
+			                                              printf( __('<a href="%s">%s <i class="fa fa-sort"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => 'desc' ) ) ), $column['column_label'] );
+			                                        }
+			                                      
+			                                }else{
+			                                        echo $column['column_label'];
+			                                }
+			
+			                                ?>
+			                            </td>
+			                    <?php  } ?>
+		                        </tr>
+								<?php /*<tr class="lists-header">
 									<th align="center" class="order title" scope="row" data-sorting-type="ASC" data-attr-type="title">
 										<?php esc_html_e('Name', 'rt_pm');?>
 										<span>
@@ -116,7 +209,7 @@
 											<i class="fa fa-caret-down"></i>
 										</span>
 									</th>
-								</tr>
+								</tr> */?>
 								<?php
 								if ( $the_query->have_posts() ) {
 									while ( $the_query->have_posts() ) { ?>
@@ -175,9 +268,20 @@
 								?>
 							</tbody>
 						</table>
-						<?php if ( $max_num_pages > 1 ) { ?>
+						<?php /*if ( $max_num_pages > 1 ) { ?>
 						<ul id="projects-pagination"><li id="prev"><a class="page-link"> &laquo; Previous</a></li><li id="next"><a class="page-link next">Next &raquo;</a></li></ul>
-						<?php }
+						<?php } */
+						if($totalPage > 1){
+		                    $customPagHTML     =  '<div class="pagination" role="menubar" aria-label="Pagination"><span class="current">Page '.$page.' of '.$totalPage.'</span>'.paginate_links( array(
+		                    //'format' => 'page/%#%/?orderby='.$_GET['orderby'].'&order='.$_GET['order'],
+		                    'format' => 'page/%#%',
+		                    'prev_text' => __('Newer'),
+		                    'next_text' => __('Older'),
+		                    'total' => $totalPage,
+		                    'current' => $page
+		                    )).'</div>';
+		                    echo $customPagHTML;
+		                }
 					} 
 					?>
 			</div><!-- #item-body -->
