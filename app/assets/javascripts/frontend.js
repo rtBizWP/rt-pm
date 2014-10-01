@@ -1,4 +1,12 @@
 jQuery(document).ready(function($) {
+	$(".deletepostlink").click(function(){
+		var r = confirm("Are you sure you want to delete this?");
+		if (r != true) {
+			return false;
+		}
+		//window.location = $(this).data('href');
+		//return false;
+    });
 
 	var rtPMFrontend = {
 		/**
