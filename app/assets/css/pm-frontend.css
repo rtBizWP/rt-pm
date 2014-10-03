@@ -227,3 +227,6 @@ table.wp-list-table tr th {
 #item-body ul#requests-pagination {
     float: right;
 }
+#buddypress div.projects-lists.pagination  {
+	padding: 0 0 35px;
+}

@@ -31,7 +31,7 @@ function pm_pagination( $totalPage, $page ){
                 $formate = '&paged=%#%';
         }
 
-        $customPagHTML     =  '<div class="pagination" role="menubar" aria-label="Pagination"><span class="current">Page '.$page.' of '.$totalPage.'</span>'.paginate_links( array(
+        $customPagHTML     =  '<div class="projects-lists pagination" role="menubar" aria-label="Pagination"><span class="current">Page '.$page.' of '.$totalPage.'</span>'.paginate_links( array(
         'base' => $base,
         'format' => $formate,
         'total' => $totalPage,
