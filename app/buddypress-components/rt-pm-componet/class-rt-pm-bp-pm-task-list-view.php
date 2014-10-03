@@ -263,20 +263,20 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 								break;
 							case "rtpm_title":
                                 if ($this->user_edit){
-								    echo '<td '.$attributes.'>'.'<a href="'. $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">'.$rec->post_title.'</a>';
+								    echo '<td '.$attributes.'>'.'<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">'.$rec->post_title.'</a>';
                                 }else{
                                     echo '<td '.$attributes.'>'.$rec->post_title;
                                 }
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
-                                        'edit'      => '<a href="'. $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
-                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&'.$this->post_type.'_id='.$rec->ID.'&action=timeentry">Time</a>',
-                                        'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
+                                        'edit'      => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
+                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&'.$this->post_type.'_id='.$rec->ID.'&action=timeentry">Time</a>',
+                                        'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
                                     );
                                 }else{
                                     $actions = array(
-                                        'restore'    => '<a href="'. $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=restore'.'">Restore</a>',
-                                    	'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=delete'.'">Delete</a>',
+                                        'restore'    => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=restore'.'">Restore</a>',
+                                    	'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=delete'.'">Delete</a>',
                                     );
                                 }
                                 if ($this->user_edit){
@@ -287,7 +287,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_assignee":
 								if(!empty($temp['post_assignee'])) { // Need to check replaced url 
                                     $user = get_user_by('id', $temp['post_assignee']);
-                                    $url = $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
+                                    $url = $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
                                     $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
                                     if ($this->user_edit){
                                         echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
@@ -332,7 +332,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_status":
                                 if(!empty($rec->post_status)) {
                                     $status = $this->get_status_label($rec->post_status);
-                                     $url = $rt_pm_bp_pm->get_component_root_url() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
+                                     $url = $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
                                     $url = add_query_arg( 'post_status', $rec->post_status, $url );
                                     if ( !empty( $status ) ) {
                                         if ($this->user_edit){

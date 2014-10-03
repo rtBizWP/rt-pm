@@ -318,14 +318,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
 				$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
 				die();
             }
 
             //restore action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'restore' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_untrash_post( $_REQUEST[$task_post_type.'_id'] );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
 				die();
             }
 
@@ -333,7 +333,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
                 wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
                 $rt_pm_project->remove_connect_post_to_entity($task_post_type,$_REQUEST[$task_post_type.'_id']);
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task' . '"; </script> ';
                 die();
             }
 
@@ -475,7 +475,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
                 }
 
-				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task"  . '";</script> ';
+				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task"  . '";</script> ';
 				$_REQUEST["{$task_post_type}_id"] = null;
                 $action_complete= true;
 				die();
@@ -486,7 +486,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-			$form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task";
+			$form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task";
             ///alert Notification
             if ( isset( $action_complete ) && $action_complete){
                 if (isset($_REQUEST["new"])) {
@@ -756,7 +756,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$timeentry_post_type.'_id'] ) ) {
                 $rt_pm_time_entries_model->delete_timeentry( array( 'id' => $_REQUEST[$timeentry_post_type.'_id'] ) );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url(). '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry' . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action(). '?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-timeentry' . '"; </script> ';
                 die();
             }
 
@@ -803,7 +803,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				// Used for notification -- Regeistered in RT_PM_Notification
 				do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
 
-				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" . '";</script> ';
+				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" . '";</script> ';
                 $_REQUEST["{$timeentry_post_type}_id"] = null;
                 $action_complete= true;
 				die();
@@ -826,7 +826,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 <?php }
             }
 
-            $form_ulr = $rt_pm_bp_pm->get_component_root_url() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry";//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
+            $form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-timeentry";//&{$task_post_type}_id={$_REQUEST["{$task_post_type}_id"]}
             ///alert Notification
             if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
                 $form_ulr .= "&{$timeentry_post_type}_id=" . $_REQUEST["{$timeentry_post_type}_id"];
@@ -1015,7 +1015,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					wp_delete_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
                 die();
             }
 			
@@ -1035,7 +1035,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					// wp_trash_post( $t );
 				}
 				// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
                 die();
             }
 
@@ -1059,7 +1059,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					//wp_delete_post( $t );
 				}
 				// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
-				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url() . '"; </script> ';
+				echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
                 die();
             }
 
@@ -1155,7 +1155,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     }
                 }
                 $_REQUEST[$post_type."_id"] = $post_id;
-				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
+				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 				$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
 				echo '<script> window.location="' . $bp_bp_nav_link .'"; </script> ';
 				die();
@@ -1166,7 +1166,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
             }
 
-			$form_ulr = add_query_arg( array( 'post_type' => $post_type ), $rt_pm_bp_pm->get_component_root_url() );
+			$form_ulr = add_query_arg( array( 'post_type' => $post_type ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() );
 
             ///alert Notification
             if (isset($_REQUEST["{$post_type}_id"])) {
@@ -1637,7 +1637,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						<?php if( $user_edit ) { ?>
 						<?php if(isset($post->ID)) { ?>
 						<div class="large-1 columns left">
-							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url() ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
 						</div>
 						<?php } ?>
 						<div class="large-1 columns right">
@@ -1700,7 +1700,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             if ( isset( $projectid ) ) {
                 $attachments = get_posts($arg );
             }
-			$form_ulr = $rt_pm_bp_pm->get_component_root_url();
+			$form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
            ?>
 			<div id="wp-custom-list-table">
@@ -1748,7 +1748,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 													   if ( !empty($term_html) ){
 														   $term_html.=',&nbsp;';
 													   }
-													   $term_html .= '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'?post_type='.$post_type.'&'.$post_type.'_id='.$_REQUEST["{$post_type}_id"].'&tab='.$post_type.'-files&attachment_tag='.$taxonomy->term_id.'"'.'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
+													   $term_html .= '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='.$post_type.'&'.$post_type.'_id='.$_REQUEST["{$post_type}_id"].'&tab='.$post_type.'-files&attachment_tag='.$taxonomy->term_id.'"'.'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
 												   }
 												   echo $term_html;?>&nbsp;]
 												   
@@ -1913,7 +1913,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				} else {
 					$_SESSION['rtpm_errors'] = $error;
 				}
-				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
+				$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 				$bp_bp_nav_link .= "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-notification";
 				echo '<script>window.location="' . $bp_bp_nav_link . '";</script> ';
 				die();

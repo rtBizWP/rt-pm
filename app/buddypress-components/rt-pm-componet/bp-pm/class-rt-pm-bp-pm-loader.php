@@ -111,10 +111,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			// Add 'hrm' to the main navigation
 			$main_nav = array(
 				'name' 		      => __( 'PM' ),
-				'slug' 		      => $this->id,
+				'slug' 		      => $this->id .'/projects',
 				'position' 	      => 80,
 				'screen_function'     => 'bp_pm_projects',
-				'default_subnav_slug' => 'pm',
+				'default_subnav_slug' => 'projects',
 			);
 
             // Determine user to use

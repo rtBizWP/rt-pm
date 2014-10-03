@@ -45,7 +45,7 @@
         </div>
         <?php
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
-		$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url();
+		$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
         if (!$is_new_project_page) {
             $ref_link = "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&";
         }

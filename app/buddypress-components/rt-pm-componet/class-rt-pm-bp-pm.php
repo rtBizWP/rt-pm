@@ -50,8 +50,9 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
 			global $bp;
 			foreach ( $bp->bp_nav as $nav ) {
 			    
-			  if ( $nav['slug'] == RT_PM_BP_PM_SLUG ){
-				$link = $nav['link'];
+			  if ( $nav['slug'] == RT_PM_BP_PM_SLUG .'/projects' ){
+				$nav['link'] = explode("projects", $nav['link']);
+				$link = $nav['link'][0];
 			  }
 			}
 			return $link;
