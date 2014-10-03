@@ -271,17 +271,7 @@
 						<?php /*if ( $max_num_pages > 1 ) { ?>
 						<ul id="projects-pagination"><li id="prev"><a class="page-link"> &laquo; Previous</a></li><li id="next"><a class="page-link next">Next &raquo;</a></li></ul>
 						<?php } */
-						if($totalPage > 1){
-		                    $customPagHTML     =  '<div class="pagination" role="menubar" aria-label="Pagination"><span class="current">Page '.$page.' of '.$totalPage.'</span>'.paginate_links( array(
-		                    //'format' => 'page/%#%/?orderby='.$_GET['orderby'].'&order='.$_GET['order'],
-		                    'format' => 'page/%#%',
-		                    'prev_text' => __('Newer'),
-		                    'next_text' => __('Older'),
-		                    'total' => $totalPage,
-		                    'current' => $page
-		                    )).'</div>';
-		                    echo $customPagHTML;
-		                }
+						pm_pagination($totalPage, $page);
 					} 
 					?>
 			</div><!-- #item-body -->
