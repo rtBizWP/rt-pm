@@ -31,6 +31,22 @@ function load_projects_template() {
     return  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
+function bp_pm_archives() { 
+	add_filter('bp_located_template','load_archives_template');
+}
+
+function load_archives_template() {
+    return  RT_PM_BP_PM_PATH.'/templates/pm-archives.php';
+}
+
+function bp_pm_projects_new() { 
+	add_filter('bp_located_template','load_projects_new_template');
+}
+
+function load_projects_new_template() {
+    return  RT_PM_BP_PM_PATH.'/templates/pm-projects-new.php';
+}
+
 
 function bp_pm_details() {
     add_filter('bp_located_template','load_details_template');

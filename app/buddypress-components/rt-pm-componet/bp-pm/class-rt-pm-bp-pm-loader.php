@@ -139,6 +139,26 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'screen_function' => 'bp_pm_projects',
 				'position'        => 10,
 			);
+			
+			// Add the subnav items
+			$sub_nav[] = array(
+				'name'            =>  __( 'Add New' ),
+				'slug'            => 'addnew',
+				'parent_url'      => $people_link,
+				'parent_slug'     =>  $this->id,
+				'screen_function' => 'bp_pm_projects_new',
+				'position'        => 10,
+			);
+			
+			// Add the subnav items
+			$sub_nav[] = array(
+				'name'            =>  __( 'Archives' ),
+				'slug'            => 'archives',
+				'parent_url'      => $people_link,
+				'parent_slug'     =>  $this->id,
+				'screen_function' => 'bp_pm_archives',
+				'position'        => 10,
+			);
 
 			// Add a few subnav items
 			// $sub_nav[] = array(
