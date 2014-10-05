@@ -467,11 +467,6 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		public function display() {
 			$singular = $this->_args['singular'];
 			?>
-			<div class="row">
-                <div class="large-10 columns">
-                    <h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
-                </div>
-            </div>
 			<table>
 				<thead>
 				<tr>

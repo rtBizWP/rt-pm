@@ -569,7 +569,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					}else{
 						$btntitle = 'Add Task';
 					}
-				?><div class="row"><button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button></div><?php
+				?>
+				<div class="row">
+					<div class="large-10 columns">
+						<h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
+					</div>
+					<div class="large-2 columns">
+						<button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button>
+					</div>
+
+				</div>
+				<?php
 				}
 				$rtpm_task_list= new Rt_PM_BP_PM_Task_List_View( $user_edit );
 				$rtpm_task_list->prepare_items();
@@ -874,7 +884,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					}else{
 						$btntitle = 'Add Time Entry';
 					}
-					?><div class="row"><button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button></div><?php
+					?>
+					<div class="row">
+						<div class="large-9 columns">
+							<h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
+						</div>
+						<div class="large-3 columns">
+							<button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
+						</div>
+
+					</div>
+					<?php
 				}
 
 				$project_current_budget_cost = 0;
@@ -982,7 +1002,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <button class="mybutton right" type="submit" id="save-task">Save TimeEntry</button>
+                        <button class="mybutton right" type="submit" id="save-task">Save Time Entry</button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>
