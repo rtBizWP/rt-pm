@@ -67,8 +67,6 @@
 						$post_status = 'trash';
 						$archive = 'unarchive';
 						$archive_text = __('Unarchive');
-						$projectslists = 'projects-archives-lists';
-						$projects_pagination = 'projects-archives-pagination';
 						
 						
 						$args = array(
@@ -106,7 +104,7 @@
 		                          
 		                    ),
 		                    array(
-		                            'column_label' => __( 'Business Manager', RT_HRM_TEXT_DOMAIN ),
+		                            'column_label' => __( 'Business Manager', RT_PM_TEXT_DOMAIN ),
 		                            'sortable' => true,
 		                            'orderby' => 'business_manager',
 		                            'order' => 'asc'
@@ -118,7 +116,7 @@
 		                            'order' => 'asc'
 		                    ),
 		                    array(
-		                            'column_label' => __( 'End Date', RT_HRM_TEXT_DOMAIN ) ,
+		                            'column_label' => __( 'End Date', RT_PM_TEXT_DOMAIN ) ,
 		                            'sortable' => true,
 		                            'orderby' => 'post_duedate',
 		                            'order' => 'asc'
@@ -133,9 +131,14 @@
 						$totalPage= $max_num_pages =  $the_query->max_num_pages;
 						
 						?>
-						<table cellspacing="0" class="<?php echo $projectslists; ?>">
-							<tbody>
-								<tr class="lists-header">
+						<div class="row">
+                            <div class="large-10 columns">
+                                <h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
+                            </div>
+                        </div>
+						<table>
+							<thead>
+								<tr>
 			                      <?php foreach ( $columns as $column ) {
 			                      ?>
 			                            <td>
@@ -162,44 +165,6 @@
 			                            </td>
 			                    <?php  } ?>
 		                        </tr>
-								<?php /*<tr class="lists-header">
-									<th align="center" class="order title" scope="row" data-sorting-type="ASC" data-attr-type="title">
-										<?php esc_html_e('Name', 'rt_pm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-									<th align="center" class="order projecttype" scope="row" data-sorting-type="ASC" data-attr-type="projecttype">
-										<?php esc_html_e('Type', 'rt_pm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-									<th align="center" class="order projectmanager" scope="row" data-sorting-type="ASC" data-attr-type="projectmanager">
-										<?php esc_html_e('Project Manager', 'rt_pm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-									<th align="center" class="order projectmanager" scope="row" data-sorting-type="ASC" data-attr-type="businessmanager">
-										<?php esc_html_e('Business Manager', 'rt_pm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-									<th align="center" class="order startdate" scope="row" data-sorting-type="ASC" data-attr-type="startdate">
-										<?php esc_html_e('Start Date', 'rt_hrm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-									<th align="center" class="order enddate" scope="row" data-sorting-type="ASC" data-attr-type="enddate">
-										<?php esc_html_e('End Date', 'rt_hrm');?>
-										<span>
-											<i class="fa fa-caret-down"></i>
-										</span>
-									</th>
-								</tr> */?>
 								<?php
 								if ( $the_query->have_posts() ) {
 									while ( $the_query->have_posts() ) { ?>
@@ -230,28 +195,34 @@
 										$rt_project_type_list = wp_get_post_terms($post->ID, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
 										if ( bp_loggedin_user_id() == bp_displayed_user_id() ) {
 										?>
-										<tr class="lists-data">
-											<td align="center" scope="row"><?php the_title();
-											printf( __('<br /><span><a href="%s">Edit</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) );
-											printf( __('<span><a href="%s">View</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) );
-											printf( __('<span><a href="%s">'.$archive_text.'</a></span>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
-											printf( __('<span><a class="deletepostlink" href="%s">Delete</a></span>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
-											?>
+										</thead>
+										<tbody>
+										<tr>
+											<td>
+											<?php the_title(); ?>
+											<div>
+												<?php
+												printf( __('<a href="%s">Edit</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'edit' ) ) ) );
+												printf( __('<a href="%s">View</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'view' ) ) ) );
+												printf( __('<a href="%s">'.$archive_text.'</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
+												printf( __('<a class="deletepostlink" href="%s">Delete</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
+												?>
+											</div>
 											</td>
-											<td align="center" scope="row">
+											<td>
 												<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>
 											</td>
-											<td align="center" scope="row"><?php echo $project_manager_nicename; ?></td>
-											<td align="center" scope="row"><?php echo $business_manager_nicename; ?></td>
-											<td align="center" scope="row"><?php echo get_the_date('d-m-Y');?></td>
-											<td align="center" scope="row"><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td>
+											<td><?php echo $project_manager_nicename; ?></td>
+											<td><?php echo $business_manager_nicename; ?></td>
+											<td><?php echo get_the_date('d-m-Y');?></td>
+											<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td>
 										</tr>
 										<?php
 										} 
 									}
 								} else {
 									?>
-									<tr class="lists-data"><td colspan="6" align="center" scope="row">No Project Listing</td></tr>
+									<tr><td colspan="6" align="center" scope="row">No Project Listing</td></tr>
 									<?php
 								}
 								wp_reset_postdata();

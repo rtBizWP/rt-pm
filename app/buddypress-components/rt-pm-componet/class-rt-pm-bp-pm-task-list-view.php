@@ -223,6 +223,270 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			}
 			return false;
 		}
+		
+		/**
+		 * Display the pagination.
+		 *
+		 * @since 3.1.0
+		 * @access protected
+		 */
+		protected function pagination( $which ) {
+			if ( empty( $this->_pagination_args ) ) {
+				return;
+			}
+	
+			$total_items = $this->_pagination_args['total_items'];
+			$total_pages = $this->_pagination_args['total_pages'];
+			$infinite_scroll = false;
+			if ( isset( $this->_pagination_args['infinite_scroll'] ) ) {
+				$infinite_scroll = $this->_pagination_args['infinite_scroll'];
+			}
+	
+			$output = '';
+	
+			$current = $this->get_pagenum();
+	
+			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	
+			$current_url = remove_query_arg( array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url );
+	
+			$page_links = array();
+	
+			$disable_first = $disable_last = '';
+			if ( $current == 1 ) {
+				$disable_first = ' disabled';
+			}
+			if ( $current == $total_pages ) {
+				$disable_last = ' disabled';
+			}
+			/*$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
+				'first-page' . $disable_first,
+				esc_attr__( 'Go to the first page' ),
+				esc_url( remove_query_arg( 'paged', $current_url ) ),
+				'&laquo;'
+			);*/
+	
+			if ( $current != 1  ){
+				$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
+					'prev prev-page' . $disable_first,
+					esc_attr__( 'Go to the previous page' ),
+					esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
+					'&lsaquo; Previous'
+				);
+			}
+	
+			if ( 'bottom' == $which ) {
+				$html_current_page = $current;
+			} else {
+				$html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' title='%s' type='text' name='paged' value='%s' size='%d' />",
+					'<label for="current-page-selector" class="screen-reader-text">' . __( 'Select Page' ) . '</label>',
+					esc_attr__( 'Current page' ),
+					$current,
+					strlen( $total_pages )
+				);
+			}
+			$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+			
+			
+			$total_pages_count = $total_pages;
+			$pages_count =1;
+			while ( $pages_count <= $total_pages && $pages_count > 0) {
+				if ($pages_count == $current) {
+					$page_links[] = '<span class="page-numbers current">' . sprintf( _x( '%1$s', 'paging' ), $html_current_page ) . '</span>';
+				} else {
+					$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
+						'page-numbers' . $disable_last,
+						esc_attr__( 'Go to the next page' ),
+						esc_url( add_query_arg( 'paged', min( $total_pages, $pages_count ), $current_url ) ),
+						$pages_count
+					);
+				}
+				
+				$pages_count++;
+			}
+	
+			if ( $total_pages != $current ){
+				$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
+					'page-numbers' . $disable_last,
+					esc_attr__( 'Go to the next page' ),
+					esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
+					'Next &rsaquo;'
+				);
+			}
+	
+			/*$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
+				'next page-numbers' . $disable_last,
+				esc_attr__( 'Go to the last page' ),
+				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
+				'&raquo;'
+			);*/
+	
+			$pagination_links_class = 'pagination-links';
+			if ( ! empty( $infinite_scroll ) ) {
+				$pagination_links_class = ' hide-if-js';
+			}
+			$output .= "\n" . join( "\n", $page_links );
+	
+			if ( $total_pages ) {
+				$page_class = $total_pages < 2 ? ' one-page' : '';
+			} else {
+				$page_class = ' no-pages';
+			}
+			$this->_pagination = "<div class='projects-lists pagination role='menubar' aria-label='Pagination'><span class='current'>Page $current of $total_pages</span>$output</div>";
+	
+			if ( $total_pages > 1 ){
+				echo $this->_pagination;
+			}
+	   
+		}
+			
+		
+		
+		/**
+		 * Print column headers, accounting for hidden and sortable columns.
+		 *
+		 * @since 3.1.0
+		 * @access public
+		 *
+		 * @param bool $with_id Whether to set the id attribute or not
+		 */
+		public function print_column_headers() {
+			if( isset( $_GET['orderby'] ) ) {
+                $args['orderby'] = $_GET['orderby'];
+                $args['order'] =  $_GET['order'];
+        	}
+			
+			$columns = array(
+				//'cb' => '<input type="checkbox" />',
+				'rtpm_title'=> __( 'Title' ),
+				'rtpm_assignee'=> __( 'Assignee' ),
+				'rtpm_create_date'=> __( 'Created' ),
+				'rtpm_update_date'=> __( 'Updated' ),
+				'rtpm_Due_date'=> __( 'Due Date' ),
+				'rtpm_status'=> __( 'Status' ),
+				'rtpm_created_by'=> __( 'Created By' ),
+				'rtpm_updated_by'=> __( 'Updated By' ),
+			);
+			$sortable = array(
+				'rtpm_title'=> array('post_title', false),
+				'rtpm_assignee'=> array('post_author', false),
+				'rtpm_create_date'=> array('post_date', false),
+				'rtpm_update_date'=> array('post_modified', false),
+				'rtpm_Due_date'=> array('post_duedate', false),
+				'rtpm_status'=> array('post_status', false),
+				//'rtpm_created_by'=> array('post_author', false),
+				//'rtpm_updated_by'=> array('post_author', false),
+			);
+			$columns = array(
+		        array(
+		                'column_label' => __( 'Title', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => true,
+		                'orderby' => 'post_title',
+		                'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Assignee', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => true,
+		                'orderby' => 'post_author',
+		                'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Created', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => true,
+		                'orderby' => 'post_date',
+		                'order' => 'asc'
+		              
+		        ),
+		        array(
+		                'column_label' => __( 'Updated', RT_PM_TEXT_DOMAIN ),
+		                'sortable' => true,
+		                'orderby' => 'post_modified',
+		                'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Due Date', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => true,
+		                'orderby' => 'post_duedate',
+		                'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Status', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => true,
+		                'orderby' => 'post_status',
+		                'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Created By', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => false,
+		                //'orderby' => 'post_duedate',
+		               // 'order' => 'asc'
+		        ),
+		        array(
+		                'column_label' => __( 'Updated By', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => false,
+		                //'orderby' => 'post_duedate',
+		                //'order' => 'asc'
+		        ),
+		
+			);
+			
+			foreach ( $columns as $column ) { 
+                ?>
+                <td>
+                    <?php
+                    if(  $column['sortable']  ) {
+
+                            if ( isset( $_GET['orderby'] ) && $column['orderby']  == $_GET['orderby'] ) {
+                               
+                                $current_order = $_GET['order'];
+                               
+                                $order = 'asc' == $current_order ? 'desc' : 'asc';
+                                
+                                printf( __('<a href="%s">%s <i class="fa fa-sort-%s"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => $order ) ) ), $column['column_label'], $order );
+                                
+                            }else{
+                                  printf( __('<a href="%s">%s <i class="fa fa-sort"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => 'desc' ) ) ), $column['column_label'] );
+                            }
+                          
+                    }else{
+                            echo $column['column_label'];
+                    }
+
+                    ?>
+                </td>
+                <?php
+            }
+		}
+		
+		/**
+		 * Display the table
+		 *
+		 * @since 3.1.0
+		 * @access public
+		 */
+		public function display() {
+			$singular = $this->_args['singular'];
+			?>
+			<div class="row">
+                <div class="large-10 columns">
+                    <h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
+                </div>
+            </div>
+			<table>
+				<thead>
+				<tr>
+					<?php $this->print_column_headers(); ?>
+				</tr>
+				</thead>
+			
+				<tbody>
+					<?php $this->display_rows_or_placeholder(); ?>
+				</tbody>
+			</table>
+			<?php
+			$this->display_tablenav( 'bottom' );
+		}
+			
 
 		/**
 		 * Display the rows of records in the table
