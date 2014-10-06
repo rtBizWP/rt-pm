@@ -24,51 +24,26 @@ function bp_pm_screen() {
 add_action( 'bp_screens', 'bp_hrm_screen' );
 
 function bp_pm_projects() { 
-	add_filter('bp_located_template','load_projects_template');
+	add_action('bp_template_content','load_projects_template');
 }
 
 function load_projects_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
 function bp_pm_archives() { 
-	add_filter('bp_located_template','load_archives_template');
+	add_action('bp_template_content','load_archives_template');
 }
 
 function load_archives_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-archives.php';
+    include  RT_PM_BP_PM_PATH.'/templates/pm-archives.php';
 }
 
 function bp_pm_projects_new() { 
-	add_filter('bp_located_template','load_projects_new_template');
+	add_action('bp_template_content','load_projects_new_template');
 }
 
 function load_projects_new_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-projects-new.php';
-}
-
-
-function bp_pm_details() {
-    add_filter('bp_located_template','load_details_template');
-}
-
-function load_details_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-details.php';
-}
-
-function bp_pm_attachments() {
-	add_filter('bp_located_template','load_attachments_template');
-}
-
-function load_attachments_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-attachments.php';
-}
-
-function bp_pm_tasks() {
-	add_filter('bp_located_template','load_tasks_template');
-}
-
-function load_tasks_template() {
-    return  RT_PM_BP_PM_PATH.'/templates/pm-tasks.php';
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects-new.php';
 }
 ?>
