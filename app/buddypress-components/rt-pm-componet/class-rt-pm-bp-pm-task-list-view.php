@@ -585,7 +585,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($temp['post_duedate']);
                                     // echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
-									echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+									echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">'. __('after ') . human_time_diff( $dtObj->format('U') , time() ) . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
