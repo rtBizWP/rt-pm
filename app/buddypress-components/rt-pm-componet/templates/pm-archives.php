@@ -165,6 +165,8 @@
 			                            </td>
 			                    <?php  } ?>
 		                        </tr>
+		                        </thead>
+								<tbody>
 								<?php
 								if ( $the_query->have_posts() ) {
 									while ( $the_query->have_posts() ) { ?>
@@ -195,8 +197,7 @@
 										$rt_project_type_list = wp_get_post_terms($post->ID, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
 										if ( bp_loggedin_user_id() == bp_displayed_user_id() ) {
 										?>
-										</thead>
-										<tbody>
+										
 										<tr>
 											<td>
 											<?php the_title(); ?>
