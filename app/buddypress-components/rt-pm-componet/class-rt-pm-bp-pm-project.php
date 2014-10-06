@@ -1660,8 +1660,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
 						</div>
 						<?php } ?>
-						<div class="large-1 columns right">
-							<button class="mybutton success push-3" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+						<div class="large-6 columns right">
+							<button class="mybutton success push-8" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 						</div>
 						<?php } ?>
                         
