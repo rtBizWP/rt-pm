@@ -562,7 +562,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 $date = date_parse($rec->post_date);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($rec->post_date);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
+                                    // echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
+									echo '<td '.$attributes.'><span title="'.$rec->post_date.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -572,7 +573,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 $date = date_parse($rec->post_modified);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($rec->post_modified);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_modified.'" class="moment-from-now">' . $rec->post_modified . '</span>';
+                                    //echo '<td '.$attributes.'><span title="'.$rec->post_modified.'" class="moment-from-now">' . $rec->post_modified . '</span>';
+									echo '<td '.$attributes.'><span title="'.$rec->post_modified.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -582,7 +584,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 $date = date_parse($temp['post_duedate']);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
                                     $dtObj = new DateTime($temp['post_duedate']);
-                                    echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
+                                    // echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
+									echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
