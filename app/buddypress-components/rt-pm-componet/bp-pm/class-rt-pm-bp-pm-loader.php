@@ -98,6 +98,8 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
 				return;
 			}
+			
+            $nav_name = __( 'PM', 'buddypress' );
 
 			// Add 'hrm' to the main navigation
 			$main_nav = array(
