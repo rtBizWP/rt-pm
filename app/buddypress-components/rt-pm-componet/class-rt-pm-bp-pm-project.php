@@ -1657,7 +1657,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						<?php if( $user_edit ) { ?>
 						<?php if(isset($post->ID)) { ?>
 						<div class="large-1 columns left">
-							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Trash' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
 						</div>
 						<?php } ?>
 						<div class="large-6 columns right">
