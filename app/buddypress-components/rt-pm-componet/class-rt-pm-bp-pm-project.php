@@ -886,10 +886,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					}
 					?>
 					<div class="row">
-						<div class="large-9 columns">
+						<div class="large-8 columns">
 							<h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
 						</div>
-						<div class="large-3 columns">
+						<div class="large-4 columns">
 							<button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
 						</div>
 
