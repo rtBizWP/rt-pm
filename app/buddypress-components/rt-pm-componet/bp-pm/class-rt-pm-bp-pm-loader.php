@@ -122,19 +122,6 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
             // Link to user people
             $people_link = trailingslashit( $user_domain . $this->slug );
-			
-			$this->sub_nav_items = array(
-                array(
-                    'name' => __( 'Projects' ),
-                    'slug'  => 'projects',
-                    'screen_function' => 'bp_pm_projects',
-                ),
-                array(
-                    'name' =>  'Archives',
-                    'slug'  => 'archives',
-                    'screen_function' => 'bp_pm_archives',
-                )               
-            );
 
 
 			// Add the subnav items
@@ -212,6 +199,19 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					// Setup the logged in user variables
 					$user_domain   = bp_loggedin_user_domain();
 					$crm_link = trailingslashit( $user_domain . $this->slug );
+					
+					$this->sub_nav_items = array(
+		                array(
+		                    'name' => __( 'Projects' ),
+		                    'slug'  => 'projects',
+		                    'screen_function' => 'bp_pm_projects',
+		                ),
+		                array(
+		                    'name' =>  'Archives',
+		                    'slug'  => 'archives',
+		                    'screen_function' => 'bp_pm_archives',
+		                )               
+		            );
 		
 					// Add main Settings menu
 					$wp_admin_nav[] = array(
