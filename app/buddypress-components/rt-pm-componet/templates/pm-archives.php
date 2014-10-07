@@ -70,14 +70,14 @@
                     'order' => 'asc'
             ),
             array(
-                    'column_label' => __( 'Project Manager', RT_PM_TEXT_DOMAIN ) ,
+                    'column_label' => __( 'PM', RT_PM_TEXT_DOMAIN ) ,
                     'sortable' => true,
                     'orderby' => 'project_manager',
                     'order' => 'asc'
                   
             ),
             array(
-                    'column_label' => __( 'Business Manager', RT_PM_TEXT_DOMAIN ),
+                    'column_label' => __( 'BDM', RT_PM_TEXT_DOMAIN ),
                     'sortable' => true,
                     'orderby' => 'business_manager',
                     'order' => 'asc'
