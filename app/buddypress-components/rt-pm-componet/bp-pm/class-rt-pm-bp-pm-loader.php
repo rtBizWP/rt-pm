@@ -27,7 +27,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                                 __( 'PM', 'buddypress' ),
                                RT_PM_BP_PM_PATH,
                                 array(
-                                        'adminbar_myaccount_order' => 9998
+                                        'adminbar_myaccount_order' => 9999
                                 )
                         );
                         $this->includes();
@@ -104,7 +104,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			// Add 'hrm' to the main navigation
 			$main_nav = array(
 				'name' 		      => __( 'PM' ),
-				'slug' 		      => $this->id .'/projects',
+				'slug' 		      => $this->id,
 				'position' 	      => 90,
 				'screen_function'     => 'bp_pm_projects',
 				'default_subnav_slug' => 'projects',
@@ -134,14 +134,14 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			);
 			
 			// Add the subnav items
-			$sub_nav[] = array(
+			/*$sub_nav[] = array(
 				'name'            =>  __( 'Add New' ),
 				'slug'            => 'addnew',
 				'parent_url'      => $people_link,
 				'parent_slug'     =>  $this->id,
 				'screen_function' => 'bp_pm_projects_new',
 				'position'        => 10,
-			);
+			);*/
 			
 			// Add the subnav items
 			$sub_nav[] = array(
