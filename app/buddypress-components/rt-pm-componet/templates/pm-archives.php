@@ -82,7 +82,7 @@
                     'orderby' => 'business_manager',
                     'order' => 'asc'
             ),
-            array(
+            /*array(
                     'column_label' => __( 'Start Date', RT_PM_TEXT_DOMAIN ) ,
                     'sortable' => true,
                     'orderby' => 'date',
@@ -93,7 +93,7 @@
                     'sortable' => true,
                     'orderby' => 'post_duedate',
                     'order' => 'asc'
-            ),
+            ),*/
 
     	);
 	
@@ -167,7 +167,7 @@
 						}
 						
 						//Returns Array of Term Names for "rt-leave-type"
-						$rt_project_type_list = wp_get_post_terms($post->ID, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
+						$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
 						if ( bp_loggedin_user_id() == bp_displayed_user_id() ) {
 						?>
 						
@@ -188,8 +188,8 @@
 							</td>
 							<td><?php echo $project_manager_nicename; ?></td>
 							<td><?php echo $business_manager_nicename; ?></td>
-							<td><?php echo get_the_date('d-m-Y');?></td>
-							<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td>
+							<!--<td><?php echo get_the_date('d-m-Y');?></td>
+							<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td>-->
 						</tr>
 						<?php
 						} 
