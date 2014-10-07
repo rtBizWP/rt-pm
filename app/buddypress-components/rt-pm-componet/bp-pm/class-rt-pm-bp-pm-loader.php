@@ -20,6 +20,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                  *
                  * @since BuddyPress (1.5)
                  */
+                private $sub_nav_items;
                 public function __construct() {
                     
                         parent::start(
@@ -121,6 +122,19 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
             // Link to user people
             $people_link = trailingslashit( $user_domain . $this->slug );
+			
+			$this->sub_nav_items = array(
+                array(
+                    'name' => __( 'Projects' ),
+                    'slug'  => 'projects',
+                    'screen_function' => 'bp_pm_projects',
+                ),
+                array(
+                    'name' =>  'Archives',
+                    'slug'  => 'archives',
+                    'screen_function' => 'bp_pm_archives',
+                )               
+            );
 
 
 			// Add the subnav items
@@ -186,6 +200,45 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			parent::setup_nav( $main_nav, $sub_nav );
 
 		}
+
+		public function setup_admin_bar( $wp_admin_nav = array() ) {
+                   
+				// The instance
+				$bp = buddypress();
+		
+				// Menus for logged in user
+				if ( is_user_logged_in() ) {
+		
+					// Setup the logged in user variables
+					$user_domain   = bp_loggedin_user_domain();
+					$crm_link = trailingslashit( $user_domain . $this->slug );
+		
+					// Add main Settings menu
+					$wp_admin_nav[] = array(
+						'parent' => $bp->my_account_menu_id,
+						'id'     => 'my-account-' . $this->id,
+						'title'  => __( 'PM', 'buddypress' ),
+						'href'   => trailingslashit( $crm_link )
+					);
+		
+					
+					foreach ($this->sub_nav_items as $item) {
+						// Add a few subnav items
+						$wp_admin_nav[] = array(
+							'parent' => 'my-account-' . $this->id,
+							'id'     => 'my-account-' . $this->id . '-'.$item['slug'],
+							'title'  => __( $item['name'], 'buddypress' ),
+							'href'   => trailingslashit( $crm_link . $item['slug'] )
+						);
+					}
+		
+					
+				}
+		
+				parent::setup_admin_bar( $wp_admin_nav );
+			
+		}
+		
 
 	
 	}
