@@ -242,7 +242,7 @@ span.prefix {
 .tabs.five-up dt a, .tabs.five-up dd a, .tabs.five-up li a {
   font-size: small;
 }
-.reveal-modal {
+.reveal-modal, .reveal-modal.large {
   margin-left: -20%;
   top: 5px ! important;
 }
