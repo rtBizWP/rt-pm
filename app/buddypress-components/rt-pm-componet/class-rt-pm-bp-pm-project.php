@@ -939,18 +939,38 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             <!--reveal-modal-add-task -->
             <div id="div-add-time-entry" class="reveal-modal large">
                 <fieldset>
-                    <legend><h4><i class="foundicon-address-book"></i> Add New Time Entry</h4></legend>
+                    <legend><h4>Time Entry</h4></legend>
                     <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->id) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
                         <?php } ?>
                         <div class="row collapse">
-                            <?php
+                            <div class="large-2 mobile-large-2 columns">
+                                <span class="prefix" title="Task"><label for=""><strong>Task</strong></label></span>
+                            </div>
+							<div class="large-10 mobile-large-6 columns">
+							<?php
                             $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
                             $rtpm_task_list->prepare_items();
                             $rtpm_task_list->get_drop_down($task_id);
                             ?>
+							</div>
+                        </div>
+						<div class="row collapse rtpm-post-author-wrapper">
+                            <div class="large-2 mobile-large-2 columns">
+                                <span class="prefix" title="Assigned To"><label for="post[post_timeentry_type]"><strong>Type</strong></label></span>
+                            </div>
+                            <div class="large-10 mobile-large-6 columns">
+								<?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
+                                <?php if( $user_edit ) { ?>
+                                    <select name="post[post_timeentry_type]" >
+									<?php foreach ( $terms as $term ) { ?>
+										<option <?php echo isset($post) && $post->type == $term->slug ? 'selected="selected"' :''; ?> value="<?php echo $term->slug; ?>" ><?php echo $term->name; ?></option>
+									<?php } ?>
+                                    </select>
+                                <?php } ?>
+                            </div>
                         </div>
                         <div class="row collapse">
                             <div class="large-2 small-4 columns">
@@ -978,25 +998,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <div class="row collapse rtpm-post-author-wrapper">
-                            <div class="large-6 mobile-large-2 columns">
-                                <span class="prefix" title="Assigned To"><label for="post[post_timeentry_type]"><strong>Type</strong></label></span>
-                            </div>
-                            <div class="large-6 mobile-large-6 columns">
-								<?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
-                                <?php if( $user_edit ) { ?>
-                                    <select name="post[post_timeentry_type]" >
-									<?php foreach ( $terms as $term ) { ?>
-										<option <?php echo isset($post) && $post->type == $term->slug ? 'selected="selected"' :''; ?> value="<?php echo $term->slug; ?>" ><?php echo $term->name; ?></option>
-									<?php } ?>
-                                    </select>
-                                <?php } ?>
-                            </div>
-                        </div>
                         <div class="row collapse postbox">
                             <div class="large-12 columns">
                                 <?php if( $user_edit ) { ?>
-                                    <input name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" value="<?php echo ( isset($post->id) ) ? $post->message : ""; ?>" />
+                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
                                 <?php } else { ?>
                                     <span><?php echo ( isset($post->id) ) ? $post->message : ""; ?></span><br /><br />
                                 <?php } ?>
