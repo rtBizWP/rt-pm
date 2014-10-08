@@ -1725,12 +1725,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
            ?>
 			<div id="wp-custom-list-table">
 				<div id="attachment-error" class="row"></div>
-				<div class="row">
+				<!--<div class="row">
 				<?php if( $user_edit ) { ?>
 					<button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
 					<button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
 				<?php } ?>
-				</div>
+				</div>-->
 
 				<div id="attachment-search-row" class="row collapse postbox">
 				   <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
@@ -1743,7 +1743,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                    }
 						   ?>
 					   </form></h6>
-				   <div class="inside">
+					   <?php pm_add_documents_section( $projectid );?>
+				    <!--<div class="inside">
 					   <div class="row collapse" id="attachment-container">
 
 						   <div class="scroll-height">
@@ -1796,7 +1797,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 							   <?php } ?>
 						   </div>
 					   </div>
-				   </div>
+				   </div>-->
 			   </div>
 		   </div>
 

@@ -7,361 +7,180 @@ jQuery(document).ready(function($) {
 		//window.location = $(this).data('href');
 		//return false;
     });
+	
+	var custom_uploader;
 
-	var rtPMFrontend = {
-		/**
-		 *
-		 */
-		init : function(){
-            //rtPMFrontend.projectsListing();
-			//rtPMFrontend.archiveProjectsListing();
-		},
-        projectsListing : function(){
-			var paged = 1;
-			var order = "";
-			var attr = "";
-			var max_num_pages = 999999;
-			if ( 1 == paged ){
-				$( "#projects-pagination li#prev" ).hide();
-			} else {
-				$( "#projects-pagination li#prev" ).show();
-			}
-			if ( max_num_pages == paged ){
-				$( "#projects-pagination li#next" ).hide();
-			} else {
-				$( "#projects-pagination li#next" ).show();
-			}
+	$('#upload_image').on('click',function(e) {
+
+		e.preventDefault();
+
+		//If the uploader object has already been created, reopen the dialog
+		if (custom_uploader) {
+			custom_uploader.open();
+			return;
+		}
+
+		//Extend the wp.media object
+		custom_uploader = wp.media.frames.file_frame = wp.media({
+			title: 'Choose Documents',
+			button: {
+				text: 'Choose Documents'
+			},
+			multiple: true
+		});
+		//When a file is selected, grab the URL and set it as the text field's value
+		custom_uploader.on('select', function() {
+
+			attachments = custom_uploader.state().get('selection').toJSON();
+			filenames = [];
+
+			$.each(attachments,function( index, value ){
+				
+				var data = {
+					action: "rtpm_add_new_documents",
+					post_id: $("#post-id").val(),
+					filename: value.url,
+
+				}
+				$.post(ajaxurl,data,function( res ) {
+					 $('#attachment-document').prepend( generate_document_ui( value, res ) );
+				}, 'json' );
+			   
+			   // filenames.push(value.url);
+			});
+		  
+			 
+
+		});
+
+		//Open the uploader dialog
+		custom_uploader.open();
+
+	});
+	
+	$('li.document-attachment').live('click', function(){
+		
+		var is_checked = $(this).attr('aria-checked');
+		
+		if ( is_checked == 'false' ) {
 			
-			$( ".projects-lists .lists-header th.order" ).click(function() {
-				order = $(this).data("sorting-type");
-				attr =  $(this).data("attr-type");
-				
-				if ( order === "DESC" ) {
-					$(this).children().remove();
-					$(this).append( '<span><i class="fa fa-caret-down"></i></span>' );
-					$(this).data( "sorting-type", "ASC" );
-				}
-				if ( order === "ASC" ) {
-					$(this).children().remove();
-					$(this).append( '<span><i class="fa fa-caret-up"></i></span>' );
-					$(this).data( "sorting-type", "DESC" );
-				}
-				$( ".projects-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						$.each( data, function( i, val ) {
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
-							$( ".projects-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-				
-			});
-			$( "#projects-pagination li#next" ).click(function() {
-				paged++;
-				$( ".projects-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						if ( data.length != 0 ){
-							max_num_pages = data[0].max_num_pages;
-						}
-						if ( max_num_pages == paged ){
-							$( "#projects-pagination li#next" ).hide();
-						} else {
-							$( "#projects-pagination li#next" ).show();
-						}
-						if ( 1 == paged ){
-							$( "#projects-pagination li#prev" ).hide();
-						} else {
-							$( "#projects-pagination li#prev" ).show();
-						}
-						$.each( data, function( i, val ) {
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-			});
-			$( "#projects-pagination li#prev" ).click(function() {
-				paged--;
-				$( ".projects-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						if ( data.length != 0 ){
-							max_num_pages = data[0].max_num_pages;
-						}
-						if ( max_num_pages == paged ){
-							$( "#projects-pagination li#next" ).hide();
-						} else {
-							$( "#projects-pagination li#next" ).show();
-						}
-						if ( 1 == paged ){
-							$( "#projects-pagination li#prev" ).hide();
-						} else {
-							$( "#projects-pagination li#prev" ).show();
-						}
-						$.each( data, function( i, val ) {
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].archive_postlink + '">Archive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
-							$( ".projects-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-			});
-        },
-		archiveProjectsListing : function(){
-			var paged = 1;
-			var order = "";
-			var attr = "";
-			var max_num_pages = 999999;
-			if ( 1 == paged ){
-				$( "#projects-archives-pagination li#prev" ).hide();
-			} else {
-				$( "#projects-archives-pagination li#prev" ).show();
-			}
-			if ( max_num_pages == paged ){
-				$( "#projects-archives-pagination li#next" ).hide();
-			} else {
-				$( "#projects-archives-pagination li#next" ).show();
-			}
+			$("#attachment-document>li.document-attachment").attr( 'aria-checked', 'false' );
+			$("#attachment-document>li.document-attachment").removeClass(' details selected');
 			
-			$( ".projects-archives-lists .lists-header th.order" ).click(function() {
-				order = $(this).data("sorting-type");
-				attr =  $(this).data("attr-type");
-				
-				if ( order === "DESC" ) {
-					$(this).children().remove();
-					$(this).append( '<span><i class="fa fa-caret-down"></i></span>' );
-					$(this).data( "sorting-type", "ASC" );
-				}
-				if ( order === "ASC" ) {
-					$(this).children().remove();
-					$(this).append( '<span><i class="fa fa-caret-up"></i></span>' );
-					$(this).data( "sorting-type", "DESC" );
-				}
-				$( ".projects-archives-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "archive_projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-archives-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-archives-lists tr.lists-data" ).remove();
-							$( "ul#projects-pagination" ).remove();
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-archives-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-archives-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-archives-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-				
-			});
-			$( "#projects-archives-pagination li#next" ).click(function() {
-				paged++;
-				$( ".projects-archives-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "archive_projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-archives-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						if ( data.length != 0 ){
-							max_num_pages = data[0].max_num_pages;
-						}
-						if ( max_num_pages == paged ){
-							$( "#projects-archives-pagination li#next" ).hide();
-						} else {
-							$( "#projects-archives-pagination li#next" ).show();
-						}
-						if ( 1 == paged ){
-							$( "#projects-archives-pagination li#prev" ).hide();
-						} else {
-							$( "#projects-archives-pagination li#prev" ).show();
-						}
-						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-archives-lists tr.lists-data" ).remove();
-							$( "ul#projects-archives-pagination" ).remove();
-							$( ".projects-archives-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-archives-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-archives-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-archives-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-			});
-			$( "#projects-archives-pagination li#prev" ).click(function() {
-				paged--;
-				$( ".projects-archives-lists tr.lists-data" ).remove();
-				$.ajax({
-					url: ajaxurl,
-					dataType: "json",
-					type: 'POST',
-					data: {
-						action: "archive_projects_listing_info",
-						order:  order,
-						attr:  attr,
-						paged: paged
-					},
-					beforeSend : function(){
-						$( ".projects-archives-lists tr.lists-header" ).append('<tr id="loading" style="text-align:center"><td>' +
-                            '<img src="' +  rtpmurl +'app/assets/img/loading.gif"/>' +
-                            '</td></tr>'
-						);
-					},
-					success: function( data ) {
-						if ( data.length != 0 ){
-							max_num_pages = data[0].max_num_pages;
-						}
-						if ( max_num_pages == paged ){
-							$( "#projects-archives-pagination li#next" ).hide();
-						} else {
-							$( "#projects-archives-pagination li#next" ).show();
-						}
-						if ( 1 == paged ){
-							$( "#projects-archives-pagination li#prev" ).hide();
-						} else {
-							$( "#projects-archives-pagination li#prev" ).show();
-						}
-						$.each( data, function( i, val ) {
-							$( ".projects-archives-lists tr.lists-header" ).after( '<tr class="lists-data"><td class="postname">' + data[i].postname + '<br /><span><a href="' + data[i].editpostlink + '">Edit</a></span>&nbsp;&#124;<span><a href="' + data[i].permalink + '">View</a></span>&nbsp;&#124;<span><a href="' + data[i].unarchivepostlink + '">Unarchive</a></span>&nbsp;&#124;<span><a class="deletepostlink" href="' + data[i].deletepostlink + '">Delete</a></span></td><td>' + data[i].projecttype + '</td><td>' + data[i].projectmanagernicename + '</td><td>' + data[i].businessmanagernicename + '</td><td>' + data[i].projectstartdate + '</td><td>' + data[i].projectenddate + '</td></tr>' );
-						});
-						if ( data.length === 0 ){
-							$( ".projects-archives-lists tr.lists-data" ).remove();
-							$( "ul#projects-archives-pagination" ).remove();
-							$( ".projects-archives-lists tbody" ).append( '<tr class="lists-data"><td colspan="7" align="center" scope="row">No Project Listing</td></tr>' );
-							$( ".projects-archives-lists #loading" ).remove();
-							
-						} else {
-							$( ".projects-archives-lists #loading" ).remove();
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-					    $( ".projects-archives-lists #loading" ).remove();
-						alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
-					}
-				});
-			});
-        }
-	}
-	rtPMFrontend.init();
+			$(this).attr( 'aria-checked', 'true' );
+			$(this).addClass(' details selected');
+			
+			var attachment_id = $(this).find('a').data('document-id') ;
+
+			$(".actions").data( 'attachment-id', attachment_id );
+
+			var data = {
+				action: 'rtpmattachment_metadata',
+				attachment_id: attachment_id
+			};
+
+			$.post(ajaxurl,data,function( res ) {
+				 $('.filetype').html( res.post_mime_type );
+				 $('.uploaded').html( res.post_modified );
+				 $('#fileurl').val( res.guid );
+				 $('#filetitle').val( res.post_title );
+				 $('#filecaption').val( res.post_excerpt );
+				 $('#filedescription').val( res.post_content );
+
+			}, 'json' );
+
+			
+		}else{
+			$('.filetype').html('');
+			$('.uploaded').html('');
+			$('#fileurl').val('');
+			$('#filetitle').val('');
+			$('#filecaption').val('');
+			$('#filedescription').val('');
+			$(this).attr( 'aria-checked', 'false' );
+			$(this).removeClass(' details selected');
+		}            
+	 
+	});
+	
+	$("#save-attachment").on('click', function(){
+	   var attachment_id = $(".actions").data( 'attachment-id' );
+	  
+		
+		var data = {
+			action:'rtpmattachment_save_data',
+			ID:attachment_id,
+			post_title: $('#filetitle').val(),
+			post_excerpt: $('#filecaption').val(),
+			post_content :$('#filedescription').val()
+		};
+	 
+		 $.post(ajaxurl,data,function( res ) {
+			 
+			 if ( res > 0) {
+				 
+			   $element = $("#attachment-document>li.document-attachment.details.selected");
+
+			   $element.find('.filetitle').html( $('#filetitle').val() );
+			   
+			   
+			  }
+		
+		 
+		});
+	});
+	
+	$("#delete-attachment").live('click', function(){
+		
+		 var attachment_id = $(".actions").data( 'attachment-id' );
+		 
+			var data = {
+				action: "rtpm_remove_document",
+				attachment_id: attachment_id,
+			}
+			$.post(ajaxurl,data,function( res ) {
+			   $element = $("#attachment-document>li.document-attachment.details.selected");
+			   $element.remove();
+				 $('.filetype').html('');
+				$('.uploaded').html('');
+				$('#fileurl').val('');
+				$('#filetitle').val('');
+				$('#filecaption').val('');
+				$('#filedescription').val('');
+			} );
+		
+	});
+	
+   
+	$('a.document-check').live('click', function(e){
+		e.preventDefault();
+		$element =  $(this).parent();
+		 var data = {
+			action: "rtpm_remove_document",
+			attachment_id: $(this).data('document-id'),
+		}
+		$.post(ajaxurl,data,function( res ) {
+		   $element.remove();
+		} );
+	  
+	});
+	
+	function generate_document_ui( attachment, res ){
+        
+        var img_src = ( attachment.type == 'image' ) ? attachment.url : attachment.icon ;
+        
+        return  "<li tabindex='0' role='checkbox' aria-label='6_webp' aria-checked='false' class='attachment save-ready document-attachment'>"
+                   +"<div class='attachment-preview js--select-attachment type-image subtype-png landscape'>"
+                        +"<div class='thumbnail'>"
+                            +"<div class='centered'>"
+                                +"<img src='"+ img_src +"' draggable='false' alt=''>"
+                             +"</div>"
+                        +"</div>"
+                        +"<div class='filename'>"
+                            +"<div>"+attachment.title+"</div>"
+                          +"</div>"
+                   +"</div>"
+                   +"<a class='check document-check'  title='Deselect' tabindex='-1' data-document-id='"+res.attachment_id+"'><div class='media-modal-icon'></div></a>"
+                +"</li>";
+    }
 });
