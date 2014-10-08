@@ -1259,7 +1259,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 foreach ( $results_member as $author ) {
                     if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
-                            . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
@@ -1276,7 +1276,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
                     if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                            . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' /></li>";
                     }
@@ -1298,7 +1298,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
                     if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
                         $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                            . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                             . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
                     }
@@ -1329,7 +1329,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <div class="large-12 columns">
                                     <?php
                                     if( $user_edit ) {
-                                        wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]' ) );
+                                        wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false ) );
                                     } else {
                                         echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
                                     }
@@ -1339,10 +1339,142 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
 					</div>
 					<div class="row">
+						<div class="large-6 columns ui-sortable meta-box-sortables pull-1">
+                            <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
+                                <div class="large-6 mobile-large-6 columns">
+                                    <span class="prefix" title="Project Manager"><label for="post[project_manager]">Project Manager</label></span>
+                                </div>
+                                <div class="large-6 mobile-large-6 columns">
+                                    <?php if( $user_edit ) { ?>
+                                        <select name="post[project_manager]" >
+											<option value=""><?php _e( 'Select PM' ); ?></option>
+                                            <?php
+                                            if (!empty($results_member)) {
+                                                foreach ($results_member as $author) {
+                                                    if ($author->ID == $project_manager) {
+                                                        $selected = " selected";
+                                                    } else {
+                                                        $selected = " ";
+                                                    }
+                                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    <?php 
+										} else {
+											if (!empty($results_member)) {
+                                                foreach ($results_member as $author) {
+                                                    if ($author->ID == $project_manager) {
+                                                        $selected = " selected";
+														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
+														'<span class="rtpm_view_mode">' . $author->display_name . '</span>' .
+														'</div>';
+                                                    }
+                                                    
+                                                                                        
+                                                }
+                                            }
+										} 
+									?>
+                                </div>
+                            </div>
+                            <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
+                                <div class="large-6 mobile-large-6 columns">
+                                    <span class="prefix" title="Business Manager"><label for="post[business_manager]"><?php _e('Business Manager'); ?></label></span>
+                                </div>
+                                <div class="large-6 mobile-large-6 columns">
+                                    <?php if( $user_edit ) { ?>
+                                        <select name="post[business_manager]" >
+											<option value=""><?php _e( 'Select BM' ); ?></option>
+                                            <?php
+                                            if (!empty($results_member)) {
+                                                foreach ($results_member as $bm) {
+                                                    if ($bm->ID == $business_manager) {
+                                                        $selected = " selected";
+                                                    } else {
+                                                        $selected = " ";
+                                                    }
+                                                    echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    <?php 
+										} else {
+											if (!empty($results_member)) {
+                                                foreach ($results_member as $bm) {
+                                                    if ($bm->ID == $business_manager) {
+                                                        $selected = " selected";
+														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
+														'<span class="rtpm_view_mode">' . $bm->display_name . '</span>' .
+														'</div>';
+                                                    }
+                                                }
+                                            }
+										} 
+									?>
+                                </div>
+                            </div>
+							<div class="row collapse postbox">
+								<div class="large-6 mobile-large-6 columns">
+									<span class="prefix" title="Team Members"><label for="post[team_members]"><?php _e( 'Team Members' ); ?></label></span>
+								</div>
+								<div class="large-6 mobile-large-6 columns">
+									<script>
+										var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
+									</script>
+									<?php if ( $user_edit ) { ?>
+									<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
+									<?php } ?>
+									<ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
+										<?php echo $subProjectMemberHTML; ?>
+									</ul>
+								</div>
+							</div>
+							<div class="row collapse postbox">
+								<div class="large-6 mobile-large-6 columns">
+									<span class="prefix" title="Organization"><label for="post[organization]"><?php _e( 'Organization' ); ?></label></span>
+								</div>
+								<div class="large-6 mobile-large-6 columns">
+									<script>
+                                        var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
+                                    </script>
+								<?php if ( $user_edit ) { ?>
+									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
+								<?php } ?>
+									<ul id="divAccountsList" class="block-grid large-1-up">
+										<?php echo $subProjectOrganizationsHTML; ?>
+									</ul>
+								</div>
+							</div>
+                            <div class="row collapse postbox">
+								<div class="large-6 mobile-large-6 columns">
+									<span class="prefix" title="Organization Contacts"><label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label></span>
+								</div>
+                                <div class="large-6 mobile-large-6 columns">
+                                    <script>
+                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
+                                    </script>
+                                    <?php if ( $user_edit ) { ?>
+                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+                                    <?php } ?>
+                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
+                                        <?php echo $subProjectClientHTML; ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row collapse postbox hide">
+                                <div class="handlediv" title="Click to toggle"><br></div>
+                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Participants</span></h6>
+                                <div class="inside">
+                                    <ul class="rtpm-participant-list large-block-grid-1 small-block-grid-1">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <div class="large-6 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse postbox">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-idea"></i> Project Information</span></h6>
                                 <div class="inside">
                                     <div class="row collapse">
                                         <div class="small-4 large-4 columns">
@@ -1512,137 +1644,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
                             ?>
                         </div>
-                        <div class="large-6 columns ui-sortable meta-box-sortables">
-                            <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-6 mobile-large-6 columns">
-                                    <span class="prefix" title="Project Manager"><label for="post[project_manager]"><strong>Project Manager</strong></label></span>
-                                </div>
-                                <div class="large-6 mobile-large-6 columns">
-                                    <?php if( $user_edit ) { ?>
-                                        <select name="post[project_manager]" >
-											<option value=""><?php _e( 'Select PM' ); ?></option>
-                                            <?php
-                                            if (!empty($results_member)) {
-                                                foreach ($results_member as $author) {
-                                                    if ($author->ID == $project_manager) {
-                                                        $selected = " selected";
-                                                    } else {
-                                                        $selected = " ";
-                                                    }
-                                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    <?php 
-										} else {
-											if (!empty($results_member)) {
-                                                foreach ($results_member as $author) {
-                                                    if ($author->ID == $project_manager) {
-                                                        $selected = " selected";
-														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
-														'<span class="rtpm_view_mode">' . $author->display_name . '</span>' .
-														'</div>';
-                                                    }
-                                                    
-                                                                                        
-                                                }
-                                            }
-										} 
-									?>
-                                </div>
-                            </div>
-                            <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-6 mobile-large-6 columns">
-                                    <span class="prefix" title="Business Manager"><label for="post[business_manager]"><strong><?php _e('Business Manager'); ?></strong></label></span>
-                                </div>
-                                <div class="large-6 mobile-large-6 columns">
-                                    <?php if( $user_edit ) { ?>
-                                        <select name="post[business_manager]" >
-											<option value=""><?php _e( 'Select BM' ); ?></option>
-                                            <?php
-                                            if (!empty($results_member)) {
-                                                foreach ($results_member as $bm) {
-                                                    if ($bm->ID == $business_manager) {
-                                                        $selected = " selected";
-                                                    } else {
-                                                        $selected = " ";
-                                                    }
-                                                    echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    <?php 
-										} else {
-											if (!empty($results_member)) {
-                                                foreach ($results_member as $bm) {
-                                                    if ($bm->ID == $business_manager) {
-                                                        $selected = " selected";
-														echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
-														'<span class="rtpm_view_mode">' . $bm->display_name . '</span>' .
-														'</div>';
-                                                    }
-                                                }
-                                            }
-										} 
-									?>
-                                </div>
-                            </div>
-							<div class="row collapse postbox">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-								<h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e( 'Team Members' ); ?></span></h6>
-								<div class="inside">
-									<script>
-                                        var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
-                                    </script>
-									<?php if ( $user_edit ) { ?>
-									<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
-									<?php } ?>
-									<ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
-										<?php echo $subProjectMemberHTML; ?>
-									</ul>
-								</div>
-                            </div>
-							<div class="row collapse postbox">
-								<div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
-								<h6 class="hndle"><span><i class="foundicon-globe"></i> <?php _e( "Organization" ); ?></span></h6>
-								<div class="inside">
-									<script>
-                                        var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
-                                    </script>
-								<?php if ( $user_edit ) { ?>
-									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
-								<?php } ?>
-									<ul id="divAccountsList" class="block-grid large-1-up">
-										<?php echo $subProjectOrganizationsHTML; ?>
-									</ul>
-								</div>
-							</div>
-                            <div class="row collapse postbox">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> <?php _e('Organization Contacts'); ?></span></h6>
-                                <div class="inside">
-                                    <script>
-                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
-                                    </script>
-                                    <?php if ( $user_edit ) { ?>
-                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
-                                    <?php } ?>
-                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
-                                        <?php echo $subProjectClientHTML; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row collapse postbox hide">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Participants</span></h6>
-                                <div class="inside">
-                                    <ul class="rtpm-participant-list large-block-grid-1 small-block-grid-1">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="row">
 						<?php
@@ -1655,13 +1657,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                             
 						<?php if( $user_edit ) { ?>
-						<?php if(isset($post->ID)) { ?>
-						<div class="large-1 columns left">
-							<button id="button-trash" class="mybutton alert push-3" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
-						</div>
-						<?php } ?>
-						<div class="large-6 columns right">
-							<button class="mybutton success push-8" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+						<div class="large-6 columns right push-3">
+							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+							<?php if(isset($post->ID)) { ?>
+							<button id="button-archive" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'archive', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Archive' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<?php } ?>
 						</div>
 						<?php } ?>
                         

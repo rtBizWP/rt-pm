@@ -230,3 +230,12 @@ table.wp-list-table tr th {
 #buddypress div.projects-lists.pagination  {
 	padding: 0 0 35px;
 }
+
+/*** Project details page hack for legacy css **/
+span.prefix {
+    background: none;
+    border: none;
+    color: #333333;
+	text-align: right;
+	padding-right: 10%;
+}
