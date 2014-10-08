@@ -240,6 +240,6 @@ span.prefix {
 	padding-right: 10%;
 }
 
-#div-add-time-entry.reveal-modal > *:first-child {
+.reveal-modal > *:first-child {
     padding: 5%;
 }
