@@ -17,6 +17,15 @@ jQuery(document).ready(function($) {
 		return false;
     });
 	
+	$("#button-unarchive").click(function(){
+		var r = confirm("Are you sure you want to move this project to unarchive?");
+		if (r != true) {
+			return false;
+		}
+		window.location = $(this).data('href');
+		return false;
+    });
+	
 	var custom_uploader;
 
 	$('#upload_image').on('click',function(e) {
