@@ -1339,7 +1339,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
 					</div>
 					<div class="row">
-						<div class="large-6 columns ui-sortable meta-box-sortables pull-1">
+						<div class="large-6 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-6 mobile-large-6 columns">
                                     <span class="prefix" title="Project Manager"><label for="post[project_manager]">Project Manager</label></span>
@@ -1657,7 +1657,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                             
 						<?php if( $user_edit ) { ?>
-						<div class="large-6 columns right push-3">
+						<div class="large-6 columns right">
 							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php if(isset($post->ID)) { ?>
 							<button id="button-archive" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'archive', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Archive' ); ?></button>&nbsp;&nbsp;&nbsp;
