@@ -241,7 +241,7 @@ span.prefix {
 }
 .reveal-modal {
   margin-left: -20%;
-  top: -20px;
+  top: -10px ! important;
 }
 .reveal-modal > *:first-child {
     padding: 5%;
