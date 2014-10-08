@@ -122,6 +122,7 @@ add_action( 'wp_ajax_rtpm_remove_document', 'pm_remove_document'  );
 
 function pm_add_documents_section( $post_id ){ ?>
  <div class="row">
+ 	<input type='hidden' id='post-id' name='post[rt_project_id]' value=<?php echo $post_id; ?>>
 
                          <div class="large-7 columns">
                              <ul class="attachments" id="attachment-document">
