@@ -175,7 +175,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
                 
                 function get_autocomplate_task(){
-                    
+                    global $rt_pm_bp_pm;
                     if (!isset($_POST["query"])) {
 				wp_die("Opss!! Invalid request");
 			}
@@ -183,11 +183,16 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$tasks = $this->search( $_POST['query'] );
 			$result = array();
 			foreach ( $tasks as $task ) {
+                            $project_id = get_post_meta( $task->ID, 'post_project_id', true );
+                           
+                            $project = get_post( $project_id );
+                         
+                            $url = add_query_arg( array( 'post_type' => $project->post_type, 'rt_project_id' => $project->ID, 'tab' => 'rt_project-task', 'rt_task_id' => $task->ID ), $rt_pm_bp_pm->get_component_root_url().  RT_PM_Bp_PM_Loader::$projects_slug );
 				$result[] = array(
 					'label' => $task->post_title,
 					'id' => $task->ID,
 					'slug' => $task->post_name,
-					'url' => admin_url( "edit.php?". $task->post_type."=" . $task->ID  ),
+					'url' => $url,
 				);
 			}
 

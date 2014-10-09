@@ -21,6 +21,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                  * @since BuddyPress (1.5)
                  */
                 private $sub_nav_items;
+                static $projects_slug = 'projects';
                 public function __construct() {
                     
                         parent::start(
@@ -127,7 +128,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			// Add the subnav items
 			$sub_nav[] = array(
 				'name'            =>  __( 'Projects' ),
-				'slug'            => 'projects',
+				'slug'            => self::$projects_slug,
 				'parent_url'      => $people_link,
 				'parent_slug'     =>  $this->id,
 				'screen_function' => 'bp_pm_projects',
