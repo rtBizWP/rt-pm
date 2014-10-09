@@ -59,7 +59,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             // add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
 
 			// CRM Lead to PM Project - Link Hook
-			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
+			//add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
 			
 			// add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
