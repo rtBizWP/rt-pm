@@ -1761,7 +1761,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                    }
 						   ?>
 					   </form></h6>
-					   <?php pm_add_documents_section( $projectid );?>
+					   <?php pm_add_documents_section( $projectid ); ?>
 				    <!--<div class="inside">
 					   <div class="row collapse" id="attachment-container">
 
