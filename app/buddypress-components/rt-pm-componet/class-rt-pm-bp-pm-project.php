@@ -1320,6 +1320,39 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
                     <?php } ?>
                     <div class="row">
+						<?php
+						if (isset($post->ID)) {
+							$save_button = __( 'Update' );
+						} else {
+							$save_button = __( 'Add Project' );
+						}
+						?>
+                        
+                            
+						<?php if( $user_edit ) { ?>
+						<div class="large-8 columns right push-1">
+							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+							<?php 
+							if(isset($post->ID)) { 
+								$get_post_status = get_post_status( $post->ID );
+								if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
+									$archive_action = 'unarchive';
+									$archive_button = __( 'Unarchive' );
+									$button_archive_id = 'button-unarchive';
+								} else {
+									$archive_action = 'archive';
+									$archive_button = __( 'Archive' );
+									$button_archive_id = 'button-archive';
+								}
+							?>
+							<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
+							<?php } ?>
+						</div>
+						<?php } ?>
+                        
+                    </div>
+                    <div class="row">
                         <div class="large-12 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse postbox">
                                 <div class="large-12 columns">
@@ -1662,7 +1695,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                             
 						<?php if( $user_edit ) { ?>
-						<div class="large-6 columns right">
+						<div class="large-8 columns right push-1">
 							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php 
 							if(isset($post->ID)) { 

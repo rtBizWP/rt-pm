@@ -8,6 +8,15 @@ jQuery(document).ready(function($) {
 		//return false;
     });
 	
+	$("#top-button-trash").click(function(){
+		var r = confirm("Are you sure you want to move this project to trash?");
+		if (r != true) {
+			return false;
+		}
+		window.location = $(this).data('href');
+		return false;
+    });
+	
 	$("#button-archive").click(function(){
 		var r = confirm("Are you sure you want to move this project to archive?");
 		if (r != true) {
@@ -18,6 +27,24 @@ jQuery(document).ready(function($) {
     });
 	
 	$("#button-unarchive").click(function(){
+		var r = confirm("Are you sure you want to move this project to unarchive?");
+		if (r != true) {
+			return false;
+		}
+		window.location = $(this).data('href');
+		return false;
+    });
+	
+	$("#top-button-archive").click(function(){
+		var r = confirm("Are you sure you want to move this project to archive?");
+		if (r != true) {
+			return false;
+		}
+		window.location = $(this).data('href');
+		return false;
+    });
+	
+	$("#top-button-unarchive").click(function(){
 		var r = confirm("Are you sure you want to move this project to unarchive?");
 		if (r != true) {
 			return false;
