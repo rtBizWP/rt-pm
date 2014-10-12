@@ -596,6 +596,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
                         <?php } ?>
+                        <div class="row collapse">
+                            <div class="large-12 columns">
                         <div class="large-6 columns left">
                         <div class="row collapse postbox">
                             <div class="large-12 columns">
@@ -746,6 +748,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        </div>
                         </div>
                         </div>
                         <button class="mybutton right" type="submit" id="save-task">Save task</button>
