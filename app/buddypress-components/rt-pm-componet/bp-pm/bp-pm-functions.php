@@ -222,13 +222,13 @@ if ( isset( $projectid ) ) {
                                 <?php } ?>
                              </ul>
                          </div>
-                        <div class="uploader large-5 columns">
+                        <div class="uploader large-5 columns push-2">
                            
-                        <input class="left mybutton" type="button"  id="upload_image" value="Choose Documents"  />
-                        <button class="left mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
+                        <input class="left mybutton" type="button"  id="upload_image" value="Add File"  />
+                        <button class="left mybutton add-external-link" type="button" ><?php _e("Add External File"); ?></button>
                         
                         <div class="attachment-info panel left">
-                              <h5><?php _e( 'Attachment Details', RT_BIZ_TEXT_DOMAIN ) ?></h5>
+                              <h5><?php _e( 'Attachment Details', RT_PM_TEXT_DOMAIN ) ?></h5>
 
                         <div class="details">
 
