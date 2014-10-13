@@ -222,7 +222,7 @@ if ( isset( $projectid ) ) {
                                 <?php } ?>
                              </ul>
                          </div>
-                        <div class="uploader large-5 columns push-2">
+                        <div class="uploader large-5 columns">
                            
                         <input class="left mybutton" type="button"  id="upload_image" value="Add File"  />
                         <button class="left mybutton add-external-link" type="button" ><?php _e("Add External File"); ?></button>
