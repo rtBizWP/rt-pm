@@ -726,19 +726,43 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                         <a href="#" class="button" id="add_pm_attachment"><?php _e('Add'); ?></a>
                                     <?php } ?>
                                     <div class="scroll-height">
-                                        <?php foreach ($attachments as $attachment) { ?>
-                                            <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
-                                            <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
-                                                <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
-                                                    <img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" />
-                                                    <?php echo $attachment->post_title; ?>
-                                                </a>
-                                                <?php if( $user_edit ) { ?>
-                                                    <a href="#" class="rtpm_delete_attachment right">x</a>
-                                                <?php } ?>
-                                                <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
-                                            </div>
+                                    	<table>
+                                    	 <?php if ( ! empty($attachments)){?>
+											  <tr>
+											    <th scope="column">Type</th>
+											    <th scope="column">Name</th>
+											    <th scope="column">Size</th>
+											    <th scope="column"></th>
+											  </tr>
+	                                        <?php foreach ($attachments as $attachment) { ?>
+	                                            <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
+	                                            <tr class="large-12 mobile-large-3 attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+											    	<td scope="column"><img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" /></td>
+											    	<td scope="column">
+											    		<a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+	                                                    	<?php echo '<span>'.$attachment->post_title .".".$extn.'</span>'; ?>
+	                                                	</a>
+	                                                </td>
+											    	<td scope="column">
+											    	<?php
+											    		$attached_file = get_attached_file( $attachment->ID );
+															if ( file_exists( $attached_file ) ) {
+																$bytes = filesize( $attached_file );
+																$response['filesizeInBytes'] = $bytes;
+																echo '<span>'. $response['filesizeHumanReadable'] = size_format( $bytes ) .'</span>';
+															}
+														?>
+													</td>
+													<td scope="column">
+														<?php if( $user_edit ) { ?>
+		                                                    <a href="#" class="rtpm_delete_attachment right">x</a>
+		                                                <?php } ?>
+		                                                <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+													</td>
+											  	</tr>
+	                                        <?php } ?>
                                         <?php } ?>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
