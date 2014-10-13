@@ -590,12 +590,13 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			<!--reveal-modal-add-task -->
             <div id="div-add-task" class="reveal-modal">
                 <fieldset>
-                    <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
+                    <legend><h4> Add New Task</h4></legend>
                     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
                         <?php } ?>
+                        
                         <div class="row collapse postbox">
                             <div class="large-6 columns">
                                 <?php if( $user_edit ) { ?>
@@ -611,66 +612,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 }
                                 ?>
                                 <div class="row collapse">
-		                            <div class="large-2 small-4 columns">
-		                                <span class="prefix" title="Create Date"><label>Create Date</label></span>
+                                	<div class="large-6 columns">
+		                                <span class="" title="Status">Status</span>
 		                            </div>
-		                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-		                                <?php if( $user_edit ) { ?>
-		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
-		                                           value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-		                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
-		                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
-		                                <?php } else { ?>
-		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
-		                                <?php } ?>
+                                	<div class="large-6 columns push-1">
+		                                <span class="" title="Create Date"><label>Create Date</label></span>
 		                            </div>
-		                            <div class="large-1 mobile-large-1 columns">
-		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-		                            </div>
-		                            <div class="large-3 mobile-large-1 columns">
-		                                <span class="prefix" title="Assigned To"><label for="post[post_assignee]"><strong>Assigned To</strong></label></span>
-		                            </div>
-		                            <div class="large-3 mobile-large-3 columns">
-		                                <?php if( $user_edit ) { ?>
-		                                    <select name="post[post_assignee]" >
-												<option value=""><?php _e( 'Select Assignee' ); ?></option>
-		                                        <?php
-		                                        if (!empty($results_member)) {
-		                                            foreach ($results_member as $author) {
-		                                                if ($author->ID == $post_assignee) {
-		                                                    $selected = " selected";
-		                                                } else {
-		                                                    $selected = " ";
-		                                                }
-		                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
-		                                            }
-		                                        }
-		                                        ?>
-		                                    </select>
-		                                <?php } ?>
-		                            </div>
-		                        </div>
-		                        <div class="row collapse">
-		                            <div class="large-2 small-4 columns">
-		                                <span class="prefix" title="Due Date"><label>Due Date</label></span>
-		                            </div>
-		                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-		                                <?php if( $user_edit ) { ?>
-		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
-		                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-		                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
-		                                    <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
-		                                <?php } else { ?>
-		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
-		                                <?php } ?>
-		                            </div>
-		                            <div class="large-1 mobile-large-1 columns">
-		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-		                            </div>
-		                            <div class="large-3 mobile-large-1 columns">
-		                                <span class="prefix" title="Status">Status</span>
-		                            </div>
-		                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            	</div>
+                            	<div class="row collapse">
+                            		<div class="large-6 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 		                                <?php
 		                                if (isset($post->ID))
 		                                    $pstatus = $post->post_status;
@@ -701,7 +651,64 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                    }
 		                                } ?>
 		                            </div>
-		                        </div>
+		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                                <?php if( $user_edit ) { ?>
+		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+		                                           value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
+		                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
+		                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+		                                <?php } else { ?>
+		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
+		                                <?php } ?>
+		                            </div>
+		                            <div class="large-1 mobile-large-1 columns">
+		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
+		                            </div>
+                        		</div>
+                        		<div class="row collapse">
+                                	<div class="large-6 columns">		                                
+		                                <span class="" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
+		                            </div>
+                                	<div class="large-6 columns push-1">
+		                                <span class="" title="Due Date"><label>Due Date</label></span>
+		                            </div>
+                            	</div>
+                            	<div class="row collapse">
+                            		<div class="large-6 columns">
+		                                <?php if( $user_edit ) { ?>
+		                                    <select name="post[post_assignee]" >
+												<option value=""><?php _e( 'Select Assignee' ); ?></option>
+		                                        <?php
+		                                        if (!empty($results_member)) {
+		                                            foreach ($results_member as $author) {
+		                                                if ($author->ID == $post_assignee) {
+		                                                    $selected = " selected";
+		                                                } else {
+		                                                    $selected = " ";
+		                                                }
+		                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+		                                            }
+		                                        }
+		                                        ?>
+		                                    </select>
+		                                <?php } ?>
+		                            </div>
+		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                                <?php if( $user_edit ) { ?>
+		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
+		                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
+		                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
+		                                    <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
+		                                <?php } else { ?>
+		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
+		                                <?php } ?>
+		                            </div>
+		                            <div class="large-1 mobile-large-1 columns">
+		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
+		                            </div>
+                            	</div>
                             </div>
                             <div class="large-6 columns">
                             	<?php $attachments = array();
@@ -759,7 +766,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                                    </div>
 	                                </div>
 	                            </div>
-	                        	<button class="mybutton right" type="submit" id="save-task">Save task</button>
+	                        	
+                            </div>
+                            <div class="row collapse right">
+                            	<button class="mybutton " type="submit" id="save-task">Save task</button>
                             </div>
                         </div>
                 		
