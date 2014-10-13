@@ -199,6 +199,7 @@ if ( isset( $projectid ) ) {
                                            <div class="filetitle"><?php echo $attachment->post_title; ?></div>
                                        </div>
                                     </div>
+                                    <a class="check document-check"  title="Deselect" tabindex="-1" data-document-id="<?php echo $attachment->ID; ?>"><div class="media-modal-icon"></div></a>
                                     <?php
                                     //print_r($_REQUEST); 
                                     $taxonomies=get_attachment_taxonomies($attachment);
@@ -216,7 +217,7 @@ if ( isset( $projectid ) ) {
 										   
 									   </div>
 								   <?php } ?>
-                                   <a class="check document-check"  title="Deselect" tabindex="-1" data-document-id="<?php echo $attachment->ID; ?>"><div class="media-modal-icon"></div></a>
+                                   
                                 </li>
                                 <?php } ?>
                              </ul>
