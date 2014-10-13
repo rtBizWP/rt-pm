@@ -120,7 +120,57 @@ function pm_remove_document(){
 }
 add_action( 'wp_ajax_rtpm_remove_document', 'pm_remove_document'  );
 
-function pm_add_documents_section( $post_id ){ ?>
+function pm_add_documents_section( $post_id ){ 
+global $rt_pm_bp_pm;
+$post_type=$_REQUEST['post_type'];
+$projectid = $_REQUEST["{$post_type}_id"];
+
+$attachments = array();
+$arg= array(
+    'posts_per_page' => -1,
+    'post_parent' => $projectid,
+    'post_type' => 'attachment',
+    'exclude'     => get_post_thumbnail_id()
+);
+
+if ( isset($_REQUEST['attachment_tag']) && $_REQUEST['attachment_tag']!= -1 ){
+    $arg=array_merge($arg, array('tax_query' => array(
+        array(
+            'taxonomy' => 'attachment_tag',
+            'field' => 'term_id',
+            'terms' => $_REQUEST['attachment_tag'])
+        ))
+    );
+}
+if (isset($_POST['post'])){
+    $new_attachment = $_POST['post'];
+    $projectid = $new_attachment["post_project_id"];
+    $args = array(
+        'guid' => $new_attachment["post_link"],
+        'post_title' => $new_attachment["post_title"],
+        'post_content' => $new_attachment["post_title"],
+        'post_parent' => $projectid,
+        'post_author' => get_current_user_id(),
+    );
+    $post_attachment_hashes = get_post_meta( $projectid, '_rt_wp_pm_external_link' );
+    if ( empty( $post_attachment_hashes ) || $post_attachment_hashes != $new_attachment->post_link  ) {
+        $attachment_id = wp_insert_attachment( $args, $new_attachment["post_link"], $projectid );
+        add_post_meta( $projectid, '_rt_wp_pm_external_link', $new_attachment["post_link"] );
+        //convert string array to int array
+        $new_attachment["term"] = array_map( 'intval', $new_attachment["term"] );
+        $new_attachment["term"] = array_unique( $new_attachment["term"] );
+        //Set term to external link
+        wp_set_object_terms( $attachment_id, $new_attachment["term"], 'attachment_tag');
+        //Update flag for external link
+        update_post_meta( $attachment_id, '_wp_attached_external_file', '1');
+        /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
+    }
+}
+delete_post_meta( $projectid, '_rt_wp_pm_external_link' );
+if ( isset( $projectid ) ) {
+    $attachments = get_posts($arg );
+}
+?>
  <div class="row">
  	<input type='hidden' id='post-id' name='post[rt_project_id]' value=<?php echo $post_id; ?>>
 
@@ -128,13 +178,7 @@ function pm_add_documents_section( $post_id ){ ?>
                              <ul class="attachments" id="attachment-document">
                             <?php
 
-                                $attachments = get_posts( array(
-                                        'post_type' => 'attachment',
-                                        'posts_per_page' => -1,
-                                        'post_parent' => $post_id,
-                                        'exclude'     => get_post_thumbnail_id()
-
-                                ) );
+                                
 
                                 foreach ($attachments as $key => $attachment) {
 
@@ -144,7 +188,7 @@ function pm_add_documents_section( $post_id ){ ?>
                                       }
                                 ?>
 
-                               <li tabindex="0" role="checkbox" aria-label="6_webp" aria-checked="false" class="attachment save-ready document-attachment">
+                               <li tabindex="0" role="checkbox" aria-label="6_webp" aria-checked="false" class="attachment save-ready document-attachment" style="min-height:130px;">
                                    <div class="attachment-preview js--select-attachment type-image subtype-png landscape">
                                         <div class="thumbnail">
                                             <div class="centered">
@@ -155,6 +199,23 @@ function pm_add_documents_section( $post_id ){ ?>
                                            <div class="filetitle"><?php echo $attachment->post_title; ?></div>
                                        </div>
                                     </div>
+                                    <?php
+                                    //print_r($_REQUEST); 
+                                    $taxonomies=get_attachment_taxonomies($attachment);
+								   	$taxonomies=get_the_terms($attachment,$taxonomies[0]);
+								   	$term_html = '';
+								   	if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
+									   <div style="display:inline-flex;" class="attachment-meta">[&nbsp;
+										   <?php foreach( $taxonomies as $taxonomy){
+											   if ( !empty($term_html) ){
+												   $term_html.=',&nbsp;';
+											   }
+											   $term_html .= '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='.$post_type.'&'.$post_type.'_id='.$_REQUEST["{$post_type}_id"].'&tab='.$post_type.'-files&attachment_tag='.$taxonomy->term_id.'"'.'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
+										   }
+										   echo $term_html;?>&nbsp;]
+										   
+									   </div>
+								   <?php } ?>
                                    <a class="check document-check"  title="Deselect" tabindex="-1" data-document-id="<?php echo $attachment->ID; ?>"><div class="media-modal-icon"></div></a>
                                 </li>
                                 <?php } ?>
