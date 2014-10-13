@@ -1812,9 +1812,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 				<div id="attachment-search-row" class="row collapse postbox">
 				   <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
-				   <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span>
+				   <h6 class="hndle"><span> <?php _e('Attachments'); ?></span>
 					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
-						   <button class="right mybutton success" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
+						   <button class="right mybutton" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
 						   <?php
                                                    if ( isset( $_REQUEST['attachment_tag'] ) ) {                                         
                                                         wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
