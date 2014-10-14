@@ -1045,7 +1045,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <button class="mybutton right" type="submit" id="save-task">Save Time Entry</button>
+                        <?php 
+						if (isset($_REQUEST['rt_time_entry_id'])) {
+							$save_button = __( 'Save Time Entry' );
+						} else {
+							$save_button = __( 'Add Time Entry' );
+						}
+						?>
+                        <button class="mybutton right" type="submit" id="save-task"><?php _e( $save_button ); ?></button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>
