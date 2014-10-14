@@ -179,7 +179,7 @@ if ( isset( $projectid ) ) {
                             <?php
 
                                 
-
+							if ( $attachments ){
                                 foreach ($attachments as $key => $attachment) {
 
                                       $thumbnail_url = wp_get_attachment_thumb_url( $attachment->ID );
@@ -220,55 +220,62 @@ if ( isset( $projectid ) ) {
                                    
                                 </li>
                                 <?php } ?>
+                                <?php }else{ ?>
+									   <div class="push-1">
+										   <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+										   <!-- Attachment Not found! -->
+									   </div>
+								   <?php } ?>
                              </ul>
                          </div>
                         <div class="uploader large-5 columns">
                            
                         <input class="left mybutton" type="button"  id="upload_image" value="Add File"  />
                         <button class="left mybutton add-external-link" type="button" ><?php _e("Add External File"); ?></button>
-                        
+                        <?php //if ( $attachments ){ ?>
                         <div class="attachment-info panel left">
-                              <h5><?php _e( 'Attachment Details', RT_PM_TEXT_DOMAIN ) ?></h5>
-
-                        <div class="details">
-
-                            <strong>File type: </strong><div class="filetype"> </div>
-                            <strong>Uploaded on: </strong><div class="uploaded"> </div>
-
-                        </div>
-                  <div class="settings alignright">
-                               
-                            <label class="setting" data-setting="url">
-                                    <span class="name">URL</span>
-                                    <input type="text" id="fileurl" readonly="">
-                            </label>
-
-                            <label class="setting" data-setting="title">
-                                    <span class="name">Title</span>
-                                    <input type="text" id="filetitle" >
-                            </label>
-
-                            <label class="setting" data-setting="caption">
-                                    <span class="name">Caption</span>
-                                    <textarea id="filecaption"></textarea>
-                            </label>
-
-                            <label class="setting" data-setting="description">
-                                    <span class="name">Description</span>
-                                    <textarea id="filedescription"></textarea>
-                            </label>
-
-
-                        
-                    </div>
-
-                    <div class="actions alignright" data-attachment-id="">
-                        <input type="button" value="Update" id="save-attachment">
-                        <input type="button" value="Delete" id="delete-attachment">
-
-                    </div>
-
-		</div>
+                          <h5><?php _e( 'Attachment Details', RT_PM_TEXT_DOMAIN ) ?></h5>
+				
+		                        <div class="details">
+		
+		                            <strong>File type: </strong><div class="filetype"> </div>
+		                            <strong>Uploaded on: </strong><div class="uploaded"> </div>
+		
+		                        </div>
+				                  <div class="settings alignright">
+			                               
+			                            <label class="setting" data-setting="url">
+			                                    <span class="name">URL</span>
+			                                    <input type="text" id="fileurl" readonly="">
+			                            </label>
+			
+			                            <label class="setting" data-setting="title">
+			                                    <span class="name">Title</span>
+			                                    <input type="text" id="filetitle" >
+			                            </label>
+			
+			                            <label class="setting" data-setting="caption">
+			                                    <span class="name">Caption</span>
+			                                    <textarea id="filecaption"></textarea>
+			                            </label>
+			
+			                            <label class="setting" data-setting="description">
+			                                    <span class="name">Description</span>
+			                                    <textarea id="filedescription"></textarea>
+			                            </label>
+			
+			
+			                        
+			                    </div>
+			
+			                    <div class="actions alignright" data-attachment-id="">
+			                        <input type="button" value="Update" id="save-attachment">
+			                        <input type="button" value="Delete" id="delete-attachment">
+			
+			                    </div>
+				
+						</div>
+					 <?php //} ?>
     </div>
 </div>
 
