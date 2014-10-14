@@ -253,6 +253,9 @@ span.prefix {
   margin-left: -20%;
   top: 5px ! important;
 }
+.tabs-content .reveal-modal-bg   {
+	margin-left: 35%;
+}
 .reveal-modal > *:first-child {
     padding: 5%;
 }
