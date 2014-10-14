@@ -243,6 +243,9 @@ span.prefix {
   color: #000;
   font-weight: normal;
 }
+.tabs.five-up dt a, .tabs.five-up dd a, .tabs.five-up li a {
+    font-size: small;
+}
 .rtpm-container {
     padding-right: 0;
 }
@@ -252,8 +255,4 @@ span.prefix {
 }
 .reveal-modal > *:first-child {
     padding: 5%;
-}
-/** Hack for buddyboss **/
-.pm  #buddypress div#item-body  {
-	width: 80%;
 }
