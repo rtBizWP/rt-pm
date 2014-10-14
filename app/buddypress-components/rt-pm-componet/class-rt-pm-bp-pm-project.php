@@ -1357,7 +1357,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                             
 						<?php if( $user_edit ) { ?>
-						<div class="large-8 columns right push-1">
+						<div class="large-8 columns right push-2">
 							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php 
 							if(isset($post->ID)) { 
@@ -1722,7 +1722,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                             
 						<?php if( $user_edit ) { ?>
-						<div class="large-8 columns right push-1">
+						<div class="large-8 columns right push-2">
 							<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php 
 							if(isset($post->ID)) { 
