@@ -604,6 +604,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <?php } else { ?>
 	                                <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
 	                            <?php } ?>
+	                            <fieldset>
 	                            <?php
 	                            if( $user_edit ) {
 	                                wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
@@ -611,14 +612,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                                echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
 	                            }
 	                            ?>
+	                            </fieldset>
+	                            <fieldset>
 	                            <div class="row collapse">
 	                            	<div class="large-6 columns">
 		                                <span class="" title="Status">Status</span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
 		                                <span class="" title="Create Date"><label>Create Date</label></span>
-		                            </div>
+		                            </div><hr />
 	                        	</div>
+	                        	
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 		                                <?php
@@ -666,13 +670,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
 		                            </div>
 	                    		</div>
+	                    		</fieldset>
+	                    		<fieldset>
 	                    		<div class="row collapse">
 	                            	<div class="large-6 columns">		                                
 		                                <span class="" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
 		                                <span class="" title="Due Date"><label>Due Date</label></span>
-		                            </div>
+		                            </div><hr />
 	                        	</div>
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns">
@@ -709,6 +715,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
 		                            </div>
 	                        	</div>
+	                        	</fieldset>
 	                        </div>
 	                        <div class="large-6 columns">
 	                        	<?php $attachments = array();
