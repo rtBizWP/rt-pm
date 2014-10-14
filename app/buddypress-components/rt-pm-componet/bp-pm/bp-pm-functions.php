@@ -236,7 +236,7 @@ if ( isset( $projectid ) ) {
                             <strong>Uploaded on: </strong><div class="uploaded"> </div>
 
                         </div>
-                  <div class="settings">
+                  <div class="settings alignright">
                                
                             <label class="setting" data-setting="url">
                                     <span class="name">URL</span>
