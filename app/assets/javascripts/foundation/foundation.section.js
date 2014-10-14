@@ -397,4 +397,4 @@
     return this;
   };
 
-}(Foundation.zj, window, document));
+}(jQuery, window, document));
