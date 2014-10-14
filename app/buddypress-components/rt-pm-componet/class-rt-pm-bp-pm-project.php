@@ -1052,7 +1052,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 							$btntitle = __( 'Add Time Entry' );
 						}
 						?>
-                        <button class="mybutton right" type="submit" id="save-task"><?php _e( $save_button ); ?></button>
+                        <button class="mybutton right" type="submit" id="save-task"><?php _e( $btntitle ); ?></button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>
