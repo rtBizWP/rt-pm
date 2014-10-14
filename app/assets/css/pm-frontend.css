@@ -253,7 +253,7 @@ span.prefix {
   margin-left: -20%;
   top: 5px ! important;
 }
-#div-add-time-entry .reveal-modal-bg   {
+#div-add-time-entry.reveal-modal.large {
 	margin-left: 35%;
 }
 .reveal-modal > *:first-child {
