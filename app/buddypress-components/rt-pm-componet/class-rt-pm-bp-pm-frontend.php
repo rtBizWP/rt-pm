@@ -55,8 +55,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                     wp_enqueue_script( 'jquery-ui-accordion' );
                 }
 
-				wp_enqueue_media(); // Enqueues all scripts, styles, settings, and templates necessary to use all media JavaScript APIs. 
-
+				wp_enqueue_media(); // Enqueues all scripts, styles, settings, and templates necessary to use all media JavaScript APIs.
+				 
+				wp_enqueue_style( 'foundation-css', RT_PM_URL . 'app/assets/css/foundation.min.css' , array('buddyboss-wp-frontend') );
                 wp_enqueue_style('foundation-icon-general-css', RT_PM_URL . 'app/assets/css/general_foundicons.css', false, "", 'all');
                 wp_enqueue_style('foundation-icon-general-ie-css', RT_PM_URL . 'app/assets/css/general_foundicons_ie7.css', false, "", 'all');
                 wp_enqueue_style('foundation-icon-social-css', RT_PM_URL . 'app/assets/css/social_foundicons.css', false, "", 'all');
