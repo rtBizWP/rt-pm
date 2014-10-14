@@ -590,13 +590,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			<!--reveal-modal-add-task -->
             <div id="div-add-task" class="reveal-modal">
         		<fieldset>
-	                <legend><h4> Add New Task</h4></legend>
 	                <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
 	                        <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
 	                    <?php } ?>
-	                    
+	                    <legend><h4> <?php echo (isset($post->ID)) ? $post->post_title : _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
 	                    <div class="row collapse postbox">
 	                        <div class="large-6 columns">
 	                            <?php if( $user_edit ) { ?>
@@ -604,15 +603,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <?php } else { ?>
 	                                <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
 	                            <?php } ?>
-	                            <fieldset>
+	                            
 	                            <?php
 	                            if( $user_edit ) {
-	                                wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
+	                            	?>
+	                            	<textarea name="post[post_content]" rows="5" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->ID ) ) ? $post->post_content : ""; ?> </textarea>
+	                                <?php
+	                                //wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
 	                            } else {
 	                                echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
 	                            }
 	                            ?>
-	                            </fieldset>
 	                            <fieldset>
 	                            <div class="row collapse">
 	                            	<div class="large-6 columns">
