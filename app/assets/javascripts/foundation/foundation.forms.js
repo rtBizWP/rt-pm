@@ -530,4 +530,4 @@
     }
     return $();
   };
-}(jQuery, this, this.document));
+}(Foundation.zj, this, this.document));
