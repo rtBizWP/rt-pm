@@ -922,10 +922,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					}
 					?>
 					<div class="row">
-						<div class="large-8 columns">
+						<div class="large-7 columns">
 							<h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
 						</div>
-						<div class="large-4 columns">
+						<div class="large-5 columns">
 							<button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
 						</div>
 
@@ -1046,10 +1046,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                         </div>
                         <?php 
-						if (isset($_REQUEST['rt_time_entry_id'])) {
-							$save_button = __( 'Save Time Entry' );
+						if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
+							$btntitle = __( 'Save Time Entry' );
 						} else {
-							$save_button = __( 'Add Time Entry' );
+							$btntitle = __( 'Add Time Entry' );
 						}
 						?>
                         <button class="mybutton right" type="submit" id="save-task"><?php _e( $save_button ); ?></button>
