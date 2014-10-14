@@ -973,7 +973,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			</div>
 
             <!--reveal-modal-add-task -->
-            <div id="div-add-time-entry" class="reveal-modal large">
+            <div id="div-add-time-entry" class="reveal-modal">
                 <fieldset>
                     
                     <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
@@ -1010,15 +1010,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                         </div>
                         <div class="row collapse">
-                        	<div class="large-2 mobile-large-1 columns">
+                        	<div class="large-2 mobile-large-2 columns">
                                 <label for="post[post_duration]">Time</label>
                             </div>
-                            <div class="large-4 mobile-large-3 columns">
+                            <div class="large-3 mobile-large-3 columns">
                                 <?php if( $user_edit ) { ?>
 								<input type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
                                 <?php } ?>
                             </div>
-                            <div class="large-2 small-4 columns">
+                            <div class="large-1 mobile-large-1 columns">&nbsp;</div>
+                            <div class="large-2 mobile-large-4 columns">
                                 <label>Date Created</label>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
