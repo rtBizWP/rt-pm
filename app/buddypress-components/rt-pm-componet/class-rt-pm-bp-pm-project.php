@@ -975,15 +975,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             <!--reveal-modal-add-task -->
             <div id="div-add-time-entry" class="reveal-modal large">
                 <fieldset>
-                    <legend><h4>Time Entry</h4></legend>
+                    
                     <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->id) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
                         <?php } ?>
+                        <legend><h4>Time Entry</h4></legend><hr />
                         <div class="row collapse">
                             <div class="large-2 mobile-large-2 columns">
-                                <span class="prefix" title="Task"><label for=""><strong>Task</strong></label></span>
+                                <label for="Task">Task</label>
                             </div>
 							<div class="large-10 mobile-large-6 columns">
 							<?php
@@ -995,7 +996,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
 						<div class="row collapse rtpm-post-author-wrapper">
                             <div class="large-2 mobile-large-2 columns">
-                                <span class="prefix" title="Assigned To"><label for="post[post_timeentry_type]"><strong>Type</strong></label></span>
+                                <label for="post[post_timeentry_type]">Type</label>
                             </div>
                             <div class="large-10 mobile-large-6 columns">
 								<?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
@@ -1009,8 +1010,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                         </div>
                         <div class="row collapse">
+                        	<div class="large-2 mobile-large-1 columns">
+                                <label for="post[post_duration]">Time</label>
+                            </div>
+                            <div class="large-4 mobile-large-3 columns">
+                                <?php if( $user_edit ) { ?>
+								<input type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
+                                <?php } ?>
+                            </div>
                             <div class="large-2 small-4 columns">
-                                <span class="prefix" title="Create Date"><label>Create Date</label></span>
+                                <label>Date Created</label>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
@@ -1024,14 +1033,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                             <div class="large-1 mobile-large-1 columns">
                                 <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-1 columns">
-                                <span class="prefix" title="Duration"><label for="post[post_duration]"><strong>Duration</strong></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-3 columns">
-                                <?php if( $user_edit ) { ?>
-								<input type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
-                                <?php } ?>
                             </div>
                         </div>
                         <div class="row collapse postbox">
