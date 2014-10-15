@@ -304,3 +304,37 @@ span.prefix {
 .rtpm-container .add-notification-rule .row {
     max-width: 98%;
 }
+
+/** fixes for table header (from  rt-bp-person.css ) **/
+.required{
+    color: red;
+}
+
+.entry-content h1,h2,h3, h4{
+    margin: 0px 0 !important;
+}
+
+.person-avatar {
+    width: 55px !important;
+}
+.person-avatar img.avatar {
+max-width: none !important;
+padding: 0px !important;
+border: 0 !important;
+-moz-border-radius: 2px !important;
+-webkit-border-radius: 20px !important;
+-moz-box-shadow: 0px 0px 0px #dddddd !important;
+-webkit-box-shadow: 0px 0px 0px #dddddd !important;
+}
+
+.list-heading{
+    margin-bottom: 10px;
+}
+
+.list-title{
+    padding-left: 0px !important;
+}
+
+.cancel-button{
+    margin-top: 2px;
+}

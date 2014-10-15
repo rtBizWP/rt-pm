@@ -104,11 +104,14 @@
 		$totalPage= $max_num_pages =  $the_query->max_num_pages;
 		
 		?>
-		<div class="row">
-            <div class="large-10 columns">
-                <h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
-            </div>
-        </div>
+        <div class="row list-heading">
+		    <div class="large-10 columns list-title">
+		        <h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
+		    </div>
+		    <div class="large-2 columns">
+		       
+		    </div>
+		</div>
 		<table>
 			<thead>
 				<tr>

@@ -570,11 +570,11 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						$btntitle = 'Add Task';
 					}
 				?>
-				<div class="row">
-					<div class="large-8 columns">
+				<div class="row list-heading">
+					<div class="large-10 columns list-title">
 						<h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
 					</div>
-					<div class="large-4 columns">
+					<div class="large-2 columns">
 						<button class="right mybutton add-task" type="button" ><?php _e( $btntitle ); ?></button>
 					</div>
 
@@ -922,11 +922,11 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						$btntitle = 'Add Time Entry';
 					}
 					?>
-					<div class="row">
-						<div class="large-7 columns">
+					<div class="row list-heading">
+						<div class="large-10 columns list-title">
 							<h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
 						</div>
-						<div class="large-5 columns">
+						<div class="large-2 columns">
 							<button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button>
 						</div>
 
@@ -2049,7 +2049,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						}
 					}
 				?>
-				<h6><?php _e( 'Triggered Notifications' ); ?></h6>
+				<div class="row list-heading">
+			        <div class="large-10 columns list-title">
+			            <h4><?php _e( 'Triggered Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
+			        </div>
+			        <div class="large-2 columns">
+			          
+			        </div>
+			    </div>
 				<?php if ( $user_edit ) { ?>
 				<div class="add-notification-rule">
 					<form method="post">
@@ -2214,7 +2221,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				<br />
 				<hr />
 				<br />
-				<h6 class="current"><?php _e( 'Periodic Notifications' ); ?></h6>
+				<div class="row list-heading">
+			        <div class="large-10 columns list-title">
+			            <h4><?php _e( 'Periodic Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
+			        </div>
+			        <div class="large-2 columns">
+			          
+			        </div>
+			    </div>
 				<?php if ( $user_edit ) { ?>
 				<div class="add-notification-rule">
 					<form method="post">
