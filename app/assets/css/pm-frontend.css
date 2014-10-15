@@ -15,6 +15,9 @@
 #wp-custom-list-table  .tablenav .no-pages, .tablenav .one-page .pagination-links {
     display: none;
 }
+#wp-custom-list-table  table tr th  {
+	padding: 8px 8px;
+}
 .tablenav-pages .current-page {
     padding-top: 0;
     text-align: center;

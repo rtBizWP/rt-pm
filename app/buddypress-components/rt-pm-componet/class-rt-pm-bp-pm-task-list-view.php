@@ -522,9 +522,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 								break;
 							case "rtpm_title":
                                 if ($this->user_edit){
-								    echo '<td>'.'<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">'.$rec->post_title.'</a>';
+								    echo '<td '.$attributes.'>'.'<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">'.$rec->post_title.'</a>';
                                 }else{
-                                    echo '<td>'.$rec->post_title;
+                                    echo '<td '.$attributes.'>'.$rec->post_title;
                                 }
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
