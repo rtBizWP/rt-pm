@@ -949,20 +949,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 				<div id="rtpm_project_cost_report" class="row collapse">
 					<div class="large-3 columns">
-						<h5><?php _e( 'Total Project Cost:'); ?></h5>
-						<span><?php echo '$ '.$project_current_budget_cost; ?></span>
+						<h5><?php _e( 'Total Project Cost:'); ?>&nbsp;<?php echo '$ '.$project_current_budget_cost; ?></h5>
 					</div>
 					<div class="large-3 columns">
-						<h5><?php _e( 'Project Budget:'); ?></h5>
-						<span><?php echo '$ '.floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></span>
+						<h5><?php _e( 'Project Budget:'); ?>&nbsp;<?php echo '$ '.floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></h5>
 					</div>
 					<div class="large-3 columns">
-						<h5><?php _e( 'Total Time spent:'); ?></h5>
-						<span><?php echo $project_current_time_cost.__(' hours'); ?></span>
+						<h5><?php _e( 'Total Time spent:'); ?>&nbsp;<?php echo $project_current_time_cost.__(' hours'); ?></h5>
 					</div>
 					<div class="large-3 columns">
-						<h5><?php _e( 'Project Estimated Time:'); ?></h5>
-						<span><?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], 'project_estimated_time', true ) ).__(' hours'); ?></span>
+						<h5><?php _e( 'Project Estimated Time:'); ?>&nbsp;<?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], 'project_estimated_time', true ) ).__(' hours'); ?></h5>
 					</div>
 				</div>
 
