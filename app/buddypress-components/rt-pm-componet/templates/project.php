@@ -24,8 +24,8 @@
         wp_die("Opsss!! You are in restricted area");
     }?>
     <div class="rtpm-container">
-        <div style="max-width:none;" class="row">
-            <div style="padding:0" class="large-6 columns">
+        <div style="max-width:none;" class="row list-heading">
+            <div style="padding:0" class="large-6 columns list-title">
                 <?php
                 if (isset($_REQUEST["{$post_type}_id"])) {
                     $post_icon = "foundicon-".( ( $user_edit ) ? 'edit' : 'view-mode' );
