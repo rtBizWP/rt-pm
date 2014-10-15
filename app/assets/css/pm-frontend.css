@@ -15,8 +15,8 @@
 #wp-custom-list-table  .tablenav .no-pages, .tablenav .one-page .pagination-links {
     display: none;
 }
-#wp-custom-list-table  table tr th,
-#wp-custom-list-table table tr td {
+#buddypress #wp-custom-list-table  table tr th,
+#buddypress #wp-custom-list-table table tr td {
 	padding: 8px !important;
 }
 .tablenav-pages .current-page {
