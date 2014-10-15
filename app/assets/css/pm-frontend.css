@@ -316,7 +316,7 @@ form#form-add-post  h6.hndle  {
 
 /** Notification Style **/
 .rtpm-container .add-notification-rule .row {
-    max-width: 98%;
+    margin-left: -2.7%;
 }
 
 /** fixes for table header (from  rt-bp-person.css ) **/
