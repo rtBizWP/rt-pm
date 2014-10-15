@@ -247,8 +247,15 @@ span.prefix {
 .tabs.five-up dt a, .tabs.five-up dd a, .tabs.five-up li a {
     font-size: small;
 }
+.entry-content dl.tabs  {
+	margin: 0;
+}
 .rtpm-container {
     padding-right: 0;
+}
+.rtpm-container   .tabs-content  {
+	padding-left: 0;
+	padding-right: 0;
 }
 .reveal-modal, .reveal-modal.large {
   margin-left: 20%;
