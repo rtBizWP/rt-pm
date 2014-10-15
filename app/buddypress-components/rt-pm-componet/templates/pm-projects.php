@@ -114,7 +114,7 @@
 				<tr>
                   <?php foreach ( $columns as $column ) {
                   ?>
-                        <td>
+                        <th>
                             <?php
                             if(  $column['sortable']  ) {
 
@@ -135,7 +135,7 @@
                             }
 
                             ?>
-                        </td>
+                        </th>
                 <?php  } ?>
                 </tr>
                 </thead>
