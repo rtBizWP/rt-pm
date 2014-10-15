@@ -258,7 +258,10 @@ span.prefix {
 	margin-left: 35%;
 }
 #div-add-time-entry label  {
-	top: 5px;
+	line-height: 2.5;
+}
+.reveal-modal .row   {
+	padding: 5% 0;
 }
 .reveal-modal > *:first-child {
     padding: 3%;
