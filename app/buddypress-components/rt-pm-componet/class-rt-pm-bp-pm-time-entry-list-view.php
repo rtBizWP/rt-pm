@@ -492,7 +492,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 			
 			foreach ( $columns as $column ) { 
                 ?>
-                <td>
+                <th>
                     <?php
                     if(  $column['sortable']  ) {
 
@@ -513,7 +513,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
                     }
 
                     ?>
-                </td>
+                </th>
                 <?php
             }
 		}

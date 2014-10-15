@@ -432,7 +432,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			
 			foreach ( $columns as $column ) { 
                 ?>
-                <td>
+                <th>
                     <?php
                     if(  $column['sortable']  ) {
 
@@ -453,7 +453,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                     }
 
                     ?>
-                </td>
+                </th>
                 <?php
             }
 		}
