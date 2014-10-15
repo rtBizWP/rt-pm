@@ -231,7 +231,7 @@ if ( isset( $projectid ) ) {
                         <div class="uploader large-5 columns">
                            
                         <input class="left mybutton" type="button"  id="upload_image" value="Add File"  />
-                        <button class="left mybutton add-external-link" type="button" ><?php _e("Add External File"); ?></button>
+                        <button class="left mybutton add-external-link push-1" type="button" ><?php _e("Add External File"); ?></button>
                         <?php //if ( $attachments ){ ?>
                         <div class="attachment-info panel left">
                           <h5><?php _e( 'Attachment Details', RT_PM_TEXT_DOMAIN ) ?></h5>
