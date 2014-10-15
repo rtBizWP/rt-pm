@@ -299,3 +299,8 @@ span.prefix {
     text-align: center;
     text-decoration: none;
 }
+
+/** Notification Style **/
+.rtpm-container .add-notification-rule .row {
+    max-width: 98%;
+}
