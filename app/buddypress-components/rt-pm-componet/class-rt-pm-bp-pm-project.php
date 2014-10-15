@@ -1411,6 +1411,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                             <div class="row collapse rtpm-lead-content-wrapper">
                                 <div class="large-12 columns">
+                                	<fieldset>
                                     <?php
                                     if( $user_edit ) {
                                         wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false ) );
@@ -1418,6 +1419,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                         echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
                                     }
                                     ?>
+                                    </fieldset>
                                 </div>
                             </div>
                         </div>
