@@ -330,6 +330,9 @@ border: 0 !important;
 .list-heading{
     margin-bottom: 10px;
 }
+.rtpm-container #wp-custom-list-table .row.list-heading {
+    margin-top: -10px;
+}
 
 .list-title{
     padding-left: 0px !important;
