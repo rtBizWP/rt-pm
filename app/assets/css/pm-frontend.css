@@ -272,6 +272,10 @@ span.prefix {
 form#form-add-post  h6.hndle  {
 	display: none; /** Need to remove in php **/
 }
+.rtpm-container #rtpm_project_cost_report {
+    margin-bottom: 0;
+    margin-top: 0;
+}
 #form-external-link  ul.media-term-list  li {
 	list-style: none;
 }
