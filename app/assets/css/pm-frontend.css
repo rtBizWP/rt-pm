@@ -269,6 +269,9 @@ span.prefix {
   margin-left: 25%;
   top: 5px ! important;
 }
+form#form-add-post  h6.hndle  {
+	display: none; /** Need to remove in php **/
+}
 #form-external-link  ul.media-term-list  li {
 	list-style: none;
 }
