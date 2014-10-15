@@ -1832,8 +1832,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				</div>-->
 
 				<div id="attachment-search-row" class="row collapse postbox">
-				   <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
-				   <h6 class="hndle"><span> <?php _e('Attachments'); ?></span>
+				   <div class="row list-heading"><span> <?php _e('Attachments'); ?></div>
 					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
 						   <button class="right mybutton" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
 						   <?php
