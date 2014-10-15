@@ -260,8 +260,8 @@ span.prefix {
 #div-add-time-entry label  {
 	line-height: 2.5;
 }
-.reveal-modal .row   {
-	padding: 5% 0;
+#div-add-time-entry.reveal-modal .row   {
+	padding: 2% 0;
 }
 .reveal-modal > *:first-child {
     padding: 3%;
