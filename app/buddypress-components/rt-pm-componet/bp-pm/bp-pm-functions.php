@@ -238,8 +238,8 @@ if ( isset( $projectid ) ) {
 				
 		                        <div class="details">
 		
-		                            <strong>File type: </strong><div class="filetype"> </div>
-		                            <strong>Uploaded on: </strong><div class="uploaded"> </div>
+		                            <label>File type: </label><div class="filetype"> </div>
+		                            <label>Uploaded on: </label><div class="uploaded"> </div>
 		
 		                        </div>
 				                  <div class="settings alignright">
