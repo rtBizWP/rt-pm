@@ -251,7 +251,7 @@ span.prefix {
     padding-right: 0;
 }
 .reveal-modal, .reveal-modal.large {
-  margin-left: -20%;
+  margin-left: 20%;
   top: 5px ! important;
 }
 #div-add-time-entry.reveal-modal.large {
