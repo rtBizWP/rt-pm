@@ -257,6 +257,9 @@ span.prefix {
 #div-add-time-entry.reveal-modal.large {
 	margin-left: 35%;
 }
+#div-add-time-entry label  {
+	top: 5px;
+}
 .reveal-modal > *:first-child {
     padding: 3%;
 }
