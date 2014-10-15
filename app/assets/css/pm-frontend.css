@@ -263,6 +263,9 @@ span.prefix {
 #div-add-time-entry.reveal-modal .row   {
 	padding: 2% 0;
 }
+.ui-datepicker  {
+	z-index: 10000000 !important;
+}
 .reveal-modal > *:first-child {
     padding: 3%;
 }
