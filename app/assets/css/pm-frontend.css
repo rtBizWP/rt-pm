@@ -261,9 +261,16 @@ span.prefix {
 	padding-left: 0;
 	padding-right: 0;
 }
-.reveal-modal, .reveal-modal.large {
+.reveal-modal {
   margin-left: 20%;
   top: 5px ! important;
+}
+.reveal-modal.large {
+  margin-left: 25%;
+  top: 5px ! important;
+}
+#form-external-link  ul.media-term-list  li {
+	list-style: none;
 }
 #div-add-time-entry.reveal-modal.large {
 	margin-left: 35%;

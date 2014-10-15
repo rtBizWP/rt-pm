@@ -1902,7 +1902,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             <!--reveal-modal-add-external file -->
             <div id="div-add-external-link" class="reveal-modal large">
                 <fieldset>
-                    <legend><h4><i class="foundicon-address-book"></i> Add External Link</h4></legend>
+                    <legend><h4>Add External Link</h4></legend>
                     <form method="post" id="form-external-link" data-posttype="projec-attachment" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <div class="row collapse">
