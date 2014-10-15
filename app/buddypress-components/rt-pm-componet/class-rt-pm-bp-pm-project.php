@@ -1564,7 +1564,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <div class="inside">
                                     <div class="row collapse">
                                         <div class="small-4 large-4 columns">
-                                            <span class="prefix" title="Status">Status</span>
+                                            <span class="prefix" title="Status"><label for="post[post_status]">Status</label></span>
                                         </div>
                                         <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php

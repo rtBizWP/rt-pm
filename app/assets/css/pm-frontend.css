@@ -238,6 +238,7 @@ span.prefix {
     color: #333333;
 	text-align: right;
 	padding-right: 10%;
+	top: 5px;
 }
 .tabs dd:hover a, .tabs li:hover a, .tabs dd.active a, .tabs li.active a {
   color: #000;
@@ -258,4 +259,8 @@ span.prefix {
 }
 .reveal-modal > *:first-child {
     padding: 3%;
+}
+.rtpm-container #add-new-post .postbox select,
+#add-new-post select, #div-add-followup select {
+    height: inherit;
 }
