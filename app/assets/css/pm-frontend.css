@@ -364,7 +364,7 @@ border: 0 !important;
  
     /* Safari 5+ ONLY */
     ::i-block-chrome, .notification-bottom   form {
-		margin-bottom: 20%;
+		margin-bottom: 0%;
     }
 }
 
