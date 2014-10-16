@@ -370,13 +370,8 @@ border: 0 !important;
 		text-align: left;
 	}
 	.buddyboss-select  label {
-		color: #4d4d4d;
-		cursor: pointer;
-		display: block;
-		font-size: 0.875rem;
-		font-weight: normal;
-		line-height: 1.5;
-		margin-bottom: 0;
+		font-weight: inherit ! important;
+		line-height: 1.5 ! important;
 	}
 }
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio : 2) {
