@@ -401,4 +401,10 @@ border: 0 !important;
 	span.prefix {
 		text-align: left;
 	}
+	.status-hidden, .create-date-hidden, .assigned-to-hidden, .due-date-hidden  {
+		display: none;
+	}
+	.hidden  {
+		display: block;
+	}
 }
