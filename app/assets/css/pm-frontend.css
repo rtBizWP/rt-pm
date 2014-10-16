@@ -356,15 +356,15 @@ border: 0 !important;
     margin-top: 2px;
 }
 /** Browser hack **/
-@media screen and (-webkit-min-device-pixel-ratio:0) { 
+@media screen  and (max-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
-    .list-heading.notification-bottom{
-		margin-bottom: 0;
+    .notification-bottom   form {
+		margin-bottom: -20%;
 	}
  
     /* Safari 5+ ONLY */
-    ::i-block-chrome, .list-heading.notification-bottom{
-		margin-bottom: 10px;
+    ::i-block-chrome, .notification-bottom   form {
+		margin-bottom: 20%;
     }
 }
 

@@ -2225,7 +2225,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			        </div>
 			    </div>
 				<?php if ( $user_edit ) { ?>
-				<div class="add-notification-rule">
+				<div class="add-notification-rule notification-bottom">
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="periodic" />
