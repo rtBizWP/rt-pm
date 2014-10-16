@@ -355,6 +355,19 @@ border: 0 !important;
 .cancel-button{
     margin-top: 2px;
 }
+/** Browser hack **/
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+    /* Safari and Chrome, if Chrome rule needed */
+    .list-heading.notification-bottom{
+		margin-bottom: 0;
+	}
+ 
+    /* Safari 5+ ONLY */
+    ::i-block-chrome, .list-heading.notification-bottom{
+		margin-bottom: 10px;
+    }
+}
+
 /** Media Query **/
 @media screen and (max-width: 768px) {
     .reveal-modal.large {

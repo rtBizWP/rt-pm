@@ -2044,7 +2044,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						}
 					}
 				?>
-				<div class="row list-heading">
+				<div class="row list-heading notification-top">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Triggered Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
 			        </div>
@@ -2216,7 +2216,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				<br />
 				<hr />
 				<br />
-				<div class="row list-heading">
+				<div class="row list-heading notification-bottom">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Periodic Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
 			        </div>
