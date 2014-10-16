@@ -356,7 +356,7 @@ border: 0 !important;
     margin-top: 2px;
 }
 /** Media Query **/
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
     .reveal-modal.large {
 		margin-left: inherit;
 	}
@@ -366,6 +366,12 @@ border: 0 !important;
 	.reveal-modal {
 		margin-left: inherit;
 	}
+	span.prefix {
+		text-align: left;
+	}
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio : 2) {
+	/* Styles */
 	span.prefix {
 		text-align: left;
 	}
