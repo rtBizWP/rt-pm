@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-member-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></li>")
+                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list pull-3' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></li>")
                     }
                     jQuery("#project_member_user_ac").val("");
                     return false;
@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-org-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></li>")
+                        jQuery("#divAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list pull-3' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></li>")
                     }
                     jQuery("#project_org_search_account").val("");
                     return false;
@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-client-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectClientList").append("<li id='project-client-auth-" + ui.item.id + "' class='contact-list' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectClient' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_client][]' value='" + ui.item.id + "' /></li>")
+                        jQuery("#divProjectClientList").append("<li id='project-client-auth-" + ui.item.id + "' class='contact-list pull-3' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectClient' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_client][]' value='" + ui.item.id + "' /></li>")
                     }
                     jQuery("#project_client_user_ac").val("");
                     return false;
