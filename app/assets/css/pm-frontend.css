@@ -262,11 +262,11 @@ span.prefix {
 	padding-right: 0;
 }
 .reveal-modal {
-  margin-left: 20%;
+  //margin-left: 20%;
   top: 5px ! important;
 }
 .reveal-modal.large {
-  margin-left: 25%;
+  //margin-left: 25%;
   top: 5px ! important;
 }
 form#form-add-post  h6.hndle  {

@@ -588,7 +588,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             </div>
 
 			<!--reveal-modal-add-task -->
-            <div id="div-add-task" class="reveal-modal">
+            <div id="div-add-task" class="reveal-modal medium">
         		<fieldset>
 	                <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
@@ -970,7 +970,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			</div>
 
             <!--reveal-modal-add-task -->
-            <div id="div-add-time-entry" class="reveal-modal">
+            <div id="div-add-time-entry" class="reveal-modal medium">
                 <fieldset>
                     
                     <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
@@ -1896,7 +1896,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		   </div>
 
             <!--reveal-modal-add-external file -->
-            <div id="div-add-external-link" class="reveal-modal large">
+            <div id="div-add-external-link" class="reveal-modal medium">
                 <fieldset>
                     <legend><h4>Add External Link</h4></legend>
                     <form method="post" id="form-external-link" data-posttype="projec-attachment" action="<?php echo $form_ulr; ?>">
