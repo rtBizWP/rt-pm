@@ -355,6 +355,9 @@ border: 0 !important;
 .cancel-button{
     margin-top: 2px;
 }
+.hidden {
+	display: none;
+}
 /** Browser hack **/
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
@@ -385,6 +388,9 @@ border: 0 !important;
 	.buddyboss-select  label {
 		font-weight: inherit ! important;
 		line-height: 1.5 ! important;
+	}
+	.status-hidden, .create-date-hidden  {
+		display: none;
 	}
 }
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio : 2) {

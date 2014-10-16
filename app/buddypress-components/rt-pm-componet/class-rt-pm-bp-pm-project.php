@@ -617,15 +617,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <fieldset>
 	                            <div class="row collapse">
 	                            	<div class="large-6 columns">
-		                                <span class="" title="Status">Status</span>
+		                                <span class="status-hidden" title="Status"><label>Status</label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
-		                                <span class="" title="Create Date"><label>Create Date</label></span>
+		                                <span class="create-date-hidden" title="Create Date"><label>Create Date</label></span>
 		                            </div><hr />
 	                        	</div>
 	                        	
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+	                        			<span class="hidden" title="Status"><label>Status</label></span>
 		                                <?php
 		                                if (isset($post->ID))
 		                                    $pstatus = $post->post_status;
@@ -658,6 +659,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                            	<span class="hidden" title="Create Date"><label>Create Date</label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
 		                                           value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
