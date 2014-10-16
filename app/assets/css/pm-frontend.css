@@ -265,9 +265,9 @@ span.prefix {
   margin-left: 20%;
   top: 5px ! important;
 }
-.reveal-modal.large {
-  margin-left: 25%;
+.reveal-modal.medium {
   top: 5px ! important;
+  margin-left: 30%;
 }
 form#form-add-post  h6.hndle  {
 	display: none; /** Need to remove in php **/
@@ -279,7 +279,7 @@ form#form-add-post  h6.hndle  {
 #form-external-link  ul.media-term-list  li {
 	list-style: none;
 }
-#div-add-time-entry.reveal-modal.large {
+.reveal-modal.large {
 	margin-left: 35%;
 }
 #div-add-time-entry label  {
@@ -354,4 +354,16 @@ border: 0 !important;
 
 .cancel-button{
     margin-top: 2px;
+}
+/** Media Query **/
+@media screen and (max-width: 600px) {
+    .reveal-modal.large {
+		margin-left: inherit;
+	}
+	.reveal-modal.medium {
+		margin-left: inherit;
+	}
+	.reveal-modal {
+		margin-left: inherit;
+	}
 }
