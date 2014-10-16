@@ -366,4 +366,7 @@ border: 0 !important;
 	.reveal-modal {
 		margin-left: inherit;
 	}
+	span.prefix {
+		text-align: left;
+	}
 }
