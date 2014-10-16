@@ -677,14 +677,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                    		<fieldset>
 	                    		<div class="row collapse">
 	                            	<div class="large-6 columns">		                                
-		                                <span class="" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
+		                                <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
-		                                <span class="" title="Due Date"><label>Due Date</label></span>
+		                                <span class="due-date-hidden" title="Due Date"><label>Due Date</label></span>
 		                            </div><hr />
 	                        	</div>
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns">
+	                        			<span class="hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <select name="post[post_assignee]" >
 												<option value=""><?php _e( 'Select Assignee' ); ?></option>
@@ -705,6 +706,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                                <span class="hidden" title="Due Date"><label>Due Date</label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
 		                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
