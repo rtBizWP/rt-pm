@@ -356,7 +356,7 @@ border: 0 !important;
     margin-top: 2px;
 }
 /** Browser hack **/
-@media screen  and (max-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
+@media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
 		margin-bottom: -20%;
