@@ -42,8 +42,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
 
                 wp_enqueue_script('foundation.zepto', RT_PM_URL . 'app/assets/javascripts/vendor/zepto.js',array("jquery"), "", true);
                 wp_enqueue_script('jquery.foundation.reveal', RT_PM_URL . 'app/assets/javascripts/jquery.foundation.reveal.js',array("foundation-js"), "", true);
-                wp_enqueue_script('jquery.foundation.form', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.forms.js',array("foundation-js"), "", true);
-                wp_enqueue_script('jquery.foundation.tabs', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.section.js',array("foundation-js"), "", true);
+                //wp_enqueue_script('jquery.foundation.form', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.forms.js',array("foundation-js"), "", true);
+                //wp_enqueue_script('jquery.foundation.tabs', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.section.js',array("foundation-js"), "", true);
                 wp_enqueue_script('foundation-modernizr-js', RT_PM_URL . 'app/assets/javascripts/vendor/custom.modernizr.js', array(), "", false);
                 wp_enqueue_script('foundation-js', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
                 wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/assets/javascripts/admin-frontend.js',array("foundation-js"), RT_PM_VERSION, true);
@@ -62,7 +62,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_enqueue_style('foundation-icon-social-css', RT_PM_URL . 'app/assets/css/social_foundicons.css', false, "", 'all');
                 wp_enqueue_style('foundation-icon-social-ie-css', RT_PM_URL . 'app/assets/css/social_foundicons_ie7.css', false, "", 'all');
                 wp_enqueue_style('foundation-normalize', RT_PM_URL . 'app/assets/css/legacy_normalize.css', false, '', 'all');
-                wp_enqueue_style('foundation-legacy-css', RT_PM_URL . 'app/assets/css/legacy_admin.css', false, '', 'all');
+                //wp_enqueue_style('foundation-legacy-css', RT_PM_URL . 'app/assets/css/legacy_admin.css', false, '', 'all');
                 wp_enqueue_style('rtpm-admin-css', RT_PM_URL . 'app/assets/css/admin.css', false, '', 'all');
 				wp_enqueue_style( 'foundation-css', RT_PM_URL . 'app/assets/css/foundation.min.css' , array('buddyboss-wp-frontend') );
 				wp_enqueue_style('rtpm-frontend-css', RT_PM_URL . 'app/assets/css/pm-frontend.css', false, RT_PM_VERSION, 'all');
