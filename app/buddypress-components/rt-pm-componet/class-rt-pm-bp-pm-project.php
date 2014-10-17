@@ -598,6 +598,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                    <legend><h4> <?php echo (isset($post->ID)) ? $post->post_title : _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
 	                    <div class="row collapse postbox">
 	                        <div class="large-6 columns">
+	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * Required</small></label>
 	                            <?php if( $user_edit ) { ?>
 	                                <input name="post[post_title]" id="new_<?php echo $task_post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($task_labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
 	                            <?php } else { ?>
@@ -607,11 +608,11 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <?php
 	                            if( $user_edit ) {
 	                            	?>
-	                            	<textarea name="post[post_content]" rows="5" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->ID ) ) ? $post->post_content : ""; ?> </textarea>
+	                            	<textarea name="post[post_content]" rows="5" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->ID ) ) ? trim($post->post_content) : ""; ?></textarea>
 	                                <?php
 	                                //wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
 	                            } else {
-	                                echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
+	                                echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? trim($post->post_content) : '').'</span><br /><br />';
 	                            }
 	                            ?>
 	                            <fieldset>
@@ -680,7 +681,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
-		                                <span class="due-date-hidden" title="Due Date"><label>Due Date</label></span>
+		                                <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * Required</small></label></span>
 		                            </div><hr />
 	                        	</div>
 	                        	<div class="row collapse">
@@ -706,7 +707,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-		                                <span class="hidden" title="Due Date"><label>Due Date</label></span>
+		                                <span class="hidden" title="Due Date"><label>Due Date<small class="required"> * Required</small></label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
 		                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
@@ -1041,17 +1042,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             <div class="large-12 columns">
                             	<label>Message<small class="required"> * Required</small></label>
                                 <?php if( $user_edit ) { ?>
-                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" >
-                                    	<?php
-                                    		if ( isset( $post->id ) ){
-                                    			echo $post->message;
-                                    		} else {
-                                    			// Do nothing
-                                    		}
-                                    	?> 
-                                    </textarea>
+                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
                                 <?php } else { ?>
-                                    <span><?php echo ( isset($post->id) ) ? $post->message : ""; ?></span><br /><br />
+                                    <span><?php echo ( isset($post->id) ) ? trim($post->message) : ""; ?></span><br /><br />
                                 <?php } ?>
                             </div>
                         </div>
@@ -1916,18 +1909,18 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="Create Date"><label>Title</label></span>
+                                <span class="prefix" title="Title"><label>Title</label></span>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <input name="post[post_title]" type="text" value="" />
+                                <input placeholder="Title" name="post[post_title]" type="text" value="" />
                             </div>
                         </div>
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="Create Date"><label>External Link</label></span>
+                                <span class="prefix" title="External Link"><label>External Link</label></span>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <input name="post[post_link]" type="text" value="" />
+                                <input placeholder="External Link" name="post[post_link]" type="text" value="" />
                             </div>
                         </div>
                         <div class="row collapse">

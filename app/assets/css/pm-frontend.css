@@ -278,6 +278,7 @@ form#form-add-post  h6.hndle  {
 }
 #form-external-link  ul.media-term-list  li {
 	list-style: none;
+	margin-left: -4%;
 }
 .reveal-modal.large {
 	margin-left: 35%;
@@ -388,6 +389,9 @@ border: 0 !important;
 	.buddyboss-select  label {
 		font-weight: inherit ! important;
 		line-height: 1.5 ! important;
+	}
+	#form-external-link  ul.media-term-list  li {
+		margin-left: 0;
 	}
 	.status-hidden, .create-date-hidden, .assigned-to-hidden, .due-date-hidden  {
 		display: none;
