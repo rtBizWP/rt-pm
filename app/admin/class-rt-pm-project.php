@@ -79,6 +79,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         }
 
 		function convert_lead_to_project() {
+
+            global $rt_pm_bp_pm;
+
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
 			}
@@ -153,9 +156,18 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			
                         }
 
-			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
+            if ( bp_is_current_component( BP_CRM_SLUG ) ){
 
-			wp_safe_redirect( add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) ) );
+                $redirect_url = add_query_arg( array( 'rt_project_id' => $project_id, 'action' => 'edit' ), $rt_pm_bp_pm->get_component_root_url() );
+            }else{
+                $redirect_url = add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) );
+            }
+
+
+
+
+
+			wp_safe_redirect( $redirect_url );
 			die();
 		}
 
