@@ -1039,8 +1039,17 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
                         <div class="row collapse postbox">
                             <div class="large-12 columns">
+                            	<label>Message<small class="required"> * Required</small></label>
                                 <?php if( $user_edit ) { ?>
-                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
+                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" >
+                                    	<?php
+                                    		if ( isset( $post->id ) ){
+                                    			echo $post->message;
+                                    		} else {
+                                    			// Do nothing
+                                    		}
+                                    	?> 
+                                    </textarea>
                                 <?php } else { ?>
                                     <span><?php echo ( isset($post->id) ) ? $post->message : ""; ?></span><br /><br />
                                 <?php } ?>
