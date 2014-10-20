@@ -1396,7 +1396,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								}
 								
 							?>
-							<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php } ?>
 						</div>
@@ -1763,7 +1763,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									$button_archive_id = 'button-archive';
 								}
 							?>
-							<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $rt_pm_bp_pm->get_component_root_url().bp_current_action() ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
+							<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
 							<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
 							<?php } ?>
 						</div>
