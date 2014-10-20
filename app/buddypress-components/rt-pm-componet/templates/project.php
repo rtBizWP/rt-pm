@@ -64,19 +64,19 @@
         <div class="tabs-content">
             <div class="content active" >
                 <?php
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ){
+                    if ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-task/' || $_REQUEST['tab']==$post_type.'-task' ) ){
                         $rt_pm_bp_pm_project->get_project_task_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ){
+                    if ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-timeentry/' || $_REQUEST['tab']==$post_type.'-timeentry') ){
                         $rt_pm_bp_pm_project->get_project_timeentry_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ){
+                    if ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-files/' || $_REQUEST['tab']==$post_type.'-files') ){
                         $rt_pm_bp_pm_project->get_project_file_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ){
+                    if ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-notification/' || $_REQUEST['tab']==$post_type.'-notification') ){
                         $rt_pm_bp_pm_project->get_project_notification_tab($labels,$user_edit);
                     }
-					if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' )) {
+					if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-details/' || $_REQUEST['tab']==$post_type.'-details') )) {
                         $rt_pm_bp_pm_project->get_project_description_tab($labels,$user_edit);
                     }
 
