@@ -179,10 +179,10 @@
 							<?php the_title(); ?>
 							<div>
 								<?php
-								printf( __('<a href="%s">Edit</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
-								printf( __('<a href="%s">View</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
-								printf( __('<a href="%s">'.$archive_text.'</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
-								printf( __('<a class="deletepostlink" href="%s">Delete</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
+								printf( __('<a href="%s">' . __( 'Edit', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
+								printf( __('<a href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
+								printf( __('<a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ).'</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
+								printf( __('<a class="deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 								?>
 							</div>
 							</td>
@@ -199,7 +199,7 @@
 					}
 				} else {
 					?>
-					<tr><td colspan="6" align="center" scope="row">No Project Listing</td></tr>
+					<tr><td colspan="6" align="center" scope="row"><?php _e( 'No Project Listing', RT_PM_TEXT_DOMAIN ); ?></td></tr>
 					<?php
 				}
 				wp_reset_postdata();
