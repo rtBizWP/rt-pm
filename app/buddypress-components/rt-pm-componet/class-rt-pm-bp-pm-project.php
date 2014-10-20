@@ -1312,7 +1312,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 foreach ( $results_member as $author ) {
                     if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.bp_core_get_userlink( $author->ID, $no_anchor = true, $just_link = true ).'">'.$author->display_name.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
@@ -1329,7 +1329,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
                     if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.bp_core_get_userlink( $client->ID, $no_anchor = true, $just_link = true ).'">'.$client->post_title.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' /></li>";
                     }
@@ -1351,7 +1351,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
                     if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
                         $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.bp_core_get_userlink( $organization->ID, $no_anchor = true, $just_link = true ).'">'.$organization->post_title.'</a>'
+                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                             . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
                     }
