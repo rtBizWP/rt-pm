@@ -124,9 +124,38 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
             // Link to user people
             $people_link = trailingslashit( $user_domain . $this->slug );
+			
+			$add_projects = true;
+			if ( bp_is_current_component('pm') && bp_current_action('archives') && isset( $_GET['action'] )){
+				$add_projects = false;
+			}
+			if ( bp_is_current_component('pm') && isset( $_GET['post_type'] ) && ! bp_current_action('archives')){
+    			$add_projects = true;
+			}
+			
+			$add_archive = true;
+			if ( bp_is_current_component('pm') && ! bp_current_action('archives') && isset( $_GET['rt_project_id'] )){
+				$add_archive = false;
+			}
+			if ( bp_is_current_component('pm') && isset( $_GET['rt_project_id'] ) && bp_current_action('archives') ){
+    			$add_archive = true;
+			}
+			
+			if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
+				$add_archive = true;
+			} else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
+				$add_archive = false;
+			}
+			
+			if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
+				$add_projects = false;
+			} else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
+				$add_projects = true;
+			}
+			
 
 
-			//if ( bp_is_current_action( 'projects' ) ){
+			if( $add_projects == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Projects' ),
@@ -136,7 +165,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'screen_function' => 'bp_pm_projects',
 					'position'        => 10,
 				);
-			//}
+			}
 			
 			// Add the subnav items
 			/*$sub_nav[] = array(
@@ -148,7 +177,8 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'position'        => 10,
 			);*/
 			
-			//if ( bp_is_current_action( 'archives' ) ){
+			
+			if( $add_archive == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Archives' ),
@@ -158,7 +188,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'screen_function' => 'bp_pm_archives',
 					'position'        => 10,
 				);
-			//}
+			}
 
 			
 			if ( isset($_GET['rt_project_id']) || bp_is_current_action( 'details' ) || bp_is_current_action( 'attachments' ) 
