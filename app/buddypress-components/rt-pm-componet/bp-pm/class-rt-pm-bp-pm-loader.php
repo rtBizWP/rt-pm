@@ -125,15 +125,17 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
             $people_link = trailingslashit( $user_domain . $this->slug );
 
 
-			// Add the subnav items
-			$sub_nav[] = array(
-				'name'            =>  __( 'Projects' ),
-				'slug'            => self::$projects_slug,
-				'parent_url'      => $people_link,
-				'parent_slug'     =>  $this->id,
-				'screen_function' => 'bp_pm_projects',
-				'position'        => 10,
-			);
+			//if ( bp_is_current_action( 'projects' ) ){
+				// Add the subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Projects' ),
+					'slug'            => self::$projects_slug,
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_projects',
+					'position'        => 10,
+				);
+			//}
 			
 			// Add the subnav items
 			/*$sub_nav[] = array(
@@ -145,45 +147,73 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'position'        => 10,
 			);*/
 			
-			// Add the subnav items
-			$sub_nav[] = array(
-				'name'            =>  __( 'Archives' ),
-				'slug'            => 'archives',
-				'parent_url'      => $people_link,
-				'parent_slug'     =>  $this->id,
-				'screen_function' => 'bp_pm_archives',
-				'position'        => 10,
-			);
+			//if ( bp_is_current_action( 'archives' ) ){
+				// Add the subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Archives' ),
+					'slug'            => 'archives',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_archives',
+					'position'        => 10,
+				);
+			//}
 
-			// Add a few subnav items
-			// $sub_nav[] = array(
-				// 'name'            =>  __( 'Details' ),
-				// 'slug'            => 'details',
-				// 'parent_url'      => $people_link,
-				// 'parent_slug'     =>  $this->id,
-				// 'screen_function' => 'bp_pm_details',
-				// 'position'        => 20,
-			// );
-                        
-			// Add a few subnav items
-			// $sub_nav[] = array(
-				// 'name'            =>  __( 'Attachments' ),
-				// 'slug'            => 'attachments',
-				// 'parent_url'      => $people_link,
-				// 'parent_slug'     =>  $this->id,
-				// 'screen_function' => 'bp_pm_attachments',
-				// 'position'        => 30,
-			// );
 			
-			// Add a few subnav items
-			// $sub_nav[] = array(
-				// 'name'            =>  __( 'Tasks' ),
-				// 'slug'            => 'tasks',
-				// 'parent_url'      => $people_link,
-				// 'parent_slug'     =>  $this->id,
-				// 'screen_function' => 'bp_pm_tasks',
-				// 'position'        => 40,
-			// );
+			if ( isset($_GET['rt_project_id']) || bp_is_current_action( 'details' ) || bp_is_current_action( 'attachments' ) 
+			|| bp_is_current_action( 'time-entries' ) || bp_is_current_action( 'tasks' )
+			|| bp_is_current_action( 'notifications' )){
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Details' ),
+					'slug'            => 'details',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_details',
+					'position'        => 20,
+				);
+			
+                        
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Attachments' ),
+					'slug'            => 'attachments',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_attachments',
+					'position'        => 30,
+				);
+				
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Time Entries' ),
+					'slug'            => 'time-entries',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_time_entries',
+					'position'        => 40,
+				);
+				
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Tasks' ),
+					'slug'            => 'tasks',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_tasks',
+					'position'        => 50,
+				);
+				
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Notifications' ),
+					'slug'            => 'notifications',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_notifications',
+					'position'        => 60,
+				);
+			}
 
 			parent::setup_nav( $main_nav, $sub_nav );
 

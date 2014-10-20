@@ -46,4 +46,44 @@ function bp_pm_projects_new() {
 function load_projects_new_template() {
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects-new.php';
 }
+
+function bp_pm_details() { 
+	add_action('bp_template_content','load_projects_details_template');
+}
+
+function load_projects_details_template() {
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+}
+
+function bp_pm_attachments() { 
+	add_action('bp_template_content','load_projects_attachments_template');
+}
+
+function load_projects_attachments_template() {
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+}
+
+function bp_pm_time_entries() { 
+	add_action('bp_template_content','load_projects_time_entries_template');
+}
+
+function load_projects_time_entries_template() {
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+}
+
+function bp_pm_tasks() { 
+	add_action('bp_template_content','load_projects_tasks_template');
+}
+
+function load_projects_tasks_template() {
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+}
+
+function bp_pm_notifications() { 
+	add_action('bp_template_content','load_projects_notifications_template');
+}
+
+function load_projects_notifications_template() {
+    include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
+}
 ?>
