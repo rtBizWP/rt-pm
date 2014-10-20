@@ -95,6 +95,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 * @global obj $bp
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
+			global $rt_pm_bp_pm;
             	
 			// Determine user to use -- only
 			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
@@ -163,51 +164,77 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			if ( isset($_GET['rt_project_id']) || bp_is_current_action( 'details' ) || bp_is_current_action( 'attachments' ) 
 			|| bp_is_current_action( 'time-entries' ) || bp_is_current_action( 'tasks' )
 			|| bp_is_current_action( 'notifications' )){
+				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/details');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-details'  ), $main_url ) );
+				
 				// Add a few subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Details' ),
 					'slug'            => 'details',
+					'link'			  => $url,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_details',
 					'position'        => 20,
 				);
+				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-files'  ), $main_url ) );
+				
 			
-                        
 				// Add a few subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Attachments' ),
 					'slug'            => 'attachments',
+					'link'			  => $url,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_attachments',
 					'position'        => 30,
 				);
 				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
+				
+				
 				// Add a few subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Time Entries' ),
 					'slug'            => 'time-entries',
-					'parent_url'      => $people_link,
+					'link'			  => $url,
+					'parent_url'      =>  $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_time_entries',
 					'position'        => 40,
 				);
 				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
+				
 				// Add a few subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Tasks' ),
 					'slug'            => 'tasks',
+					'link'			  => $url,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_tasks',
 					'position'        => 50,
 				);
 				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/notifications');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-notification'  ), $main_url ) );
 				// Add a few subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Notifications' ),
 					'slug'            => 'notifications',
+					'link'			  => $url,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_notifications',
