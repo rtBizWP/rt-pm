@@ -165,7 +165,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			|| bp_is_current_action( 'time-entries' ) || bp_is_current_action( 'tasks' )
 			|| bp_is_current_action( 'notifications' )){
 				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/details');
+				$main_url = trailingslashit( $user_domain . $this->slug .'/projects/details');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-details'  ), $main_url ) );
 				
@@ -180,7 +180,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 20,
 				);
 				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
+				echo $main_url = trailingslashit( $user_domain . $this->slug .'/projects/attachments');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-files'  ), $main_url ) );
 				
@@ -196,7 +196,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 30,
 				);
 				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
+				$main_url = trailingslashit( $user_domain . $this->slug .'/projects/time-entries');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
 				
@@ -212,7 +212,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 40,
 				);
 				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
+				$main_url = trailingslashit( $user_domain . $this->slug .'/projects/tasks');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
 				
@@ -227,7 +227,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 50,
 				);
 				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/notifications');
+				$main_url = trailingslashit( $user_domain . $this->slug .'/projects/notifications');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-notification'  ), $main_url ) );
 				// Add a few subnav items
