@@ -197,7 +197,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 				register_post_status($status['slug'], array(
 					'label' => $status['slug']
-					, 'protected' => true
+					, 'public' => true
 					, '_builtin' => false
 					, 'label_count' => _n_noop("{$status['name']} <span class='count'>(%s)</span>", "{$status['name']} <span class='count'>(%s)</span>"),
 				));
