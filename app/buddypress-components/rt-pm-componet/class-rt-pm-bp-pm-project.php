@@ -1368,6 +1368,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
                     <?php } ?>
                     <div class="row">
+                    	<div class="large-4 columns">
+                    		<?php _e('Details', RT_PM_TEXT_DOMAIN);?>
+                    	</div>
 						<?php
 						if (isset($post->ID)) {
 							$save_button = __( 'Update' );
@@ -1837,14 +1840,21 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				</div>-->
 
 				<div id="attachment-search-row" class="row collapse postbox">
-				   <div class="row list-heading"><span> <?php _e('Attachments'); ?></div>
+				   
 					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
-						   <button class="right mybutton" type="submit" ><?php _e('Search'); ?></button> &nbsp;&nbsp;
-						   <?php
-                                                   if ( isset( $_REQUEST['attachment_tag'] ) ) {                                         
-                                                        wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
-                                                   }
-						   ?>
+					   		<div class="row list-heading">
+					   			<div class="large-4 columns">
+                    				<?php _e('Attachments'); ?>                  	
+                				</div>
+                				<div class="large-8 columns">
+                    				<button class="right mybutton" type="submit" ><?php _e('Search'); ?></button>
+                    				<?php
+		                               if ( isset( $_REQUEST['attachment_tag'] ) ) {                                         
+		                                    wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
+		                               }
+								   ?>   	
+                				</div>
+                    		</div>
 					   </form></h6>
 					   <?php pm_add_documents_section( $projectid ); ?>
 				    <!--<div class="inside">
@@ -2053,6 +2063,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						}
 					}
 				?>
+				<div class="row list-heading">
+			        <div class="large-10 columns list-title">
+			            <h4><?php _e( 'Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
+			        </div>
+			        <div class="large-2 columns">
+			          
+			        </div>
+			    </div>
 				<div class="row list-heading notification-top">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Triggered Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>

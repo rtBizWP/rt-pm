@@ -24,25 +24,6 @@
         wp_die("Opsss!! You are in restricted area");
     }?>
     <div class="rtpm-container">
-        <div style="max-width:none;" class="row list-heading">
-            <div style="padding:0" class="large-6 columns list-title">
-                <?php
-                if (isset($_REQUEST["{$post_type}_id"])) {
-                    $post_icon = "foundicon-".( ( $user_edit ) ? 'edit' : 'view-mode' );
-                    $page_title = ucfirst(get_the_title($_REQUEST["{$post_type}_id"]));
-                } else {
-                    $post_icon = "foundicon-add-doc";
-                    $page_title = "Add ".ucfirst($labels['name']);
-                }
-                ?>
-                <h4><?php echo isset($_REQUEST["{$post_type}_id"])?'#'.$_REQUEST["{$post_type}_id"].' : ':""; _e($page_title); ?></h4>
-            </div>
-            <div style="padding:0;" class="large-6 columns">
-                <?php if(isset($post->ID) && current_user_can( "delete_{$post_type}s" ) ){ ?>
-                    <button id="button-trash" type="button" class="right mybutton alert" ><?php _e("Trash"); ?></button>
-                <?php } ?>
-            </div>
-        </div>
         <?php
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
 		$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
