@@ -1312,7 +1312,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 foreach ( $results_member as $author ) {
                     if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
+                            . "' class='contact-list pull-1'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
@@ -1329,7 +1329,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
                     if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
                         $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
+                            . "' class='contact-list pull-1'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
                             . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' /></li>";
                     }
@@ -1351,7 +1351,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
                     if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
                         $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                            . "' class='contact-list pull-3'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
+                            . "' class='contact-list pull-1'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                             . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
                     }
@@ -1435,10 +1435,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					<div class="row">
 						<div class="large-6 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-6 mobile-large-6 columns">
-                                    <span class="prefix" title="Project Manager"><label for="post[project_manager]">Project Manager</label></span>
+                                <div class="large-12 mobile-large-12 columns">
+                                    <label for="post[project_manager]">Project Manager</label>
                                 </div>
-                                <div class="large-6 mobile-large-6 columns">
+                                <div class="large-12 mobile-large-12 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[project_manager]" >
 											<option value=""><?php _e( 'Select PM' ); ?></option>
@@ -1474,10 +1474,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 </div>
                             </div>
                             <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
-                                <div class="large-6 mobile-large-6 columns">
-                                    <span class="prefix" title="Business Manager"><label for="post[business_manager]"><?php _e('Business Manager'); ?></label></span>
+                                <div class="large-12 mobile-large-12 columns">
+                                    <label for="post[business_manager]"><?php _e('Business Manager'); ?></label>
                                 </div>
-                                <div class="large-6 mobile-large-6 columns">
+                                <div class="large-12 mobile-large-12 columns">
                                     <?php if( $user_edit ) { ?>
                                         <select name="post[business_manager]" >
 											<option value=""><?php _e( 'Select BM' ); ?></option>
@@ -1511,10 +1511,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 </div>
                             </div>
 							<div class="row collapse postbox">
-								<div class="large-6 mobile-large-6 columns">
-									<span class="prefix" title="Team Members"><label for="post[team_members]"><?php _e( 'Team Members' ); ?></label></span>
+								<div class="large-12 mobile-large-12 columns">
+									<label for="post[team_members]"><?php _e( 'Team Members' ); ?></label>
 								</div>
-								<div class="large-6 mobile-large-6 columns">
+								<div class="large-12 mobile-large-12 columns">
 									<script>
 										var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
 									</script>
@@ -1527,10 +1527,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								</div>
 							</div>
 							<div class="row collapse postbox">
-								<div class="large-6 mobile-large-6 columns">
-									<span class="prefix" title="Organization"><label for="post[organization]"><?php _e( 'Organization' ); ?></label></span>
+								<div class="large-12 mobile-large-12 columns">
+									<label for="post[organization]"><?php _e( 'Organization' ); ?></label>
 								</div>
-								<div class="large-6 mobile-large-6 columns">
+								<div class="large-12 mobile-large-12 columns">
 									<script>
                                         var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
                                     </script>
@@ -1543,10 +1543,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								</div>
 							</div>
                             <div class="row collapse postbox">
-								<div class="large-6 mobile-large-6 columns">
-									<span class="prefix" title="Organization Contacts"><label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label></span>
+								<div class="large-12 mobile-large-12 columns">
+									<label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label>
 								</div>
-                                <div class="large-6 mobile-large-6 columns">
+                                <div class="large-12 mobile-large-12 columns">
                                     <script>
                                         var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
                                     </script>
@@ -1572,7 +1572,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <div class="inside">
                                     <div class="row collapse">
                                         <div class="small-4 large-4 columns">
-                                            <span class="prefix" title="Status"><label for="post[post_status]">Status</label></span>
+                                            <label for="post[post_status]">Status</label>
                                         </div>
                                         <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php
@@ -1613,7 +1613,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                     </div>
                                     <div id="rtpm_status_detail" class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="<?php _e('Status Detail'); ?>"><label><?php _e('Status Detail'); ?></label></span>
+                                            <label><?php _e('Status Detail'); ?></label>
                                         </div>
                                         <div class="large-8 small-8 columns">
 											<?php if( $user_edit ) { ?>
@@ -1625,7 +1625,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                     </div>
                                     <div id="rtpm_project_type_wrapper" class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="<?php _e('Project Type'); ?>"><label><?php _e('Project Type'); ?></label></span>
+                                            <label><?php _e('Project Type'); ?></label>
                                         </div>
                                         <div class="large-8 small-8 columns">
                                             <?php $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?>
@@ -1633,9 +1633,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                     </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Create Date"><label>Create Date</label></span>
+                                            <label>Create Date</label>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
@@ -1645,16 +1645,13 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                             <?php } ?>
                                         </div>
-                                        <div class="large-1 mobile-large-1 columns">
-                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                                        </div>
                                     </div>
                                     <?php if (isset($post->ID)) { ?>
                                         <div class="row collapse">
                                             <div class="large-4 mobile-large-1 columns">
-                                                <span class="prefix" title="Modify Date"><label>Modify Date</label></span>
+                                                <label>Modify Date</label>
                                             </div>
-                                            <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                            <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                                 <?php if( $user_edit ) { ?>
                                                     <input class="moment-from-now"  type="text" placeholder="Modified on Date"  value="<?php echo $modifydate; ?>"
                                                            title="<?php echo $modifydate; ?>" readonly="readonly">
@@ -1662,16 +1659,13 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                     <span class="rtpm_view_mode moment-from-now"><?php echo $modifydate; ?></span>
                                                 <?php } ?>
                                             </div>
-                                            <div class="large-1 mobile-large-1 columns">
-                                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                                            </div>
                                         </div>
                                     <?php } ?>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Create Date"><label>Completion Date</label></span>
+                                            <label>Completion Date</label>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Completion Date"
                                                        value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>"
@@ -1681,15 +1675,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
                                             <?php } ?>
                                         </div>
-                                        <div class="large-1 mobile-large-1 columns">
-                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                                        </div>
                                     </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Due Date"><label>Due Date</label></span>
+                                            <label>Due Date</label>
                                         </div>
-                                        <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
                                                 <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
                                                        value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>"
@@ -1699,13 +1690,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
                                             <?php } ?>
                                         </div>
-                                        <div class="large-1 mobile-large-1 columns">
-                                            <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                                        </div>
                                     </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
-                                            <span class="prefix" title="Estimated Time (in hours)"><label>Estimated Time</label></span>
+                                            <label>Estimated Time</label>
                                         </div>
                                         <div class="large-8 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
@@ -1717,7 +1705,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                     </div>
 									<div class="row collapse">
 										<div class="large-4 mobile-large-1 columns">
-											<span class="prefix" title="Budget"><label for="project_budget">Budget</label></span>
+											<label for="project_budget">Budget</label>
 										</div>
 										<div class="large-7 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 											<?php if( $user_edit ) { ?>
@@ -1728,7 +1716,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 										</div>
 										<?php //if( $user_edit ) { ?>
 										<div class="large-1 mobile-large-1 columns">
-											<span class="postfix">$</span>
+											<span class="">$</span>
 										</div>
 										<?php // } ?>
 									</div>
