@@ -262,12 +262,12 @@ span.prefix {
 	padding-right: 0;
 }
 .reveal-modal {
-  margin-left: 25%;
+  margin-left: 25% ! important;
   top: 5px ! important;
 }
 .reveal-modal.medium {
   top: 5px ! important;
-  margin-left: 30%;
+  margin-left: 30% ! important;
 }
 form#form-add-post  h6.hndle  {
 	display: none; /** Need to remove in php **/
@@ -281,7 +281,7 @@ form#form-add-post  h6.hndle  {
 	margin-left: -4%;
 }
 .reveal-modal.large {
-	margin-left: 35%;
+	margin-left: 35% !important;
 }
 #div-add-time-entry label  {
 	line-height: 2.5;
@@ -2190,6 +2190,9 @@ border: 0 !important;
 }
 #item-body label, #item-body p, #item-body a, #item-body input[type='text'], #item-body input[type='number'], #item-body select, #item-body textarea, .reveal-modal label, dialog label, .reveal-modal p, dialog p, .reveal-modal a, dialog a, .reveal-modal input[type='text'], dialog input[type='text'], .reveal-modal input[type='number'], dialog input[type='number'], .reveal-modal select, dialog select, .reveal-modal textarea, dialog textarea {
     font-size: 12px;
+}
+.reveal-modal .close-reveal-modal, dialog .close-reveal-modal {
+    font-size: 2.5rem !important;
 }
 #item-body .filetitle, .reveal-modal .filetitle, dialog .filetitle {
     font-size: 11px;
