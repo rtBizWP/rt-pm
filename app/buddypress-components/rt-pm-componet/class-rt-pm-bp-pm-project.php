@@ -1883,7 +1883,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="Title"><label>Title</label></span>
+                                <label>Title</label>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <input placeholder="Title" name="post[post_title]" type="text" value="" />
@@ -1891,7 +1891,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="External Link"><label>External Link</label></span>
+                                <label>External Link</label>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <input placeholder="External Link" name="post[post_link]" type="text" value="" />
@@ -1899,7 +1899,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
-                                <span class="prefix" title="Create Date"><label>Categories</label></span>
+                                <label>Categories</label>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php $media_terms= get_categories("taxonomy=attachment_tag&hide_empty=0&orderby=name");?>
