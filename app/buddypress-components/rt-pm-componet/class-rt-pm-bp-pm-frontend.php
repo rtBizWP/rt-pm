@@ -42,8 +42,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
 
                 wp_enqueue_script('foundation.zepto', RT_PM_URL . 'app/assets/javascripts/vendor/zepto.js',array("jquery"), "", true);
                 wp_enqueue_script('jquery.foundation.reveal', RT_PM_URL . 'app/assets/javascripts/jquery.foundation.reveal.js',array("foundation-js"), "", true);
-                wp_enqueue_script('jquery.foundation.form', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.forms.js',array("foundation-js"), "", true);
-                wp_enqueue_script('jquery.foundation.tabs', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.section.js',array("foundation-js"), "", true);
+                //wp_enqueue_script('jquery.foundation.form', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.forms.js',array("foundation-js"), "", true);
+                //wp_enqueue_script('jquery.foundation.tabs', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.section.js',array("foundation-js"), "", true);
                 wp_enqueue_script('foundation-modernizr-js', RT_PM_URL . 'app/assets/javascripts/vendor/custom.modernizr.js', array(), "", false);
                 wp_enqueue_script('foundation-js', RT_PM_URL . 'app/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
                 wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/assets/javascripts/admin-frontend.js',array("foundation-js"), RT_PM_VERSION, true);
