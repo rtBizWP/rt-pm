@@ -1024,7 +1024,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             <div class="large-2 mobile-large-4 columns">
                                 <label>Date Created</label>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
@@ -1033,9 +1033,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
-                            </div>
-                            <div class="large-1 mobile-large-1 columns">
-                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                         </div>
                         <div class="row collapse postbox">
