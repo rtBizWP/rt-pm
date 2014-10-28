@@ -659,7 +659,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                } ?>
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                            <div class="large-5 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 		                            	<span class="hidden" title="Create Date"><label>Create Date</label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
@@ -669,9 +669,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <?php } else { ?>
 		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
 		                                <?php } ?>
-		                            </div>
-		                            <div class="large-1 mobile-large-1 columns">
-		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
 		                            </div>
 	                    		</div>
 	                    		</fieldset>
@@ -706,7 +703,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <?php } ?>
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-		                            <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+		                            <div class="large-5 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 		                                <span class="hidden" title="Due Date"><label>Due Date<small class="required"> * Required</small></label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
@@ -716,9 +713,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <?php } else { ?>
 		                                    <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
 		                                <?php } ?>
-		                            </div>
-		                            <div class="large-1 mobile-large-1 columns">
-		                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
 		                            </div>
 	                        	</div>
 	                        	</fieldset>
