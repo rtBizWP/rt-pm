@@ -1561,6 +1561,13 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         
                     </div>
                     <div class="row">
+                    	<div class="large-12 small-12 columns ui-sortable meta-box-sortables">
+                    		<div class="row collapse postbox">
+                            	<h6 class="hndle"><span> <?php _e( 'Project Information' ); ?></span></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                     	<div class="large-6 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse">
                                 <div class="small-4 large-4 columns">
@@ -1661,7 +1668,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 </div>
                             </div>
                             <?php 
-							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
+							if ( isset( $post->ID ) ) { do_action( 'rt_pm_bp_other_details', $user_edit, $post ); }
                             ?>
                     	</div>
                     	<div class="large-6 small-12 columns ui-sortable meta-box-sortables">
