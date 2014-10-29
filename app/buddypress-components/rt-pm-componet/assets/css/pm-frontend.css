@@ -881,6 +881,9 @@ border: 0 !important;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
+#item-body .collapse input[type="text"], .reveal-modal .collapse input[type="text"], dialog .collapse input[type="text"] {
+    width: 100% !important;
+}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
