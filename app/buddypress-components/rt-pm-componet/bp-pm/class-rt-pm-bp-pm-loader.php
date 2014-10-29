@@ -140,20 +140,22 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			if ( bp_is_current_component('pm') && isset( $_GET['rt_project_id'] ) && bp_current_action('archives') ){
     			$add_archive = true;
 			}
-			
-			if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
-				$add_archive = true;
-			} else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
-				$add_archive = false;
-			}
-			
-			if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
-				$add_projects = false;
-			} else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
-				$add_projects = true;
-			}
-			
 
+            if( isset( $_GET['rt_project_id'] ) ){
+
+                if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
+                    $add_archive = true;
+                } else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
+                    $add_archive = false;
+                }
+
+                if( 'trash' == get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ){
+                    $add_projects = false;
+                } else if ('trash' != get_post_status( $_GET['rt_project_id'] ) && isset( $_GET['rt_project_id'] ) ) {
+                    $add_projects = true;
+                }
+
+            }
 
 			if( $add_projects == true){
 				// Add the subnav items

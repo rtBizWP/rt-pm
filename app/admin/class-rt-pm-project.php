@@ -189,6 +189,19 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			</div>
 		<?php }
 
+        function crm_to_pm_link_url( $lead, $user_edit ) {
+
+            if ( empty( $lead ) ) {
+                return;
+            }
+
+            if ( ! $user_edit ) {
+                return;
+            }
+
+            return add_query_arg( array( 'rt_pm_convert_to_project' => $lead ) );
+        }
+
 		function register_custom_pages() {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
