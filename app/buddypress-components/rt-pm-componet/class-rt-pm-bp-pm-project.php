@@ -1564,61 +1564,102 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     </div>
                     <div class="row">
                     	<div class="large-6 small-12 columns ui-sortable meta-box-sortables">
-                    		<div class="row collapse postbox">
-                                <div class="inside">
-                                    <div class="row collapse">
-                                        <div class="small-4 large-4 columns">
-                                            <label for="post[post_status]">Status</label>
-                                        </div>
-                                        <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <?php
-                                            if (isset($post->ID))
-                                                $pstatus = $post->post_status;
-                                            else
-                                                $pstatus = "";
-                                            $post_status = $rt_pm_project->get_custom_statuses();
-                                            $custom_status_flag = true;
-                                            ?>
-                                            <?php if( $user_edit ) { ?>
-                                                <select id="rtpm_post_status" class="right" name="post[post_status]">
-                                                    <?php foreach ($post_status as $status) {
-                                                        if ($status['slug'] == $pstatus) {
-                                                            $selected = 'selected="selected"';
-                                                            $custom_status_flag = false;
-                                                        } else {
-                                                            $selected = '';
-                                                        }
-                                                        printf('<option value="%s" %s >%s</option>', $status['slug'], $selected, $status['name']);
-                                                    } ?>
-                                                    <?php if ( $custom_status_flag && isset( $post->ID ) ) { echo '<option selected="selected" value="'.$pstatus.'">'.$pstatus.'</option>'; } ?>
-                                                </select>
-                                            <?php } else {
-                                                $status_html='';
-                                                foreach ( $post_status as $status ) {
-                                                    if($status['slug'] == $pstatus) {
-                                                        $status_html = '<span class="rtpm_view_mode">'.$status['name'].'</span>';
-                                                        break;
-                                                    }
+                            <div class="row collapse">
+                                <div class="small-4 large-4 columns">
+                                    <label for="post[post_status]">Status</label>
+                                </div>
+                                <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                    <?php
+                                    if (isset($post->ID))
+                                        $pstatus = $post->post_status;
+                                    else
+                                        $pstatus = "";
+                                    $post_status = $rt_pm_project->get_custom_statuses();
+                                    $custom_status_flag = true;
+                                    ?>
+                                    <?php if( $user_edit ) { ?>
+                                        <select id="rtpm_post_status" class="right" name="post[post_status]">
+                                            <?php foreach ($post_status as $status) {
+                                                if ($status['slug'] == $pstatus) {
+                                                    $selected = 'selected="selected"';
+                                                    $custom_status_flag = false;
+                                                } else {
+                                                    $selected = '';
                                                 }
-                                                if ( !isset( $status_html ) || empty( $status_html ) && ( isset( $pstatus ) && !empty( $pstatus ) ) ){
-                                                    $status_html = '<span class="rtpm_view_mode">'.$pstatus.'</span>';
-                                                }
-                                                echo $status_html;
+                                                printf('<option value="%s" %s >%s</option>', $status['slug'], $selected, $status['name']);
                                             } ?>
-                                        </div>
-                                    </div>
-                                    <div id="rtpm_status_detail" class="row collapse">
-                                        <div class="large-4 small-4 columns">
-                                            <label><?php _e('Status Detail'); ?></label>
-                                        </div>
-                                        <div class="large-8 small-8 columns">
-											<?php if( $user_edit ) { ?>
-											<textarea name="post[status_detail]"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></textarea>
-											<?php } else { ?>
-												<span><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></span>
-											<?php } ?>
-										</div>
-                                    </div>
+                                            <?php if ( $custom_status_flag && isset( $post->ID ) ) { echo '<option selected="selected" value="'.$pstatus.'">'.$pstatus.'</option>'; } ?>
+                                        </select>
+                                    <?php } else {
+                                        $status_html='';
+                                        foreach ( $post_status as $status ) {
+                                            if($status['slug'] == $pstatus) {
+                                                $status_html = '<span class="rtpm_view_mode">'.$status['name'].'</span>';
+                                                break;
+                                            }
+                                        }
+                                        if ( !isset( $status_html ) || empty( $status_html ) && ( isset( $pstatus ) && !empty( $pstatus ) ) ){
+                                            $status_html = '<span class="rtpm_view_mode">'.$pstatus.'</span>';
+                                        }
+                                        echo $status_html;
+                                    } ?>
+                                </div>
+                            </div>
+                            <div id="rtpm_status_detail" class="row collapse">
+                                <div class="large-4 small-4 columns">
+                                    <label><?php _e('Status Detail'); ?></label>
+                                </div>
+                                <div class="large-8 small-8 columns">
+									<?php if( $user_edit ) { ?>
+									<textarea name="post[status_detail]"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></textarea>
+									<?php } else { ?>
+										<span><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></span>
+									<?php } ?>
+								</div>
+                            </div>
+                            <div class="row collapse">
+                                <div class="large-4 small-4 columns">
+                                    <label>Create Date</label>
+                                </div>
+                                <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                    <?php if( $user_edit ) { ?>
+                                        <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                               value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
+                                               title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                        <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+                                    <?php } else { ?>
+                                        <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="row collapse">
+                                <div class="large-4 small-4 columns">
+                                    <label>Completion Date</label>
+                                </div>
+                                <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                    <?php if( $user_edit ) { ?>
+                                        <input class="datetimepicker moment-from-now" type="text" placeholder="Select Completion Date"
+                                               value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>"
+                                               title="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>">
+                                        <input name="post[post_completiondate]" type="hidden" value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>" />
+                                    <?php } else { ?>
+                                        <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="row collapse">
+                                <div class="large-4 small-4 columns">
+                                    <label>Due Date</label>
+                                </div>
+                                <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                    <?php if( $user_edit ) { ?>
+                                        <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
+                                               value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>"
+                                               title="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>">
+                                        <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>" />
+                                    <?php } else { ?>
+                                        <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <?php 
@@ -1632,21 +1673,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                         </div>
                                         <div class="large-8 small-8 columns">
                                             <?php $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row collapse">
-                                        <div class="large-4 small-4 columns">
-                                            <label>Create Date</label>
-                                        </div>
-                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
-                                                       value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                                       title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
-                                                <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
-                                            <?php } else { ?>
-                                                <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
-                                            <?php } ?>
                                         </div>
                                     </div>
                                     <?php if (isset($post->ID)) { ?>
@@ -1664,36 +1690,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                             </div>
                                         </div>
                                     <?php } ?>
-                                    <div class="row collapse">
-                                        <div class="large-4 small-4 columns">
-                                            <label>Completion Date</label>
-                                        </div>
-                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Completion Date"
-                                                       value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>"
-                                                       title="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>">
-                                                <input name="post[post_completiondate]" type="hidden" value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>" />
-                                            <?php } else { ?>
-                                                <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                    <div class="row collapse">
-                                        <div class="large-4 small-4 columns">
-                                            <label>Due Date</label>
-                                        </div>
-                                        <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
-                                                       value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>"
-                                                       title="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>">
-                                                <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>" />
-                                            <?php } else { ?>
-                                                <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
                                     <div class="row collapse">
                                         <div class="large-4 small-4 columns">
                                             <label>Estimated Time</label>
