@@ -878,6 +878,12 @@ border: 0 !important;
 #item-body .row .row, .reveal-modal .row .row, dialog .row .row {
 	margin: 0;
 }
+#item-body form .row .row.collapse input, .reveal-modal form .row .row.collapse input, dialog form .row .row.collapse input {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
