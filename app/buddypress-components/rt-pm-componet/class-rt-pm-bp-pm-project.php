@@ -1425,6 +1425,48 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					</div>
 					<div class="row">
 						<div class="large-6 columns ui-sortable meta-box-sortables">
+							<div class="row collapse postbox">
+								<div class="large-12 mobile-large-12 columns">
+									<label for="post[organization]"><?php _e( 'Organization' ); ?></label>
+								</div>
+								<div class="large-12 mobile-large-12 columns">
+									<script>
+                                        var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
+                                    </script>
+								<?php if ( $user_edit ) { ?>
+									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
+								<?php } ?>
+									<ul id="divAccountsList" class="block-grid large-1-up">
+										<?php echo $subProjectOrganizationsHTML; ?>
+									</ul>
+								</div>
+							</div>
+                            <div class="row collapse postbox">
+								<div class="large-12 mobile-large-12 columns">
+									<label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label>
+								</div>
+                                <div class="large-12 mobile-large-12 columns">
+                                    <script>
+                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
+                                    </script>
+                                    <?php if ( $user_edit ) { ?>
+                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+                                    <?php } ?>
+                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
+                                        <?php echo $subProjectClientHTML; ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row collapse postbox hide">
+                                <div class="handlediv" title="Click to toggle"><br></div>
+                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Participants</span></h6>
+                                <div class="inside">
+                                    <ul class="rtpm-participant-list large-block-grid-1 small-block-grid-1">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-6 small-12 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-12 mobile-large-12 columns">
                                     <label for="post[project_manager]">Project Manager</label>
@@ -1501,7 +1543,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									?>
                                 </div>
                             </div>
-							<div class="row collapse postbox">
+                            <div class="row collapse postbox">
 								<div class="large-12 mobile-large-12 columns">
 									<label for="post[team_members]"><?php _e( 'Team Members' ); ?></label>
 								</div>
@@ -1517,49 +1559,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									</ul>
 								</div>
 							</div>
-							<div class="row collapse postbox">
-								<div class="large-12 mobile-large-12 columns">
-									<label for="post[organization]"><?php _e( 'Organization' ); ?></label>
-								</div>
-								<div class="large-12 mobile-large-12 columns">
-									<script>
-                                        var arr_project_organization =<?php echo json_encode($arrProjectOrganizations); ?>;
-                                    </script>
-								<?php if ( $user_edit ) { ?>
-									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
-								<?php } ?>
-									<ul id="divAccountsList" class="block-grid large-1-up">
-										<?php echo $subProjectOrganizationsHTML; ?>
-									</ul>
-								</div>
-							</div>
-                            <div class="row collapse postbox">
-								<div class="large-12 mobile-large-12 columns">
-									<label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label>
-								</div>
-                                <div class="large-12 mobile-large-12 columns">
-                                    <script>
-                                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
-                                    </script>
-                                    <?php if ( $user_edit ) { ?>
-                                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
-                                    <?php } ?>
-                                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
-                                        <?php echo $subProjectClientHTML; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row collapse postbox hide">
-                                <div class="handlediv" title="Click to toggle"><br></div>
-                                <h6 class="hndle"><span><i class="foundicon-smiley"></i> Participants</span></h6>
-                                <div class="inside">
-                                    <ul class="rtpm-participant-list large-block-grid-1 small-block-grid-1">
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
-                        <div class="large-6 small-12 columns ui-sortable meta-box-sortables">
-                            <div class="row collapse postbox">
+                        
+                    </div>
+                    <div class="row">
+                    	<div class="large-6 small-12 columns ui-sortable meta-box-sortables">
+                    		<div class="row collapse postbox">
                                 <div class="inside">
                                     <div class="row collapse">
                                         <div class="small-4 large-4 columns">
@@ -1614,7 +1619,14 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 											<?php } ?>
 										</div>
                                     </div>
-                                    <div id="rtpm_project_type_wrapper" class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                </div>
+                            </div>
+                            <?php 
+							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
+                            ?>
+                    	</div>
+                    	<div class="large-6 small-12 columns ui-sortable meta-box-sortables">
+                    		<div id="rtpm_project_type_wrapper" class="row collapse <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                         <div class="large-4 small-4 columns">
                                             <label><?php _e('Project Type'); ?></label>
                                         </div>
@@ -1694,7 +1706,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                             <?php } ?>
                                         </div>
                                     </div>
-									<div class="row collapse">
+                                    <div class="row collapse">
 										<div class="large-4 mobile-large-1 columns">
 											<label for="project_budget">Budget</label>
 										</div>
@@ -1711,14 +1723,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 										</div>
 										<?php // } ?>
 									</div>
-                                </div>
-                            </div>
-                            <?php 
-							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
-                            ?>
-                        </div>
-                        
-                    </div>
+                    	</div>
+                	</div>
                     <div class="row">
 						<?php
 						if (isset($post->ID)) {
