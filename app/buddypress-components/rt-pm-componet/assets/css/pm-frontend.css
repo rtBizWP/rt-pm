@@ -854,7 +854,8 @@ border: 0 !important;
     margin-bottom: 10px;
 }
 .rtpm-container #wp-custom-list-table .row.list-heading {
-    margin-top: -15px;
+    margin-bottom: inherit;
+    margin-top: -35px;
 }
 
 .list-title{
@@ -884,7 +885,7 @@ border: 0 !important;
 #item-body .collapse input[type="text"], .reveal-modal .collapse input[type="text"], dialog .collapse input[type="text"] {
     width: 100% !important;
 }
-.list-title h4 {
+h4 {
 	font-style: bold;
     font-weight: bold;
 }
