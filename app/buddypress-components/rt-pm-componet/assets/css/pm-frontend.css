@@ -884,6 +884,10 @@ border: 0 !important;
 #item-body .collapse input[type="text"], .reveal-modal .collapse input[type="text"], dialog .collapse input[type="text"] {
     width: 100% !important;
 }
+.list-title h4 {
+	font-style: bold;
+    font-weight: bold;
+}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
