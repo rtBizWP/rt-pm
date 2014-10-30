@@ -1790,6 +1790,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
            ?>
 			<div id="wp-custom-list-table">
+				<h4><?php _e('Attachments'); ?></h4>
 				<div id="attachment-error" class="row"></div>
 				<!--<div class="row">
 				<?php if( $user_edit ) { ?>
@@ -1797,10 +1798,71 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					<button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
 				<?php } ?>
 				</div>-->
+				<br /><br />
+				<h3><?php _e('External Files'); ?></h3>
+                            <hr/>
+                            <div class="row">
+
+                                <div class="large-12 columns">
+
+                                    <?php if( $user_edit ) {
+                                    ?>
+                                    <div class="row collapse" id="external-files-container">
+
+                                            <div class="small-3 columns">
+                                                <input type="text" id='add_ex_file_title' placeholder="Title"/>
+                                            </div>
+                                            <div class="small-8 columns">
+                                                <input type="text" id='add_ex_file_link' placeholder="Link"/>
+                                            </div>
+                                            <div class="small-1 columns">
+                                                <a class="button add-button add-external-link"  id="add_new_ex_file" ><i class="fa fa-plus"></i></a>
+                                            </div>
+                                    </div>
+                                    <?php } ?>
+
+                                       <?php
+                                    if ( isset( $post->ID ) ) {
+                                            $post_ex_files = get_post_meta( $post->ID, 'lead_external_file' );
+                                            $count = 1;
+                                            foreach ( $post_ex_files as $ex_file ) {
+                                                    $ex_file = (array)json_decode( $ex_file );
+                                            ?>
+                                            <div class="row collapse">
+
+                                                            <div class="small-3 columns">
+                                                            <?php if( $user_edit ) { ?>
+                                                                    <input type="text" name="lead_ex_files[<?php echo $count; ?>'][title]" value="<?php echo $ex_file['title']; ?>" />
+                                                            <?php } else { ?>
+                                                                    <span><?php echo $key.': '; ?></span>
+                                                            <?php } ?>
+                                                            </div>
+                                                            <?php if( $user_edit ) { ?>
+                                                            <div class="small-8 columns">
+                                                                    <input type="text" name="lead_ex_files[<?php echo $count; ?>'][link]" value="<?php echo $ex_file['link']; ?>" />
+                                                            </div>
+                                                            <div class="large-1 small-1 columns">
+                                                                <a class="button add-button removeMeta"  ><i class="fa fa-times"></i></a>
+
+                                                            </div>
+                                                            <?php } else { ?>
+                                                            <div class="small-9 columns">
+                                                                    <span><?php echo $pmeta; ?></span>
+                                                            </div>
+                                                            <?php } ?>
+
+                                            </div>
+                                            <?php
+                                                    $count++;
+                                            }
+                                    } ?>
+
+
+                                </div>
+                            </div>
 
 				<div id="attachment-search-row" class="row collapse postbox">
-				   
-					   <form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
+					   <!--<form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
 					   		<div class="row list-heading">
 					   			<div class="large-4 columns">
                     				<?php _e('Attachments'); ?>                  	
@@ -1814,8 +1876,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								   ?>   	
                 				</div>
                     		</div>
-					   </form></h6>
-					   <?php pm_add_documents_section( $projectid ); ?>
+					   </form></h6>-->
+					   <input type='hidden' id='post-id' name='post[rt_project_id]' value=<?php echo $projectid; ?>>
+					   <?php add_documents_section( $projectid ); ?>
 				    <!--<div class="inside">
 					   <div class="row collapse" id="attachment-container">
 
