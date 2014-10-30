@@ -1816,8 +1816,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			$form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
            ?>
+           <h4><?php _e('Attachments'); ?></h4>
 			<div id="wp-custom-list-table">
-				<h4><?php _e('Attachments'); ?></h4>
 				<div id="attachment-error" class="row"></div>
 				<!--<div class="row">
 				<?php if( $user_edit ) { ?>
