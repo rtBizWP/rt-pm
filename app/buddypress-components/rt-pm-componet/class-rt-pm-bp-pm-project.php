@@ -1973,7 +1973,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <label>Title</label>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <input placeholder="Title" name="post[post_title]" type="text" value="" />
+                                <input id="add_modal_title" placeholder="Title" name="post[post_title]" type="text" value="" />
                             </div>
                         </div>
                         <div class="row collapse">
@@ -1981,7 +1981,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <label>External Link</label>
                             </div>
                             <div class="large-9 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <input placeholder="External Link" name="post[post_link]" type="text" value="" />
+                                <input id="add_modal_link" placeholder="External Link" name="post[post_link]" type="text" value="" />
                             </div>
                         </div>
                         <!--

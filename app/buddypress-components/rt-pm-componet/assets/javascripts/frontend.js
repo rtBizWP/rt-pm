@@ -55,7 +55,15 @@ jQuery(document).ready(function($) {
 	
 	$(document).on('click',".removeMeta",function(){
         $(this).parent().parent().remove();
-    })
+    });
+	$( "#add_ex_file_title" ).change(function() {
+		var title = $("#add_ex_file_title").val();
+        $('#add_modal_title').val(title);
+	});
+	$( "#add_ex_file_link" ).change(function() {
+		var link = $("#add_ex_file_link").val();
+        $('#add_modal_link').val(link);
+	});
 	
 	// Attachment section JS start
     var custom_uploader;
