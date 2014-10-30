@@ -855,7 +855,7 @@ border: 0 !important;
 }
 .rtpm-container #wp-custom-list-table .row.list-heading {
     margin-bottom: inherit;
-    margin-top: -15px;
+    margin-top: 0;
 }
 
 .list-title{
