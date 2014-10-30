@@ -889,6 +889,9 @@ h4 {
 	font-style: bold;
     font-weight: bold;
 }
+.tabs-content  {
+	margin-top: -30px;
+}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
