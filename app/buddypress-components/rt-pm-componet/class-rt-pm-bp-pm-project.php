@@ -1785,6 +1785,33 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     ))
                 );
             }
+			
+			if (isset($_POST['post'])){
+                $new_attachment = $_POST['post'];
+                $projectid = $new_attachment["post_project_id"];
+                $args = array(
+                    'guid' => $new_attachment["post_link"],
+                    'post_title' => $new_attachment["post_title"],
+                    'post_content' => $new_attachment["post_title"],
+                    'post_parent' => $projectid,
+                    'post_author' => get_current_user_id(),
+                );
+                $post_attachment_hashes = get_post_meta( $projectid, '_rt_wp_pm_external_link' );
+                if ( empty( $post_attachment_hashes ) || $post_attachment_hashes != $new_attachment->post_link  ) {
+                    $attachment_id = wp_insert_attachment( $args, $new_attachment["post_link"], $projectid );
+                    add_post_meta( $projectid, '_rt_wp_pm_external_link', $new_attachment["post_link"] );
+                    //convert string array to int array
+                    //Set term to external link
+                    wp_set_object_terms( $attachment_id, $new_attachment["term"], 'attachment_tag');
+                    //Update flag for external link
+                    update_post_meta( $attachment_id, '_wp_attached_external_file', '1');
+                    /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
+                }
+            }
+            delete_post_meta( $projectid, '_rt_wp_pm_external_link' );
+            if ( isset( $projectid ) ) {
+                $attachments = get_posts($arg );
+            }
             
 			$form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 			$form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
@@ -1841,10 +1868,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                                             <div class="small-8 columns">
                                                                     <input type="text" name="lead_ex_files[<?php echo $count; ?>'][link]" value="<?php echo $ex_file['link']; ?>" />
                                                             </div>
-                                                            <div class="large-1 small-1 columns">
-                                                                <a class="button add-button removeMeta"  ><i class="fa fa-times"></i></a>
-
-                                                            </div>
+                                                            <div class="large-1 columns">
+																<a data-attachmentid="<?php echo $attachment->ID; ?>" class="rtpm_delete_project_attachment right button add-button removeMeta"><i class="fa fa-times"></i></a>
+															</div>
                                                             <?php } else { ?>
                                                             <div class="small-9 columns">
                                                                     <span><?php echo $pmeta; ?></span>
@@ -1878,7 +1904,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     		</div>
 					   </form></h6>-->
 					   <input type='hidden' id='post-id' name='post[rt_project_id]' value=<?php echo $projectid; ?>>
-					   <?php add_documents_section( $projectid ); ?>
+					   <?php pm_add_documents_section( $projectid ); ?>
 				    <!--<div class="inside">
 					   <div class="row collapse" id="attachment-container">
 
@@ -1958,6 +1984,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <input placeholder="External Link" name="post[post_link]" type="text" value="" />
                             </div>
                         </div>
+                        <!--
                         <div class="row collapse">
                             <div class="large-3 small-4 columns">
                                 <label>Categories</label>
@@ -1971,6 +1998,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 </ul>
                             </div>
                         </div>
+                        -->
                         <div class="row collapse">
 
                         </div>
