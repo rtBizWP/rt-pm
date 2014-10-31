@@ -852,6 +852,15 @@ h4 {
 .readmore-js-section {
   overflow: hidden;
 }
+.large-1.mobile-large-1.columns.dollar > span {
+	margin-left: 22px;
+}
+/** crm **/
+li.contact-list  a.heading  {
+	margin-left: 20px;
+}
+/** crm end**/
+
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
