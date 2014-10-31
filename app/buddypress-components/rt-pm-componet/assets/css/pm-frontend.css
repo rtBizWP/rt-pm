@@ -825,7 +825,7 @@ h4 {
 .pm.details  .row  .large-12  .row.collapse {
 	padding: 0.4rem 0;
 }
-filetype strong {
+.filetype strong {
     font-size: 14px;
     font-weight: 600 !important;
 }
