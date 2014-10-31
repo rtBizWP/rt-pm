@@ -600,15 +600,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                        <div class="large-6 columns">
 	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * </small></label>
 	                            <?php if( $user_edit ) { ?>
-	                                <input name="post[post_title]" id="new_<?php echo $task_post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($task_labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
+	                                <input required="required" name="post[post_title]" id="new_<?php echo $task_post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($task_labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
 	                            <?php } else { ?>
 	                                <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
 	                            <?php } ?>
-	                            
+	                            <label><?php _e("Message"); ?><small class="required"> * </small></label>
 	                            <?php
 	                            if( $user_edit ) {
 	                            	?>
-	                            	<textarea name="post[post_content]" rows="5" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->ID ) ) ? trim($post->post_content) : ""; ?></textarea>
+	                            	<textarea required="required" name="post[post_content]" rows="5" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->ID ) ) ? trim($post->post_content) : ""; ?></textarea>
 	                                <?php
 	                                //wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
 	                            } else {
@@ -618,16 +618,16 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <fieldset>
 	                            <div class="row collapse">
 	                            	<div class="large-6 columns">
-		                                <span class="status-hidden" title="Status"><label>Status</label></span>
+		                                <span class="status-hidden" title="Status"><label>Status<small class="required"> * </small></label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
-		                                <span class="create-date-hidden" title="Create Date"><label>Create Date</label></span>
+		                                <span class="create-date-hidden" title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
 		                            </div><hr />
 	                        	</div>
 	                        	
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-	                        			<span class="hidden" title="Status"><label>Status</label></span>
+	                        			<span class="hidden" title="Status"><label>Status<small class="required"> * </small></label></span>
 		                                <?php
 		                                if (isset($post->ID))
 		                                    $pstatus = $post->post_status;
@@ -637,7 +637,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                $custom_status_flag = true;
 		                                ?>
 		                                <?php if( $user_edit ) { ?>
-		                                    <select id="rtpm_post_status" class="right" name="post[post_status]">
+		                                    <select required="required" id="rtpm_post_status" class="right" name="post[post_status]">
 		                                        <?php foreach ($post_status as $status) {
 		                                            if ($status['slug'] == $pstatus) {
 		                                                $selected = 'selected="selected"';
@@ -660,9 +660,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-5 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-		                            	<span class="hidden" title="Create Date"><label>Create Date</label></span>
+		                            	<span class="hidden" title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
 		                                <?php if( $user_edit ) { ?>
-		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+		                                    <input required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
 		                                           value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
 		                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
 		                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
@@ -675,7 +675,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                    		<fieldset>
 	                    		<div class="row collapse">
 	                            	<div class="large-6 columns">		                                
-		                                <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
+		                                <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To<small class="required"> * </small></label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
 		                                <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
@@ -685,7 +685,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                        		<div class="large-6 columns">
 	                        			<span class="hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                                <?php if( $user_edit ) { ?>
-		                                    <select name="post[post_assignee]" >
+		                                    <select required="required" name="post[post_assignee]" >
 												<option value=""><?php _e( 'Select Assignee' ); ?></option>
 		                                        <?php
 		                                        if (!empty($results_member)) {
