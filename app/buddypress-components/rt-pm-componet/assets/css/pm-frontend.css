@@ -784,7 +784,7 @@ border: 0 !important;
 .list-heading{
     margin-bottom: 10px;
 }
-.rtpm-container #wp-custom-list-table .row.list-heading {
+#wp-custom-list-table .row.list-heading {
     margin-bottom: inherit;
     margin-top: 0;
 }
