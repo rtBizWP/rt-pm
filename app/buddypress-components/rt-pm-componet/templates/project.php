@@ -23,7 +23,7 @@
     } else {
         wp_die("Opsss!! You are in restricted area");
     }?>
-    <div class="rtpm-container">
+    <!--<div class="rtpm-container">
         <?php
         $is_new_project_page = isset($_REQUEST["{$post_type}_id"])? false : true;
 		$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
@@ -40,10 +40,10 @@
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-task"; ?>">Tasks</a></dd>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ? 'class="active"':''; ?>><a href="<?php echo $bp_bp_nav_link . $ref_link . "tab={$post_type}-notification"; ?>">Notification</a></dd>
             <?php } ?>            
-        </dl> -->
+        </dl> 
 
         <div class="tabs-content">
-            <div class="content active" >
+            <div class="content active" >-->
                 <?php
                     if ( isset($_REQUEST['tab']) && ( $_REQUEST['tab']==$post_type.'-task/' || $_REQUEST['tab']==$post_type.'-task' ) ){
                         $rt_pm_bp_pm_project->get_project_task_tab($labels,$user_edit);
@@ -62,6 +62,6 @@
                     }
 
                 ?>
-            </div>
+        <!--    </div>
         </div>
-    </div>
+    </div>-->

@@ -356,29 +356,29 @@
   min-height: 178px;
 }
 /* line 318, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table .row {
+#wp-custom-list-table .row {
   max-width: 100%;
 }
 /* line 321, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table .fixed {
+#wp-custom-list-table .fixed {
   position: relative;
   z-index: 0;
 }
 /* line 325, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table table [class*="column"] + [class*="column"]:last-child {
+#wp-custom-list-table table [class*="column"] + [class*="column"]:last-child {
   float: none;
 }
 /* line 328, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table .bulkactions {
+#wp-custom-list-table .bulkactions {
   width: 350px;
 }
 /* line 331, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table .search-box * {
+#wp-custom-list-table .search-box * {
   display: inline-block;
   max-width: 150px;
 }
 /* line 336, ../sass/admin.scss */
-.rtpm-container #wp-custom-list-table .scroll-height {
+#wp-custom-list-table .scroll-height {
   overflow-y: auto;
   max-height: none;
 }
