@@ -825,11 +825,12 @@ h4 {
 .pm.details  .row  .large-12  .row.collapse {
 	padding: 0.4rem 0;
 }
-.filetype strong {
+.filetype strong,
+.uploaded strong {
     font-size: 14px;
     font-weight: 600 !important;
 }
-.entry-content h5, .comment-content h5 {
+.uploader.large-5 h5 {
     font-size: 14px !important;
     color: #333 !important;
 	font-weight: 600 !important;
