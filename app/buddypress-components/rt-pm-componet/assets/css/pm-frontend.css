@@ -876,13 +876,13 @@ li.contact-list  a.heading  {
 /** Media Query **/
 @media screen and (max-width: 640px) {
     .reveal-modal.large {
-		margin-left: inherit;
+		margin-left: 0;
 	}
 	.reveal-modal.medium {
-		margin-left: inherit;
+		margin-left: 0;
 	}
 	.reveal-modal {
-		margin-left: inherit;
+		margin-left: 0;
 	}
 	span.prefix {
 		text-align: left;
