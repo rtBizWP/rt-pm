@@ -177,6 +177,7 @@ function pm_add_documents_section( $post_id ){ ?>
 						   </div>
 					   </div>
 				   </div>
+				   <br /><br />
 	<h3><b><?php _e('Internal'); ?></b></h3>
     <hr/>
 	<div class="row">
