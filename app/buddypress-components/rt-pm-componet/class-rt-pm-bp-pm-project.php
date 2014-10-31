@@ -1411,7 +1411,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <div class="large-12 columns">
 	                                <?php
 	                                if( $user_edit ) {
-	                                    wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false ) );
+	                                    wp_editor( ( isset( $post->ID ) ) ? $post->post_content : "", "post_content", array( 'textarea_name' => 'post[post_content]', 'media_buttons' => false, 'tinymce' => false, 'quicktags' => false, 'textarea_rows' => 5 ) );
 	                                } else {
 	                                    echo ucfirst($labels['name']).' Content : <br /><br /><span>'.(( isset($post->ID) ) ? $post->post_content : '').'</span><br /><br />';
 	                                }
@@ -1824,13 +1824,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
            <h4><?php _e('Attachments'); ?></h4>
 			<div id="wp-custom-list-table">
 				<div id="attachment-error" class="row"></div>
-				<!--<div class="row">
-				<?php if( $user_edit ) { ?>
-					<button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
-					<button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
-				<?php } ?>
-				</div>-->
-				<br /><br />
 				<h3><?php _e('External Files'); ?></h3>
                             <hr/>
                             <div class="row">
