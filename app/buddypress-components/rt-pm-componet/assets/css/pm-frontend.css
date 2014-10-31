@@ -712,8 +712,8 @@ span.prefix {
   margin-left: 30% ! important;
 }
 .rtpm-container #rtpm_project_cost_report {
-    margin-bottom: -10px;
-    margin-top: -10px;
+    margin-bottom: 0;
+    margin-top: 0;
 }
 #form-external-link  ul.media-term-list  li {
 	list-style: none;
