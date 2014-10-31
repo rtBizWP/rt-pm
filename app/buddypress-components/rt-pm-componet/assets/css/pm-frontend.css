@@ -835,7 +835,7 @@ h4 {
     color: #333 !important;
 	font-weight: 600 !important;
 }
-#wp-custom-list-table  td {
+#wp-custom-list-table  table tr td {
 	vertical-align: text-top;
 }
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
