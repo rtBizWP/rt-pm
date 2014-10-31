@@ -836,7 +836,7 @@ h4 {
 	font-weight: 600 !important;
 }
 #wp-custom-list-table  table tr td {
-	vertical-align: text-top;
+	vertical-align: text-top !important;
 }
 .deletepostlink, .rtpm-delete  {
 		color: red;
