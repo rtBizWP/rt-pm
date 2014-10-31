@@ -81,8 +81,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_update_date'=> __( 'Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
 				'rtpm_status'=> __( 'Status' ),
-				'rtpm_created_by'=> __( 'Created By' ),
-				'rtpm_updated_by'=> __( 'Updated By' ),
+				//'rtpm_created_by'=> __( 'Created By' ),
+				//'rtpm_updated_by'=> __( 'Updated By' ),
 			);
 
 			return $columns;
@@ -364,8 +364,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_update_date'=> __( 'Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
 				'rtpm_status'=> __( 'Status' ),
-				'rtpm_created_by'=> __( 'Created By' ),
-				'rtpm_updated_by'=> __( 'Updated By' ),
+				//'rtpm_created_by'=> __( 'Created By' ),
+				//'rtpm_updated_by'=> __( 'Updated By' ),
 			);
 			$sortable = array(
 				'rtpm_title'=> array('post_title', false),
@@ -415,7 +415,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		                'orderby' => 'post_status',
 		                'order' => 'asc'
 		        ),
-		        array(
+		        /*array(
 		                'column_label' => __( 'Created By', RT_PM_TEXT_DOMAIN ) ,
 		                'sortable' => false,
 		                //'orderby' => 'post_duedate',
@@ -426,7 +426,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		                'sortable' => false,
 		                //'orderby' => 'post_duedate',
 		                //'order' => 'asc'
-		        ),
+		        ),*/
 		
 			);
 			
@@ -644,7 +644,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 
         function get_drop_down($task_Id=0){
             $records = $this->items;
-            echo '<select name="post[post_task_id]" id="task_id">';
+            echo '<select required="required" name="post[post_task_id]" id="task_id">';
             if ( ! empty( $records ) ) {
                 foreach( $records as $rec ) {
                     $selected = $task_Id == $rec->ID ? 'selected="selectet"' : '';

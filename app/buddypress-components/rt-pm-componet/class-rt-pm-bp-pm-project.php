@@ -980,7 +980,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <legend><h4>Time Entry</h4></legend><hr />
                         <div class="row collapse">
                             <div class="large-2 mobile-large-2 columns">
-                                <label for="Task">Task</label>
+                                <label for="Task">Task<small class="required"> * </small></label>
                             </div>
 							<div class="large-10 mobile-large-6 columns">
 							<?php
@@ -992,12 +992,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
 						<div class="row collapse rtpm-post-author-wrapper">
                             <div class="large-2 mobile-large-2 columns">
-                                <label for="post[post_timeentry_type]">Type</label>
+                                <label for="post[post_timeentry_type]">Type<small class="required"> * </small></label>
                             </div>
                             <div class="large-10 mobile-large-6 columns">
 								<?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
                                 <?php if( $user_edit ) { ?>
-                                    <select name="post[post_timeentry_type]" >
+                                    <select required="required" name="post[post_timeentry_type]" >
 									<?php foreach ( $terms as $term ) { ?>
 										<option <?php echo isset($post) && $post->type == $term->slug ? 'selected="selected"' :''; ?> value="<?php echo $term->slug; ?>" ><?php echo $term->name; ?></option>
 									<?php } ?>
@@ -1007,20 +1007,20 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
                         <div class="row collapse">
                         	<div class="large-2 mobile-large-2 columns">
-                                <label for="post[post_duration]">Time</label>
+                                <label for="post[post_duration]">Time<small class="required"> * </small></label>
                             </div>
                             <div class="large-3 mobile-large-3 columns">
                                 <?php if( $user_edit ) { ?>
-								<input type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
+								<input required="required" type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo ( isset( $post ) ) ? $post->time_duration : ''; ?>" />
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns">&nbsp;</div>
                             <div class="large-2 mobile-large-4 columns">
-                                <label>Date Created</label>
+                                <label>Date Created<small class="required"> * </small></label>
                             </div>
                             <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                    <input required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
                                     <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
@@ -1033,7 +1033,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             <div class="large-12 columns">
                             	<label>Message<small class="required"> * </small></label>
                                 <?php if( $user_edit ) { ?>
-                                    <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
+                                    <textarea required="required"  name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
                                 <?php } else { ?>
                                     <span><?php echo ( isset($post->id) ) ? trim($post->message) : ""; ?></span><br /><br />
                                 <?php } ?>
