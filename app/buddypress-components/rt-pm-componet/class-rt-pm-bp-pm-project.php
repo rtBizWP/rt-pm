@@ -1424,7 +1424,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						<div class="large-6 columns ui-sortable meta-box-sortables">
 							<div class="row collapse postbox">
 								<div class="large-12 mobile-large-12 columns">
-									<label for="post[organization]"><?php _e( 'Organization' ); ?></label>
+									<label for="post[clients]"><b><?php _e( 'Clients' ); ?></b></label>
+									<hr />
 								</div>
 								<div class="large-12 mobile-large-12 columns">
 									<script>
@@ -1440,7 +1441,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 							</div>
                             <div class="row collapse postbox">
 								<div class="large-12 mobile-large-12 columns">
-									<label for="post[organization_contacts]"><?php _e( 'Organization Contacts' ); ?></label>
+									<label for="post[contacts]"><b><?php _e( 'Contacts' ); ?></b></label>
+									<hr />
 								</div>
                                 <div class="large-12 mobile-large-12 columns">
                                     <script>
@@ -1466,7 +1468,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <div class="large-6 small-12 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-12 mobile-large-12 columns">
-                                    <label for="post[project_manager]">Project Manager</label>
+                                    <label for="post[project_manager]"><b>Project Manager</b></label>
+                                    <hr />
                                 </div>
                                 <div class="large-12 mobile-large-12 columns">
                                     <?php if( $user_edit ) { ?>
@@ -1505,7 +1508,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                             <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-12 mobile-large-12 columns">
-                                    <label for="post[business_manager]"><?php _e('Business Manager'); ?></label>
+                                    <label for="post[business_manager]"><b><?php _e('Business Development Manager'); ?></b></label>
+                                    <hr />
                                 </div>
                                 <div class="large-12 mobile-large-12 columns">
                                     <?php if( $user_edit ) { ?>
@@ -1542,7 +1546,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             </div>
                             <div class="row collapse postbox">
 								<div class="large-12 mobile-large-12 columns">
-									<label for="post[team_members]"><?php _e( 'Team Members' ); ?></label>
+									<label for="post[team_members]"><b><?php _e( 'Team' ); ?></b></label>
+									<hr />
 								</div>
 								<div class="large-12 mobile-large-12 columns">
 									<script>
@@ -1562,7 +1567,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     <div class="row">
                     	<div class="large-12 small-12 columns ui-sortable meta-box-sortables">
                     		<div class="row collapse postbox">
-                            	<h6 class="hndle"><span> <?php _e( 'Project Information' ); ?></span></h6>
+                            	<label for="post[opportunity_information]"><b><?php _e( 'Opportunity Information' ); ?></b></label>
+                            	<hr />
                             </div>
                         </div>
                     </div>
