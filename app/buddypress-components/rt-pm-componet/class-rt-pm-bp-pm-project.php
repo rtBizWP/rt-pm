@@ -598,7 +598,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                    <legend><h4> <?php echo (isset($post->ID)) ? $post->post_title : _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
 	                    <div class="row collapse postbox">
 	                        <div class="large-6 columns">
-	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * Required</small></label>
+	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * </small></label>
 	                            <?php if( $user_edit ) { ?>
 	                                <input name="post[post_title]" id="new_<?php echo $task_post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($task_labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
 	                            <?php } else { ?>
@@ -678,7 +678,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                                <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
 		                            </div>
 	                            	<div class="large-6 columns push-1">
-		                                <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * Required</small></label></span>
+		                                <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
 		                            </div><hr />
 	                        	</div>
 	                        	<div class="row collapse">
@@ -704,7 +704,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-5 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-		                                <span class="hidden" title="Due Date"><label>Due Date<small class="required"> * Required</small></label></span>
+		                                <span class="hidden" title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
 		                                <?php if( $user_edit ) { ?>
 		                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
 		                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
@@ -1031,7 +1031,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         </div>
                         <div class="row collapse postbox">
                             <div class="large-12 columns">
-                            	<label>Message<small class="required"> * Required</small></label>
+                            	<label>Message<small class="required"> * </small></label>
                                 <?php if( $user_edit ) { ?>
                                     <textarea name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
                                 <?php } else { ?>
