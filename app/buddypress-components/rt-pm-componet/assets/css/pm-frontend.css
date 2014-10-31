@@ -838,6 +838,9 @@ h4 {
 #wp-custom-list-table  table tr td {
 	vertical-align: text-top;
 }
+.deletepostlink, .rtpm-delete  {
+		color: red;
+	}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
@@ -877,6 +880,7 @@ h4 {
 	.hidden  {
 		display: block;
 	}
+	
 }
 @media only screen and (min-width : 640px) and (max-width : 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio : 2) {
 	/* Styles */

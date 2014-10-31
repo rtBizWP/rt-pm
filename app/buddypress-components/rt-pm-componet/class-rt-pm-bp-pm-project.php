@@ -2278,7 +2278,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								}
 							?>
 							</td>
-							<td class='rtpm_rule_actions column-rtpm_rule_actions'>
+							<td class='rtpm_rule_actions'>
 								<a class="rtpm-delete" href="<?php echo add_query_arg( array( 'action' => 'delete', 'rule_id' => $r->id ) ); ?>"><?php _e( 'Delete' ) ?></a>
 							</td>
 						</tr>
@@ -2468,7 +2468,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								}
 							?>
 							</td>
-							<td class='rtpm_rule_actions column-rtpm_rule_actions'>
+							<td class='rtpm_rule_actions'>
 								<a class="rtpm-delete" href="<?php echo add_query_arg( array( 'action' => 'delete', 'rule_id' => $r->id ) ); ?>"><?php _e( 'Delete' ) ?></a>
 							</td>
 						</tr>
