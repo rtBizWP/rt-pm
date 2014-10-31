@@ -1351,7 +1351,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             }
 
             ?>
-            <div id="add-new-post" class="row">
                 <?php if( $user_edit ) { ?>
                 <form method="post" id="form-add-post" data-posttype="<?php echo $post_type ?>" action="<?php echo $form_ulr; ?>">
                 <?php } ?>
@@ -1762,7 +1761,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 <?php if( $user_edit ) { ?>
                 </form>
                 <?php } ?>
-            </div> <?php
+            <?php
         }
 
         function get_project_file_tab($labels,$user_edit){
