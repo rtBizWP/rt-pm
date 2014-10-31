@@ -582,7 +582,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 								//.'< /td>';
 								break;
                             case "rtpm_message":
-                                echo '<td '.$attributes.'>'.$rec->message;
+                                echo '<td '.$attributes.'><span class="rtpm_message_readmore">'.$rec->message .'</span>';
                                 $actions = array(
                                     'edit'      => '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='.$rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$rec->project_id.'&tab='.$rt_pm_project->post_type.'-timeentry&'.$this->post_type.'_id='.$rec->id.'"'.'">Edit</a>',
                                 	'delete'    => '<a class="deletepostlink" href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='.$rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$rec->project_id.'&tab='.$rt_pm_project->post_type.'-timeentry&'.$this->post_type.'_id='.$rec->id.'&action=delete">Delete</a>',

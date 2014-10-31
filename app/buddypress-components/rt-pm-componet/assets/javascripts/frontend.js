@@ -8,6 +8,11 @@ jQuery(document).ready(function($) {
 		//return false;
     });
 	
+	$('span.rtpm_message_readmore').readmore({
+	  speed: 75,
+	  maxHeight: 20
+	});
+	
 	$("#top-button-trash").click(function(){
 		var r = confirm("Are you sure you want to move this project to trash?");
 		if (r != true) {
