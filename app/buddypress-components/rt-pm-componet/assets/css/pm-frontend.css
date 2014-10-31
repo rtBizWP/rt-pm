@@ -652,58 +652,6 @@
 .tabs.five-up dt, .tabs.five-up dd, .tabs.five-up li {
   width: 20%;
 }
-
-/* line 592, ../sass/admin.scss */
-.tabs-content {
-  display: block;
-  margin: 1px;
-  padding: 20px 10px 20px 10px;
-  background-color: #ffffff;
-}
-
-/* line 599, ../sass/admin.scss */
-ui.tabs-content {
-  display: block;
-  margin: 0 0 20px;
-  padding: 20px 0;
-  background-color: #ffffff;
-  margin: 0 2px;
-}
-
-/* line 608, ../sass/admin.scss */
-ul.tabs-content > li {
-  display: none;
-}
-/* line 610, ../sass/admin.scss */
-ul.tabs-content > li.active {
-  display: block;
-}
-/* line 614, ../sass/admin.scss */
-ul.tabs-content.contained {
-  padding: 0;
-}
-/* line 616, ../sass/admin.scss */
-ul.tabs-content.contained > li {
-  -moz-border-bottom-colors: none;
-  -moz-border-left-colors: none;
-  -moz-border-right-colors: none;
-  -moz-border-top-colors: none;
-  border-color: #E6E6E6;
-  border-image: none;
-  border-style: solid;
-  border-width: 0 1px 1px;
-  padding: 20px;
-}
-/* line 627, ../sass/admin.scss */
-ul.tabs-content.contained.vertical > li {
-  border-width: 1px;
-}
-
-/* line 633, ../sass/admin.scss */
-.no-js ul.tabs-content > li {
-  display: block;
-}
-
 /* line 638, ../sass/admin.scss */
 #rtpm_status_detail span.prefix {
   height: 60px;
@@ -754,23 +702,6 @@ span.prefix {
 	text-align: right;
 	padding-right: 10%;
 	top: 5px;
-}
-.tabs dd:hover a, .tabs li:hover a, .tabs dd.active a, .tabs li.active a {
-  color: #000;
-  font-weight: normal;
-}
-.tabs.five-up dt a, .tabs.five-up dd a, .tabs.five-up li a {
-    font-size: small;
-}
-.entry-content dl.tabs  {
-	margin: 0;
-}
-.rtpm-container {
-    padding-right: 0;
-}
-.rtpm-container   .tabs-content  {
-	padding-left: 0;
-	padding-right: 0;
 }
 .reveal-modal {
   margin-left: 25% ! important;
@@ -888,9 +819,6 @@ border: 0 !important;
 h4 {
 	font-style: bold;
     font-weight: bold;
-}
-.tabs-content  {
-	margin-top: -30px;
 }
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
