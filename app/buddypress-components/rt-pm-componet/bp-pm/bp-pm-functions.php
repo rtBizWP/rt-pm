@@ -173,6 +173,8 @@ function pm_add_documents_section( $post_id ){ ?>
 						   </div>
 					   </div>
 				   </div>
+	<h3><b><?php _e('Internal'); ?></b></h3>
+    <hr/>
 	<div class="row">
         <div class="large-12 columns add-attachment-button">
             <a class="right add-button button"  id="upload_image" ><i class="fa fa-plus"></i></i></a>

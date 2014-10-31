@@ -1824,7 +1824,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
            <h4><?php _e('Attachments'); ?></h4>
 			<div id="wp-custom-list-table">
 				<div id="attachment-error" class="row"></div>
-				<h3><?php _e('External Files'); ?></h3>
+				<h3><b><?php _e('External'); ?></b></h3>
                             <hr/>
                             <div class="row">
 
