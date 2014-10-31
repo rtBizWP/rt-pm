@@ -1359,7 +1359,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     <?php } ?>
                     <div class="row">
                     	<div class="large-4 columns">
-                    		<?php _e('Details', RT_PM_TEXT_DOMAIN);?>
+                    		<h4><?php _e('Details', RT_PM_TEXT_DOMAIN);?></h4>
                     	</div>
 						<?php
 						if (isset($post->ID)) {
@@ -2193,15 +2193,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 					<tfoot>
 						<tr>
-							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
-							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
-							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
-							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
-							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
-							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
-							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
-							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
-							<th scope='col' id='rtpm_rule_actions' class='manage-column column-rtpm_rule_actions'  style=""><span>&nbsp;</span></th>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><label>Schedule</label></th>
+							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><label>Context</label></th>
+							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><label>Operator</label></th>
+							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><label>Value</span></th>
+							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><label>Value Type</label></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><label>Period</label></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><label>Period Type</label></th>
+							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><label>User to Notify</label></th>
+							<th scope='col' id='rtpm_rule_actions' class='manage-column column-rtpm_rule_actions'  style=""><label>&nbsp;</label></th>
 						</tr>
 					</tfoot>
 
@@ -2369,15 +2369,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				<table class="" cellspacing="0">
 					<thead>
 						<tr>
-							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><span>Schedule</span></th>
-							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><span>Context</span></th>
-							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><span>Operator</span></th>
-							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><span>Value</span></th>
-							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><span>Value Type</span></th>
-							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><span>Period</span></th>
-							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><span>Period Type</span></th>
-							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><span>User to Notify</span></th>
-							<th scope='col' id='rtpm_delete_rule' class='manage-column column-rtpm_delete_rule'  style=""><span>&nbsp;</span></th>
+							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><label>Schedule</label></th>
+							<th scope='col' id='rtpm_context' class='manage-column column-rtpm_context'  style=""><label>Context</label></th>
+							<th scope='col' id='rtpm_operator' class='manage-column column-rtpm_operator'  style=""><label>Operator</label></th>
+							<th scope='col' id='rtpm_value' class='manage-column column-rtpm_value'  style=""><label>Value</label></th>
+							<th scope='col' id='rtpm_value_type' class='manage-column column-rtpm_value_type' style=""><label>Value Type</label></th>
+							<th scope='col' id='rtpm_period' class='manage-column column-rtpm_period'  style=""><label>Period</label></th>
+							<th scope='col' id='rtpm_period_type' class='manage-column column-rtpm_period_type' style=""><label>Period Type</label></th>
+							<th scope='col' id='rtpm_user' class='manage-column column-rtpm_user'  style=""><label>User to Notify</label></th>
+							<th scope='col' id='rtpm_delete_rule' class='manage-column column-rtpm_delete_rule'  style=""><label>&nbsp;</label></th>
 						</tr>
 					</thead>
 
