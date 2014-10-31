@@ -1433,7 +1433,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								<?php if ( $user_edit ) { ?>
 									<input type="text" placeholder="Type Name to select" id="project_org_search_account" />
 								<?php } ?>
-									<ul id="divAccountsList" class="block-grid large-1-up">
+									<ul id="divAccountsList" class="large-block-grid-1 small-block-grid-1">
 										<?php echo $subProjectOrganizationsHTML; ?>
 									</ul>
 								</div>
