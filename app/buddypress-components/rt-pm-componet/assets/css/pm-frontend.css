@@ -820,6 +820,11 @@ h4 {
 	font-style: bold;
     font-weight: bold;
 }
+.pm.details  .row.collapse.postbox  .inside  .row.collapse,
+.pm.details  .row  .large-6  .row.collapse,
+.pm.details  .row  .large-12  .row.collapse {
+	padding: 0.4rem 0;
+}
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
     .notification-bottom   form {
