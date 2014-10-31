@@ -140,7 +140,7 @@ function pm_add_documents_section( $post_id ){ ?>
 											   continue;		 
 							   				}
 										   if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) == 1){
-											   $extn ='unknown';
+											   //$extn ='unknown';
 										   }
 									   ?>
 									   
