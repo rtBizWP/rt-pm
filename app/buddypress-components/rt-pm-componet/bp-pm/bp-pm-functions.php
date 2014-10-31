@@ -139,9 +139,13 @@ function pm_add_documents_section( $post_id ){ ?>
 									   		if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) != 1 ){
 											   continue;		 
 							   				}
-										   if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) == 1){
-											   //$extn ='unknown';
-										   }
+										   $file_type_dir = RT_PM_PATH_APP ."assets/file-type/";
+										   $file_types = scandir( $file_type_dir );
+										   $ext_file = $extn . ".png";
+											if ( ! in_array($ext_file,  $file_types)) {
+											    $extn ='unknown';
+											}
+										  
 									   ?>
 									   
 									   <div class="large-12 columns">
