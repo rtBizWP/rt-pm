@@ -228,6 +228,21 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 30,
 				);
 				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
+				
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
+				
+				// Add a few subnav items
+				$sub_nav[] = array(
+					'name'            =>  __( 'Tasks' ),
+					'slug'            => 'tasks',
+					'link'			  => $url,
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_tasks',
+					'position'        => 40,
+				);
+				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
 				
 				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
@@ -241,21 +256,6 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'parent_url'      =>  $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_time_entries',
-					'position'        => 40,
-				);
-				
-				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
-				
-				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
-				
-				// Add a few subnav items
-				$sub_nav[] = array(
-					'name'            =>  __( 'Tasks' ),
-					'slug'            => 'tasks',
-					'link'			  => $url,
-					'parent_url'      => $people_link,
-					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_tasks',
 					'position'        => 50,
 				);
 				
