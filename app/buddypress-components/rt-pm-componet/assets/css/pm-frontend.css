@@ -826,11 +826,11 @@ h4 {
 	padding: 0.4rem 0;
 }
 strong, b {
-    font-weight: 600;
+    font-weight: 500 !important;
 }
 .entry-content h5, .comment-content h5 {
-    font-size: 14px;
-    color: #333;
+    font-size: 14px !important;
+    color: #333 !important;
 }
 @media screen  and (min-device-width : 1024px) and (-webkit-min-device-pixel-ratio:0) { 
     /* Safari and Chrome, if Chrome rule needed */
