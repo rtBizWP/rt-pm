@@ -859,6 +859,7 @@ h4 {
     max-height: unset;
     overflow-y: hidden;
 }
+
 /** crm **/
 li.contact-list  a.heading  {
 	margin-left: 20px;
@@ -917,4 +918,10 @@ li.contact-list  a.heading  {
 	.hidden  {
 		display: block;
 	}
+}
+/* Mobile */
+@media only screen and (max-width: 767px) {
+	table.responsive th:first-child, table.responsive td:first-child, table.responsive td:first-child, table.responsive.pinned td { display: none ! important; }
+	
+	
 }

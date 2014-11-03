@@ -2180,7 +2180,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					</form>
 				</div>
 				<?php } ?>
-				<table class="" cellspacing="0">
+				<table class="responsive" cellspacing="0">
 					<thead>
 						<tr>
 							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><label>Schedule</label></th>
@@ -2370,7 +2370,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					</form>
 				</div>
 				<?php } ?>
-				<table class="" cellspacing="0">
+				<table class="responsive" cellspacing="0">
 					<thead>
 						<tr>
 							<th scope='col' id='rtpm_schedule' class='manage-column column-rtpm_schedule'  style=""><label>Schedule</label></th>
