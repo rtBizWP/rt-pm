@@ -852,8 +852,8 @@ h4 {
 .readmore-js-section {
   overflow: hidden;
 }
-.large-1.mobile-large-1.columns.dollar > span {
-	margin-left: 22px;
+.large-1.columns.dollar span {
+	margin-top: -8px;
 }
 .scroll-height {
     max-height: unset;
