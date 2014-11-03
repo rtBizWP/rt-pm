@@ -58,6 +58,18 @@ jQuery(document).ready(function($) {
 		return false;
     });
 	
+	$(".add-task").click(function(){
+		$( ".add-task" ).text("Update Task");
+    });
+	
+	$(".add-task").click(function(){
+		$( ".add-task" ).text( "Update Task" );
+    });
+	
+	$(".add-time-entry").click(function(){
+		$( ".add-time-entry" ).text( "Update Time Entry" );
+    });
+	
 	$(document).on('click',".removeMeta",function(){
         $(this).parent().parent().remove();
     });
