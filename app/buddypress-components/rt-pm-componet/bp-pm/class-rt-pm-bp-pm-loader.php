@@ -23,13 +23,17 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                 private $sub_nav_items;
                 static $projects_slug = 'projects';
                 public function __construct() {
+                		global $rt_biz_options;
+		                $rt_pm_options = maybe_unserialize( get_option( RT_PM_TEXT_DOMAIN . '_options' ) );
+		                $menu_label = $rt_pm_options[ 'menu_label' ];
+		                $this->pm_label = $menu_label;
                     
                         parent::start(
                                 'pm',
-                                __( 'PM', 'buddypress' ),
+                                __( $this->pm_label, 'buddypress' ),
                                RT_PM_BP_PM_PATH,
                                 array(
-                                        'adminbar_myaccount_order' => 9999
+                                    'adminbar_myaccount_order' => 9999
                                 )
                         );
                         $this->includes();
@@ -106,7 +110,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 			// Add 'hrm' to the main navigation
 			$main_nav = array(
-				'name' 		      => __( 'PM' ),
+				'name' 		      => __( $this->pm_label ),
 				'slug' 		      => $this->id,
 				'position' 	      => 80,
 				'screen_function'     => 'bp_pm_projects',
@@ -307,7 +311,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					$wp_admin_nav[] = array(
 						'parent' => $bp->my_account_menu_id,
 						'id'     => 'my-account-' . $this->id,
-						'title'  => __( 'PM', 'buddypress' ),
+						'title'  => __( $this->pm_label, 'buddypress' ),
 						'href'   => trailingslashit( $crm_link )
 					);
 		
