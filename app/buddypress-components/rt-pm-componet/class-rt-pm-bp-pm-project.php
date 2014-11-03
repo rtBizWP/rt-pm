@@ -1019,14 +1019,19 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                                 <label>Date Created<small class="required"> * </small></label>
                             </div>
                             <div class="large-4 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
-                                    <input required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
-                                           value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
-                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
-                                <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
-                                <?php } ?>
+                                <?php if( $user_edit && empty( $_REQUEST['rt_time_entry_id'] ) ){ ?>
+									<input required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+										   value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
+										   title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
+									<input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+								<?php } else if ( $user_edit ) { ?>
+									 <input disabled="disabled" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+										   value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
+										   title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
+									<input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+								<?php } else { ?>
+									<span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
+								<?php } ?>
                             </div>
                         </div>
                         <div class="row collapse postbox">
