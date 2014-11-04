@@ -272,9 +272,13 @@ if( !empty( $results_client ) ) {
 		$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
         if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
             $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a>'
-                . "<a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
-                            <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' /></li>";
+                . "' class='contact-list'><div class='row'><div class='large-2 column'>" . get_avatar($email, 24) . '</div>
+                <div class="large-9 columns"><a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a></div>'
+                . "<div class='large-1 columns'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
+                            <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' />
+                        </div>
+                    </div>
+                </li>";
         }
 		$connection = rt_biz_get_organization_to_person_connection( $client->ID );
 		$org = array();
