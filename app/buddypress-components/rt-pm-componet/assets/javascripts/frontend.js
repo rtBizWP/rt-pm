@@ -8,6 +8,14 @@ jQuery(document).ready(function($) {
 		//return false;
     });
 	
+	$('#rtpm_post_status').on('change', function(e) {
+		if($(this).val() == 'closed') {
+			$('#rtpm_closing_reason_wrapper').show();
+		} else {
+			$('#rtpm_closing_reason_wrapper').hide();
+		}
+	});
+	
 	$('span.rtpm_message_readmore').readmore({
 	  speed: 75,
 	  maxHeight: 20

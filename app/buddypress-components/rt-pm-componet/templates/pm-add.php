@@ -498,18 +498,17 @@ if( !empty( $results_organization ) ) {
                     } ?>
                 </div>
             </div>
-            <div id="rtpm_status_detail" class="column medium-6 small-12">
-                <div class="large-4 small-4 columns">
-                    <label><?php _e('Status Detail'); ?></label>
+            <div id="rtpm_closing_reason_wrapper" class="column medium-6 small-12 ">
+                <div class="small-4 columns">
+                        <label>Close Reason</label>
                 </div>
-                <div class="large-8 small-8 columns">
-					<?php if( $user_edit ) { ?>
-					<textarea name="post[status_detail]"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></textarea>
-					<?php } else { ?>
-						<span><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, '_rtpm_status_detail', true ) : ''; ?></span>
-					<?php } ?>
-				</div>
+                <div class="small-8 columns">
+                    <select id="rtpm_closing_reason" name="post[closing_reason][]" class="rt-form-select">
+                        <option value="" selected="selected">Select a Reason</option>
+                    </select>
+                </div>
             </div>
+
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">
                     <label>Create Date</label>
