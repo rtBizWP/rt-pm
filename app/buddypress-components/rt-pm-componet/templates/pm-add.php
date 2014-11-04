@@ -304,7 +304,7 @@ if( !empty( $results_organization ) ) {
         <?php } ?>
         <div class="row">
         	<div class="large-3 columns">
-        		<h4><?php _e('Details', RT_PM_TEXT_DOMAIN);?></h4>
+        		<h2><?php _e('Details', RT_PM_TEXT_DOMAIN);?></h2>
         	</div>
 			<?php
 			if (isset($post->ID)) {
@@ -459,7 +459,7 @@ if( !empty( $results_organization ) ) {
         <div class="row meta-box">
             <div class="column medium-6 small-12">
                 <div class="small-4 large-4 columns">
-                    <label for="post[post_status]">Status</label>
+                    <label for="post[post_status]"><?php _e("Status"); ?></label>
                 </div>
                 <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                     <?php
@@ -527,7 +527,7 @@ if( !empty( $results_organization ) ) {
             </div>
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">
-                    <label>Completion Date</label>
+                     <label><?php _e('Closing Date'); ?></label>
                 </div>
                 <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                     <?php if( $user_edit ) { ?>
@@ -542,7 +542,7 @@ if( !empty( $results_organization ) ) {
             </div>
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">
-                    <label>Due Date</label>
+                    <label><?php _e('Due Date'); ?></label>
                 </div>
                 <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                     <?php if( $user_edit ) { ?>
