@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-member-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list pull-1' >" + ui.item.imghtml + "<a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></li>")
+                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='large-2 column'>" + ui.item.imghtml + "</div><div class='large-9 columns'><a class='heading' target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='large-1 columns'><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></div></div></li>")
                     }
                     jQuery("#project_member_user_ac").val("");
                     return false;
