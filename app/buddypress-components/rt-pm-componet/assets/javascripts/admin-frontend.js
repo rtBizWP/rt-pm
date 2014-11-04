@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
 
             jQuery(document).on('click', "a[href=#removeProjectMember]", function(e) {
                 e.preventDefault();
-                $(this).parent().remove();
+                $(this).parent().parent().remove();
             });
 
         }
