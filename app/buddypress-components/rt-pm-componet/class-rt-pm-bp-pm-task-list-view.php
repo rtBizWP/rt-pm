@@ -529,7 +529,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
                                         'edit'      => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
-                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&'.$this->post_type.'_id='.$rec->ID.'&action=timeentry">Time</a>',
+                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&'.$this->post_type.'_id='.$rec->ID.'&action=timeentry">Time</a>',
                                         'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
                                     );
                                 }else{

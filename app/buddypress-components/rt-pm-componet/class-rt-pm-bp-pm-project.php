@@ -762,7 +762,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 														</td>
 														<td scope="column">
 															<?php if( $user_edit ) { ?>
-			                                                    <a href="#" class="rtpm_delete_attachment right">x</a>
+			                                                    <a href="#" class="rtpm_delete_attachment  button add-button removeMeta"><i class="fa fa-times"></i></a>
 			                                                <?php } ?>
 			                                                <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
 														</td>

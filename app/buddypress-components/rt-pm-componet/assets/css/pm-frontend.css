@@ -285,14 +285,7 @@ table.wp-list-table tr th {
 }
 
 /*** Project details page hack for legacy css **/
-span.prefix {
-    background: none;
-    border: none;
-    color: #333333;
-	text-align: right;
-	padding-right: 10%;
-	top: 5px;
-}
+
 .reveal-modal {
   margin-left: 25% ! important;
   top: 5px ! important;

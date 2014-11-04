@@ -595,7 +595,7 @@ if( !empty( $results_organization ) ) {
 						<div class="large-3 mobile-large-1 columns">
 							<label for="project_budget">Budget</label>
 						</div>
-						<div class="large-1 columns dollar push-1">
+						<div class="large-1 columns dollar">
 				          <span class="prefix">$</span>
 				        </div>
 						<div class="large-8 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
