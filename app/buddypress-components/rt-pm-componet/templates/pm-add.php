@@ -383,84 +383,42 @@ if( !empty( $results_organization ) ) {
 					</ul>
             </div>
             <div class="columns medium-6 small-12">
-                <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
-                    <div class="large-12 mobile-large-12 columns">
-                        <label for="post[project_manager]"><b>Project Manager</b></label>
-                        <hr />
-                    </div>
-                    <div class="large-12 mobile-large-12 columns">
-                        <?php if( $user_edit ) { ?>
-                            <select name="post[project_manager]" >
-								<option value=""><?php _e( 'Select PM' ); ?></option>
-                                <?php
-                                if (!empty($results_member)) {
-                                    foreach ($results_member as $author) {
-                                        if ($author->ID == $project_manager) {
-                                            $selected = " selected";
-                                        } else {
-                                            $selected = " ";
-                                        }
-                                        echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                <h6> <?php _e( 'Manager' ); ?></h6>
+				<hr>
+                <div class="row collapse">
+                    <?php if( $user_edit ) { ?>
+                        <select name="post[project_manager]" >
+							<option value=""><?php _e( 'Select PM' ); ?></option>
+                            <?php
+                            if (!empty($results_member)) {
+                                foreach ($results_member as $author) {
+                                    if ($author->ID == $project_manager) {
+                                        $selected = " selected";
+                                    } else {
+                                        $selected = " ";
                                     }
+                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
                                 }
-                                ?>
-                            </select>
-                        <?php 
-							} else {
-								if (!empty($results_member)) {
-                                    foreach ($results_member as $author) {
-                                        if ($author->ID == $project_manager) {
-                                            $selected = " selected";
-											echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
-											'<span class="rtpm_view_mode">' . $author->display_name . '</span>' .
-											'</div>';
-                                        }
-                                        
-                                                                            
+                            }
+                            ?>
+                        </select>
+                    <?php 
+						} else {
+							if (!empty($results_member)) {
+                                foreach ($results_member as $author) {
+                                    if ($author->ID == $project_manager) {
+                                        $selected = " selected";
+										echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
+										'<span class="rtpm_view_mode">' . $author->display_name . '</span>' .
+										'</div>';
                                     }
+                                    
+                                                                        
                                 }
-							} 
-						?>
-                    </div>
+                            }
+						} 
+					?>
                 </div>
-                <!--<div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
-                    <div class="large-12 mobile-large-12 columns">
-                        <label for="post[business_manager]"><b><?php _e('Business Development Manager'); ?></b></label>
-                        <hr />
-                    </div>
-                    <div class="large-12 mobile-large-12 columns">
-                        <?php if( $user_edit ) { ?>
-                            <select name="post[business_manager]" >
-								<option value=""><?php _e( 'Select BM' ); ?></option>
-                                <?php
-                                if (!empty($results_member)) {
-                                    foreach ($results_member as $bm) {
-                                        if ($bm->ID == $business_manager) {
-                                            $selected = " selected";
-                                        } else {
-                                            $selected = " ";
-                                        }
-                                        echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                        <?php 
-							} else {
-								if (!empty($results_member)) {
-                                    foreach ($results_member as $bm) {
-                                        if ($bm->ID == $business_manager) {
-                                            $selected = " selected";
-											echo '<div class="small-8 large-8 columns rtpm_attr_border">' .
-											'<span class="rtpm_view_mode">' . $bm->display_name . '</span>' .
-											'</div>';
-                                        }
-                                    }
-                                }
-							} 
-						?>
-                    </div>
-                </div> -->
             </div>
             
         </div>
