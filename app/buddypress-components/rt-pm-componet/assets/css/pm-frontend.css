@@ -333,11 +333,6 @@ table.wp-list-table tr th {
 .required{
     color: red;
 }
-
-.entry-content h1,h2,h3, h4{
-    margin: 0px 0 !important;
-}
-
 .person-avatar {
     width: 55px !important;
 }
