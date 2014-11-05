@@ -329,7 +329,7 @@ if( !empty( $results_organization ) ) {
                 
 			<?php if( $user_edit ) { ?>
 			<div class="large-9 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
 				<?php 
 				if(isset($post->ID)) { 
 					$get_post_status = get_post_status( $post->ID );
@@ -346,8 +346,8 @@ if( !empty( $results_organization ) ) {
 					}
 					
 				?>
-				<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
-				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
+				<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
+				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
 				<?php } ?>
 			</div>
 			<?php } ?>
@@ -608,7 +608,7 @@ if( !empty( $results_organization ) ) {
 							<label for="project_budget">Budget</label>
 						</div>
 						<div class="large-1 columns dollar">
-				          <span class="prefix">$</span>
+				          <span>$</span>
 				        </div>
 						<div class="large-8 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 							
@@ -635,7 +635,7 @@ if( !empty( $results_organization ) ) {
                 
 			<?php if( $user_edit ) { ?>
 			<div class="large-12 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>&nbsp;&nbsp;&nbsp;
+				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
 				<?php 
 				if(isset($post->ID)) { 
 					$get_post_status = get_post_status( $post->ID );
@@ -649,8 +649,8 @@ if( !empty( $results_organization ) ) {
 						$button_archive_id = 'button-archive';
 					}
 				?>
-				<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>&nbsp;&nbsp;&nbsp;
-				<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>&nbsp;&nbsp;&nbsp;
+				<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
+				<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
 				<?php } ?>
 			</div>
 			<?php } ?>
