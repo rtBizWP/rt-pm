@@ -24,6 +24,10 @@
   max-height: unset;
   overflow-y: hidden;
 }
+#wp-custom-list-table  .pinned  .row-actions {
+  display: inline;
+  padding: 2%;
+}
 /* line 385, ../sass/admin.scss */
 .tabs {
   border-bottom: 1px solid #E6E6E6;

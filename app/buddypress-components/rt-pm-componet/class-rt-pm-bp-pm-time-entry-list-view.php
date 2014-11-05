@@ -527,7 +527,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 		public function display() {
 			$singular = $this->_args['singular'];
 			?>
-			<table>
+			<table class="responsive">
 				<thead>
 				<tr>
 					<?php $this->print_column_headers(); ?>
