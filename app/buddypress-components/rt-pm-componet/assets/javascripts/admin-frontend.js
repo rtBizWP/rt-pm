@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-org-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='column small-2'>" + ui.item.imghtml + "</div><div class='column small-9'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='column small-1'><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></div></div></li>")
+                        jQuery("#divProjectAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='column small-2'>" + ui.item.imghtml + "</div><div class='column small-9'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='column small-1'><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></div></div></li>")
                     }
                     jQuery("#project_org_search_account").val("");
                     return false;
