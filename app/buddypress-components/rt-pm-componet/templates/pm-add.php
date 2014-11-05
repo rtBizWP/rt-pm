@@ -438,32 +438,28 @@ if( !empty( $results_organization ) ) {
 			<div class="columns medium-6 small-12"/>
 				<h6> <?php _e("Contacts"); ?></h6>
             	<hr/>
-                <div class="large-12 mobile-large-12 columns">
-                    <script>
-                        var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
-                    </script>
-                    <?php if ( $user_edit ) { ?>
-                        <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
-                    <?php } ?>
-                    <ul id="divProjectClientList">
-                        <?php echo $subProjectClientHTML; ?>
-                    </ul>
-                </div>
+                <script>
+                    var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
+                </script>
+                <?php if ( $user_edit ) { ?>
+                    <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+                <?php } ?>
+                <ul id="divProjectClientList">
+                    <?php echo $subProjectClientHTML; ?>
+                </ul>
 			</div>
 			<div class="columns medium-6 small-12"/>
-					<h6> <?php _e("Team"); ?></h6>
-            		<hr/>
-					<div class="large-12 mobile-large-12 columns">
-						<script>
-							var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
-						</script>
-						<?php if ( $user_edit ) { ?>
-						<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
-						<?php } ?>
-						<ul id="divProjectMemberList">
-							<?php echo $subProjectMemberHTML; ?>
-						</ul>
-					</div>
+				<h6> <?php _e("Team"); ?></h6>
+        		<hr/>
+				<script>
+					var arr_project_member_user =<?php echo json_encode($arrProjectMember); ?>;
+				</script>
+				<?php if ( $user_edit ) { ?>
+				<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
+				<?php } ?>
+				<ul id="divProjectMemberList">
+					<?php echo $subProjectMemberHTML; ?>
+				</ul>
 			</div>
 		</div>
         <h3 class="row-title"> <?php _e("Opportunity Information"); ?></h3>
