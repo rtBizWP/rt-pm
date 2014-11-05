@@ -452,7 +452,7 @@ h4 {
 	span.prefix {
 		text-align: left;
 	}
-	.buddyboss-select  label {
+	.rtpm-container .buddyboss-select  label {
 		font-weight: inherit ! important;
 		line-height: unset ! important;
 	}
@@ -486,7 +486,7 @@ h4 {
 		vertical-align: unset;
 		margin-left: unset;
 	}
-	.buddyboss-select label  {
+	.rtpm-container  .buddyboss-select label  {
 		line-height: unset ! important;
 	}
 	
