@@ -250,10 +250,10 @@ if( !empty( $results_member ) ) {
             . "<div class='row'>
             <div class='column small-2'>"
              . get_avatar($author->user_email, 24) . ' </div>
-             <div  class="large-9 columns">
-             	<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>
+             <div  class="column small-9">
+             	<a target="_blank" class="" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>
              </div>'
-                . "<div class='large-1 columns'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
+                . "<div class='column small-1'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /> </div>
                             
                 </div>
@@ -273,8 +273,8 @@ if( !empty( $results_client ) ) {
         if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
             $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
                 . "' class='contact-list'><div class='row'><div class='large-2 column'>" . get_avatar($email, 24) . '</div>
-                <div class="large-9 columns"><a target="_blank" class="heading" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a></div>'
-                . "<div class='large-1 columns'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
+                <div class="column small-9"><a target="_blank" class="" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a></div>'
+                . "<div class='column small-1'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' />
                         </div>
                     </div>
@@ -298,7 +298,7 @@ if( !empty( $results_organization ) ) {
 		$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
         if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
             $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="heading" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
+                . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
                 . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
         }
