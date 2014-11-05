@@ -148,27 +148,27 @@ function pm_add_documents_section( $post_id ){ ?>
 										  
 									   ?>
 									   
-									   <div class="large-12 columns">
-										<div class="large-11 columns">
+									   <div class="small-12 columns">
+										<div class="small-11 columns">
 											<a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
 											   <img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" />
 											   <?php echo $attachment->post_title; ?>
 										   </a>
 										   <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
 										</div>
-										<div class="large-1 columns">
+										<div class="small-1 columns">
 											<a data-attachmentid="<?php echo $attachment->ID; ?>" class="rtpm_delete_project_attachment button add-button removeMeta"><i class="fa fa-times"></i></a>
 										</div>
 									</div>
 								   <?php } ?>
 							   <?php }else{ ?>
 								   <?php if (  isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){ ?>
-									   <div class="large-12 mobile-large-3 columns no-attachment-item">
+									   <div class="small-12 mobile-large-3 columns no-attachment-item">
 										   <?php $term = get_term( $_POST['attachment_tag'], 'attachment_tag' ); ?>
 										   Not Found Attachment<?php echo isset( $term )? ' of ' . $term->name . ' Term!' :'!' ?>
 									   </div>
 								   <?php }else{ ?>
-									   <div class="large-12 mobile-large-3 columns no-attachment-item">
+									   <div class="small-12 mobile-large-3 columns no-attachment-item">
 										   <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
 										   Attachment Not found!
 									   </div>
