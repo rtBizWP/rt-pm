@@ -298,9 +298,9 @@ if( !empty( $results_organization ) ) {
 		$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
         if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
             $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                . "' class='contact-list'>" . get_avatar($email, 24) . '<a target="_blank" class="" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a>'
-                . "<a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
-                            <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></li>";
+                . "' class='contact-list'><div class='row'><div class='column small-2'>" . get_avatar($email, 24) . '</div><div class="column small-9"><a target="_blank" class="" title="'.$organization->post_title.'" href="'.get_edit_user_link($organization->ID).'">'.$organization->post_title.'</a></div>'
+                . "<div class='column small-1'><a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
+                            <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></div></div></li>";
         }
         $arrProjectOrganizations[] = array("id" => $organization->ID, "label" => $organization->post_title, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($organization->ID));
     }
