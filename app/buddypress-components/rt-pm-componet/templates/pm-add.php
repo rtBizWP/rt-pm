@@ -390,7 +390,7 @@ if( !empty( $results_organization ) ) {
 						</div>
 					<?php } ?>
 					</div>
-					<ul id="divAccountsList" class="large-block-grid-1 small-block-grid-1">
+					<ul id="divProjectAccountsList">
 						<?php echo $subProjectOrganizationsHTML; ?>
 					</ul>
             </div>
@@ -445,7 +445,7 @@ if( !empty( $results_organization ) ) {
                     <?php if ( $user_edit ) { ?>
                         <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
                     <?php } ?>
-                    <ul id="divProjectClientList" class="large-block-grid-1 small-block-grid-1">
+                    <ul id="divProjectClientList">
                         <?php echo $subProjectClientHTML; ?>
                     </ul>
                 </div>
@@ -460,7 +460,7 @@ if( !empty( $results_organization ) ) {
 						<?php if ( $user_edit ) { ?>
 						<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
 						<?php } ?>
-						<ul id="divProjectMemberList" class="large-block-grid-1 small-block-grid-1">
+						<ul id="divProjectMemberList">
 							<?php echo $subProjectMemberHTML; ?>
 						</ul>
 					</div>
