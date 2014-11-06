@@ -45,11 +45,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_enqueue_script('jquery.foundation.table', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/responsive-tables.js',array("foundation-js"), "", true);
                 wp_enqueue_script('foundation-modernizr-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/vendor/custom.modernizr.js', array(), "", false);
                 wp_enqueue_script('foundation-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
-                wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/admin-frontend.js',array("foundation-js"), RT_PM_VERSION, true);
 				wp_enqueue_script('rtpm-readmore', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/readmore.min.js',array("jquery"), "", true);
-				// Code for front-end pagination
-				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js','jquery', RT_PM_VERSION, true);
-                wp_enqueue_script('moment-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
+				wp_enqueue_script('moment-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
+				
 
                 if( !wp_script_is('jquery-ui-accordion') ) {
                     wp_enqueue_script( 'jquery-ui-accordion' );
@@ -77,6 +75,10 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
 				}
 
                 wp_enqueue_script( 'postbox' );
+				
+				// Code for front-end pagination
+				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js',array("foundation-js"), RT_PM_VERSION, true);
+                
 
             }
 			wp_enqueue_script('rtpm-wp-menu-patch-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/wp-menu-patch.js',array("jquery"), RT_PM_VERSION, true);

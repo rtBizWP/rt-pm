@@ -579,7 +579,7 @@ if( !empty( $results_organization ) ) {
                             </div>
                             <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="moment-from-now"  type="text" placeholder="Modified on Date"  value="<?php echo $modifydate; ?>"
+                                    <input class="moment-from-now"  type="text" placeholder="Modified on Date"  value="<?php echo $modifydate; ?>" id="modification_date"
                                            title="<?php echo $modifydate; ?>" readonly="readonly">
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $modifydate; ?></span>
