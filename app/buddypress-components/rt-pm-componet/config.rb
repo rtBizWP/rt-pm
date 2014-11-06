@@ -11,7 +11,7 @@ output_style = :compressed
 
 relative_assets = true
 
-line_comments = true
+line_comments = false
 color_output = false
 
 #environment = :production
