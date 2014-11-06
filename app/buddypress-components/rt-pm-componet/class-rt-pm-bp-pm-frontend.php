@@ -77,7 +77,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_enqueue_script( 'postbox' );
 				
 				// Code for front-end pagination
-				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js',array("foundation-js"), RT_PM_VERSION, true);
+				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js',array("foundation-js"), RT_PM_VERSION, true);
                 
 
             }
