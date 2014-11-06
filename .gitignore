@@ -1,2 +1,5 @@
 app/assets/.sass-cache/*
 .idea/
+syncemail.sh
+mailaccount.txt
+app/buddypress-components/rt-pm-componet/.sass-cache/
