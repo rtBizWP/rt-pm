@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
 
             jQuery(document).on('click', "a[href=#removeProjectMember]", function(e) {
                 e.preventDefault();
-                $(this).parent().parent().parent()remove();
+                $(this).parent().parent().parent().remove();
             });
 
         }
@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
 
             jQuery(document).on('click', "a[href=#removeProjectOrganization]", function(e) {
                 e.preventDefault();
-                $(this).parent().parent().parent()remove();
+                $(this).parent().parent().parent().remove();
             });
 
         }
@@ -161,7 +161,7 @@ jQuery(document).ready(function($) {
 
             jQuery(document).on('click', "a[href=#removeProjectClient]", function(e) {
                 e.preventDefault();
-                $(this).parent().parent().parent()remove();
+                $(this).parent().parent().parent().remove();
             });
 
         }
