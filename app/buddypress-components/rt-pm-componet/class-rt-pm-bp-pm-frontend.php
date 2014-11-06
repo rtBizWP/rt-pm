@@ -48,7 +48,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
                 wp_enqueue_script('rtpm-admin-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/admin-frontend.js',array("foundation-js"), RT_PM_VERSION, true);
 				wp_enqueue_script('rtpm-readmore', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/readmore.min.js',array("jquery"), "", true);
 				// Code for front-end pagination
-				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/frontend.js','jquery', RT_PM_VERSION, true);
+				wp_enqueue_script('rtpm-frontend-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js','jquery', RT_PM_VERSION, true);
                 wp_enqueue_script('moment-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
 
                 if( !wp_script_is('jquery-ui-accordion') ) {
