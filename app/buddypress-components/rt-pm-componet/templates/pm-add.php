@@ -249,7 +249,7 @@ if( !empty( $results_member ) ) {
             $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID . "' class='contact-list'>"
             . "<div class='row'>
             <div class='column small-2'>"
-             . get_avatar($author->user_email, 24) . ' </div>
+             . get_avatar($author->user_email, 32) . ' </div>
              <div  class="column small-9">
              	<a target="_blank" class="" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>
              </div>'
@@ -259,7 +259,7 @@ if( !empty( $results_member ) ) {
                 </div>
             </li>";
         }
-        $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
+        $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 32), 'user_edit_link'=>  get_edit_user_link($author->ID));
     }
 }
 
@@ -272,7 +272,7 @@ if( !empty( $results_client ) ) {
 		$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
         if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
             $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
-                . "' class='contact-list'><div class='row'><div class='large-2 column'>" . get_avatar($email, 24) . '</div>
+                . "' class='contact-list'><div class='row'><div class='large-2 column'>" . get_avatar($email, 32) . '</div>
                 <div class="column small-9"><a target="_blank" class="" title="'.$client->post_title.'" href="'.get_edit_user_link($client->ID).'">'.$client->post_title.'</a></div>'
                 . "<div class='column small-1'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' />
@@ -285,7 +285,7 @@ if( !empty( $results_client ) ) {
 		foreach ( $connection as $c ) {
 			$org[] = $c->ID;
 		}
-        $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
+        $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($email, 32), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
     }
 }
 
