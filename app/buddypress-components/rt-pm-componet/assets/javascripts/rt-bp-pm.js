@@ -460,7 +460,8 @@ jQuery(document).ready(function($) {
 	
 	$('span.rtpm_message_readmore').readmore({
 	  speed: 75,
-	  maxHeight: 20
+	  maxHeight: 20,
+	  sectionCSS: 'display: inline-block;'
 	});
 	
 	$("#top-button-trash").click(function(){
