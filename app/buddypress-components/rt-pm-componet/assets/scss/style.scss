@@ -10,12 +10,13 @@
     display: none;
   }
 }
+
 .ui-autocomplete{
   z-index: 9999;
 
   img.avatar, img.wp-post-image{
     max-width: none !important;
-    padding: 0px !important;
+    padding: 4px !important;
     border: 1px solid #ddd !important;
     border-radius: 20px !important;
     -moz-box-shadow: 0px 0px 0px #dddddd !important;

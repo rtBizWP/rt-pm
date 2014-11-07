@@ -68,7 +68,7 @@ button, input[type="submit"], input[type="button"], input[type="reset"], article
   -webkit-border-radius: 3px;
   border-radius: 3px;
 }
-input[type='text'],  input[type='number'],  textarea {
+input[type='text'],  input[type='number'], input[type='email'], input[type='password'],  textarea {
   -webkit-border-radius: 5px !important;;
   -moz-border-radius: 5px !important;;
   border-radius: 5px !important;
@@ -78,12 +78,12 @@ input[type='text'],  input[type='number'],  textarea {
   color: #4d4d4d !important;
   border: 1px solid #ccc;
 }
-input[type='text'],  input[type='number'],  select {
+input[type='text'],  input[type='number'], input[type='email'], input[type='password'], select {
   height: 28px;
   margin-bottom: 5px;
   border: 1px solid #ccc;
 }
-label,  p,  a,  input[type='text'],  input[type='number'],  select,  textarea {
+label,  p,  a,  input[type='text'],  input[type='number'],  select,  textarea, input[type='email'], input[type='password'] {
   font-size: 12px;
 }
 .list-heading {
@@ -128,10 +128,6 @@ hr {
 .column-title {
   padding-top: 10px !important;
 }
-#divAccountsList,#divContactsList{
-
-    width: 85% !important;
-}
 #divSubscriberList{
 
 
@@ -161,9 +157,9 @@ select {
     border-radius: 5px;
   }
   li {
-    height: 100px;
-    width: 100px;
-    margin: 0 !important;
+    height: 110px;
+    width: 110px;
+    margin: 2px !important;
   }
 }
 textarea{
@@ -217,7 +213,7 @@ textarea{
 }
 img.avatar, img.wp-post-image{
   max-width: none !important;
-  padding: 4px;
+  padding: 4px !important;
   border: 1px solid #ddd !important;
   border-radius: 20px !important;
   -moz-box-shadow: 0px 0px 0px #dddddd !important;
