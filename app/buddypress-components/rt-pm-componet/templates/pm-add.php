@@ -513,7 +513,7 @@ if( !empty( $results_organization ) ) {
                     } ?>
                 </div>
             </div>
-            <div id="rtpm_closing_reason_wrapper" class="column medium-6 small-12 ">
+            <!--<div id="rtpm_closing_reason_wrapper" class="column medium-6 small-12 ">
                 <div class="small-4 columns">
                         <label>Close Reason</label>
                 </div>
@@ -522,7 +522,7 @@ if( !empty( $results_organization ) ) {
                         <option value="" selected="selected">Select a Reason</option>
                     </select>
                 </div>
-            </div>
+            </div>-->
 
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">

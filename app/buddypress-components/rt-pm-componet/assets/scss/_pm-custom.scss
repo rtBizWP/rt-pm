@@ -246,10 +246,10 @@ img.avatar, img.wp-post-image{
     max-height: unset;
     overflow-y: hidden;
   }
-  .pinned .row-actions {
+}
+.table-wrapper .pinned .row-actions {
     display: inline;
     padding-left: 1rem;
-  }
 }
 
 .tabs {

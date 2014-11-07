@@ -112,7 +112,7 @@
 		       
 		    </div>
 		</div>
-		<table>
+		<table class="responsive">
 			<thead>
 				<tr>
                   <?php foreach ( $columns as $column ) {
@@ -177,7 +177,7 @@
 						<tr>
 							<td>
 							<?php the_title(); ?>
-							<div>
+							<div class="row-actions">
 								<?php
 								printf( __('<a href="%s">' . __( 'Edit', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
 								printf( __('<a href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
