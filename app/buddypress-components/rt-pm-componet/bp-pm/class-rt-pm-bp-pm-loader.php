@@ -112,7 +112,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			$main_nav = array(
 				'name' 		      => __( $this->pm_label ),
 				'slug' 		      => $this->id,
-				'position' 	      => 82,
+				'position' 	      => 92,
 				'screen_function'     => 'bp_pm_projects',
 				'default_subnav_slug' => 'projects',
 			);
