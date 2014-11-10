@@ -22,6 +22,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                  */
                 private $sub_nav_items;
                 static $projects_slug = 'projects';
+                private $menu_order = 92;
                 public function __construct() {
                 		global $rt_biz_options;
 		                $rt_pm_options = maybe_unserialize( get_option( RT_PM_TEXT_DOMAIN . '_options' ) );
@@ -33,7 +34,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                                 __( $this->pm_label, 'buddypress' ),
                                RT_PM_BP_PM_PATH,
                                 array(
-                                    'adminbar_myaccount_order' => 9999
+                                    'adminbar_myaccount_order' => $this->menu_order
                                 )
                         );
                         $this->includes();
@@ -112,7 +113,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			$main_nav = array(
 				'name' 		      => __( $this->pm_label ),
 				'slug' 		      => $this->id,
-				'position' 	      => 92,
+				'position' 	      => $this->menu_order,
 				'screen_function'     => 'bp_pm_projects',
 				'default_subnav_slug' => 'projects',
 			);
