@@ -1610,7 +1610,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									<?php } ?>
 								</select>
 							</div>
-							<div class="large-2 columns">
+							<div class="large-3 columns">
 								<select name="rtpm_nr_context" required="required">
 									<option value=""><?php _e( 'Contexts' ) ?></option>
 									<?php foreach ( $rt_pm_notification->get_contexts( 'periodic' ) as $key => $label ) { ?>
@@ -1618,7 +1618,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									<?php } ?>
 								</select>
 							</div>
-							<div class="large-1 columns">
+							<div class="large-3 columns">
 								<select name="rtpm_nr_operator" required="required">
 									<option value=""><?php _e( 'Operators' ); ?></option>
 									<?php foreach ( $operators as $key => $operator ) { ?>
@@ -1626,27 +1626,29 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									<?php } ?>
 								</select>
 							</div>
-							<div class="large-1 columns">
+							<div class="large-2 columns">
 								<input type="text" name="rtpm_nr_value" placeholder="<?php _e( 'Value' ); ?>" />
 							</div>
-							<div class="large-1 columns">
+							<div class="large-2 columns">
 								<select name="rtpm_nr_value_type" required="required">
 									<option value=""><?php _e( 'Value Type' ); ?></option>
 									<option value="absolute"><?php _e('Absolute'); ?></option>
 									<option value="percentage"><?php _e('Percentage'); ?></option>
 								</select>
 							</div>
-							<div class="large-1 columns">
+						</div>
+						<div class="row">
+							<div class="large-3 columns">
 								<input type="text" name="rtpm_nr_period" placeholder="<?php _e( 'Period' ); ?>" />
 							</div>
-							<div class="large-1 columns">
+							<div class="large-4 columns">
 								<select name="rtpm_nr_period_type" required="required">
 									<option value=""><?php _e( 'Period Type' ); ?></option>
 									<option value="before"><?php _e( 'Before' ); ?></option>
 									<option value="after"><?php _e( 'After' ); ?></option>
 								</select>
 							</div>
-							<div class="large-2 columns">
+							<div class="large-4 columns">
 								<select name="rtpm_nr_user" required="required">
 									<option value=""><?php _e( 'Select User to Notify' ); ?></option>
 									<option value="{{project_manager}}"><?php _e( '{{project_manager}}' ); ?></option>

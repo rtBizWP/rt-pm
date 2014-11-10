@@ -667,15 +667,18 @@ h4 {
 #divProjectAccountsList, #divProjectClientList, #divProjectMemberList {
   list-style-type: none;
 }
-
+#item-body hr, .reveal-modal hr, dialog hr {
+    margin-bottom: 5px;
+    margin-top: 0;
+}
 @media screen and (min-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 0) {
   /* Safari and Chrome, if Chrome rule needed */
   .notification-bottom form {
-    margin-bottom: -20%;
+    // margin-bottom: -20%;
   }
   /* Safari 5+ ONLY */
   ::i-block-chrome, .notification-bottom form {
-    margin-bottom: 0%;
+    // margin-bottom: 0%;
   }
 }
 
