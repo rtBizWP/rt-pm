@@ -20,8 +20,12 @@ if ( ! defined( 'ABSPATH' ) )
 if( ! class_exists( 'WP_List_Table' ) )
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	
-if ( ! function_exists( 'get_current_screen' ) )
-    require_once(ABSPATH . 'wp-admin/includes/screen.php');
+if ( ! function_exists( 'get_current_screen' ) ){
+	if ( ! isset( $GLOBALS['hook_suffix'] ) )
+	$GLOBALS['hook_suffix'] = '';
+	require_once(ABSPATH . 'wp-admin/includes/screen.php');
+}
+    
 	
 if ( ! function_exists( 'convert_to_screen' ) )
     require_once(ABSPATH . '/wp-admin/includes/template.php');

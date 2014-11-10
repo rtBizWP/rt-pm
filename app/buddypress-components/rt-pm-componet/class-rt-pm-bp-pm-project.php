@@ -595,7 +595,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
 	                        <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
 	                    <?php } ?>
-	                    <legend><h4> <?php echo (isset($post->ID)) ? $post->post_title : _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
+	                    <legend><h4> <?php  _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
 	                    <div class="row collapse postbox">
 	                        <div class="large-6 columns">
 	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * </small></label>
@@ -981,7 +981,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                         <?php if (isset($post->id) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
                         <?php } ?>
-                        <legend><h4>Time Entry</h4></legend><hr />
+                        <legend><h4><?php _e( 'Time Entry', RT_PM_TEXT_DOMAIN ); ?></h4></legend><hr />
                         <div class="row collapse">
                             <div class="large-2 mobile-large-2 columns">
                                 <label for="Task">Task<small class="required"> * </small></label>
