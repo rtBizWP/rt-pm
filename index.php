@@ -1,14 +1,14 @@
 <?php
 
 /*
-  Plugin Name: Voxxi PM
-  Plugin URI: http://voxxi.me
-  Description: Part of the Voxxi Business Suite
-  Version: 0.0.4
-  Author: Voxxi
-  Author URI: http://voxxi.me
-  License: GPL
-  Text Domain: rt_pm
+  	Plugin Name: Voxxi Projects
+	Plugin URI: http://voxxi.me
+	Description: Part of the Voxxi Business
+	Version: 0.0.5
+	Author: Voxxi
+	Author URI: http://voxxi.me
+	License: GPL
+	Text Domain: rt_pm
  */
 
 if ( !defined( 'RT_PM_VERSION' ) ) {
