@@ -1602,7 +1602,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="periodic" />
 						<div class="row">
-							<div class="large-2 columns">
+							<div class="large-3 columns">
 								<select name="rtpm_nr_schedule" required="required">
 									<option value=""><?php _e( 'Schedule' ); ?></option>
 									<?php foreach ( wp_get_schedules() as $key => $schedule ) { ?>
@@ -1618,7 +1618,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 									<?php } ?>
 								</select>
 							</div>
-							<div class="large-3 columns">
+							<div class="large-2 columns">
 								<select name="rtpm_nr_operator" required="required">
 									<option value=""><?php _e( 'Operators' ); ?></option>
 									<?php foreach ( $operators as $key => $operator ) { ?>
