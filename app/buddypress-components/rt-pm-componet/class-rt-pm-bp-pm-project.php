@@ -1400,8 +1400,11 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			?>
 			<div class="wrap rtpm-notification-rules">
 				<?php
-					$error = $_SESSION['rtpm_errors'];
-					unset( $_SESSION['rtpm_errors'] );
+					if (isset($_SESSION['rtpm_errors'])){
+						$error = $_SESSION['rtpm_errors'];
+						unset( $_SESSION['rtpm_errors'] );
+					}
+					
 					if( ! empty( $error ) ) {
 						foreach ( $error as $e ) {
 							echo $e;

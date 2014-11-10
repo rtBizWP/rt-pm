@@ -350,7 +350,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		 *
 		 * @param bool $with_id Whether to set the id attribute or not
 		 */
-		public function print_column_headers() {
+		public function print_column_headers($with_id = true) {
 			if( isset( $_GET['orderby'] ) ) {
                 $args['orderby'] = $_GET['orderby'];
                 $args['order'] =  $_GET['order'];
@@ -470,7 +470,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			<table class="responsive">
 				<thead>
 				<tr>
-					<?php $this->print_column_headers(); ?>
+					<?php $this->print_column_headers('true'); ?>
 				</tr>
 				</thead>
 			
