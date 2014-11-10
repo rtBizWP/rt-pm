@@ -11,6 +11,9 @@
     if (!isset( $_REQUEST['post_type'] )){
         $_REQUEST['post_type'] = 'rt_project';
     }
+	if (!isset( $_REQUEST['action'] )){
+        $_REQUEST['action'] = '';
+    }
     $post_type = $_REQUEST['post_type'];
 
     $user_edit = false;
