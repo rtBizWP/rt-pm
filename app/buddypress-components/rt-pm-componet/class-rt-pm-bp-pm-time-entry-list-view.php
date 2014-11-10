@@ -20,8 +20,12 @@ if ( ! defined( 'ABSPATH' ) )
 if( ! class_exists( 'WP_List_Table' ) )
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 	
-if ( ! function_exists( 'get_current_screen' ) )
-    require_once(ABSPATH . 'wp-admin/includes/screen.php');
+if ( ! function_exists( 'get_current_screen' ) ){
+	if ( ! isset( $GLOBALS['hook_suffix'] ) )
+	$GLOBALS['hook_suffix'] = '';
+	require_once(ABSPATH . 'wp-admin/includes/screen.php');
+}
+    
 	
 if ( ! function_exists( 'convert_to_screen' ) )
     require_once(ABSPATH . '/wp-admin/includes/template.php');
@@ -421,7 +425,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 		 *
 		 * @param bool $with_id Whether to set the id attribute or not
 		 */
-		public function print_column_headers() {
+		public function print_column_headers($with_id = true) {
 			if( isset( $_GET['orderby'] ) ) {
                 $args['orderby'] = $_GET['orderby'];
                 $args['order'] =  $_GET['order'];
@@ -530,7 +534,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 			<table class="responsive">
 				<thead>
 				<tr>
-					<?php $this->print_column_headers(); ?>
+					<?php $this->print_column_headers('true'); ?>
 				</tr>
 				</thead>
 			
