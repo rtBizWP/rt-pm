@@ -54,7 +54,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
             add_action( "save_post_{$this->post_type}", array( $this, 'add_bp_activity' ), 10, 2 );
-            add_shortcode( 'project_activity_wall', array( $this, 'project_activity_wall_html' ), 1 );
+
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
             add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
@@ -93,28 +93,21 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                $action = 'Project Created';
            }
 
-            $contenthtml = '[project_activity_wall id="'.$post->ID.'"]';
 
             $args = array(
                 'action'=> $action,
-                'content' => wpautop( $contenthtml ),
+                'content' =>  !empty( $post->post_content ) ? $post->post_content : $post->post_title,
                 'component' => RT_PM_Bp_PM_Loader::$projects_slug,
-               'type' => sanitize_title( $action )
+                'item_id' => $post->ID,
+                'type' => sanitize_title( $action ),
+
             );
             $activity_id = bp_activity_add( $args );
 
 
         }
 
-        function project_activity_wall_html( $atts ) {
-            $post_id = $atts['id'];
 
-            var_dump( $post_id );
-        ?>
-
-
-
-        <?php }
 
 		function convert_lead_to_project() {
 
