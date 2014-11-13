@@ -7,7 +7,7 @@
 		$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 		$paged = $page = max( 1, get_query_var('paged') );
 		
-		$posts_per_page = get_option( 'posts_per_page' );
+		$posts_per_page = 20;
 		
 		$order = 'DESC';
 		$attr = 'startdate';
@@ -20,15 +20,15 @@
             $order = $args['order'] =  $_GET['order'];
     	}
 		if( $meta_key == "rt_project-type" ) {
-			$meta_key = 'post_duedate';
+
 			$orderby = 'rt_project-type';
 		}
 		if( $meta_key == "title" ) {
-			$meta_key = 'post_duedate';
+
 			$orderby = 'title';
 		}
 		if( $meta_key == "date" ) {
-			$meta_key = 'post_duedate';
+
 			$orderby = 'date';
 		}
 		
@@ -44,7 +44,6 @@
 		
 		$args = array(
 			'post_type' => $rt_pm_project->post_type,
-			'meta_key'   => $meta_key,
 			'orderby' => $orderby,
 			'order'      => $order,
 			'post_status' => $post_status,
