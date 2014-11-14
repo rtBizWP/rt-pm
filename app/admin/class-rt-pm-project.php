@@ -87,10 +87,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
            if( !empty( $meta ) ) {
 
-               $action = 'Project Updated';
+               $action = 'Project updated';
            }else{
 
-               $action = 'Project Created';
+               $action = 'Project created';
            }
 
 
@@ -99,7 +99,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'content' =>  !empty( $post->post_content ) ? $post->post_content : $post->post_title,
                 'component' => RT_PM_Bp_PM_Loader::$projects_slug,
                 'item_id' => $post->ID,
-                'type' => sanitize_title( $action ),
+                'type' => 'rt_biz',
 
             );
             $activity_id = bp_activity_add( $args );
