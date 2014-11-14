@@ -70,14 +70,14 @@
             ),
             array(
                     'column_label' => __( 'PM', RT_PM_TEXT_DOMAIN ) ,
-                    'sortable' => true,
+                    'sortable' => false,
                     'orderby' => 'project_manager',
                     'order' => 'asc'
                   
             ),
             array(
                     'column_label' => __( 'BDM', RT_PM_TEXT_DOMAIN ),
-                    'sortable' => true,
+                    'sortable' => false,
                     'orderby' => 'business_manager',
                     'order' => 'asc'
             ),
@@ -99,7 +99,6 @@
 		
 		// The Query
 		$the_query = new WP_Query( $args );
-		
 		$totalPage= $max_num_pages =  $the_query->max_num_pages;
 		
 		?>

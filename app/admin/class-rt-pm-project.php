@@ -75,8 +75,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'wp_ajax_nopriv_archive_projects_listing_info', array( $this, 'archive_projects_listing' ) );
 			
 			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );    // Added the hack for sorting
-			add_filter( 'posts_orderby', array( $this, 'pm_project_manager_orderby' ), 10, 2 ); // Added the hack for sorting
-			add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
+			//add_filter( 'posts_orderby', array( $this, 'pm_project_manager_orderby' ), 10, 2 ); // Added the hack for sorting
+			//add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
         }
 
         function add_bp_activity( $post_id, $post ) {
