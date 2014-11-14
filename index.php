@@ -1,10 +1,10 @@
 <?php
 
 /*
-  	Plugin Name: Voxxi Projects
+  	Plugin Name: Voxxi Plus Projects
 	Plugin URI: http://voxxi.me
 	Description: Part of the Voxxi Business
-	Version: 0.0.6
+	Version: 0.0.3
 	Author: Voxxi
 	Author URI: http://voxxi.me
 	License: GPL
