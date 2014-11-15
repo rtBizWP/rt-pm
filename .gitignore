@@ -3,3 +3,4 @@ app/assets/.sass-cache/*
 syncemail.sh
 mailaccount.txt
 app/buddypress-components/rt-pm-componet/.sass-cache/
+app/buddypress-components/rt-pm-componet/node_modules/
