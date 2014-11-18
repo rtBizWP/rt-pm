@@ -53,7 +53,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "save_post_{$this->post_type}", array( $this, 'add_bp_activity' ), 10, 2 );
+            add_action( "save_post_{$this->post_type}", array( $this, 'project_add_bp_activity' ), 10, 2 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -79,7 +79,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			//add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
         }
 
-        function add_bp_activity( $post_id, $post ) {
+        function project_add_bp_activity( $post_id, $post ) {
 
             $post_action = 0;
 

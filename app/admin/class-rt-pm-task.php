@@ -26,8 +26,35 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
 			add_action( 'init', array( $this, 'init_task' ) );
-                        add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
+            add_action( "save_post_{$this->post_type}", array( $this, 'task_add_bp_activity' ), 10, 2 );
+            add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 		}
+
+        function task_add_bp_activity( $post_id, $post ) {
+
+            $post_action = 0;
+
+            $meta = get_post_meta( $post_id );
+
+            if( !empty( $meta ) ) {
+
+                $action = 'Task updated';
+            }else{
+
+                $action = 'Task created';
+            }
+
+
+            $args = array(
+                'action'=> $action,
+                'content' =>  !empty( $post->post_content ) ? $post->post_content : $post->post_title,
+                'component' => $this->post_type,
+                'item_id' => $post->ID,
+                'type' => 'rt_biz',
+            );
+            $activity_id = bp_activity_add( $args );
+
+        }
 
 		function init_task() {
 			$menu_position = 31;
