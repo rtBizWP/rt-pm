@@ -53,7 +53,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "save_post_{$this->post_type}", array( $this, 'project_add_bp_activity' ), 10, 2 );
+            add_action( "save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -83,6 +83,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $post_action = 0;
 
+            $query = new WP_Query( array(
+                'p' => $post_id,
+                'post_type' => $this->post_type,
+                'no_found_rows' => true,
+            ));
+
+            $post = $query->posts[0];
+
             $meta = get_post_meta( $post_id );
 
            if( !empty( $meta ) ) {
@@ -93,10 +101,32 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                $action = 'Project created';
            }
 
+            $activity_users = array();
+
+            $activity_users[] =  get_post_meta($post->ID, "business_manager", true);
+
+            $activity_users[] =  get_post_meta($post->ID, "project_manager", true);
+
+            $team_member =  get_post_meta($post->ID, "project_member", true);;
+
+            if ( !empty( $team_member ) ) {
+                $activity_users = array_merge( $activity_users, $team_member );
+
+            }
+
+            $mentioned_user = '';
+            foreach ( $activity_users as $activity_user ) {
+
+                if( get_current_user_id() != intval( $activity_user ) ){
+
+                    $mentioned_user .=  '@' . bp_core_get_username( $activity_user ).' ';
+                }
+
+            }
 
             $args = array(
                 'action'=> $action,
-                'content' =>  !empty( $post->post_content ) ? $post->post_content : $post->post_title,
+                'content' =>  !empty( $post->post_content ) ? $post->post_content.$mentioned_user : $post->post_title.$mentioned_user,
                 'component' => RT_PM_Bp_PM_Loader::$projects_slug,
                 'item_id' => $post->ID,
                 'type' => 'rt_biz',
@@ -104,7 +134,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             );
             $activity_id = bp_activity_add( $args );
 
-
+            bp_activity_add_meta( $activity_id ,'activity_users', $activity_users );
         }
 
 
@@ -1327,6 +1357,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         update_post_meta( $post_id, $key, $value );
                     }
                 }
+                do_action( 'save_project', $post_id );
                 $_REQUEST[$post_type."_id"] = $post_id;
 				echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
 				die();

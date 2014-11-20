@@ -163,6 +163,7 @@ if ( isset( $_POST['post'] ) ) {
         }
     }
     $_REQUEST[$post_type."_id"] = $post_id;
+    do_action( 'save_project', $post_id );
 	$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 	$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
 	echo '<script> window.location="' . $bp_bp_nav_link .'"; </script> ';
