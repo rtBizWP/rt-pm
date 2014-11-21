@@ -79,7 +79,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			//add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
         }
 
-        function project_add_bp_activity( $post_id, $post ) {
+        function project_add_bp_activity( $post_id, $convert_flag ) {
 
             $post_action = 0;
 
@@ -91,15 +91,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $post = $query->posts[0];
 
-            $meta = get_post_meta( $post_id );
+            if( isset( $convert_flag ) ) {
 
-           if( !empty( $meta ) ) {
+                $action = 'Opportunity to project conversion';
 
-               $action = 'Project updated';
-           }else{
+            } else {
 
-               $action = 'Project created';
-           }
+                $meta = get_post_meta( $post_id );
+
+                if( !empty( $meta ) ) {
+
+                    $action = 'Project updated';
+                }else{
+
+                    $action = 'Project created';
+                }
+
+            }
 
             $activity_users = array();
 
@@ -225,7 +233,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
 
-
+            do_action( 'save_project', $project_id, true );
 
 
 			wp_safe_redirect( $redirect_url );
