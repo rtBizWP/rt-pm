@@ -650,6 +650,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+
+                    $operation_type = 'update';
                 }else{
                     $data = array(
 						'post_assignee' => $newTask['post_assignee'],
@@ -667,6 +669,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     }
                     $_REQUEST["new"]=true;
                     $newTask['post_id']= $post_id;
+                    $operation_type = 'insert';
                 }
 
                 // Attachments
@@ -724,6 +727,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     }
                     delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
                 }
+
+                do_action( 'save_task', $newTask['post_id'], $operation_type );
 
 				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task" ) . '";</script> ';
 				$_REQUEST["{$task_post_type}_id"] = null;

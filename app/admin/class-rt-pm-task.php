@@ -26,33 +26,59 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$this->get_custom_labels();
 			$this->get_custom_statuses();
 			add_action( 'init', array( $this, 'init_task' ) );
-            add_action( "save_post_{$this->post_type}", array( $this, 'task_add_bp_activity' ), 10, 2 );
+            add_action( "save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
             add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 		}
 
-        function task_add_bp_activity( $post_id, $post ) {
+        function task_add_bp_activity( $post_id, $operation_type ) {
 
             $post_action = 0;
 
-            $meta = get_post_meta( $post_id );
 
-            if( !empty( $meta ) ) {
+            $query = new WP_Query( array(
+                'p' => $post_id,
+                'post_type' => $this->post_type,
+                'no_found_rows' => true,
+            ));
+
+            $post = $query->posts[0];
+
+            if( $operation_type == 'update' ) {
 
                 $action = 'Task updated';
-            }else{
+            }else if( $operation_type == 'insert' ) {
 
                 $action = 'Task created';
             }
 
+            $activity_users = array();
+
+            $activity_users[] =  get_post_meta( $post->ID, "post_assignee", true );
+
+            $parent_project_id =  get_post_meta( $post->ID, "post_project_id", true );
+
+            $activity_users[] =  get_post_meta( $parent_project_id, "project_manager", true);
+
+            $mentioned_user = '';
+            foreach ( $activity_users as $activity_user ) {
+
+                if( get_current_user_id() != intval( $activity_user ) ){
+
+                    $mentioned_user .=  '@' . bp_core_get_username( $activity_user ).' ';
+                }
+
+            }
 
             $args = array(
                 'action'=> $action,
-                'content' =>  !empty( $post->post_content ) ? $post->post_content : $post->post_title,
+                'content' =>  !empty( $post->post_content ) ? $post->post_content.$mentioned_user : $post->post_title.$mentioned_user,
                 'component' => $this->post_type,
                 'item_id' => $post->ID,
                 'type' => 'rt_biz',
             );
             $activity_id = bp_activity_add( $args );
+
+            bp_activity_add_meta( $activity_id ,'activity_users', $activity_users );
 
         }
 
