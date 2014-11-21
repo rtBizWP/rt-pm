@@ -184,6 +184,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     $newProjectID = wp_insert_post($newProject);
                     update_post_meta( $newProjectID, 'project_manager', $project_meta['project_manager'] );
 					update_post_meta( $newProjectID, 'project_member', $project_meta['project_member'] );
+                    do_action( 'save_project', $newProjectID, 'insert' );
                     return 1;
                 }
             }

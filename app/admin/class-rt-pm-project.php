@@ -79,7 +79,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			//add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
         }
 
-        function project_add_bp_activity( $post_id, $convert_flag ) {
+        function project_add_bp_activity( $post_id, $operation_type ) {
 
             $post_action = 0;
 
@@ -91,23 +91,18 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $post = $query->posts[0];
 
-            if( isset( $convert_flag ) ) {
+            if( $operation_type == 'convert' ) {
 
                 $action = 'Opportunity to project conversion';
 
-            } else {
+            } else if ( $operation_type == 'insert' ) {
 
-                $meta = get_post_meta( $post_id );
+                $action = 'Project created';
+            } else if(  $operation_type == 'update' ) {
 
-                if( !empty( $meta ) ) {
-
-                    $action = 'Project updated';
-                }else{
-
-                    $action = 'Project created';
-                }
-
+                $action = 'Project updated';
             }
+
 
             $activity_users = array();
 
@@ -233,7 +228,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
 
-            do_action( 'save_project', $project_id, true );
+            do_action( 'save_project', $project_id, 'convert' );
 
 
 			wp_safe_redirect( $redirect_url );
@@ -1341,6 +1336,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+
+                    do_action( 'save_project', $post_id, 'update' );
                 }else{
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
@@ -1364,8 +1361,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+
+                    do_action( 'save_project', $post_id, 'insert' );
                 }
-                do_action( 'save_project', $post_id );
+
                 $_REQUEST[$post_type."_id"] = $post_id;
 				echo '<script> window.location="' . admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details") . '"; </script> ';
 				die();
