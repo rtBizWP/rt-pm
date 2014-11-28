@@ -36,19 +36,28 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             do_action( 'rt_pm_init' );
 
-            add_action( 'plugins_loaded', array( $this, 'init_pm_bp_component' ), 40 );
+            add_action( 'after_setup_theme', array( $this, 'init_pm_bp_component' ) );
 		}
 
         function init_pm_bp_component(){
-            global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend,
-                   $rt_pm_bp_pm_project;
 
-            $rt_pm_bp_pm = new RT_PM_Bp_PM();
-            $rt_pm_bp_pm_frontend = new Rt_PM_Bp_PM_Frontend();
-            if ( ! is_admin() ){
-                $rt_pm_bp_pm_project = new Rt_PM_Bp_PM_Project();
+            if( function_exists('bp_is_active') ) {
+
+               $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
+
+                if (  current_user_can( $editor_cap ) ) {
+
+                    global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend, $rt_pm_bp_pm_project;
+
+                    $rt_pm_bp_pm = new RT_PM_Bp_PM();
+                    $rt_pm_bp_pm_frontend = new Rt_PM_Bp_PM_Frontend();
+                    if ( ! is_admin() ){
+                        $rt_pm_bp_pm_project = new Rt_PM_Bp_PM_Project();
+                    }
+                }
             }
         }
+
 
 		function admin_init() {
 			$this->templateURL = apply_filters('rtpm_template_url', 'rtpm/');

@@ -28,11 +28,7 @@ function bp_pm_projects() {
 }
 
 function load_projects_template() {
-	 $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
@@ -41,11 +37,7 @@ function bp_pm_archives() {
 }
 
 function load_archives_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }	
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-archives.php';
 }
 
@@ -54,11 +46,7 @@ function bp_pm_projects_new() {
 }
 
 function load_projects_new_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects-new.php';
 }
 
@@ -67,11 +55,7 @@ function bp_pm_details() {
 }
 
 function load_projects_details_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
@@ -80,11 +64,7 @@ function bp_pm_attachments() {
 }
 
 function load_projects_attachments_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
@@ -93,11 +73,7 @@ function bp_pm_time_entries() {
 }
 
 function load_projects_time_entries_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
@@ -106,11 +82,7 @@ function bp_pm_tasks() {
 }
 
 function load_projects_tasks_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
@@ -119,11 +91,7 @@ function bp_pm_notifications() {
 }
 
 function load_projects_notifications_template() {
-    $cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-     if ( ! current_user_can( $cap ) ) {
-      echo 'You do not have sufficient permissions to access this page';
-            return false;
-    }
+
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 ?>
