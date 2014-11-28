@@ -160,6 +160,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_content'] = $lead->post_content;
 			$project['post_date'] = current_time( 'mysql' );
 			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+            $project['post_parent'] = $lead_id;
+
                         $project_id = wp_insert_post( $project );
                         
                         $attachments = get_posts( array(
@@ -242,13 +244,20 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 			if ( ! $user_edit ) {
 				return;
-			} ?>
+			}
+
+            if( $this->lead_has_project( $lead->ID ) ){
+
+                return;
+            }
+
+            ?>
 			<div class="row collapse">
 				<div class="large-4 mobile-large-1 columns">
 					<span class="prefix" title="<?php echo Rt_PM_Settings::$settings['menu_label']; ?>"><label><?php echo Rt_PM_Settings::$settings['menu_label']; ?></label></span>
 				</div>
 				<div class="large-8 mobile-large-3 columns">
-					<div class="rtcrm_attr_border"><a class="rtcrm_public_link" target="_blank" href="<?php echo add_query_arg( array( 'rt_pm_convert_to_project' => $lead->ID ) ); ?>"><?php _e( 'Convert to Project' ); ?></a></div>
+					<div class="rtcrm_attr_border"><a class="rtcrm_public_link"  href="<?php echo add_query_arg( array( 'rt_pm_convert_to_project' => $lead->ID ) ); ?>"><?php _e( 'Convert to Project' ); ?></a></div>
 				</div>
 			</div>
 		<?php }
@@ -264,6 +273,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             return add_query_arg( array( 'rt_pm_convert_to_project' => $lead ) );
+        }
+
+        function lead_has_project( $lead_id ){
+
+            $query = new WP_Query( array(
+                'post_type' => $this->post_type,
+                'post_parent' => $lead_id,
+                'no_found_rows' => true,
+            ));
+
+            if( !empty( $query->posts ) ){
+
+                return true;
+            }
+
+            return false;
+
         }
 
 		function register_custom_pages() {
@@ -1529,8 +1555,20 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     }
                                     ?>
                                 </div>
+
+                            </div>
+                            <div class="row collapse rtpm-lead-content-wrapper">
+                            <div class="large-12 columns">
+                                <?php
+                                if( $post->post_parent != 0 ){
+
+                                    Rt_Crm_Lead_Info_Metabox::render_lead_info_metabox( $post->post_parent, false );
+                                }
+                                ?>
+                                </div>
                             </div>
                         </div>
+
                         <div class="large-4 small-12 columns ui-sortable meta-box-sortables">
                             <div class="row collapse postbox">
                                 <div class="handlediv" title="Click to toggle"><br></div>
@@ -1704,6 +1742,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 							if ( isset( $post->ID ) ) { do_action( 'rt_pm_other_details', $user_edit, $post ); }
                             ?>
                         </div>
+
+
                         <div class="large-3 columns ui-sortable meta-box-sortables">
                             <div id="rtpm-assignee" class="row collapse rtpm-post-author-wrapper">
                                 <div class="large-6 mobile-large-6 columns">

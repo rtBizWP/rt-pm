@@ -472,7 +472,7 @@ if( !empty( $results_organization ) ) {
 				</ul>
 			</div>
 		</div>
-        <h3 class="row-title"> <?php _e("Opportunity Information"); ?></h3>
+        <h3 class="row-title"> <?php _e("Project Information"); ?></h3>
         <hr/>
         <div class="row meta-box">
             <div class="column medium-6 small-12">
@@ -628,7 +628,15 @@ if( !empty( $results_organization ) ) {
     	</div>
         <?php 
 		if ( isset( $post->ID ) ) { do_action( 'rt_pm_bp_other_details', $user_edit, $post ); }
+
+
+        if( $post->post_parent != 0 ){
+
+            Rt_Crm_Lead_Info_Metabox::render_bp_lead_info_metabox( $post->post_parent, false );
+        }
+
         ?>
+
         <div class="row column-title">
 			<?php
 			if (isset($post->ID)) {
