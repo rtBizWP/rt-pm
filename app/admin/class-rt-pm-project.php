@@ -132,6 +132,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'content' =>  !empty( $post->post_content ) ? $post->post_content.$mentioned_user : $post->post_title.$mentioned_user,
                 'component' => RT_PM_Bp_PM_Loader::$projects_slug,
                 'item_id' => $post->ID,
+                'secondary_item_id' => get_current_blog_id(),
                 'type' => 'rt_biz',
 
             );
