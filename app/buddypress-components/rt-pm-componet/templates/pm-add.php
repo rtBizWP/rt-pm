@@ -610,12 +610,10 @@ if( !empty( $results_organization ) ) {
                         </div>
                     </div>
                     <div class="column medium-6 small-12">
-						<div class="large-3 mobile-large-1 columns">
+						<div class="small-4 columns">
 							<label for="project_budget">Budget</label>
 						</div>
-						<div class="large-1 columns dollar">
-				          <span>$</span>
-				        </div>
+
 						<div class="large-8 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 							
 							<?php if( $user_edit ) { ?>

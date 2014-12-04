@@ -163,65 +163,95 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
             $project['post_parent'] = $lead_id;
 
-                        $project_id = wp_insert_post( $project );
+            $project_id = wp_insert_post( $project );
+
+            $attachments = get_posts( array(
+                'post_parent' => $lead_id,
+                'post_type' => 'attachment',
+                'fields' => 'ids',
+                'posts_per_page' => -1,
+            ));
+
+            $lead_term = rt_biz_get_post_for_organization_connection( $lead->ID, $lead->post_type );
+
+            $project_organization=array();
+            foreach ($lead_term as $tterm) {
+                array_push($project_organization,$tterm->p2p_to);
+            }
+
+            $lead_term = rt_biz_get_post_for_person_connection( $lead->ID, $lead->post_type );
+
+            $project_client=array();
+            foreach ($lead_term as $tterm) {
+                  array_push($project_client,$tterm->p2p_to);
+            }
+
+
+            $data = array(
+                'project_organization' => $project_organization,
+                'project_client' => $project_client
+            );
+
+            //Team member
+            $team_member = get_post_meta( $lead->ID, "subscribe_to", true );
+            $data['project_member'] = $team_member;
+
+            //Project manager
+            $data['project_manager'] = $lead->post_author;
+
+            // Pull external file to project
+            $lead_ext_files = get_post_meta( $lead_id, 'lead_external_file' );
+            foreach ( $lead_ext_files as $ext_file ) {
+
+                $ex_file = (array)json_decode( $ext_file );
+                $args = array(
+                    'guid' => $ex_file["link"],
+                    'post_title' => $ex_file["title"],
+                    'post_content' => $ex_file["title"],
+                    'post_parent' => $project_id,
+                    'post_author' => get_current_user_id(),
+                );
+
+                $attachment_id = wp_insert_attachment( $args, $ex_file["link"], $project_id );
+                add_post_meta( $project_id, '_rt_wp_pm_external_link', $ex_file["link"] );
+                //Update flag for external link
+                update_post_meta( $attachment_id, '_wp_attached_external_file', '1');
+                /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
+            }
+
+            foreach ( $data as $key=>$value ) {
+                  update_post_meta( $project_id, $key, $value );
+            }
                         
-                        $attachments = get_posts( array(
-                            'post_parent' => $lead_id,
-                            'post_type' => 'attachment',
-                            'fields' => 'ids',
-                            'posts_per_page' => -1,
-                        ));
-                        
-                        $lead_term = rt_biz_get_post_for_organization_connection( $lead->ID, $lead->post_type );
-                         
-                        $project_organization=array();
-                        foreach ($lead_term as $tterm) {
-                            array_push($project_organization,$tterm->p2p_to);
-                        }
-                        
-                        $lead_term = rt_biz_get_post_for_person_connection( $lead->ID, $lead->post_type );
-								
-                        $project_client=array();
-                        foreach ($lead_term as $tterm) {
-                              array_push($project_client,$tterm->p2p_to);                                  
-                        }
-                        
-                         $data = array(		
-                        'project_organization' => $project_organization,
-                        'project_client' => $project_client
-                        );
-                   
-                
-                        foreach ( $data as $key=>$value ) {
-                             update_post_meta( $project_id, $key, $value );
-                        }
-                        
-                        foreach ( $attachments as $attachment ) {
-                     
-                            $filepath = get_attached_file( $attachment );
-                            $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
-                                
-                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
-                                continue;
-                            }
-                            
-                            $file = get_post($attachment);
-                            if( !empty( $file->post_parent ) ) {
-                                 $args = array(
-                                'post_mime_type' => $file->post_mime_type,
-                                'guid' => $file->guid,
-                                'post_title' => $file->post_title,
-                                'post_content' => $file->post_content,
-                                'post_parent' => $project_id,
-                                'post_author' => get_current_user_id(),
-                            );
-                           
-                            wp_insert_attachment( $args, $file->guid, $project_id );
-                           
-                            add_post_meta( $project_id, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                          }
-			
-                        }
+            foreach ( $attachments as $attachment ) {
+
+                $filepath = get_attached_file( $attachment );
+                $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
+
+                if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+                    continue;
+                }
+
+                $file = get_post($attachment);
+                if( !empty( $file->post_parent ) ) {
+                     $args = array(
+                    'post_mime_type' => $file->post_mime_type,
+                    'guid' => $file->guid,
+                    'post_title' => $file->post_title,
+                    'post_content' => $file->post_content,
+                    'post_parent' => $project_id,
+                    'post_author' => get_current_user_id(),
+                );
+
+                wp_insert_attachment( $args, $file->guid, $project_id );
+
+                add_post_meta( $project_id, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+              }
+
+            }
+
+            // Hook for proprerty metabox value save to project
+            do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
             if ( bp_is_current_component( BP_CRM_SLUG ) ){
 
