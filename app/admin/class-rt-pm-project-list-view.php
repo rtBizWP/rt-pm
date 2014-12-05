@@ -29,7 +29,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
             $args = array( 'post_type' => $rt_pm_project->post_type );
             $project_list_query = null;
             $project_list_query = new WP_Query($args);
-
+            $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
             if ( $project_list_query->have_posts() ) {
                 ?>
                 <div class="tablenav top">
@@ -39,11 +39,12 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     </div>
                 </div>
                 <?php
-              
+
                     while ($project_list_query->have_posts()) : $project_list_query->the_post();
                         ?>
                         <div class="large-3 small-4 columns">
                             <article id="rtpm-<?php the_id() ?>" <?php post_class('rtpm_admin '); ?>>
+                                <?php if( current_user_can( $editor_cap ) || get_current_user_id() == intval( get_the_author_meta('ID') ) ) { ?>
                                 <a href="<?php echo admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=" . get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                     <h2><?php
                                         echo '#';
@@ -52,6 +53,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                         the_title();
                                         ?></h2>
                                 </a>
+                            <?php }else { ?>
+                                    <h2><?php
+                                        echo '#';
+                                        the_ID();
+                                        echo ' : ';
+                                        the_title();
+                                        ?></h2>
+                            <?php } ?>
                                 <div><strong><?php _e('Status : '); ?></strong><?php echo ucfirst(get_post_status(get_the_ID())); ?></div>
                                 <div><strong><?php _e('Type : '); ?></strong><?php
                                     $post_term = wp_get_post_terms(get_the_ID(), Rt_PM_Project_Type::$project_type_tax, array('fields' => 'ids'));
@@ -174,6 +183,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                     $project_meta['project_date'] = current_time( 'mysql' );
                     $project_meta['project_date_gmt'] = gmdate('Y-m-d H:i:s');
                     $newProject = array(
+                        'post_author' => $project_meta['project_manager'],
                         'post_date' => $project_meta['project_date'],
                         'post_date_gmt' => $project_meta['project_date_gmt'],
                         'post_content' => $project_meta['project_content'],

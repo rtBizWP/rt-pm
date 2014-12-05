@@ -32,15 +32,6 @@ function load_projects_template() {
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
-function bp_pm_archives() { 
-	add_action('bp_template_content','load_archives_template');
-}
-
-function load_archives_template() {
-
-    include  RT_PM_BP_PM_PATH.'/templates/pm-archives.php';
-}
-
 function bp_pm_projects_new() { 
 	add_action('bp_template_content','load_projects_new_template');
 }

@@ -104,6 +104,7 @@ if ( isset( $_POST['post'] ) ) {
 
     // Post Data to be saved.
     $post = array(
+        'post_author' => $newProject['project_manager'],
         'post_content' => $newProject['post_content'],
         'post_status' => $newProject['post_status'],
         'post_title' => $newProject['post_title'],

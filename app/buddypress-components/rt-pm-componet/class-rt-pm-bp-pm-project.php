@@ -46,7 +46,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             global $rt_pm_project_type, $bp;
             $rt_pm_project_type->project_type( rtpm_post_type_name( $this->labels['name'] ) );
 
-			$this->hooks();
+			//$this->hooks();
 		}
 
 		function hooks() {
@@ -60,7 +60,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 			// CRM Lead to PM Project - Link Hook
 			//add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
-			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
+			//add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
 			
 			// add_action('wp_ajax__ajax_fetch_custom_list', array($this, '_ajax_fetch_custom_list_callback'));
 			// add_action( 'wp_ajax_nopriv__ajax_fetch_custom_list', array( $this, '_ajax_fetch_custom_list_callback' ) );
@@ -73,86 +73,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 		//}
 		
 
-		function convert_lead_to_project() {
-			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
-				return;
-			}
-                        
-			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
-			$lead = get_post( $lead_id );       
-        
-			$project = array();
-			$project['post_title'] = $lead->post_title;
-			$project['post_type'] = $this->post_type;
-			$project['post_status'] = 'new';
-			$project['post_content'] = $lead->post_content;
-			$project['post_date'] = current_time( 'mysql' );
-			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-                        $project_id = wp_insert_post( $project );
-                        
-                        $attachments = get_posts( array(
-                            'post_parent' => $lead_id,
-                            'post_type' => 'attachment',
-                            'fields' => 'ids',
-                            'posts_per_page' => -1,
-                        ));
-                        
-                        $lead_term = rt_biz_get_post_for_organization_connection( $lead->ID, $lead->post_type );
-                         
-                        $project_organization=array();
-                        foreach ($lead_term as $tterm) {
-                            array_push($project_organization,$tterm->p2p_to);
-                        }
-                        
-                        $lead_term = rt_biz_get_post_for_person_connection( $lead->ID, $lead->post_type );
-								
-                        $project_client=array();
-                        foreach ($lead_term as $tterm) {
-                              array_push($project_client,$tterm->p2p_to);                                  
-                        }
-                        
-                         $data = array(		
-                        'project_organization' => $project_organization,
-                        'project_client' => $project_client
-                        );
-                   
-                
-                        foreach ( $data as $key=>$value ) {
-                             update_post_meta( $project_id, $key, $value );
-                        }
-                        
-                        foreach ( $attachments as $attachment ) {
-                     
-                            $filepath = get_attached_file( $attachment );
-                            $post_attachment_hashes = get_post_meta( $project_id, '_rt_wp_pm_attachment_hash' );
-                                
-                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
-                                continue;
-                            }
-                            
-                            $file = get_post($attachment);
-                            if( !empty( $file->post_parent ) ) {
-                                 $args = array(
-                                'post_mime_type' => $file->post_mime_type,
-                                'guid' => $file->guid,
-                                'post_title' => $file->post_title,
-                                'post_content' => $file->post_content,
-                                'post_parent' => $project_id,
-                                'post_author' => get_current_user_id(),
-                            );
-                           
-                            wp_insert_attachment( $args, $file->guid, $project_id );
-                           
-                            add_post_meta( $project_id, '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                          }
-			
-                        }
-
-			do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
-
-			wp_safe_redirect( add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) ) );
-			die();
-		}
 
 		function crm_to_pm_link( $lead, $user_edit ) {
 			if ( ! isset( $lead->ID ) ) {
@@ -288,7 +208,19 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 'post_type' => $this->post_type,
                 'labels' => $this->labels,
             );
-            rtpm_get_template('project.php', $args,'',RT_PM_BP_PM_PATH . 'templates/');
+
+            if( isset($_REQUEST["{$this->post_type}_id"]) ){
+                $post_id = $_REQUEST["{$this->post_type}_id"];
+                $post = get_post( $post_id );
+                //Capability check before edit template render
+                $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
+                if( !current_user_can( $editor_cap )  && get_current_user_id() != intval( $post->post_author ) ) {
+                    return;
+                }else{
+                    rtpm_get_template('project.php', $args,'',RT_PM_BP_PM_PATH . 'templates/');
+                }
+            }
+
 		}
 
         /**

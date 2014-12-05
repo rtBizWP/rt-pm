@@ -38,7 +38,7 @@
 			$offset = 0;
 		}
 		$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
-		$archive = 'archive';
+
 		$archive_text = __('Archive');
 		
 		
@@ -50,6 +50,16 @@
 			'posts_per_page' => $posts_per_page,
 			'offset' => $offset
 		);
+
+
+        if ( bp_is_current_action('projects') ) {
+            $args['post_status'] = $post_status;
+            $archive = 'archive';
+        }elseif( bp_is_current_action('archives') ) {
+            $archive_text = __('Unarchive');
+            $archive = 'unarchive';
+            $args['post_status'] = 'trash';
+        }
 		
 		/*echo "<pre>";
 		print_r($args);
@@ -95,12 +105,11 @@
             ),*/
 
     	);
-	
 		
 		// The Query
 		$the_query = new WP_Query( $args );
 		$totalPage= $max_num_pages =  $the_query->max_num_pages;
-		
+        $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 		?>
         <div class="row list-heading">
 		    <div class="large-10 columns list-title">
@@ -174,7 +183,9 @@
 						
 						<tr>
 							<td>
-							<?php the_title(); ?>
+							<?php the_title();
+                             if( current_user_can( $editor_cap )  || get_current_user_id() == intval( get_the_author_meta('ID') ) ) {
+                            ?>
 							<div class="row-actions">
 								<?php
 								printf( __('<a href="%s">' . __( 'Edit', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
@@ -183,6 +194,7 @@
 								printf( __('<a class="deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 								?>
 							</div>
+                                 <?php } ?>
 							</td>
 							<td>
 								<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>

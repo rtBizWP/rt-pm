@@ -192,7 +192,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'archives',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_archives',
+					'screen_function' => 'bp_pm_projects',
 					'position'        => 10,
 				);
 			}
@@ -304,7 +304,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		                array(
 		                    'name' =>  'Archives',
 		                    'slug'  => 'archives',
-		                    'screen_function' => 'bp_pm_archives',
+		                    'screen_function' => 'bp_pm_projects',
 		                )               
 		            );
 		

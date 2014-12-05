@@ -43,9 +43,9 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             if( function_exists('bp_is_active') ) {
 
-               $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
+               $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 
-                if (  current_user_can( $editor_cap ) ) {
+                if (  current_user_can( $author_cap ) ) {
 
                     global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend, $rt_pm_bp_pm_project;
 

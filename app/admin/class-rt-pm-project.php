@@ -156,6 +156,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         
 			$project = array();
 			$project['post_title'] = $lead->post_title;
+			$project['post_author'] = $lead->post_author;
 			$project['post_type'] = $this->post_type;
 			$project['post_status'] = 'new';
 			$project['post_content'] = $lead->post_content;
@@ -325,9 +326,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function register_custom_pages() {
             $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
+            $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $editor_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['new_item'], $this->labels['new_item'], $editor_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['new_item'], $this->labels['new_item'], $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $editor_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
         }
 
@@ -1364,6 +1366,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 // Post Data to be saved.
                 $post = array(
+                    'post_author' => $newProject['project_manager'],
                     'post_content' => $newProject['post_content'],
                     'post_status' => $newProject['post_status'],
                     'post_title' => $newProject['post_title'],
