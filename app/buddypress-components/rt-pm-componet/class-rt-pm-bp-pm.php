@@ -27,6 +27,8 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
 			
 			// Init Hooks
 			$this->hooks();
+
+            add_action( 'wp_ajax_render_project_slide_panel', array( $this, 'render_project_slide_panel' ), 10 );
         }
         
         function includes() {
@@ -67,6 +69,31 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
 		public function hooks() {
 			
 		}
+
+        function render_project_slide_panel(){
+
+            if ( isset( $_GET['template'] ) ) {
+
+                ob_start();
+                $template = $_GET['template'];
+
+                switch( $template ){
+                    case 'open':
+                        require( RT_PM_BP_PM_PATH.'templates/wall-pm-add.php' );
+                        break;
+
+                }
+
+                $output = ob_get_contents();
+                ob_end_clean();
+                $data['html'] = $output;
+            }
+
+
+            restore_current_blog();
+            wp_send_json( $data );
+
+        }
 		
 		
     
