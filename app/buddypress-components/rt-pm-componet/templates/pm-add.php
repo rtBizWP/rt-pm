@@ -71,108 +71,6 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset(
     die();
 }
 
-//Check Post object is init or not
-if ( isset( $_POST['post'] ) ) {
-    $newProject = $_POST['post'];
-    $creationdate = $newProject['post_date'];
-    if ( isset( $creationdate ) && $creationdate != '' ) {
-        try {
-            $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
-            $UTC = new DateTimeZone('UTC');
-            $dr->setTimezone($UTC);
-            $timeStamp = $dr->getTimestamp();
-            $newProject['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
-            $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s', (intval($timeStamp)));
-        } catch ( Exception $e ) {
-            $newProject['post_date'] = current_time( 'mysql' );
-            $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-        }
-    } else {
-        $newProject['post_date'] = current_time( 'mysql' );
-        $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-    }
-	
-	// Change format for post_duedate
-	$postduedate = $newProject['post_duedate'];
-	if ( isset( $postduedate ) && $postduedate != '' ) {
-		$dr = date_create_from_format( 'M d, Y H:i A', $postduedate );
-		$UTC = new DateTimeZone('UTC');
-		$dr->setTimezone($UTC);
-		$timeStamp = $dr->getTimestamp();
-		$newProject['post_duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
-	}
-
-    // Post Data to be saved.
-    $post = array(
-        'post_author' => $newProject['project_manager'],
-        'post_content' => $newProject['post_content'],
-        'post_status' => $newProject['post_status'],
-        'post_title' => $newProject['post_title'],
-        'post_date' => $newProject['post_date'],
-        'post_date_gmt' => $newProject['post_date_gmt'],
-        'post_type' => $post_type
-    );
-
-    $updateFlag = false;
-    //check post request is for Update or insert
-    if ( isset($newProject['post_id'] ) ) {
-        $updateFlag = true;
-        $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
-        $data = array(
-			'project_manager' => $newProject['project_manager'],
-            'post_completiondate' => $newProject['post_completiondate'],
-            'post_duedate' => $newProject['post_duedate'],
-			'project_estimated_time' => $newProject['project_estimated_time'],
-            'project_client' => $newProject['project_client'],
-            'project_organization' => $newProject['project_organization'],
-            'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : '',
-			//'business_manager' => $newProject['business_manager'],
-			//'_rtpm_status_detail' => $newProject['status_detail'],
-			'_rtpm_project_budget' => $newProject['project_budget'],
-            'date_update' => current_time( 'mysql' ),
-            'date_update_gmt' => gmdate('Y-m-d H:i:s'),
-            'user_updated_by' => get_current_user_id(),
-        );
-        $post_id = @wp_update_post( $post );
-        $rt_pm_project_type->save_project_type($post_id,$newProject);
-        $data = apply_filters( 'rt_pm_project_detail_meta', $data);
-        foreach ( $data as $key=>$value ) {
-            update_post_meta( $post_id, $key, $value );
-        }
-        do_action( 'save_project', $post_id, 'update' );
-    }else{
-        $data = array(
-			'project_manager' => $newProject['project_manager'],
-            'post_completiondate' => $newProject['post_completiondate'],
-            'post_duedate' => $newProject['post_duedate'],
-            'project_estimated_time' => $newProject['project_estimated_time'],
-            'project_client' => $newProject['project_client'],
-            'project_organization' => $newProject['project_organization'],
-            'project_member' => $newProject['project_member'],
-			//'business_manager' => $newProject['business_manager'],
-			//'_rtpm_status_detail' => $newProject['status_detail'],
-			'_rtpm_project_budget' => $newProject['project_budget'],
-            'date_update' => current_time( 'mysql' ),
-            'date_update_gmt' => gmdate('Y-m-d H:i:s'),
-            'user_updated_by' => get_current_user_id(),
-            'user_created_by' => get_current_user_id(),
-        );
-        $post_id = @wp_insert_post($post);
-        $rt_pm_project_type->save_project_type($post_id,$newProject);
-        $data = apply_filters( 'rt_pm_project_detail_meta', $data);
-        foreach ( $data as $key=>$value ) {
-            update_post_meta( $post_id, $key, $value );
-        }
-        do_action( 'save_project', $post_id, 'insert' );
-    }
-    $_REQUEST[$post_type."_id"] = $post_id;
-
-	$bp_bp_nav_link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
-	$bp_bp_nav_link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
-	echo '<script> window.location="' . $bp_bp_nav_link .'"; </script> ';
-	die();
-}
-
 //Check for wp error
 if ( isset($post_id) && is_wp_error( $post_id ) ) {
     wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
@@ -324,6 +222,7 @@ if( !empty( $results_organization ) ) {
     <?php } ?>
         <?php if (isset($post->ID) && $user_edit ) { ?>
             <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
+            <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
         <?php } ?>
         <div class="row">
         	<div class="large-3 columns">

@@ -4,6 +4,27 @@ jQuery(document).ready(function($) {
 
     $(document).foundation();
 
+    exf_count = 12345;
+    $("#add_new_ex_file").click(function(e){
+        var title = $("#add_ex_file_title").val();
+        var link = $("#add_ex_file_link").val();
+        if($.trim(link)=="")
+            return false;
+        $("#add_ex_file_title").val("");
+        $("#add_ex_file_link").val("");
+
+        var tmpstr=' <div class="large-12 columns" >';
+        tmpstr +='<div class="large-3 columns">';
+        tmpstr +='<input type="text" name="project_ex_files[' + exf_count +'][title]" value="' + title +'" />';
+        tmpstr +='</div><div class="large-8 columns">';
+        tmpstr +='<input type="text" name="project_ex_files[' + exf_count +'][link]" value="' + link +'" />';
+        tmpstr +='</div><div class="large-1 columns">';
+        tmpstr +='<a class="button add-button removeMeta"><i class="fa fa-times"></i></a>';
+        tmpstr +='</div></div>';
+        exf_count++;
+        $("#external-files-container").append(tmpstr);
+    });
+
 
 
     //autocomplete project member
@@ -384,27 +405,28 @@ jQuery(document).ready(function($) {
     jQuery(document).on('click', '.rtpm_delete_project_attachment',function(e) {
         e.preventDefault();
         var project_id = $("#add_project_attachment").data("projectid");
-        var attachment_id = $(this).data("attachmentid");
-        var r = confirm("Are you sure you want to remove this Attachment?");
-        if (r != true) {
-            return false;
-        }
-        $.ajax({
-            url: ajaxurl,
-            type: 'post',
-            data: {
-                action:'rtpm_remove_attachment',
-                project_id: project_id,
-                attachment_id:attachment_id
-            },
-            success: function (data) {
-                //$("#attachment-error").html('Deleted Sucessfully <a href="" class="close">&times;</a>');
-                $("#attachment-error").removeClass();
-                //$("#attachment-error").addClass('alert-box success');
-            }
-        });
-        jQuery(this).parent().parent().remove();
 
+        if( typeof project_id == "undefined") {
+
+            project_id = $("#project_id").val();
+        }
+        var attachment_id = $(this).data("attachmentid");
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'post',
+                data: {
+                    action:'rtpm_remove_attachment',
+                    project_id: project_id,
+                    attachment_id:attachment_id
+                },
+                success: function (data) {
+                    //$("#attachment-error").html('Deleted Sucessfully <a href="" class="close">&times;</a>');
+                    $("#attachment-error").removeClass();
+                    //$("#attachment-error").addClass('alert-box success');
+                }
+            });
+            jQuery(this).parent().parent().remove();
     });
 
 

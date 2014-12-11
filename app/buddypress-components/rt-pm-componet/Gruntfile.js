@@ -29,9 +29,9 @@ module.exports = function(grunt) {
 				src: [
 					'assets/foundation/bower_components/modernizr/modernizr.js',
 					'assets/foundation/bower_components/foundation/js/foundation.min.js',
-                    'assets/js/rt-bp-person.js'
+                    'assets/javascripts/rt-bp-pm.js'
 				],
-				dest: 'assets/javascripts/rt-bp-people.min.js'
+				dest: 'assets/javascripts/rt-bp-pm.min.js'
 			},
 
         },
@@ -44,10 +44,10 @@ module.exports = function(grunt) {
                 tasks: ['compass']
             },
 
-//            uglify: {
-//                files: ['<%= uglify.frontend.src %>'],
-//                tasks: ['uglify']
-//            },
+            uglify: {
+                files: ['<%= uglify.frontend.src %>'],
+                tasks: ['uglify']
+            },
 
             livereload: {
                 options: {livereload: true},

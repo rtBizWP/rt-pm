@@ -6,8 +6,7 @@
  * Time: 8:11 PM
  */
 
-global $rt_pm_project;
-
+global $rt_pm_project,$rt_pm_bp_pm, $rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model, $bp;
 
 
 $post_id = $_GET["id"];
@@ -32,6 +31,17 @@ if (isset($post->ID)) {
 } else {
     $post_author = get_current_user_id();
 }
+
+if (isset($post->ID)) {
+
+    $create = new DateTime($post->post_date);
+
+    $modify = new DateTime($post->post_modified);
+    $createdate = $create->format("M d, Y h:i A");
+    $modifydate = $modify->format("M d, Y h:i A");
+
+}
+
 
 
 
@@ -114,10 +124,16 @@ if( !empty( $results_client ) ) {
        <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
        <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
        <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
+       <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+
+       <?php if (isset($post->ID) && $user_edit ) { ?>
+           <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
+           <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
+       <?php } ?>
 
         <div class="row">
             <div class="small-10 columns">
-                <h2>Notes</h2>
+                <h2><?php echo ( isset($post->ID) ) ? $post->post_title : "Project"; ?></h2>
             </div>
             <div class="small-2 columns">
                 <a title="Close" class="right close-sidepanel"><i class="fa fa-caret-square-o-right fa-2x"></i></a>
@@ -137,7 +153,7 @@ if( !empty( $results_client ) ) {
         <!-- Post title END -->
     </div>
 
-    <div class="row column-title">
+    <div class="row">
         <div class="small-12 columns">
             <?php if( $user_edit ) { ?>
             <textarea placeholder="Project content" rows="5" name="post[post_content]"><?php echo isset( $post->ID )  ? $post->post_content : "" ?></textarea>
@@ -314,6 +330,59 @@ if( !empty( $results_client ) ) {
                </div>
            </div>
        </div>
+       <div class="row meta-box">
+           <div id="rtpm_project_type_wrapper" class="column  small-12 <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+               <div class="large-4 small-4 columns">
+                   <label><?php _e('Project Type'); ?></label>
+               </div>
+               <div class="small-8 columns">
+                   <?php $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?>
+               </div>
+           </div>
+           <?php if (isset($post->ID)) { ?>
+               <div class="column small-12">
+                   <div class="small-4 columns">
+                       <label>Modify Date</label>
+                   </div>
+                   <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                       <?php if( $user_edit ) { ?>
+                           <input class="moment-from-now"  type="text" placeholder="Modified on Date"  value="<?php echo $modifydate; ?>" id="modification_date"
+                                  title="<?php echo $modifydate; ?>" readonly="readonly">
+                       <?php } else { ?>
+                           <span class="rtpm_view_mode moment-from-now"><?php echo $modifydate; ?></span>
+                       <?php } ?>
+                   </div>
+               </div>
+           <?php } ?>
+           <div class="column small-12">
+               <div class="small-4 columns">
+                   <label>Estimated Time</label>
+               </div>
+               <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                   <?php if( $user_edit ) { ?>
+                       <input name="post[project_estimated_time]" type="text" value="<?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, 'project_estimated_time', true ) : ''; ?>" />
+                   <?php } else { ?>
+                       <span class="rtpm_view_mode moment-from-now"><?php echo ( isset($post->ID) ) ? get_post_meta( $post->ID, 'project_estimated_time', true ) : ''; ?></span>
+                   <?php } ?>
+               </div>
+           </div>
+           <div class="column small-12">
+               <div class="small-4 columns">
+                   <label for="project_budget">Budget</label>
+               </div>
+
+               <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+
+                   <?php if( $user_edit ) { ?>
+                       <input type="text" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?>" />
+                   <?php } else { ?>
+                       <span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>
+                   <?php } ?>
+               </div>
+           </div>
+       </div>
+
+       <?php if ( isset( $post->ID ) ) { do_action( 'rt_pm_bp_wall_other_details', $user_edit, $post ); } ?>
 
        <h3><b><?php _e('External'); ?></b></h3>
        <hr/>
@@ -393,11 +462,14 @@ if( !empty( $results_client ) ) {
 
        <h3><?php _e('Attachments'); ?></h3>
        <hr/>
-       <?php
 
-       render_rt_bp_wall_documents_section( $post_id ) ?>
+       <?php render_rt_bp_wall_documents_section( $post_id ) ?>
 
-
+       <div class="row">
+           <div class="samll-12 columns right">
+               <input class="right" type="submit" value="Save" />
+           </div>
+       </div>
 
 
 

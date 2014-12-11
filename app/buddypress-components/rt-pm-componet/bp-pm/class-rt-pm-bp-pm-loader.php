@@ -51,6 +51,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                        $includes = array(
 							'screens',
 							'functions',
+                            'actions',
 						);
 
                        
