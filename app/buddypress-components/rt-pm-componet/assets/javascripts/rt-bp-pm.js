@@ -1,18 +1,10 @@
 jQuery(document).ready(function($) {
+
+    Foundation.global.namespace = '';
+
     $(document).foundation();
 
-    //ajex loder
-    var LOADER_OVERLAY = $("<div class='loading-overlay'><i class='loader-icon'></i></div>");
-    $.ajaxSetup({
-        beforeSend : function(jqXHR, settings) {
-            if(settings.data.indexOf('heartbeat') === -1 && settings.data.indexOf('closed-postboxes') === -1 && settings.data.indexOf('meta-box-order') === -1) {
-                $("body").append(LOADER_OVERLAY);
-            }
-        },
-        complete : function(jqXHR, settings) {
-            $("body").find(".loading-overlay").remove();
-        }
-    });
+
 
     //autocomplete project member
     try {
@@ -95,6 +87,8 @@ jQuery(document).ready(function($) {
 
         }
     } catch (e) {
+
+        console.log( e );
 
     }
     //autocomplete project client
