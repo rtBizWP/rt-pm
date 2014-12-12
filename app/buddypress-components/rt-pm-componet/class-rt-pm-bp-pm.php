@@ -84,6 +84,9 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
                     case 'task':
                         require( RT_PM_BP_PM_PATH.'templates/wall-pm-task.php' );
                         break;
+                    case 'time-entries':
+                        require( RT_PM_BP_PM_PATH.'templates/wall-pm-time-entries.php' );
+                        break;
 
                 }
 
