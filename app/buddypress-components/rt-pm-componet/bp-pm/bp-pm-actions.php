@@ -165,8 +165,16 @@ $newProject = $_POST['post'];
 
          bp_core_add_message( 'Project updated successfully', 'success' );
         if( isset( $newProject['rt_voxxi_blog_id'] ) ){
+
             restore_current_blog();
-            add_action ( 'wp_head', 'rt_voxxi_js_variables' );
+
+            rt_voxxi_set_sidepanel_cookies();
+
+            if( bp_current_action() == 'mentions' ){
+
+                $link = bp_loggedin_user_domain().BP_ACTIVITY_SLUG;
+                bp_core_redirect( $link );
+            }
         }else{
             $link = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
             $link .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-details";
