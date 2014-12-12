@@ -24,6 +24,7 @@ if (isset($post->ID)) {
     $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
     $due_date = $due->format("M d, Y h:i A");
     $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
+    $post_project_id = get_post_meta($post->ID, 'post_project_id', true);
 } else {
     $post_assignee = '';
 }
@@ -38,8 +39,9 @@ $task_labels=$rt_pm_task->labels;
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+    <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
-	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_id; ?>" />
+	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
     <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
 <?php } ?>
