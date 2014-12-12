@@ -75,11 +75,14 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
             if ( isset( $_GET['template'] ) ) {
 
                 ob_start();
-                $template = $_GET['template'];
+                $template = $_GET['template_name'];
 
                 switch( $template ){
-                    case 'open':
+                    case 'project':
                         require( RT_PM_BP_PM_PATH.'templates/wall-pm-add.php' );
+                        break;
+                    case 'task':
+                        require( RT_PM_BP_PM_PATH.'templates/wall-pm-task.php' );
                         break;
 
                 }
