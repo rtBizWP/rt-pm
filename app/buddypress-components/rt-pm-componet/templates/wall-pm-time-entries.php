@@ -14,11 +14,7 @@ $task_post_type=$rt_pm_task->post_type;
 $timeentry_labels = $rt_pm_time_entries->labels;
 $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 
-if ( ! function_exists( 'get_current_screen' ) ){
-    if ( ! isset( $GLOBALS['hook_suffix'] ) )
-        $GLOBALS['hook_suffix'] = '';
-    require_once(ABSPATH . 'wp-admin/includes/screen.php');
-}
+$post_project_id = get_post_meta( $task_id, 'post_project_id', true);
 ?>
 <form method="post"  action="">
 
@@ -27,6 +23,7 @@ if ( ! function_exists( 'get_current_screen' ) ){
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $timeentry_post_type; ?>" />
+    <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
 
 
     <div class="row">
