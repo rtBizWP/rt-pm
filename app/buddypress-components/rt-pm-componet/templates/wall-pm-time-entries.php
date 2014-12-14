@@ -123,4 +123,74 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
             <input class="right" type="submit" value="Save" >
         </div>
     </div>
+
+ <?php
+global $wpdb;
+ $table_name = rtpm_get_time_entry_table_name();
+ $result = $wpdb->get_results("SELECT * FROM {$table_name} ORDER By id DESC LIMIT 10");
+
+ $project_current_budget_cost = 0;
+ $project_current_time_cost = 0;
+ $time_entries = $rt_pm_time_entries_model->get_by_project_id( $post_project_id );
+ if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
+     foreach ( $time_entries['result'] as $time_entry ) {
+         $type = $time_entry['type'];
+         $term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+         $project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
+         $project_current_time_cost += $time_entry['time_duration'];
+     }
+ } ?>
+
+    <table>
+        <thead>
+        <tr>
+            <th><?php _e( 'Project Cost') ?></th>
+            <th><?php _e( 'Budget') ?></th>
+            <th><?php _e( 'Time spent') ?></th>
+            <th><?php _e( 'Estimated Time') ?></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><?php echo '$ '.$project_current_budget_cost ?></td>
+            <td><?php echo '$ '.floatval( get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ) ?></td>
+            <td><?php echo '$ '.$project_current_time_cost.__(' hours') ?></td>
+            <td><?php echo '$ '.floatval( get_post_meta( $post_project_id, 'project_estimated_time', true ) ).__(' hours') ?></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <?php
+
+
+
+ foreach( $result as $time_entry ){ ?>
+
+     <div class="row">
+         <div class="small-3 columns">
+            <label><?php _e('Type', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label><?php echo $time_entry->type ?></label>
+         </div>
+         <div class="small-3 columns">
+             <label><?php _e('Date', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label><?php echo  date( "d-M-Y",  strtotime( $time_entry->timestamp ) ) ?></label>
+         </div>
+         <div class="small-3 columns">
+             <label><?php _e('Duration', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label><?php echo $time_entry->time_duration ?> hours</label>
+         </div>
+         <div class="small-3 columns">
+             <label><?php _e('Logged by', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label><?php echo  bp_core_get_user_displayname(  $time_entry->author ) ?></label>
+         </div>
+         <div class="small-12 columns">
+             <label><?php _e('Comment', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label><?php echo $time_entry->message ?></label>
+         </div>
+     </div>
+    <hr/>
+ <?php } ?>
 </form>
