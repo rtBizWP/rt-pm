@@ -127,7 +127,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
  <?php
 global $wpdb;
  $table_name = rtpm_get_time_entry_table_name();
- $result = $wpdb->get_results("SELECT * FROM {$table_name} ORDER By id DESC LIMIT 10");
+ $result = $wpdb->get_results("SELECT * FROM {$table_name} WHERE task_id = {$task_id} ORDER By id DESC LIMIT 10");
 
  $project_current_budget_cost = 0;
  $project_current_time_cost = 0;
@@ -171,23 +171,23 @@ global $wpdb;
 
      <div class="row">
          <div class="small-3 columns">
-            <label><?php _e('Type', RT_PM_TEXT_DOMAIN ) ?></label>
+            <label class="rt-voxxi-label"><?php _e('Type', RT_PM_TEXT_DOMAIN ) ?></label>
              <label><?php echo $time_entry->type ?></label>
          </div>
          <div class="small-3 columns">
-             <label><?php _e('Date', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label class="rt-voxxi-label"><?php _e('Date', RT_PM_TEXT_DOMAIN ) ?></label>
              <label><?php echo  date( "d-M-Y",  strtotime( $time_entry->timestamp ) ) ?></label>
          </div>
          <div class="small-3 columns">
-             <label><?php _e('Duration', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label class="rt-voxxi-label"><?php _e('Duration', RT_PM_TEXT_DOMAIN ) ?></label>
              <label><?php echo $time_entry->time_duration ?> hours</label>
          </div>
          <div class="small-3 columns">
-             <label><?php _e('Logged by', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label class="rt-voxxi-label"><?php _e('Logged by', RT_PM_TEXT_DOMAIN ) ?></label>
              <label><?php echo  bp_core_get_user_displayname(  $time_entry->author ) ?></label>
          </div>
          <div class="small-12 columns">
-             <label><?php _e('Comment', RT_PM_TEXT_DOMAIN ) ?></label>
+             <label class="rt-voxxi-label"><?php _e('Comment', RT_PM_TEXT_DOMAIN ) ?></label>
              <label><?php echo $time_entry->message ?></label>
          </div>
      </div>

@@ -338,8 +338,6 @@ function bp_save_time_entry(){
 
 
 
-    //Check Post object is init or not
-    if ( isset( $_POST['post'] ) ) {
         $action_complete = false;
         $newTimeEntry = $_POST['post'];
         $creationdate = $newTimeEntry['post_date'];
@@ -379,7 +377,7 @@ function bp_save_time_entry(){
         }
 
         // Used for notification -- Regeistered in RT_PM_Notification
-        do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
+     //   do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $rt_pm_project );
 
 
         bp_core_add_message( 'Time entry saved successfully', 'success' );
@@ -394,7 +392,6 @@ function bp_save_time_entry(){
             bp_core_redirect( $link );
         }
 
-    }
 
 }
 add_action( 'bp_actions', 'bp_save_time_entry' );
