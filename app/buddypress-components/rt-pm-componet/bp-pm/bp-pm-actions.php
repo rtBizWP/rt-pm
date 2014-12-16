@@ -195,6 +195,9 @@ function bp_save_task(){
 
     $newTask = $_POST['post'];
 
+    if( !isset( $newTask['post_type'] ) )
+        return;
+
     if( $newTask['post_type'] != $rt_pm_task->post_type )
         return;
 
@@ -327,8 +330,6 @@ function bp_save_time_entry(){
 
     if(  !isset( $newTimeEntry['post_type'] ) )
         return;
-
-
 
     if( $newTimeEntry['post_type'] != $timeentry_post_type )
         return;
