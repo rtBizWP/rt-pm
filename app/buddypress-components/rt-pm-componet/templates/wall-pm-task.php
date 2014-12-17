@@ -8,26 +8,38 @@
 
 global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
 
-$post_id = $_REQUEST["id"];
-
-
-$task_post_type = $rt_pm_task->post_type;
-$post = get_post( $post_id );
 $user_edit = true;
-$create = new DateTime($post->post_date);
-$modify = new DateTime($post->post_modified);
-$createdate = $create->format("M d, Y h:i A");
-$modifydate = $modify->format("M d, Y h:i A");
+$task_post_type = $rt_pm_task->post_type;
+
+if( isset( $_GET["id"] ) ){
+
+    $post_id = $_GET["id"];
+
+
+    $post = get_post( $post_id );
+
 
 // get project meta
-if (isset($post->ID)) {
-    $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
-    $due_date = $due->format("M d, Y h:i A");
-    $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
-    $post_project_id = get_post_meta($post->ID, 'post_project_id', true);
-} else {
-    $post_assignee = '';
+    if (isset($post->ID)) {
+        $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
+        $due_date = $due->format("M d, Y h:i A");
+        $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
+        $post_project_id = get_post_meta($post->ID, 'post_project_id', true);
+        $create = new DateTime($post->post_date);
+        $modify = new DateTime($post->post_modified);
+        $createdate = $create->format("M d, Y h:i A");
+        $modifydate = $modify->format("M d, Y h:i A");
+    } else {
+        $post_assignee = $post_id;
+    }
+
+}else if( isset( $_GET['project_id'] ) ){
+
+    $post_assignee = $_GET['user_id'];
+    $post_project_id = $_GET['project_id'];
+
 }
+
 
 //assign to
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
@@ -35,9 +47,12 @@ $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 $task_labels=$rt_pm_task->labels;
 ?>
 <form method="post"   action="">
+    <?php if( isset( $_GET["id"] ) ){ ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
+    <?php } ?>
+
     <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
@@ -173,10 +188,12 @@ $task_labels=$rt_pm_task->labels;
         </div>
    </div>
 
+    <?php   if( isset( $post_id ) ){ ?>
     <h3><?php _e('Attachments'); ?></h3>
     <hr/>
-
-    <?php render_rt_bp_wall_documents_section( $post_id ) ?>
+    <?php render_rt_bp_wall_documents_section( $post_id );
+    }
+    ?>
 
 
     <div class="row">
