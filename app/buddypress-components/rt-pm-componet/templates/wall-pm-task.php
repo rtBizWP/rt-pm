@@ -47,6 +47,7 @@ $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 $task_labels=$rt_pm_task->labels;
 ?>
 <form method="post"   action="">
+    <?php wp_nonce_field('rt_pm_task_edit','rt_pm_task_edit') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />

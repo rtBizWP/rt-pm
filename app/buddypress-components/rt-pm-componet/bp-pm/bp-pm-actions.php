@@ -187,6 +187,8 @@ function bp_save_task(){
     if( !in_array( bp_current_component(), $allowed_component ) )
         return;
 
+    if ( ! isset( $_POST['rt_pm_task_edit'] ) || ! wp_verify_nonce( $_POST['rt_pm_task_edit'], 'rt_pm_task_edit' ) )
+           return;
 
     if( !isset(  $_POST['post'] ) )
         return;
@@ -194,12 +196,6 @@ function bp_save_task(){
 
 
     $newTask = $_POST['post'];
-
-    if( !isset( $newTask['post_type'] ) )
-        return;
-
-    if( $newTask['post_type'] != $rt_pm_task->post_type )
-        return;
 
 
     if( !isset( $newTask['rt_voxxi_blog_id'] ) )
@@ -312,7 +308,6 @@ function bp_save_time_entry(){
 
     global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model;
 
-    $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
     $post_type = $rt_pm_project->post_type;
 
     $allowed_component = array( BP_ACTIVITY_SLUG );
@@ -321,6 +316,8 @@ function bp_save_time_entry(){
     if( !in_array( bp_current_component(), $allowed_component ) )
         return;
 
+    if ( ! isset( $_POST['rt_pm_time_entry_save'] ) || ! wp_verify_nonce( $_POST['rt_pm_time_entry_save'], 'rt_pm_time_entry_save' ) )
+                return;
 
     if ( !isset( $_POST['post'] ) )
         return;
@@ -328,11 +325,6 @@ function bp_save_time_entry(){
 
     $newTimeEntry = $_POST['post'];
 
-    if(  !isset( $newTimeEntry['post_type'] ) )
-        return;
-
-    if( $newTimeEntry['post_type'] != $timeentry_post_type )
-        return;
 
     if( isset( $newProject['rt_voxxi_blog_id'] ) )
         switch_to_blog( $newProject['rt_voxxi_blog_id'] );

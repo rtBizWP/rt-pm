@@ -411,6 +411,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
                 }
 
+                bp_core_add_message( 'Task saved successfully', 'success' );
                 do_action( 'save_task', $newTask['post_id'], $operation_type );
 
 				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task"  . '";</script> ';
@@ -529,6 +530,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
             <div id="div-add-task" class="reveal-modal">
         		<fieldset>
 	                <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
+                        <?php wp_nonce_field('rt_pm_task_edit','rt_pm_task_edit') ?>
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
 	                        <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
