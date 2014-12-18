@@ -251,6 +251,30 @@ if( !empty( $results_client ) ) {
         </ul>
     </div>
 
+       <div class="row">
+           <h6> <?php _e("BDM"); ?></h6>
+
+           <div class="small-12 columns">
+               <?php if( $user_edit ) { ?>
+                   <select name="post[business_manager]" >
+                       <option value=""><?php _e( 'Select BM' ); ?></option>
+                       <?php
+                       if (!empty($results_member)) {
+                           foreach ($results_member as $bm) {
+                               if ($bm->ID == $business_manager) {
+                                   $selected = " selected";
+                               } else {
+                                   $selected = " ";
+                               }
+                               echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
+                           }
+                       }
+                       ?>
+                   </select>
+               <?php } ?>
+           </div>
+       </div>
+
        <h3 class="row-title"> <?php _e("Project Information"); ?></h3>
        <hr/>
        <div class="row">

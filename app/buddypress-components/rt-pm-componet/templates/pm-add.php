@@ -345,7 +345,7 @@ if( !empty( $results_organization ) ) {
             
         </div>
         <div class="row">
-			<div class="columns medium-6 small-12"/>
+			<div class="columns medium-6 small-12">
 				<h6> <?php _e("Contacts"); ?></h6>
             	<hr/>
                 <script>
@@ -358,7 +358,7 @@ if( !empty( $results_organization ) ) {
                     <?php echo $subProjectClientHTML; ?>
                 </ul>
 			</div>
-			<div class="columns medium-6 small-12"/>
+			<div class="columns medium-6 small-12">
 				<h6> <?php _e("Team"); ?></h6>
         		<hr/>
 				<script>
@@ -372,6 +372,28 @@ if( !empty( $results_organization ) ) {
 				</ul>
 			</div>
 		</div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <h6> <?php _e("BDM"); ?></h6>
+                <?php if( $user_edit ) { ?>
+                    <select name="post[business_manager]" >
+                        <option value=""><?php _e( 'Select BM' ); ?></option>
+                        <?php
+                        if (!empty($results_member)) {
+                            foreach ($results_member as $bm) {
+                                if ($bm->ID == $business_manager) {
+                                    $selected = " selected";
+                                } else {
+                                    $selected = " ";
+                                }
+                                echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                <?php } ?>
+            </div>
+        </div>
         <h3 class="row-title"> <?php _e("Project Information"); ?></h3>
         <hr/>
         <div class="row meta-box">
