@@ -78,8 +78,8 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                     echo isset($bm->display_name) ? $bm->display_name : "";
                                     ?></div>
                                 <br />
-                                <div><strong><?php _e('Commenced on : '); ?></strong><?php
-                                    $dt = new DateTime(get_post_field('post_date', get_the_ID()));
+                                <div><strong><?php _e('Created on : '); ?></strong><?php
+                                    $dt = rt_convert_strdate_to_usertimestamp(get_post_field('post_date_gmt', get_the_ID()));
 									$format = $dt->format('Y-m-d');
                                     echo !empty($format)?$format:"";
                                     ?></div>

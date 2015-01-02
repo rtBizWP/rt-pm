@@ -1343,17 +1343,17 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         $UTC = new DateTimeZone('UTC');
                         $dr->setTimezone($UTC);
                         $timeStamp = $dr->getTimestamp();
-                        $newProject['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
-                        $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s', (intval($timeStamp)));
+                        $newProject['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) ));
+                        $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', (intval($timeStamp))) );
                     } catch ( Exception $e ) {
                         $newProject['post_date'] = current_time( 'mysql' );
-                        $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+                        $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s') );
                     }
                 } else {
                     $newProject['post_date'] = current_time( 'mysql' );
-                    $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+                    $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s') );
                 }
-				
+
 				// Change format for post_duedate
 				$postduedate = $newProject['post_duedate'];
 				if ( isset( $postduedate ) && $postduedate != '' ) {
@@ -1382,8 +1382,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
-                        'post_completiondate' => $newProject['post_completiondate'],
-                        'post_duedate' => $newProject['post_duedate'],
+                        'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
+                        'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
 						'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_organization' => $newProject['project_organization'],
@@ -1406,8 +1406,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 }else{
                     $data = array(
 						'project_manager' => $newProject['project_manager'],
-                        'post_completiondate' => $newProject['post_completiondate'],
-                        'post_duedate' => $newProject['post_duedate'],
+                        'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
+                        'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
                         'project_estimated_time' => $newProject['project_estimated_time'],
                         'project_client' => $newProject['project_client'],
                         'project_organization' => $newProject['project_organization'],
@@ -1479,9 +1479,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $post = false;
                 }
 
-                $create = new DateTime($post->post_date);
 
-                $modify = new DateTime($post->post_modified);
+                $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
+
+                $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
+
                 $createdate = $create->format("M d, Y h:i A");
                 $modifydate = $modify->format("M d, Y h:i A");
 
@@ -1497,8 +1499,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
                 $duedate= get_post_meta($post->ID, 'post_duedate', true);
 				if ( ! empty( $duedate ) ){
-					$duedate = new DateTime($duedate); // date formating hack
+                    $duedate = rt_convert_strdate_to_usertimestamp( $duedate );
 					$duedate = $duedate->format("M d, Y h:i A"); // date formating hack
+				}
+                if ( ! empty( $completiondate ) ){
+                    $completiondate = rt_convert_strdate_to_usertimestamp($completiondate); // date formating hack
+                    $completiondate = $completiondate->format("M d, Y h:i A"); // date formating hack
 				}
 				$business_manager = get_post_meta( $post->ID, 'business_manager', true );
             } else {
