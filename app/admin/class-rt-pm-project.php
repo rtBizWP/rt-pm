@@ -657,8 +657,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         $UTC = new DateTimeZone('UTC');
                         $dr->setTimezone($UTC);
                         $timeStamp = $dr->getTimestamp();
-                        $newTask['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
-                        $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s', (intval($timeStamp)));
+                        $newTask['post_date'] = gmdate('Y-m-d H:i:s', intval($timeStamp) );
+                        $newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', (intval($timeStamp))) );
                     } catch ( Exception $e ) {
                         $newTask['post_date'] = current_time( 'mysql' );
                         $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
@@ -672,10 +672,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 if ( isset( $duedate ) && $duedate != '' ) {
                     try {
                         $dr = date_create_from_format( 'M d, Y H:i A', $duedate );
-                        $UTC = new DateTimeZone('UTC');
-                        $dr->setTimezone($UTC);
+                      //  $UTC = new DateTimeZone('UTC');
+                      //  $dr->setTimezone($UTC);
                         $timeStamp = $dr->getTimestamp();
-                        $newTask['post_duedate'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
+                        $newTask['post_duedate'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
                     } catch ( Exception $e ) {
                         $newTask['post_duedate'] = current_time( 'mysql' );
                     }
@@ -840,8 +840,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $post = false;
                 }
 
-                $create = new DateTime($post->post_date);
-                $modify = new DateTime($post->post_modified);
+                $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
+                $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
                 $createdate = $create->format("M d, Y h:i A");
                 $modifydate = $modify->format("M d, Y h:i A");
 
@@ -851,7 +851,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             // get project meta
             if (isset($post->ID)) {
-                $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
+                $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
 				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
 			} else {

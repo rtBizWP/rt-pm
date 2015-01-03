@@ -297,20 +297,20 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 //.'< /td>';
                                 break;
                             case "rtpm_create_date":
-                                $date = date_parse($rec->post_date);
+                                $date = date_parse($rec->post_date_gmt);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_date);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
+                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->post_date_gmt);
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s') .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
                                 //.'< /td>';
                                 break;
                             case "rtpm_update_date":
-                                $date = date_parse($rec->post_modified);
+                                $date = date_parse($rec->post_modified_gmt);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_modified);
-                                    echo '<td '.$attributes.'><span title="'.$rec->post_modified.'" class="moment-from-now">' . $rec->post_modified . '</span>';
+                                    $dtObj =rt_convert_strdate_to_usertimestamp($rec->post_modified_gmt);
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s') .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -319,8 +319,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                             case "rtpm_Due_date":
                                 $date = date_parse($temp['post_duedate']);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($temp['post_duedate']);
-                                    echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
+                                    $dtObj =rt_convert_strdate_to_usertimestamp($temp['post_duedate']);
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s')  .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s')  . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
