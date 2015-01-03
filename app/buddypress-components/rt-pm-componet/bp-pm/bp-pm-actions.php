@@ -41,15 +41,15 @@ $newProject = $_POST['post'];
                 $UTC = new DateTimeZone('UTC');
                 $dr->setTimezone($UTC);
                 $timeStamp = $dr->getTimestamp();
-                $newProject['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
-                $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s', (intval($timeStamp)));
+                $newProject['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) ));
+                $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', (intval($timeStamp))) );
             } catch ( Exception $e ) {
                 $newProject['post_date'] = current_time( 'mysql' );
-                $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+                $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s') );
             }
         } else {
             $newProject['post_date'] = current_time( 'mysql' );
-            $newProject['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+            $newProject['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s') );
         }
 
         // Change format for post_duedate
@@ -80,8 +80,8 @@ $newProject = $_POST['post'];
             $post = array_merge( $post, array( 'ID' => $newProject['post_id'] ) );
             $data = array(
                 'project_manager' => $newProject['project_manager'],
-                'post_completiondate' => $newProject['post_completiondate'],
-                'post_duedate' => $newProject['post_duedate'],
+                'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
+                'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
                 'project_estimated_time' => $newProject['project_estimated_time'],
                 'project_client' => $newProject['project_client'],
                 'project_organization' => $newProject['project_organization'],
@@ -103,8 +103,8 @@ $newProject = $_POST['post'];
         }else{
             $data = array(
                 'project_manager' => $newProject['project_manager'],
-                'post_completiondate' => $newProject['post_completiondate'],
-                'post_duedate' => $newProject['post_duedate'],
+                'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
+                'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
                 'project_estimated_time' => $newProject['project_estimated_time'],
                 'project_client' => $newProject['project_client'],
                 'project_organization' => $newProject['project_organization'],

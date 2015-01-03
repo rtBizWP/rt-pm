@@ -564,7 +564,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_create_date":
                                 $date = date_parse($rec->post_date);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_date);
+                                    $dtObj = new DateTime($rec->post_date_gmt);
                                     // echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
 									echo '<td '.$attributes.'><span title="'.$rec->post_date.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
                                 } else {
@@ -575,8 +575,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_update_date":
                                 $date = date_parse($rec->post_modified);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_modified);
-                                    //echo '<td '.$attributes.'><span title="'.$rec->post_modified.'" class="moment-from-now">' . $rec->post_modified . '</span>';
+                                    $dtObj = new DateTime($rec->post_modified_gmt);
 									echo '<td '.$attributes.'><span title="'.$rec->post_modified.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';

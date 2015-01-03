@@ -235,12 +235,6 @@ jQuery(document).ready(function($) {
         else
             $(this).html(moment(new Date($(this).html())).fromNow());
     });
-	
-	var orignal_date = new Date($("#modification_date").attr("title"));
-    var d = new Date();
-    var n = d.getTimezoneOffset();
-    var test =  new Date(orignal_date.getTime() + n*60000);
-    $("#modification_date").val(moment(test).fromNow());
 
 	$("#button-trash").click(function(){
 		var r = confirm("Are you sure you want to move this project to trash?");
