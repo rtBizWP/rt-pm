@@ -1082,10 +1082,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 if ( isset( $creationdate ) && $creationdate != '' ) {
                     try {
                         $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
-                        $UTC = new DateTimeZone('UTC');
-                        $dr->setTimezone($UTC);
+                      //  $UTC = new DateTimeZone('UTC');
+                      //  $dr->setTimezone($UTC);
                         $timeStamp = $dr->getTimestamp();
-                        $newTimeEntry['post_date'] = gmdate('Y-m-d H:i:s', (intval($timeStamp) + ( get_option('gmt_offset') * 3600 )));
+                        $newTimeEntry['post_date'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
                     } catch ( Exception $e ) {
                         $newTimeEntry['post_date'] = current_time( 'mysql' );
                     }
@@ -1155,7 +1155,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $post = false;
                 }
 
-                $create = new DateTime($post->timestamp);
+                $create = rt_convert_strdate_to_usertimestamp($post->timestamp);
                 $createdate = $create->format("M d, Y h:i A");
             }
 
