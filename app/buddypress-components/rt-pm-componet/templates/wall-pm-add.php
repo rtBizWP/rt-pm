@@ -24,9 +24,13 @@ if (isset($post->ID)) {
     $completiondate= get_post_meta($post->ID, 'post_completiondate', true);
     $duedate= get_post_meta($post->ID, 'post_duedate', true);
     if ( ! empty( $duedate ) ){
-        $duedate = new DateTime($duedate); // date formating hack
+	    $duedate = rt_convert_strdate_to_usertimestamp( $duedate );
         $duedate = $duedate->format("M d, Y h:i A"); // date formating hack
     }
+	if ( ! empty( $completiondate ) ){
+		$completiondate = rt_convert_strdate_to_usertimestamp($completiondate); // date formating hack
+		$completiondate = $completiondate->format("M d, Y h:i A"); // date formating hack
+	}
     $business_manager = get_post_meta( $post->ID, 'business_manager', true );
 } else {
     $post_author = get_current_user_id();
@@ -34,9 +38,9 @@ if (isset($post->ID)) {
 
 if (isset($post->ID)) {
 
-    $create = new DateTime($post->post_date);
+    $create = rt_convert_strdate_to_usertimestamp($post->post_date_gmt);
 
-    $modify = new DateTime($post->post_modified);
+    $modify = rt_convert_strdate_to_usertimestamp($post->post_modified_gmt);
     $createdate = $create->format("M d, Y h:i A");
     $modifydate = $modify->format("M d, Y h:i A");
 
