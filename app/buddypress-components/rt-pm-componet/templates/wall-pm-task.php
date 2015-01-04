@@ -21,12 +21,12 @@ if( isset( $_GET["id"] ) ){
 
 // get project meta
     if (isset($post->ID)) {
-        $due = new DateTime(get_post_meta($post->ID, 'post_duedate', true));
+        $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
         $due_date = $due->format("M d, Y h:i A");
         $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
         $post_project_id = get_post_meta($post->ID, 'post_project_id', true);
-        $create = new DateTime($post->post_date);
-        $modify = new DateTime($post->post_modified);
+        $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
+        $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
         $createdate = $create->format("M d, Y h:i A");
         $modifydate = $modify->format("M d, Y h:i A");
     } else {

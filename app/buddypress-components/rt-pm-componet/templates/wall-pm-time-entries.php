@@ -176,7 +176,10 @@ global $wpdb;
          </div>
          <div class="small-3 columns">
              <label class="rt-voxxi-label"><?php _e('Date', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php echo  date( "d-M-Y",  strtotime( $time_entry->timestamp ) ) ?></label>
+             <label><?php
+                 $userdate = rt_convert_strdate_to_usertimestamp( $time_entry->timestamp );
+                 echo  $userdate->format('d-M-Y');
+                 ?></label>
          </div>
          <div class="small-3 columns">
              <label class="rt-voxxi-label"><?php _e('Duration', RT_PM_TEXT_DOMAIN ) ?></label>
