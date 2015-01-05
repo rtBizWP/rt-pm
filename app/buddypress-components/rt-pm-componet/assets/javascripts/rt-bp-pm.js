@@ -189,28 +189,28 @@ jQuery(document).ready(function($) {
         $(".datetimepicker").datetimepicker({
             dateFormat: "M d, yy",
             timeFormat: "hh:mm TT",
-            onClose: function(newDate,inst) {
-
-                if( $(this).hasClass("moment-from-now") ) {
-                    var oldDate = $(this).attr("title");
-
-                    if( newDate != "" && moment(newDate).isValid() ) {
-                        $(this).val(moment(new Date(newDate)).fromNow());
-                        $(this).attr("title",newDate);
-
-                        if( $(this).next().length > 0 ) {
-                            $(this).next().val(newDate);
-                        }
-                    } else if( oldDate != "" ) {
-                        $(this).val(moment(new Date(oldDate)).fromNow());
-                        $(this).attr("title",oldDate);
-
-                        if( $(this).next().length > 0 ) {
-                            $(this).next().val(newDate);
-                        }
-                    }
-                }
-            }
+            //onClose: function(newDate,inst) {
+            //
+            //    if( $(this).hasClass("moment-from-now") ) {
+            //        var oldDate = $(this).attr("title");
+            //
+            //        if( newDate != "" && moment(newDate).isValid() ) {
+            //            $(this).val(moment(new Date(newDate)).fromNow());
+            //            $(this).attr("title",newDate);
+            //
+            //            if( $(this).next().length > 0 ) {
+            //                $(this).next().val(newDate);
+            //            }
+            //        } else if( oldDate != "" ) {
+            //            $(this).val(moment(new Date(oldDate)).fromNow());
+            //            $(this).attr("title",oldDate);
+            //
+            //            if( $(this).next().length > 0 ) {
+            //                $(this).next().val(newDate);
+            //            }
+            //        }
+            //    }
+            //}
         });
     }
 
@@ -227,14 +227,14 @@ jQuery(document).ready(function($) {
         $(this).parent("div").prev().find(".hasDatepicker").datepicker("show");
     });
 
-    $(".moment-from-now").each(function() {
-        if($(this).is("input[type='text']") && $(this).val()!="")
-            $(this).val(moment(new Date($(this).attr("title"))).fromNow());
-        else if($(this).is(".comment-date"))
-            $(this).html(moment(new Date($(this).attr("title"))).fromNow());
-        else
-            $(this).html(moment(new Date($(this).html())).fromNow());
-    });
+    //$(".moment-from-now").each(function() {
+    //    if($(this).is("input[type='text']") && $(this).val()!="")
+    //        $(this).val(moment(new Date($(this).attr("title"))).fromNow());
+    //    else if($(this).is(".comment-date"))
+    //        $(this).html(moment(new Date($(this).attr("title"))).fromNow());
+    //    else
+    //        $(this).html(moment(new Date($(this).html())).fromNow());
+    //});
 
 	$("#button-trash").click(function(){
 		var r = confirm("Are you sure you want to move this project to trash?");

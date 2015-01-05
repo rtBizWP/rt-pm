@@ -926,10 +926,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
-                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
@@ -1252,10 +1252,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                    <input class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
-                                    <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
@@ -1681,10 +1681,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         </div>
                                         <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                                                <input class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Create Date"
                                                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
-                                                <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+
                                             <?php } else { ?>
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                             <?php } ?>
@@ -1717,10 +1717,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         </div>
                                         <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Completion Date"
+                                                <input class="datetimepicker moment-from-now" type="text" name="post[post_completiondate]"  placeholder="Select Completion Date"
                                                        value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>"
                                                        title="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>">
-                                                <input name="post[post_completiondate]" type="hidden" value="<?php echo ( isset($completiondate) ) ? $completiondate : ''; ?>" />
+
                                             <?php } else { ?>
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $completiondate ?></span>
                                             <?php } ?>
@@ -1735,10 +1735,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         </div>
                                         <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                             <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
+                                                <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                                        value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>"
                                                        title="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>">
-                                                <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($duedate) ) ? $duedate : ''; ?>" />
+
                                             <?php } else { ?>
                                                 <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
                                             <?php } ?>
