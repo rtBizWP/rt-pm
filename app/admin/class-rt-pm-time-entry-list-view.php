@@ -288,7 +288,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 		function display_rows() {
 
             global $wpdb,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries;
-
+            $blog_date_format = get_option( 'date_format' );
 			//Get the records registered in the prepare_items method
 			$records = $this->items;
 			//Get the columns registered in the get_columns and get_sortable_columns methods
@@ -341,8 +341,8 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                             case "rtpm_create_date":
                                 $date = date_parse($rec->timestamp);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->timestamp);
-                                    echo '<td '.$attributes.'><span title="'.$rec->timestamp.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->timestamp);
+                                    echo '<td '.$attributes.'><span title="'.$rec->timestamp.'">' .$dtObj->format( $blog_date_format )   . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }

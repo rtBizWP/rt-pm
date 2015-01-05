@@ -966,10 +966,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" placeholder="Select Due Date"
+                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
-                                    <input name="post[post_duedate]" type="hidden" value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" />
+
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
                                 <?php } ?>

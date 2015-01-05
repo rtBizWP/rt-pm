@@ -93,15 +93,15 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
         </div>
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
             <?php if( $user_edit && empty( $_REQUEST['rt_time_entry_id'] ) ){ ?>
-                <input required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                <input required="required" class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
 
                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
-                <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+
             <?php } else if ( $user_edit ) { ?>
-                <input disabled="disabled" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                <input disabled="disabled" name="post[post_date]" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
 
                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
-                <input name="post[post_date]" type="hidden" value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" />
+
             <?php } else { ?>
                 <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
             <?php } ?>

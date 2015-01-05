@@ -493,6 +493,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 
             global $wpdb,$rt_pm_project, $rt_pm_bp_pm;
 
+            $blog_date_format = get_option( 'date_format' );
 			//Get the records registered in the prepare_items method
 			$records = $this->items;
 			//Get the columns registered in the get_columns and get_sortable_columns methods
@@ -564,9 +565,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_create_date":
                                 $date = date_parse($rec->post_date);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_date_gmt);
+                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->post_date_gmt);
                                     // echo '<td '.$attributes.'><span title="'.$rec->post_date.'" class="moment-from-now">' . $rec->post_date . '</span>';
-									echo '<td '.$attributes.'><span title="'.$rec->post_date.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+									echo '<td '.$attributes.'><span title="'.$rec->post_date.'">' .  $dtObj->format( $blog_date_format ) . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -575,8 +576,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_update_date":
                                 $date = date_parse($rec->post_modified);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($rec->post_modified_gmt);
-									echo '<td '.$attributes.'><span title="'.$rec->post_modified.'">' . human_time_diff( $dtObj->format('U') , time() ) . __(' ago') . '</span>';
+                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->post_modified_gmt);
+
+									echo '<td '.$attributes.'><span title="'.$rec->post_modified.'">' .  $dtObj->format( $blog_date_format )   . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -585,9 +587,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_Due_date":
                                 $date = date_parse($temp['post_duedate']);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = new DateTime($temp['post_duedate']);
+                                    $dtObj = rt_convert_strdate_to_usertimestamp($temp['post_duedate']);
                                     // echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'" class="moment-from-now">' . $temp['post_duedate'] . '</span>';
-									echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">'. __('after ') . human_time_diff( $dtObj->format('U') , time() ) . '</span>';
+									echo '<td '.$attributes.'><span title="'.$temp['post_duedate'].'">'. $dtObj->format( $blog_date_format ) . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
