@@ -229,7 +229,7 @@ if( !empty( $results_organization ) ) {
             <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
             <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
         <?php } ?>
-        <div class="row">
+        <div>
         	<div class="large-3 columns">
         		<h2><?php _e('Details', RT_PM_TEXT_DOMAIN);?></h2>
         	</div>

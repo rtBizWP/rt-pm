@@ -1351,7 +1351,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 						}
 					}
 				?>
-				<div class="row list-heading">
+				<div class="list-heading">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
 			        </div>
@@ -1359,7 +1359,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 			          
 			        </div>
 			    </div>
-				<div class="row list-heading notification-top">
+				<div class="list-heading notification-top">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Triggered Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
 			        </div>
@@ -1372,7 +1372,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="triggered" />
-						<div class="row">
+						<div class="">
 							<div class="large-3 columns">
 								<select name="rtpm_nr_context" required="required">
 									<option value=""><?php _e( 'Contexts' ) ?></option>
@@ -1531,7 +1531,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 				<br />
 				<hr />
 				<br />
-				<div class="row list-heading notification-bottom">
+				<div class="list-heading notification-bottom">
 			        <div class="large-10 columns list-title">
 			            <h4><?php _e( 'Periodic Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
 			        </div>
@@ -1544,7 +1544,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 					<form method="post">
 						<input type="hidden" name="rtpm_add_notification_rule" value="1" />
 						<input type="hidden" name="rtpm_nr_type" value="periodic" />
-						<div class="row">
+						<div class="">
 							<div class="large-3 columns">
 								<select name="rtpm_nr_schedule" required="required">
 									<option value=""><?php _e( 'Schedule' ); ?></option>
@@ -1580,7 +1580,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 								</select>
 							</div>
 						</div>
-						<div class="row">
+						<div class="">
 							<div class="large-3 columns">
 								<input type="text" name="rtpm_nr_period" placeholder="<?php _e( 'Period' ); ?>" />
 							</div>
