@@ -93,6 +93,15 @@ $task_labels=$rt_pm_task->labels;
         </div>
     </div>
 
+    <div class="row">
+        <div class="small-4 columns">
+            <label><?php _e("Project Title"); ?></label>
+        </div>
+        <div class="small-8 columns">
+            <label><?php  echo get_post_field( 'post_title', $post_project_id ); ?></label>
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="small-4 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
