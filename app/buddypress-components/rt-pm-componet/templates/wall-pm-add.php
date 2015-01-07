@@ -204,7 +204,7 @@ if( !empty( $results_client ) ) {
                             } else {
                                 $selected = " ";
                             }
-                            echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                            echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
                         }
                     }
                     ?>
@@ -272,7 +272,7 @@ if( !empty( $results_client ) ) {
                                } else {
                                    $selected = " ";
                                }
-                               echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
+                               echo '<option value="' . $bm->ID . '"' . $selected . '>' . rt_get_user_displayname( $bm->ID ) . '</option>';
                            }
                        }
                        ?>
