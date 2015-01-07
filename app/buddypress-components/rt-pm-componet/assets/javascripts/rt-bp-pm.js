@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-member-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='small-2 column'>" + ui.item.imghtml + "</div><div class='small-9 columns'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='small-1 columns'><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></div></div></li>")
+                        jQuery("#divProjectMemberList").append("<li id='project-member-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='small-2 column'>" + ui.item.imghtml + "</div><div class='small-9 columns vertical-center'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='small-1 columns vertical-center'><a href='#removeProjectMember' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_member][]' value='" + ui.item.id + "' /></div></div></li>")
                     }
                     jQuery("#project_member_user_ac").val("");
                     return false;
@@ -92,7 +92,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-org-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='column small-2'>" + ui.item.imghtml + "</div><div class='column small-9'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='column small-1'><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></div></div></li>")
+                        jQuery("#divProjectAccountsList").append("<li id='project-org-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='column small-2'>" + ui.item.imghtml + "</div><div class='column small-9 vertical-center'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='column small-1 vertical-center'><a href='#removeProjectOrganization' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_organization][]' value='" + ui.item.id + "' /></div></div></li>")
                     }
                     jQuery("#project_org_search_account").val("");
                     return false;
@@ -165,7 +165,7 @@ jQuery(document).ready(function($) {
                 },
                 select: function(event, ui) {
                     if (jQuery("#project-client-auth-" + ui.item.id).length < 1) {
-                        jQuery("#divProjectClientList").append("<li id='project-client-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='small-2 column'>" + ui.item.imghtml + "</div><div class='small-9 columns'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='small-1 columns'><a href='#removeProjectClient' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_client][]' value='" + ui.item.id + "' /></div></div></li>")
+                        jQuery("#divProjectClientList").append("<li id='project-client-auth-" + ui.item.id + "' class='contact-list' ><div class='row'><div class='small-2 column'>" + ui.item.imghtml + "</div><div class='small-9 columns vertical-center'><a target='_blank' href='"+ui.item.user_edit_link+"'>" + ui.item.label + "</a></div><div class='small-1 columns vertical-center'><a href='#removeProjectClient' class='right'><i class='foundicon-remove'></i></a><input type='hidden' name='post[project_client][]' value='" + ui.item.id + "' /></div></div></li>")
                     }
                     jQuery("#project_client_user_ac").val("");
                     return false;

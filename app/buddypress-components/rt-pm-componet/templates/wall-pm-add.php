@@ -66,8 +66,8 @@ if( !empty( $results_organization ) ) {
         $company_url = add_query_arg( array( 'id'=>$organization->ID, 'action'=>'edit' ), get_people_root_url().Rt_Bp_People_Loader::$companies_slug) ;
         if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
             $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID
-                . "' class='contact-list'><div class='row'><div class='column small-2'>" . $logo . '</div><div class="column small-9"><a target="_blank" class="" title="'.$organization->post_title.'" href="'.$company_url.'">'.$organization->post_title.'</a></div>'
-                . "<div class='column small-1'><a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
+                . "' class='contact-list'><div class='row'><div class='column small-2'>" . $logo . '</div><div class="column small-9 vertical-center"><a target="_blank" class="" title="'.$organization->post_title.'" href="'.$company_url.'">'.$organization->post_title.'</a></div>'
+                . "<div class='column small-1 vertical-center'><a class='right' href='#removeProjectOrganization'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_organization][]' value='" . $organization->ID . "' /></div></div></li>";
         }
         $arrProjectOrganizations[] = array("id" => $organization->ID, "label" => $organization->post_title, "imghtml" => $logo, 'user_edit_link'=> $company_url );
@@ -85,10 +85,10 @@ if( !empty( $results_member ) ) {
                 . "<div class='row'>
             <div class='column small-2'>"
                 . get_avatar($author->user_email, 32) . ' </div>
-             <div  class="columns small-9">
+             <div  class="columns small-9 vertical-center">
              	<a target="_blank" class="" title="'.$author->display_name.'" href="'.bp_core_get_userlink($author->ID, false, true).'">'.$author->display_name.'</a>
              </div>'
-                . "<div class='columns small-1'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
+                . "<div class='columns small-1 vertical-center'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /> </div>
 
                 </div>
@@ -109,8 +109,8 @@ if( !empty( $results_client ) ) {
         if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
             $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
                 . "' class='contact-list'><div class='row'><div class='large-2 column'>" . get_avatar($email, 32) . '</div>
-                <div class="column small-9"><a target="_blank" class="" title="'.$client->post_title.'" href="'. $client_url .'">'.$client->post_title.'</a></div>'
-                . "<div class='column small-1'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
+                <div class="column small-9 vertical-center"><a target="_blank" class="" title="'.$client->post_title.'" href="'. $client_url .'">'.$client->post_title.'</a></div>'
+                . "<div class='column small-1 vertical-center'><a class='right' href='#removeProjectClient'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_client][]' value='" . $client->ID . "' />
                         </div>
                     </div>
