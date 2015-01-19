@@ -19,10 +19,6 @@ and open the template in the editor.
     border: 0 !important;
 }
 
-.list-heading{
-    margin-bottom: 10px;
-}
-
 .list-title{
     padding-left: 0px !important;
 }
@@ -245,8 +241,8 @@ img.avatar, img.wp-post-image{
   }
 }
 .table-wrapper .pinned .row-actions {
-    display: inline;
-    padding-left: 1rem;
+   // display: inline;
+   // padding-left: 1rem;
 }
 
 .tabs {
@@ -582,7 +578,7 @@ table {
 }
 
 .list-heading {
-  margin-bottom: 10px;
+ padding-bottom: 40px;
 }
 
 #wp-custom-list-table .row.list-heading {

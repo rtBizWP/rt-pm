@@ -74,14 +74,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                     echo isset($pm->display_name)?$pm->display_name:"";
                                     ?></div>
                                 <div><strong><?php _e('Business Manager : '); ?></strong><?php
-                                    $bm = get_user_by('id', get_post_meta(get_the_ID(), 'business_manager', true));
-                                    echo isset($bm->display_name) ? $bm->display_name : "";
+                                    $bm =  get_post_meta(get_the_ID(), 'business_manager', true);
+                                    echo !empty($bm) ? get_post_field( 'post_title', $bm ) : "";
                                     ?></div>
                                 <br />
                                 <div><strong><?php _e('Created on : '); ?></strong><?php
                                     $dt = rt_convert_strdate_to_usertimestamp(get_post_field('post_date_gmt', get_the_ID()));
 									$format = $dt->format('Y-m-d');
-                                    echo !empty($format)?$format:"";
+                                    responsive             echo !empty($format)?$format:"";
                                     ?></div>
                                 <div><strong><?php _e('Due on : '); ?></strong><?php
                                     if (get_post_meta(get_the_ID(), 'post_duedate', true)) {

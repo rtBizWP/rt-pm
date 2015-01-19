@@ -111,7 +111,7 @@
 		$totalPage= $max_num_pages =  $the_query->max_num_pages;
         $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 		?>
-        <div class="row list-heading">
+        <div class="list-heading">
 		    <div class="large-10 columns list-title">
 		        <h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
 		    </div>
@@ -171,11 +171,11 @@
 							$project_manager_nicename = $project_manager_info->display_name;
 						}
 						
-						$business_manager_info = get_user_by( 'id', $business_manager_id );
-						if ( ! empty( $business_manager_info->user_nicename ) ){							
-							$business_manager_nicename = $business_manager_info->display_name;
-						}
-						
+//						$business_manager_info = get_user_by( 'id', $business_manager_id );
+//						if ( ! empty( $business_manager_info->user_nicename ) ){
+//							$business_manager_nicename = $business_manager_info->display_name;
+//						}
+//
 						//Returns Array of Term Names for "rt-leave-type"
 						$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array("fields" => "names")); // tod0:need to call in correct way
 						if ( bp_loggedin_user_id() == bp_displayed_user_id() ) {
@@ -189,9 +189,9 @@
 							<div class="row-actions">
 								<?php
 								printf( __('<a href="%s">' . __( 'Edit', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'edit' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
-								printf( __('<a href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
-								printf( __('<a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ).'</a>&nbsp;&#124;'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) ); 
-								printf( __('<a class="deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
+								printf( __('<a class="hidden-for-small-only" href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a><span class="hidden-for-small-only">&nbsp;&#124;</span>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
+								printf( __('<a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ).'</a><span class="hidden-for-small-only">&nbsp;&#124;</span>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) );
+								printf( __('<a class="hidden-for-small-only deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 								?>
 							</div>
                                  <?php } ?>
@@ -200,7 +200,7 @@
 								<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>
 							</td>
 							<td><?php if ( ! empty( $project_manager_info->user_nicename ) ) echo $project_manager_nicename; ?></td>
-							<td><?php if ( ! empty( $business_manager_info->user_nicename ) ) echo $business_manager_nicename; ?></td>
+							<td><?php if ( ! empty(  $business_manager_id ) ) echo get_post_field( 'post_title', $business_manager_id ); ?></td>
 							<!--<td><?php echo get_the_date('d-m-Y');?></td>
 							<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td> -->
 						</tr>
