@@ -162,23 +162,9 @@ $task_labels=$rt_pm_task->labels;
             <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To<small class="required"> * </small></label></span>
         </div>
         <div class="small-8 columns">
-        <?php if( $user_edit ) { ?>
-            <select required="required" name="post[post_assignee]" >
-                <option value=""><?php _e( 'Select Assignee' ); ?></option>
-                <?php
-                if (!empty($results_member)) {
-                    foreach ($results_member as $author) {
-                        if ($author->ID == $post_assignee) {
-                            $selected = " selected";
-                        } else {
-                            $selected = " ";
-                        }
-                        echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
-                    }
-                }
-                ?>
-            </select>
-        <?php } ?>
+        <?php if( $user_edit ) {
+            rt_pm_render_task_assignee_selectbox( $post_assignee );
+        } ?>
         </div>
    </div>
 

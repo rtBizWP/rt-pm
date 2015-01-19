@@ -624,23 +624,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                        	<div class="row collapse">
 	                        		<div class="large-6 columns">
 	                        			<span class="hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
-		                                <?php if( $user_edit ) { ?>
-		                                    <select required="required" name="post[post_assignee]" >
-												<option value=""><?php _e( 'Select Assignee' ); ?></option>
-		                                        <?php
-		                                        if (!empty($results_member)) {
-		                                            foreach ($results_member as $author) {
-		                                                if ($author->ID == $post_assignee) {
-		                                                    $selected = " selected";
-		                                                } else {
-		                                                    $selected = " ";
-		                                                }
-		                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
-		                                            }
-		                                        }
-		                                        ?>
-		                                    </select>
-		                                <?php } ?>
+		                                <?php if( $user_edit ) {
+                                            rt_pm_render_task_assignee_selectbox( $post_assignee );
+                                        } ?>
 		                            </div>
 		                            <div class="large-1 mobile-large-1 columns">&nbsp;&nbsp;&nbsp;&nbsp;</div>
 		                            <div class="large-5 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">

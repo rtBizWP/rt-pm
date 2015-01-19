@@ -282,7 +282,53 @@ function pm_add_documents_section( $post_id ){ ?>
 
 <?php }
 
+/**
+ * Render BDM selectbox
+ * @param $business_manager
+ */
+function rt_pm_render_bdm_selectbox( $business_manager ){ ?>
 
+    <select name="post[business_manager]" >
+        <option value=""><?php _e( 'Select BM' ); ?></option>
+        <?php
 
+        $employees = rt_biz_get_employees();
 
-?>
+        if (!empty( $employees )) {
+            foreach ($employees as $bm) {
+                if ($bm->ID == $business_manager) {
+                    $selected = " selected";
+                } else {
+                    $selected = " ";
+                }
+                echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->post_title . '</option>';
+            }
+        }
+        ?>
+    </select>
+
+<?php }
+
+/**
+ * Render assignee selectbox in Add new Task
+ * @param $task_assignee
+ */
+function rt_pm_render_task_assignee_selectbox( $task_assignee ){ ?>
+
+    <select name="post[post_assignee]" >
+        <option value=""><?php _e( 'Select Assignee' ); ?></option>
+        <?php
+        $employees = rt_biz_get_employees();
+        if (!empty( $employees )) {
+            foreach ( $employees as $author) {
+                if ($author->ID == $task_assignee ) {
+                    $selected = " selected";
+                } else {
+                    $selected = " ";
+                }
+                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->post_title . '</option>';
+            }
+        }
+        ?>
+    </select>
+<?php }

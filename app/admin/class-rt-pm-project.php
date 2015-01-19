@@ -941,23 +941,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Assigned To"><label for="post[post_assignee]"><strong>Assigned To</strong></label></span>
                             </div>
                             <div class="large-3 mobile-large-3 columns">
-                                <?php if( $user_edit ) { ?>
-                                    <select name="post[post_assignee]" >
-										<option value=""><?php _e( 'Select Assignee' ); ?></option>
-                                        <?php
-                                        if (!empty($results_member)) {
-                                            foreach ($results_member as $author) {
-                                                if ($author->ID == $post_assignee) {
-                                                    $selected = " selected";
-                                                } else {
-                                                    $selected = " ";
-                                                }
-                                                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                <?php } ?>
+                                <?php if( $user_edit ) {
+                                    rt_pm_render_task_assignee_selectbox( $post_assignee );
+                                 } ?>
                             </div>
                         </div>
                         <div class="row collapse">
@@ -1807,7 +1793,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                                     } else {
                                                         $selected = " ";
                                                     }
-                                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->display_name . '</option>';
+                                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
                                                 }
                                             }
                                             ?>
@@ -1820,23 +1806,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     <span class="prefix" title="Business Manager"><label for="post[business_manager]"><strong><?php _e('Business Manager'); ?></strong></label></span>
                                 </div>
                                 <div class="large-6 mobile-large-6 columns">
-                                    <?php if( $user_edit ) { ?>
-                                        <select name="post[business_manager]" >
-											<option value=""><?php _e( 'Select BM' ); ?></option>
-                                            <?php
-                                            if (!empty($results_member)) {
-                                                foreach ($results_member as $bm) {
-                                                    if ($bm->ID == $business_manager) {
-                                                        $selected = " selected";
-                                                    } else {
-                                                        $selected = " ";
-                                                    }
-                                                    echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->display_name . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    <?php } ?>
+                                    <?php if( $user_edit ) {
+                                        rt_pm_render_bdm_selectbox($business_manager);
+                                    } ?>
                                 </div>
                             </div>
 							<div class="row collapse postbox">
