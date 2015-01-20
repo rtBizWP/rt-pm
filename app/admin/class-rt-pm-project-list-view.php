@@ -81,7 +81,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                 <div><strong><?php _e('Created on : '); ?></strong><?php
                                     $dt = rt_convert_strdate_to_usertimestamp(get_post_field('post_date_gmt', get_the_ID()));
 									$format = $dt->format('Y-m-d');
-                                    responsive             echo !empty($format)?$format:"";
+                                    echo !empty($format)?$format:"";
                                     ?></div>
                                 <div><strong><?php _e('Due on : '); ?></strong><?php
                                     if (get_post_meta(get_the_ID(), 'post_duedate', true)) {

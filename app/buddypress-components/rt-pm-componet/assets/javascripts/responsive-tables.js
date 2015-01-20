@@ -47,6 +47,9 @@ $(document).ready(function() {
         tr_copy = copy.find('tr'),
         heights = [];
 
+      var height = $('.pinned table td').outerHeight();
+      tr.height( height );
+
     tr.each(function (index) {
       var self = $(this),
           tx = self.find('th, td');
