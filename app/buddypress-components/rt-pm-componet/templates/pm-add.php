@@ -380,7 +380,7 @@ if( !empty( $results_organization ) ) {
 			</div>
 		</div>
         <div class="row">
-            <div class="medium-6 columns">
+            <div class="medium-6 columns right">
                 <h6> <?php _e("BDM"); ?></h6>
                 <?php if( $user_edit ) {
                     rt_pm_render_bdm_selectbox( $business_manager );
@@ -391,10 +391,10 @@ if( !empty( $results_organization ) ) {
         <hr/>
         <div class="row meta-box">
             <div class="column medium-6 small-12">
-                <div class="small-4 large-4 columns">
+                <div class="small-12 large-4 columns">
                     <label for="post[post_status]"><?php _e("Status"); ?></label>
                 </div>
-                <div class="small-8 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                <div class="small-12 large-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                     <?php
                     if (isset($post->ID))
                         $pstatus = $post->post_status;
@@ -490,10 +490,10 @@ if( !empty( $results_organization ) ) {
     	</div>
     	<div class="row meta-box">
     				<div id="rtpm_project_type_wrapper" class="column medium-6 small-12 <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                        <div class="large-4 small-4 columns">
+                        <div class="large-4 small-12 columns">
                             <label><?php _e('Project Type'); ?></label>
                         </div>
-                        <div class="large-8 small-8 columns">
+                        <div class="large-8 small-12 columns">
                             <?php $rt_pm_project_type->get_project_types_dropdown( ( isset( $post->ID ) ) ? $post->ID : '', $user_edit ); ?>
                         </div>
                     </div>
