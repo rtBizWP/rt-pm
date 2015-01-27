@@ -166,9 +166,11 @@ if( !empty( $results_member ) ) {
                 </div>
             </li>";
         }
-        $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 32), 'user_edit_link'=>  bp_core_get_userlink($author->ID, false, true));
+        //$arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 32), 'user_edit_link'=>  bp_core_get_userlink($author->ID, false, true));
     }
 }
+
+$arrProjectMember = get_employee_array( $results_member );
 
 //Project client
 $results_client = Rt_PM_Utils::get_pm_client_user();
@@ -312,26 +314,11 @@ if( !empty( $results_organization ) ) {
 					</ul>
             </div>
             <div class="columns medium-6 small-12">
-                <h6> <?php _e( 'Manager' ); ?></h6>
+                <h6><?php _e( 'Manager' ); ?></h6>
 				<hr>
                 <div class="row collapse">
-                    <?php if( $user_edit ) { ?>
-                        <select style="margin-bottom:10px" name="post[project_manager]" >
-							<option value=""><?php _e( 'Select PM' ); ?></option>
-                            <?php
-                            if (!empty($results_member)) {
-                                foreach ($results_member as $author) {
-                                    if ($author->ID == $project_manager) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = " ";
-                                    }
-                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
-                                }
-                            }
-                            ?>
-                        </select>
-                    <?php 
+                    <?php if( $user_edit ) {
+                        $rt_pm_project->rt_render_manager_selectbox( $project_manager );
 						} else {
 							if (!empty($results_member)) {
                                 foreach ($results_member as $author) {

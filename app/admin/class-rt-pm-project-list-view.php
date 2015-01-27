@@ -70,8 +70,9 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                     }
                                     ?></div>
                                 <div><strong><?php _e('Project Manager : '); ?></strong><?php
-                                    $pm = get_user_by('id', get_post_meta(get_the_ID(), 'project_manager', true));
-                                    echo isset($pm->display_name)?$pm->display_name:"";
+                                    $pm = get_post_meta(get_the_ID(), 'project_manager', true);
+                                    //echo isset($pm->display_name)?$pm->display_name:"";
+                                    echo get_post_field( 'post_title', $pm );
                                     ?></div>
                                 <div><strong><?php _e('Business Manager : '); ?></strong><?php
                                     $bm =  get_post_meta(get_the_ID(), 'business_manager', true);

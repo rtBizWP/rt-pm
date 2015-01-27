@@ -1515,9 +1515,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
-                    $arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
+                    //$arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 24), 'user_edit_link'=>  get_edit_user_link($author->ID));
                 }
             }
+
+            $arrProjectMember = get_employee_array( $results_member );
 
             //Project client
             $results_client = Rt_PM_Utils::get_pm_client_user();
@@ -1782,23 +1784,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     <span class="prefix" title="Project Manager"><label for="post[project_manager]"><strong>Project Manager</strong></label></span>
                                 </div>
                                 <div class="large-6 mobile-large-6 columns">
-                                    <?php if( $user_edit ) { ?>
-                                        <select name="post[project_manager]" >
-											<option value=""><?php _e( 'Select PM' ); ?></option>
-                                            <?php
-                                            if (!empty($results_member)) {
-                                                foreach ($results_member as $author) {
-                                                    if ($author->ID == $project_manager) {
-                                                        $selected = " selected";
-                                                    } else {
-                                                        $selected = " ";
-                                                    }
-                                                    echo '<option value="' . $author->ID . '"' . $selected . '>' . rt_get_user_displayname( $author->ID ) . '</option>';
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    <?php } ?>
+                                    <?php if( $user_edit ) {
+
+                                        $this->rt_render_manager_selectbox( $project_manager );
+                                     } ?>
                                 </div>
                             </div>
                             <div id="rtpm-bm" class="row collapse rtpm-post-author-wrapper">
@@ -2951,5 +2940,31 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		
 			return $orderby;
 		}
+
+
+        /**
+         * Render BDM selectbox
+         * @param $business_manager
+         */
+        function rt_render_manager_selectbox( $project_manager ){ ?>
+            <select name="post[project_manager]" >
+                <option value=""><?php _e( 'Select PM' ); ?></option>
+                <?php
+                $employees = rt_biz_get_employees();
+
+                if (!empty( $employees )) {
+                    foreach ($employees as $bm) {
+                        if ($bm->ID == $project_manager ) {
+                            $selected = " selected";
+                        } else {
+                            $selected = " ";
+                        }
+                        echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->post_title . '</option>';
+                    }
+                }
+                ?>
+            </select>
+        <?php }
+
     }
 }
