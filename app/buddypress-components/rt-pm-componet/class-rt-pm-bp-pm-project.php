@@ -528,15 +528,15 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
 			<!--reveal-modal-add-task -->
             <div id="div-add-task" class="reveal-modal">
-        		<fieldset>
+
 	                <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <?php wp_nonce_field('rt_pm_task_edit','rt_pm_task_edit') ?>
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
 	                        <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
 	                    <?php } ?>
-	                    <legend><h4> <?php  _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4></legend>
-	                    <div class="row collapse postbox">
+	                    <h4> <?php  _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4>
+	                    <div class="row">
 	                        <div class="large-6 columns">
 	                        	<label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * </small></label>
 	                            <?php if( $user_edit ) { ?>
@@ -643,7 +643,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                        	</div>
 	                        	</fieldset>
 	                        </div>
-	                        <div class="large-6 columns">
+	                        <div class="large-6 column">
 	                        	<?php $attachments = array();
 		                        if ( isset( $post->ID ) ) {
 		                            $attachments = get_posts( array(
@@ -656,7 +656,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            <div class="inside">
 	                                <div class="row collapse" id="attachment-container">
 	                                    <?php if( $user_edit ) { ?>
-	                                        <a href="#" class="button push-1" id="add_pm_attachment"><?php _e('Add Docs'); ?></a>
+	                                        <a href="#" class="button right" id="add_pm_attachment"><?php _e('Add Docs'); ?></a>
 	                                    <?php } ?>
 	                                    <div class="scroll-height">
 	                                    	<table>
@@ -701,13 +701,13 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 	                            </div>
 	                        	
 	                        </div>
-	                        <div class="row collapse right">
-	                        	<button class="mybutton " type="submit" id="save-task">Save task</button>
+	                        <div class="large-12 columns">
+	                        	<button class="mybutton right" type="submit" id="save-task">Save task</button>
 	                        </div>
 	                    </div>
 	            		
 	                </form>
-                </fieldset>
+
             <a class="close-reveal-modal">×</a>
             </div>
 
