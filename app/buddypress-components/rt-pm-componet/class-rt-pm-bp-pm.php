@@ -29,6 +29,10 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
 			$this->hooks();
 
             add_action( 'wp_ajax_render_project_slide_panel', array( $this, 'render_project_slide_panel' ), 10 );
+
+            add_action( 'bp_activity_filter_options', array( $this, 'rt_pm_activity_filter_options' ), 10 );
+            add_action( 'bp_member_activity_filter_options', array( $this, 'rt_pm_activity_filter_options' ), 10 );
+
         }
         
         function includes() {
@@ -100,9 +104,25 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
             wp_send_json( $data );
 
         }
-		
-		
-    
+
+        /**
+         * Add filters for crm activity types to Show dropdowns.
+         *
+         * @since BuddyPress (2.0.0)
+         */
+        function rt_pm_activity_filter_options() {
+            global $rt_pm_task, $rt_pm_project;
+            ?>
+
+            <option value="<?php echo $rt_pm_project->post_type ?>"><?php _e( 'Project', RT_PM_TEXT_DOMAIN ) ?></option>
+            <option value="<?php echo  $rt_pm_task->post_type ?>"><?php _e( 'Task', RT_PM_TEXT_DOMAIN ) ?></option>
+
+        <?php
+        }
+
+
+
+
     }
     
 }

@@ -130,10 +130,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $args = array(
                 'action'=> $action,
                 'content' =>  !empty( $post->post_content ) ? $post->post_content.$mentioned_user : $post->post_title.$mentioned_user,
-                'component' => $this->post_type,
+                'component' => 'rt_biz',
                 'item_id' => $post->ID,
                 'secondary_item_id' => get_current_blog_id(),
-                'type' => 'rt_biz',
+                'type' => $this->post_type,
 
             );
             $activity_id = bp_activity_add( $args );
