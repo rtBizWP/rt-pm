@@ -70,13 +70,13 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                     }
                                     ?></div>
                                 <div><strong><?php _e('Project Manager : '); ?></strong><?php
-                                    $pm = get_post_meta(get_the_ID(), 'project_manager', true);
+                                    $pm_wp_user_id = get_post_meta(get_the_ID(), 'project_manager', true);
                                     //echo isset($pm->display_name)?$pm->display_name:"";
-                                    echo get_post_field( 'post_title', $pm );
+                                    echo rt_get_user_displayname( $pm_wp_user_id );
                                     ?></div>
                                 <div><strong><?php _e('Business Manager : '); ?></strong><?php
-                                    $bm =  get_post_meta(get_the_ID(), 'business_manager', true);
-                                    echo !empty($bm) ? get_post_field( 'post_title', $bm ) : "";
+                                    $bm_wp_user_id =  get_post_meta(get_the_ID(), 'business_manager', true);
+                                    echo !empty( $bm_wp_user_id ) ? rt_get_user_displayname( $bm_wp_user_id ) : "";
                                     ?></div>
                                 <br />
                                 <div><strong><?php _e('Created on : '); ?></strong><?php

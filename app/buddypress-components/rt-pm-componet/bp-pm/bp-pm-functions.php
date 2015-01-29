@@ -296,12 +296,15 @@ function rt_pm_render_bdm_selectbox( $business_manager ){ ?>
 
         if (!empty( $employees )) {
             foreach ($employees as $bm) {
-                if ($bm->ID == $business_manager) {
+
+                $employee_wp_user_id = rt_biz_get_wp_user_for_person( $bm->ID );
+
+                if ( $employee_wp_user_id == $business_manager) {
                     $selected = " selected";
                 } else {
                     $selected = " ";
                 }
-                echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->post_title . '</option>';
+                echo '<option value="' . $employee_wp_user_id . '"' . $selected . '>' . rt_get_user_displayname( $employee_wp_user_id ) . '</option>';
             }
         }
         ?>
@@ -321,14 +324,47 @@ function rt_pm_render_task_assignee_selectbox( $task_assignee ){ ?>
         $employees = rt_biz_get_employees();
         if (!empty( $employees )) {
             foreach ( $employees as $author) {
-                if ($author->ID == $task_assignee ) {
+
+                $employee_wp_user_id = rt_biz_get_wp_user_for_person( $author->ID );
+
+                if ( $employee_wp_user_id == $task_assignee ) {
                     $selected = " selected";
                 } else {
                     $selected = " ";
                 }
-                echo '<option value="' . $author->ID . '"' . $selected . '>' . $author->post_title . '</option>';
+                echo '<option value="' . $employee_wp_user_id . '"' . $selected . '>' . rt_get_user_displayname( $employee_wp_user_id ) . '</option>';
             }
         }
         ?>
     </select>
 <?php }
+
+
+
+/**
+ * Render BDM selectbox
+ * @param $business_manager
+ */
+function rtpm_render_manager_selectbox( $project_manager ){ ?>
+    <select name="post[project_manager]" >
+        <option value=""><?php _e( 'Select PM' ); ?></option>
+        <?php
+        $employees = rt_biz_get_employees();
+
+        if (!empty( $employees )) {
+            foreach ($employees as $bm) {
+
+                $employee_wp_user_id = rt_biz_get_wp_user_for_person( $bm->ID );
+
+                if ( $employee_wp_user_id == $project_manager ) {
+                    $selected = " selected";
+                } else {
+                    $selected = " ";
+                }
+                echo '<option value="' . $employee_wp_user_id . '"' . $selected . '>' . rt_get_user_displayname( $employee_wp_user_id ) . '</option>';
+            }
+        }
+        ?>
+    </select>
+<?php }
+

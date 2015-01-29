@@ -550,16 +550,14 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                             case "rtpm_assignee":
 								if(!empty($temp['post_assignee'])) { // Need to check replaced url 
                                    // $user = get_user_by('id', $temp['post_assignee']);
-                                    //$url = $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
-                                    //$url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
+                                    $url = $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
+                                    $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
 
-                                    $employee_name = get_post_field( 'post_title', $temp['post_assignee'] );
 
-                                    $url = add_query_arg( array( 'id'=>$temp['post_assignee'], 'action'=>'edit' ), get_people_root_url().Rt_User_Category::$employees_category_slug ) ;
                                     if ($this->user_edit){
-                                        echo '<td '.$attributes.'><a target="_blank" href="'.$url.'">'. $employee_name .'</a>';
+                                        echo '<td '.$attributes.'><a target="_blank" href="'.$url.'">'. rt_get_user_displayname( $temp['post_assignee'] ) .'</a>';
                                     }else{
-                                        echo '<td '.$attributes.'>'.$employee_name;
+                                        echo '<td '.$attributes.'>'.rt_get_user_displayname( $temp['post_assignee'] );
                                     }
                                 } else {
                                     echo '<td '.$attributes.'>-';

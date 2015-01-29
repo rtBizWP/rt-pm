@@ -283,16 +283,14 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 								break;
                             case "rtpm_assignee":
 								if(!empty($temp['post_assignee'])) {
-                                  //  $user = get_user_by('id', $temp['post_assignee']);
-                                   // $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
-                                  //  $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
-                                    $employee_name = get_post_field( 'post_title', $temp['post_assignee'] );
-                                    $url = admin_url('post.php');
-                                    $url = add_query_arg( array('post' => $temp['post_assignee'], 'action' => 'edit' ),  $url );
+
+                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
+                                    $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
+
                                     if ($this->user_edit){
-                                        echo '<td '.$attributes.'><a href="'.$url.'">'.$employee_name.'</a>';
+                                        echo '<td '.$attributes.'><a href="'.$url.'">'.rt_get_user_displayname( $temp['post_assignee'] ).'</a>';
                                     }else{
-                                        echo '<td '.$attributes.'>'. $employee_name;
+                                        echo '<td '.$attributes.'>'. rt_get_user_displayname( $temp['post_assignee'] );
                                     }
                                 } else {
                                     echo '<td '.$attributes.'>-';

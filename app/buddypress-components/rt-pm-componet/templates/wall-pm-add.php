@@ -196,7 +196,7 @@ if( !empty( $results_client ) ) {
         <hr>
         <div class="columns small-12">
             <?php if( $user_edit ) {
-                $rt_pm_project->rt_render_manager_selectbox( $project_manager );
+                rtpm_render_manager_selectbox( $project_manager );
             } else {
                 if (!empty($results_member)) {
                     foreach ($results_member as $author) {

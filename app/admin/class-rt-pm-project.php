@@ -1786,7 +1786,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <div class="large-6 mobile-large-6 columns">
                                     <?php if( $user_edit ) {
 
-                                        $this->rt_render_manager_selectbox( $project_manager );
+                                        rtpm_render_manager_selectbox( $project_manager );
                                      } ?>
                                 </div>
                             </div>
@@ -2940,31 +2940,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		
 			return $orderby;
 		}
-
-
-        /**
-         * Render BDM selectbox
-         * @param $business_manager
-         */
-        function rt_render_manager_selectbox( $project_manager ){ ?>
-            <select name="post[project_manager]" >
-                <option value=""><?php _e( 'Select PM' ); ?></option>
-                <?php
-                $employees = rt_biz_get_employees();
-
-                if (!empty( $employees )) {
-                    foreach ($employees as $bm) {
-                        if ($bm->ID == $project_manager ) {
-                            $selected = " selected";
-                        } else {
-                            $selected = " ";
-                        }
-                        echo '<option value="' . $bm->ID . '"' . $selected . '>' . $bm->post_title . '</option>';
-                    }
-                }
-                ?>
-            </select>
-        <?php }
 
     }
 }
