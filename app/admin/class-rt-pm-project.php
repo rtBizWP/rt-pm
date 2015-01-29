@@ -1511,7 +1511,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 foreach ( $results_member as $author ) {
                     if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
-                            . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.$author->display_name.'</a>'
+                            . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.rt_get_user_displayname( $author->ID ) .'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
