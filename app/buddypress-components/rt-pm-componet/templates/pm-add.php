@@ -318,35 +318,8 @@ if( !empty( $results_organization ) ) {
 				<hr>
                 <div class="row collapse">
                     <?php if( $user_edit ) {
-                        rtpm_render_manager_selectbox
+                        rtpm_render_manager_selectbox( $project_manager );
 
-        /**
-         * Render BDM selectbox
-         * @param $business_manager
-         */
-        function rt_render_manager_selectbox( $project_manager ){ ?>
-            <select name="post[project_manager]" >
-                <option value=""><?php _e( 'Select PM' ); ?></option>
-                <?php
-                $employees = rt_biz_get_employees();
-
-                if (!empty( $employees )) {
-                    foreach ($employees as $bm) {
-
-                        $employee_wp_user_id = rt_biz_get_wp_user_for_person( $bm->ID );
-
-                        if ( $employee_wp_user_id == $project_manager ) {
-                            $selected = " selected";
-                        } else {
-                            $selected = " ";
-                        }
-                        echo '<option value="' . $employee_wp_user_id . '"' . $selected . '>' . rt_get_user_displayname( $employee_wp_user_id ) . '</option>';
-                    }
-                }
-                ?>
-            </select>
-        <?php }
-( $project_manager );
 						} else {
 							if (!empty($results_member)) {
                                 foreach ($results_member as $author) {
