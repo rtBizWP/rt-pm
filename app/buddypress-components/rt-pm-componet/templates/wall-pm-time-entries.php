@@ -23,6 +23,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
+    <input type="hidden" name="post[post_task_id]" value="<?php echo $task_id; ?>" />
 
 
     <div class="row">
@@ -39,25 +40,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
             <label for="Task">Task<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns">
-            <?php
-            echo '<select required="required" name="post[post_task_id]" id="task_id">';
-
-            $query = new WP_Query( array(
-                'post_type' => $rt_pm_task->post_type,
-                'no_found_rows' => true,
-            ));
-
-            $records = $query->posts;
-            if ( ! empty( $records ) ) {
-                foreach( $records as $rec ) {
-
-                    $selected = ( $rec->ID === intval( $task_id ) ) ? " selected='selected'" : '';
-                    echo "<option value='$rec->ID' $selected>$rec->post_title</option>";
-                }
-            }
-
-            echo '</select>';
-            ?>
+            <label for="Task"><?php echo get_post_field( 'post_title', $task_id ) ?></label>
         </div>
     </div>
     <div class="row rtpm-post-author-wrapper">
