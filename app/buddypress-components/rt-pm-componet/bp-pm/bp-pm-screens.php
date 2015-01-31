@@ -17,11 +17,15 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @package BuddyPress_Template_Pack
  * @since 1.6
  */
+/**
+ * Load 'project' activity page
+ */
 function bp_pm_screen() {
 
-    bp_core_load_template( 'members/single/home'  );	
+    if( bp_is_current_component( BP_PM_SLUG ) )
+        bp_core_load_template( 'members/single/home'  );
 }
-add_action( 'bp_screens', 'bp_hrm_screen' );
+add_action( 'bp_screens', 'bp_pm_screen' );
 
 function bp_pm_projects() { 
 	add_action('bp_template_content','load_projects_template');
