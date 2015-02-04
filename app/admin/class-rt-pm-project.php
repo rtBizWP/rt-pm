@@ -145,7 +145,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function convert_lead_to_project() {
 
-            global $rt_pm_bp_pm;
+            global $rt_pm_bp_pm, $wpdb;
 
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
@@ -160,9 +160,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_type'] = $this->post_type;
 			$project['post_status'] = 'new';
 			$project['post_content'] = $lead->post_content;
-			$project['post_date'] = current_time( 'mysql' );
-			$project['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+
             $project['post_parent'] = $lead_id;
+
+            $lead_index_tabel_name = rtcrm_get_lead_table_name();
+            $query = $wpdb->prepare( "SELECT * FROM  {$lead_index_tabel_name} WHERE post_id = %s", $lead_id );
+
+            $result = $wpdb->get_row( $query );
+
+            $project['post_date'] = $result->date_create_gmt;
+            $project['post_date_gmt'] = $result->date_create_gmt;
 
             $project_id = wp_insert_post( $project );
 
@@ -199,6 +206,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Project manager
             $data['project_manager'] = $lead->post_author;
+            $data['business_manager'] = $lead->post_author;
 
             // Pull external file to project
             $lead_ext_files = get_post_meta( $lead_id, 'lead_external_file' );
@@ -1674,14 +1682,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                             <span class="prefix" title="Create Date"><label>Create Date</label></span>
                                         </div>
                                         <div class="large-7 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                            <?php if( $user_edit ) { ?>
-                                                <input class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Create Date"
+                                                <input name="post[post_date]" type="text" placeholder="Select Create Date" readonly=""
                                                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                                       title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
+                                                       title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"/>
 
-                                            <?php } else { ?>
-                                                <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
-                                            <?php } ?>
                                         </div>
                                         <div class="large-1 mobile-large-1 columns">
                                             <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>

@@ -314,7 +314,7 @@ if( !empty( $results_organization ) ) {
 					</ul>
             </div>
             <div class="columns medium-6 small-12">
-                <h6><?php _e( 'Manager' ); ?></h6>
+                <h6><?php _e( 'Project Manager' ); ?></h6>
 				<hr>
                 <div class="row collapse">
                     <?php if( $user_edit ) {
@@ -435,14 +435,9 @@ if( !empty( $results_organization ) ) {
                     <label>Create Date</label>
                 </div>
                 <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                    <?php if( $user_edit ) { ?>
-                        <input class="datetimepicker moment-from-now" type="text"  name="post[post_date]"  placeholder="Select Create Date"
+                        <input  type="text"  name="post[post_date]" readonly=""  placeholder="Select Create Date"
                                value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                               title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>">
-
-                    <?php } else { ?>
-                        <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
-                    <?php } ?>
+                               title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"/>
                 </div>
             </div>
             <div class="column medium-6 small-12">
