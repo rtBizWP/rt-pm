@@ -37,6 +37,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
             do_action( 'rt_pm_init' );
 
             add_action( 'after_setup_theme', array( $this, 'init_pm_bp_component' ) );
+
+            add_action( 'shutdown', array( $this, 'rt_pm_remove_activation_option' ) );
 		}
 
         function init_pm_bp_component(){
@@ -127,11 +129,32 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		function init() {
 
-		}
+            $rt_pm_activated = get_option('rt_pm_activated');
+
+            if( !$rt_pm_activated )
+                return;
+
+            add_option('rt_pm_job_last_index', '3200');
+        }
 
 		function update_database() {
 			$updateDB = new RT_DB_Update( trailingslashit( RT_PM_PATH ) . 'index.php', trailingslashit( RT_PM_PATH_SCHEMA ) );
 			$updateDB->do_upgrade();
 		}
-	}
+
+        /**
+         * Remove flag option for plugin activation
+         */
+        function rt_pm_remove_activation_option(){
+
+            $rt_pm_activated = get_option('rt_pm_activated');
+
+            if( !$rt_pm_activated )
+                return;
+
+            delete_option('rt_pm_activated');
+
+        }
+
+    }
 }

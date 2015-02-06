@@ -14,23 +14,21 @@
 		
 		$meta_key = 'post_duedate';
 		$orderby = 'meta_value';
-		
-		if( isset( $_GET['orderby'] ) ) {
-            $meta_key = $args['orderby'] = $_GET['orderby'];
-            $order = $args['order'] =  $_GET['order'];
-    	}
-		if( $meta_key == "rt_project-type" ) {
 
-			$orderby = 'rt_project-type';
-		}
-		if( $meta_key == "title" ) {
+//		if( $meta_key == "rt_project-type" ) {
+//
+//			$orderby = 'rt_project-type';
+//		}
+//		if( $meta_key == "title" ) {
+//
+//			$orderby = 'title';
+//		}
+//		if( $meta_key == "date" ) {
+//
+//			$orderby = 'date';
+//		}
 
-			$orderby = 'title';
-		}
-		if( $meta_key == "date" ) {
 
-			$orderby = 'date';
-		}
 		
 
 		$offset = ( $paged - 1 ) * $posts_per_page;
@@ -44,12 +42,25 @@
 		
 		$args = array(
 			'post_type' => $rt_pm_project->post_type,
-			'orderby' => $orderby,
-			'order'      => $order,
 			'post_status' => $post_status,
 			'posts_per_page' => $posts_per_page,
 			'offset' => $offset
 		);
+
+
+
+		if( isset( $_GET['orderby'] ) ) {
+
+			$order_by = $_GET['orderby'];
+
+			$args['orderby'] = $order_by;
+			$args['order'] =  $_GET['order'];
+			if( $order_by == 'meta_value' ){
+
+				$args['meta_key'] = $_GET['meta_key'];
+			}
+
+		}
 
 
         if ( bp_is_current_action('projects') ) {
@@ -72,6 +83,13 @@
                     'orderby' => 'title',
                     'order' => 'asc'
             ),
+			array(
+                    'column_label' => __( 'Job Number', RT_PM_TEXT_DOMAIN ) ,
+                    'sortable' => true,
+                    'orderby' => 'meta_value',
+					'meta_key' => 'rt_pm_job_no',
+                    'order' => 'asc'
+            ),
             array(
                     'column_label' => __( 'Type', RT_PM_TEXT_DOMAIN ) ,
                     'sortable' => true,
@@ -91,18 +109,6 @@
                     'orderby' => 'business_manager',
                     'order' => 'asc'
             ),
-            /*array(
-                    'column_label' => __( 'Start Date', RT_PM_TEXT_DOMAIN ) ,
-                    'sortable' => true,
-                    'orderby' => 'date',
-                    'order' => 'asc'
-            ),
-            array(
-                    'column_label' => __( 'End Date', RT_PM_TEXT_DOMAIN ) ,
-                    'sortable' => true,
-                    'orderby' => 'post_duedate',
-                    'order' => 'asc'
-            ),*/
 
     	);
 		
@@ -128,16 +134,25 @@
                             <?php
                             if(  $column['sortable']  ) {
 
+								$query_sting = array( 'orderby' => $column['orderby'] );
+
+								if( isset( $column['meta_key'] ) )
+									$query_sting['meta_key'] = $column['meta_key'];
+
                                     if ( isset( $_GET['orderby'] ) && $column['orderby']  == $_GET['orderby'] ) {
                                        
                                         $current_order = $_GET['order'];
                                        
                                         $order = 'asc' == $current_order ? 'desc' : 'asc';
-                                        
-                                        printf( __('<a href="%s">%s <i class="fa fa-sort-%s"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => $order ) ) ), $column['column_label'], $order );
+
+										$query_sting['order'] = $order;
+
+                                        printf( __('<a href="%s">%s <i class="fa fa-sort-%s"></i> </a>'), esc_url( add_query_arg(  $query_sting  ) ), $column['column_label'], $order );
                                         
                                     }else{
-                                          printf( __('<a href="%s">%s <i class="fa fa-sort"></i> </a>'), esc_url( add_query_arg( array( 'orderby' => $column['orderby'] ,'order' => 'desc' ) ) ), $column['column_label'] );
+
+											$query_sting['order'] = 'desc';
+                                          printf( __('<a href="%s">%s <i class="fa fa-sort"></i> </a>'), esc_url( add_query_arg( $query_sting ) ), $column['column_label'] );
                                     }
                                   
                             }else{
@@ -197,11 +212,16 @@
 							</div>
                                  <?php } ?>
 							</td>
+
+							<td>
+								<?php echo get_post_meta( $get_the_id, 'rt_pm_job_no', true ); ?>
+							</td>
+
 							<td>
 								<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>
 							</td>
 							<td><?php if ( ! empty( $project_manager_info->user_nicename ) ) echo $project_manager_nicename; ?></td>
-							<td><?php if ( ! empty(  $business_manager_id ) ) echo get_post_field( 'post_title', $business_manager_id ); ?></td>
+							<td><?php if ( ! empty(  $business_manager_id ) ) echo rt_get_user_displayname( $business_manager_id ); ?></td>
 							<!--<td><?php echo get_the_date('d-m-Y');?></td>
 							<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td> -->
 						</tr>

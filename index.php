@@ -80,6 +80,17 @@ function rt_pm_init() {
 add_action( 'rt_biz_init', 'rt_pm_init', 1 );
 
 add_action( 'init', 'rt_pm_timely_notification_init' );
+
+/**
+ * Add flag option Activated_Plugin on plugin activation
+ */
+function rt_pm_activate() {
+
+	add_option('rt_pm_activated' , 'rt_pm');
+
+}
+register_activation_hook( __FILE__, 'rt_pm_activate' );
+
 function rt_pm_timely_notification_init() {
 
 	global $rt_biz_notification_rules_model, $rt_pm_notification;

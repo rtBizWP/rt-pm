@@ -95,9 +95,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 $action = 'Opportunity to project conversion';
 
+                $this->rtpm_set_job_number( $post_id );
             } else if ( $operation_type == 'insert' ) {
 
                 $action = 'Project created';
+
+                $this->rtpm_set_job_number( $post_id );
             } else if(  $operation_type == 'update' ) {
 
                 $action = 'Project updated';
@@ -2944,6 +2947,22 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		
 			return $orderby;
 		}
+
+        /**
+         * Add automated job number when a project is created,
+         * @param $project_id
+         */
+        function rtpm_set_job_number( $project_id ){
+
+            $job_last_index = intval( get_option('rt_pm_job_last_index') );
+
+            update_post_meta( $project_id, 'rt_pm_job_no', $job_last_index );
+
+            $job_last_index++;
+
+            update_option('rt_pm_job_last_index', $job_last_index );
+
+        }
 
     }
 }

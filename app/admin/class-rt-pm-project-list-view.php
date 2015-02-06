@@ -47,16 +47,14 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                 <?php if( current_user_can( $editor_cap ) || get_current_user_id() == intval( get_the_author_meta('ID') ) ) { ?>
                                 <a href="<?php echo admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=" . get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                     <h2><?php
-                                        echo '#';
-                                        the_ID();
+                                        echo '#'.get_post_meta( get_the_ID(), 'rt_pm_job_no', true );
                                         echo ' : ';
                                         the_title();
                                         ?></h2>
                                 </a>
                             <?php }else { ?>
                                     <h2><?php
-                                        echo '#';
-                                        the_ID();
+                                        echo '#'.get_post_meta( get_the_ID(), 'rt_pm_job_no', true );
                                         echo ' : ';
                                         the_title();
                                         ?></h2>
