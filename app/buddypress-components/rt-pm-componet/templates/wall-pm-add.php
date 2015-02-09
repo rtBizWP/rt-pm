@@ -192,6 +192,21 @@ if( !empty( $results_client ) ) {
 
 
     <div class="row">
+        <div class="columns medium-6 small-12"/>
+        <h6> <?php _e("Contacts"); ?></h6>
+        <hr/>
+        <script>
+            var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
+        </script>
+        <?php if ( $user_edit ) { ?>
+            <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
+        <?php } ?>
+        <ul id="divProjectClientList">
+            <?php echo $subProjectClientHTML; ?>
+        </ul>
+    </div>
+
+    <div class="row">
         <h6> <?php _e( 'Project Manager' ); ?></h6>
         <hr>
         <div class="columns small-12">
@@ -213,21 +228,6 @@ if( !empty( $results_client ) ) {
             }
             ?>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="columns medium-6 small-12"/>
-        <h6> <?php _e("Contacts"); ?></h6>
-        <hr/>
-        <script>
-            var arr_project_client_user =<?php echo json_encode($arrProjectClient); ?>;
-        </script>
-        <?php if ( $user_edit ) { ?>
-            <input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_client_user_ac" />
-        <?php } ?>
-        <ul id="divProjectClientList">
-            <?php echo $subProjectClientHTML; ?>
-        </ul>
     </div>
 
     <div class="columns small-12">
