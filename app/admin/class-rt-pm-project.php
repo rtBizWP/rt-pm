@@ -74,9 +74,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'wp_ajax_archive_projects_listing_info', array( $this, 'archive_projects_listing' ) );
 			add_action( 'wp_ajax_nopriv_archive_projects_listing_info', array( $this, 'archive_projects_listing' ) );
 			
-			add_filter( 'posts_orderby', array( $this, 'pm_project_type_orderby' ), 10, 2 );    // Added the hack for sorting
-			//add_filter( 'posts_orderby', array( $this, 'pm_project_manager_orderby' ), 10, 2 ); // Added the hack for sorting
-			//add_filter( 'posts_orderby', array( $this, 'pm_business_manager_orderby' ), 10, 2 ); // Added the hack for sorting
+			add_filter( 'posts_orderby', array( $this, 'pm_project_list_orderby' ), 10, 2 );    // Added the hack for sorting
+
         }
 
         function project_add_bp_activity( $post_id, $operation_type ) {
@@ -2872,81 +2871,54 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		}
 
+
 		/**
-		 * pm_project_type_orderby
+		 * pm project_list custom sort
 		 *
 		 * @access public
 		 * @param  void
 		 * @return sql $orderby
 		 */
-		function pm_project_type_orderby( $orderby, $wp_query ) {
+		function pm_project_list_orderby( $orderby, $wp_query ) {
 			global $wpdb;
-		
-			if ( isset( $wp_query->query['orderby'] ) && 'rt_project-type' == $wp_query->query['orderby'] ) {
-				$orderby = "(
-					SELECT GROUP_CONCAT(name ORDER BY name ASC)
-					FROM $wpdb->term_relationships
-					INNER JOIN $wpdb->term_taxonomy USING (term_taxonomy_id)
-					INNER JOIN $wpdb->terms USING (term_id)
-					WHERE $wpdb->posts.ID = object_id
-					AND taxonomy = 'rt_project-type'
-					GROUP BY object_id
-				) ";
-				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+
+			if ( isset( $wp_query->query['orderby'] ) ) {
+
+                $orderby = $wp_query->query['orderby'];
+
+                switch(  $orderby ){
+                    case 'project_manager':
+                    case 'business_manager':
+                        $orderby = "(
+                            SELECT GROUP_CONCAT( display_name ORDER BY display_name ASC)
+                            FROM $wpdb->postmeta
+                            INNER JOIN $wpdb->users ON $wpdb->users.ID=$wpdb->postmeta.meta_value
+                            WHERE $wpdb->postmeta.meta_key = '$orderby'
+                            AND $wpdb->posts.ID = post_id
+                            GROUP BY $wpdb->users.display_name
+                        ) ";
+                        $orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+                        break;
+
+                    case 'rt_project-type':
+                        $orderby = "(
+                            SELECT GROUP_CONCAT(name ORDER BY name ASC)
+                            FROM $wpdb->term_relationships
+                            INNER JOIN $wpdb->term_taxonomy USING (term_taxonomy_id)
+                            INNER JOIN $wpdb->terms USING (term_id)
+                            WHERE $wpdb->posts.ID = object_id
+                            AND taxonomy = 'rt_project-type'
+                            GROUP BY object_id
+                        ) ";
+                        $orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
+                        break;
+                }
+
 			}
-		
+
 			return $orderby;
 		}
 		
-		/**
-		 * pm_project_manager_orderby
-		 *
-		 * @access public
-		 * @param  void
-		 * @return sql $orderby
-		 */
-		function pm_project_manager_orderby( $orderby, $wp_query ) {
-			global $wpdb;
-		
-			if ( isset( $wp_query->query['orderby'] ) && 'project_manager' == $wp_query->query['orderby'] ) {
-				$orderby = "(
-					SELECT GROUP_CONCAT( display_name ORDER BY display_name ASC) 
-					FROM $wpdb->postmeta
-					INNER JOIN $wpdb->users ON $wpdb->users.ID=$wpdb->postmeta.meta_value
-					WHERE $wpdb->postmeta.meta_key = 'project_manager'
-					AND $wpdb->posts.ID = post_id
-					GROUP BY $wpdb->users.display_name
-				) ";
-				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
-			}
-		
-			return $orderby;
-		}
-		
-		/**
-		 * pm_business_manager_orderby
-		 *
-		 * @access public
-		 * @param  void
-		 * @return sql $orderby
-		 */
-		function pm_business_manager_orderby( $orderby, $wp_query ) {
-			global $wpdb;
-		
-			if ( isset( $wp_query->query['orderby'] ) && 'business_manager' == $wp_query->query['orderby'] ) {
-				$orderby = "(
-					SELECT GROUP_CONCAT( display_name ORDER BY display_name ASC ) 
-					FROM $wpdb->postmeta
-					INNER JOIN $wpdb->users ON $wpdb->users.ID=$wpdb->postmeta.meta_value
-					WHERE $wpdb->postmeta.meta_key = 'business_manager'
-					AND $wpdb->posts.ID = post_id
-					GROUP BY $wpdb->users.display_name
-				) ";
-				$orderby .= ( 'ASC' == strtoupper( $wp_query->get('order') ) ) ? 'ASC' : 'DESC';
-			}
-		
-			return $orderby;
-		}
 
         /**
          * Add automated job number when a project is created,

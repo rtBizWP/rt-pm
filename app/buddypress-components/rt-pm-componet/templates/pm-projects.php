@@ -13,21 +13,6 @@
 		$attr = 'startdate';
 		
 		$meta_key = 'post_duedate';
-		$orderby = 'meta_value';
-
-//		if( $meta_key == "rt_project-type" ) {
-//
-//			$orderby = 'rt_project-type';
-//		}
-//		if( $meta_key == "title" ) {
-//
-//			$orderby = 'title';
-//		}
-//		if( $meta_key == "date" ) {
-//
-//			$orderby = 'date';
-//		}
-
 
 		
 
@@ -98,14 +83,14 @@
             ),
             array(
                     'column_label' => __( 'PM', RT_PM_TEXT_DOMAIN ) ,
-                    'sortable' => false,
+                    'sortable' => true,
                     'orderby' => 'project_manager',
                     'order' => 'asc'
                   
             ),
             array(
                     'column_label' => __( 'BDM', RT_PM_TEXT_DOMAIN ),
-                    'sortable' => false,
+                    'sortable' => true,
                     'orderby' => 'business_manager',
                     'order' => 'asc'
             ),
