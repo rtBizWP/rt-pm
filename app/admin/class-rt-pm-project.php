@@ -2882,7 +2882,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		function pm_project_list_orderby( $orderby, $wp_query ) {
 			global $wpdb;
 
-			if ( isset( $wp_query->query['orderby'] ) ) {
+			if ( isset( $wp_query->query['orderby'] ) && bp_is_current_component( BP_PM_SLUG )) {
 
                 $orderby = $wp_query->query['orderby'];
 
