@@ -134,7 +134,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
             if( !$rt_pm_activated )
                 return;
 
-            add_option('rt_pm_job_last_index', '3200');
+            update_option('rt_pm_job_last_index', '3200');
         }
 
 		function update_database() {
