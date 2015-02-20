@@ -388,3 +388,23 @@ function bp_save_time_entry(){
 
 }
 add_action( 'bp_actions', 'bp_save_time_entry' );
+
+/**
+ * Save project working hours
+ * @return bool|void
+ */
+function bp_save_working_hours(){
+
+    if( !bp_is_current_component( 'pm' ) )
+        return false;
+
+
+    if ( ! isset( $_POST['rt_pm_edit_work_hours_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_hours_nonce'], 'rt_pm_edit_work_hours' ) )
+        return;
+
+    $data = $_POST['post'];
+
+    update_post_meta( $data['project_id'], 'working_hours', $data['working_hours'] );
+
+}
+add_action('bp_actions', 'bp_save_working_hours');
