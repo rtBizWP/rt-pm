@@ -90,13 +90,13 @@ function load_projects_notifications_template() {
     include  RT_PM_BP_PM_PATH.'/templates/pm-projects.php';
 }
 
-function bp_pm_grantt(){
+function bp_pm_gantt(){
 
-    add_action('bp_template_content', 'load_project_grantt_admin_template' );
+    add_action('bp_template_content', 'load_project_gantt_admin_template' );
 }
 
-function load_project_grantt_admin_template(){
+function load_project_gantt_admin_template(){
 
-    include  RT_PM_BP_PM_PATH.'/templates/pm-grantt-admin.php';
+    include  RT_PM_BP_PM_PATH.'/templates/pm-gantt-admin.php';
 }
 ?>

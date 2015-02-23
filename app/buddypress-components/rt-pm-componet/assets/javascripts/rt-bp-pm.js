@@ -741,7 +741,7 @@ jQuery(document).ready(function($) {
     });
 
     // Remove occassion from list
-    $( document ).on( 'click', ".delete-multiple", function( e ) {
+    $( document ).on( 'click', "a.delete-multiple", function( e ) {
         $(this).parents('.collapse').remove();
     } );
 

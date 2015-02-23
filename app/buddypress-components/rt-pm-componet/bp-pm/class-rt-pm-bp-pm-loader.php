@@ -22,7 +22,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                  */
                 private $sub_nav_items;
                 static $projects_slug = 'projects';
-                static $grantt_admin = 'grantt';
+                static $gantt_admin = 'gantt';
                 private $menu_order = 92;
                 public function __construct() {
                 		global $rt_biz_options;
@@ -199,7 +199,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				);
 			}
 
-			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$grantt_admin );
+			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin );
 
 			if ( isset($_GET['rt_project_id']) && in_array( bp_current_action(), $project_detail_actions ) ){
 				
@@ -282,17 +282,17 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'position'        => 60,
                 );
 
-                $main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$grantt_admin);
+                $main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$gantt_admin);
 
-                $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$grantt_admin  ), $main_url ) );
+                $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$gantt_admin  ), $main_url ) );
                 // Add a few subnav items
                 $sub_nav[] = array(
-                    'name'            =>  __( 'Grant admin' ),
-                    'slug'            => self::$grantt_admin,
+                    'name'            =>  __( 'Gantt admin' ),
+                    'slug'            => self::$gantt_admin,
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_grantt',
+                    'screen_function' => 'bp_pm_gantt',
                     'position'        => 70,
                 );
 

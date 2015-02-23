@@ -33,7 +33,7 @@ if( isset( $project_working_days['occasions'] )  )
 <div class="row">
     <div class="small-12 medium-6 columns">
         <select name="post[working_hours]">
-            <?php for( $i = 1; $i < 25; $i+=0.25 ){ ?>
+            <?php for( $i = 1; $i <= 24 ; $i+=0.25 ){ ?>
                 <option <?php selected( $project_working_hours, $i ); ?> ><?php _e( $i ) ?></option>
             <?php } ?>
         </select>
@@ -88,7 +88,7 @@ if( isset( $project_working_days['occasions'] )  )
             </div>
         </div>
         <div class="row collapse">
-            <div class="small-8 medium-4 columns">
+            <div class="small-6 medium-4 columns">
 
                 <input type="text" name="post[occasion_name][]">
             </div>
@@ -108,7 +108,7 @@ if( isset( $project_working_days['occasions'] )  )
                 ?>
 
                 <div class="row collapse">
-                    <div class="small-8 medium-4 columns">
+                    <div class="small-6 medium-4 columns">
 
                         <input type="text" name="post[occasion_name][]" value=<?php _e( $occasion_name, RT_PM_TEXT_DOMAIN ) ?>>
                     </div>
@@ -119,7 +119,7 @@ if( isset( $project_working_days['occasions'] )  )
                     </div>
 
                     <div class="small-2 columns left">
-                        <a class="add-button add-multiple button"><i class="fa fa-plus"></i></a>
+                        <a class="add-button delete-multiple button"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
 
