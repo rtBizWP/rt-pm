@@ -54,7 +54,7 @@ if( isset( $project_working_days['occasions'] )  )
     </div>
 
      <div class="list-heading">
-            <div class="large-12 columns  >
+            <div class="large-12 columns">
                 <hr/><h6><?php _e( 'Non working days', RT_PM_TEXT_DOMAIN ) ?></h6><hr/>
             </div>
      </div>
