@@ -408,3 +408,35 @@ function bp_save_working_hours(){
 
 }
 add_action('bp_actions', 'bp_save_working_hours');
+
+/**
+ * Save project working days
+ * @return bool|void
+ */
+function bp_save_working_days(){
+
+    if( !bp_is_current_component( 'pm' ) )
+        return false;
+
+    if ( ! isset( $_POST['rt_pm_edit_work_days_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_days_nonce'], 'rt_pm_edit_work_days' ) )
+        return;
+
+
+    $data = $_POST['post'];
+
+    if( !isset( $data ) )
+        return false;
+
+    $working_days = array();
+
+    if( isset( $data['days'] ) )
+        $working_days['days'] = $data['days'];
+
+
+    if( isset( $data['occasion_name'] ) )
+        $working_days['occasions'] = array_combine( array_filter( $data['occasion_name'] ), array_filter( $data['occasion_date'] ) );
+
+    update_post_meta( $data['project_id'], 'working_days', $working_days );
+
+}
+add_action('bp_actions', 'bp_save_working_days');

@@ -214,6 +214,16 @@ jQuery(document).ready(function($) {
         });
     }
 
+    if( $(".datepicker").length > 0 ) {
+
+        $( document ).on( 'focus', ".datepicker", function() {
+            $( this ).datepicker( {
+                'dateFormat': 'dd/mm/yy'
+            } );
+        } );
+    }
+
+
     $(document).on("click", ".moment-from-now", function(e) {
         var oldDate = $(this).attr("title");
 
@@ -704,7 +714,38 @@ jQuery(document).ready(function($) {
         } );
 
     });
-	// Attachment section js end
+
+    // Add multiple occasion button
+    $('a.add-multiple').click(function(){
+
+        $input = $(this).parents('div.collapse').find('input');
+
+        var $emptyFields = $input.filter(function() {
+            // remove the $.trim if whitespace is counted as filled
+            return $.trim(this.value) === "";
+        });
+
+        if ( $emptyFields.length )
+            return false;
+
+
+        $element = $(this).parents('div.collapse').clone();
+
+        $element.find('a').removeClass('add-multiple').addClass('delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
+
+
+        $parent = $(this).parents('div.main').append( $element );
+
+        $input.val('');
+
+    });
+
+    // Remove occassion from list
+    $( document ).on( 'click', ".delete-multiple", function( e ) {
+        $(this).parents('.collapse').remove();
+    } );
+
+    // Attachment section js end
 	
 	function generate_document_ui( attachment, res ){
         
