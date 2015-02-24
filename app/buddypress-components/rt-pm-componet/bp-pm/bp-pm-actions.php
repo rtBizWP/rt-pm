@@ -434,9 +434,10 @@ function bp_save_working_days(){
 
 
     if( isset( $data['occasion_name'] ) ){
-        $combined = array();
 
         foreach($data['occasion_name'] as $index => $occasion_name) {
+
+            if ( empty( $occasion_name ) || empty( $data['occasion_date'][ $index ] ) ) continue;
 
             $working_days['occasions'][] = array(
                 'name'  => $occasion_name,
