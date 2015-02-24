@@ -433,8 +433,17 @@ function bp_save_working_days(){
         $working_days['days'] = $data['days'];
 
 
-    if( isset( $data['occasion_name'] ) )
-        $working_days['occasions'] = array_combine( array_filter( $data['occasion_name'] ), array_filter( $data['occasion_date'] ) );
+    if( isset( $data['occasion_name'] ) ){
+        $combined = array();
+
+        foreach($data['occasion_name'] as $index => $occasion_name) {
+
+            $working_days['occasions'][] = array(
+                'name'  => $occasion_name,
+                'date' =>$data['occasion_date'][ $index ]
+            );
+        }
+    }
 
     update_post_meta( $data['project_id'], 'working_days', $working_days );
 

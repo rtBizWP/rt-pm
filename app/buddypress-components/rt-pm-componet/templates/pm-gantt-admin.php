@@ -62,10 +62,10 @@ if( isset( $project_working_days['occasions'] )  )
     <div class="row">
         <div class="small-12 medium-6 columns">
 
-            <input type="checkbox" id="saturday" name="post[days][]" value="saturday" <?php echo in_array( 'saturday', $days ) ?  'checked="checked"' : ''; ?>>
+            <input type="checkbox" id="saturday" name="post[days][]" value="6" <?php echo in_array( '6', $days ) ?  'checked="checked"' : ''; ?>>
             <label for="saturday">Saturday</label>
 
-            <input type="checkbox" id="sunday" name="post[days][]" value="sunday" <?php echo in_array( 'sunday', $days ) ?  'checked="checked"' : ''; ?>>
+            <input type="checkbox" id="sunday" name="post[days][]" value="0" <?php echo in_array( '0', $days ) ?  'checked="checked"' : ''; ?>>
             <label for="sunday">Sunday</label>
 
         </div>
@@ -104,18 +104,18 @@ if( isset( $project_working_days['occasions'] )  )
         </div>
 
         <?php
-            foreach( $occasions as $occasion_name => $occasion_date ){
+            foreach( $occasions as  $occasion ){
                 ?>
 
                 <div class="row collapse">
                     <div class="small-6 medium-4 columns">
 
-                        <input type="text" name="post[occasion_name][]" value=<?php _e( $occasion_name, RT_PM_TEXT_DOMAIN ) ?>>
+                        <input type="text" name="post[occasion_name][]" value=<?php _e( $occasion['name'], RT_PM_TEXT_DOMAIN ) ?>>
                     </div>
 
                     <div class="small-4 medium-3 columns">
 
-                        <input type="text" placeholder="DD/MM/YYYY" class="datepicker" name="post[occasion_date][]" value=<?php _e( $occasion_date ) ?>>
+                        <input type="text" placeholder="DD/MM/YYYY" class="datepicker" name="post[occasion_date][]" value=<?php _e( $occasion['date'] ) ?>>
                     </div>
 
                     <div class="small-2 columns left">

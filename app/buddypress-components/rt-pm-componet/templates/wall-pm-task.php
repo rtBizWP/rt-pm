@@ -44,6 +44,7 @@ if( isset( $_GET["id"] ) ){
 //assign to
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
+$rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 ?>
 <form method="post"   action="">

@@ -485,6 +485,9 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
 
             //assign to
             $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
+
+            //Disable working days
+            $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
             ?>
 
             <?php if (isset($post->ID)){?>

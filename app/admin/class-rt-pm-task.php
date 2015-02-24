@@ -254,6 +254,58 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			die(0);
                     
                 }
+
+
+		/**
+		 * The days listed will not have work assigned to them and will have a greyed out background.
+		 * @param $project_id
+		 */
+		function disable_working_days( $project_id ){
+
+            $project_working_days = get_post_meta( $project_id, 'working_days' , true);
+
+            $days = array();
+            $occasions = array();
+
+            if( isset( $project_working_days['days'] ) )
+				$days = $project_working_days['days'];
+
+            if( isset( $project_working_days['occasions'] )  )
+				$occasions = array_column( $project_working_days['occasions'], 'date' );
+
+            ?>
+				<script>
+					// Disable working days and working hours
+					jQuery(document).ready(function($) {
+
+						var days_array =[<?php echo implode( ',', $days );?>];
+						var occasion_array = [<?php echo '"'.implode( '","', $occasions ).'"' ?>];
+
+						if ($(".datetimepicker").length > 0) {
+							$('.datetimepicker').datetimepicker({
+								dateFormat: "M d, yy",
+								timeFormat: "hh:mm TT",
+								beforeShowDay: function (date) {
+
+									var day = date.getDay();
+									if(  $.inArray( day, days_array ) !== -1  ){
+										return [false];
+									}
+
+									var string = jQuery.datepicker.formatDate('dd/mm/yy', date);
+									if($.inArray( string, occasion_array) !== -1 ){
+										return [false];
+									}
+
+									return [true];
+								}
+							}).attr('readonly','readonly'); ;
+						}
+					});
+				</script>
+		<?php
+
+		}
  
 
 	}
