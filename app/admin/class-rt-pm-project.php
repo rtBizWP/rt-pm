@@ -1251,6 +1251,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                             if( isset( $task_id ) )
                                 $rtpm_task_list->get_drop_down($task_id);
+                            else
+                                $rtpm_task_list->get_drop_down();
                             ?>
                         </div>
                         <div class="row collapse">

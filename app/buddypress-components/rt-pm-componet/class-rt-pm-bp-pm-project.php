@@ -924,6 +924,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                             $rtpm_task_list->prepare_items();
                             if( isset( $task_id ) )
                                 $rtpm_task_list->get_drop_down($task_id);
+                            else
+                                $rtpm_task_list->get_drop_down();
                             ?>
 							</div>
                         </div>
