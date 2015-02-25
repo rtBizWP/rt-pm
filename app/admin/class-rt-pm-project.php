@@ -155,7 +155,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         
 			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
 			$lead = get_post( $lead_id );       
-        
+
 			$project = array();
 			$project['post_title'] = $lead->post_title;
 			$project['post_author'] = $lead->post_author;
@@ -173,7 +173,28 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $project['post_date'] = $result->date_create_gmt;
             $project['post_date_gmt'] = $result->date_create_gmt;
 
-            $project_id = wp_insert_post( $project );
+            $project_id = @wp_insert_post( $project );
+
+            // Update lead status to win after converted to project
+            if( $project_id ){
+
+                $leadModel = new Rt_CRM_Lead_Model();
+
+                $args = array(
+                    'ID' => $lead_id,
+                    'post_status' => 'win',
+                );
+
+                @wp_update_post( $args );
+
+                $data = array(
+                    'post_status' => 'win',
+                );
+                $where = array( 'post_id' => $lead_id );
+
+                $leadModel->update_lead( $data, $where );
+            }
+
 
             $attachments = get_posts( array(
                 'post_parent' => $lead_id,
