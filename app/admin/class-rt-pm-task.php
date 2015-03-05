@@ -214,7 +214,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
                 
                                 
-                function search( $query, $args = array() ) {
+		function search( $query, $args = array() ) {
                    
 			$query_args = array(
 				'post_type' => $this->post_type,
@@ -228,20 +228,23 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $entity->posts;
 		}
                 
-                function get_autocomplate_task(){
-                    global $rt_pm_bp_pm;
-                    if (!isset($_POST["query"])) {
+		function get_autocomplate_task(){
+			global $rt_pm_bp_pm;
+
+			if (!isset($_POST["query"])) {
 				wp_die("Opss!! Invalid request");
 			}
 
 			$tasks = $this->search( $_POST['query'] );
 			$result = array();
+
 			foreach ( $tasks as $task ) {
-                            $project_id = get_post_meta( $task->ID, 'post_project_id', true );
-                           
-                            $project = get_post( $project_id );
-                         
-                            $url = add_query_arg( array( 'post_type' => $project->post_type, 'rt_project_id' => $project->ID, 'tab' => 'rt_project-task', 'rt_task_id' => $task->ID ), $rt_pm_bp_pm->get_component_root_url().  RT_PM_Bp_PM_Loader::$projects_slug );
+				$project_id = get_post_meta( $task->ID, 'post_project_id', true );
+
+				$project = get_post( $project_id );
+
+				$url = add_query_arg( array( 'post_type' => $project->post_type, 'rt_project_id' => $project->ID, 'tab' => 'rt_project-task', 'rt_task_id' => $task->ID ), $rt_pm_bp_pm->get_component_root_url().  RT_PM_Bp_PM_Loader::$projects_slug );
+
 				$result[] = array(
 					'label' => $task->post_title,
 					'id' => $task->ID,
@@ -253,14 +256,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			echo json_encode($result);
 			die(0);
                     
-                }
+		}
 
 
 		/**
 		 * The days listed will not have work assigned to them and will have a greyed out background.
 		 * @param $project_id
 		 */
-		function disable_working_days( $project_id ){
+		function disable_working_days( $project_id ) {
 
             $project_working_days = get_post_meta( $project_id, 'working_days' , true);
 
@@ -304,7 +307,36 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					});
 				</script>
 		<?php
+		}
 
+		public function rtpm_get_task_data( $author_id = 0, $task_status = 'any', $date_query = null ){
+
+
+			global $rt_crm_module;
+
+			$args = array(
+				'nopaging' => true,
+				'post_status' => array( $task_status ),
+				'post_type' => $this->post_type,
+				'no_found_rows' => true,
+			);
+
+			if( $author_id !== 0 )
+				$args['author'] = $author_id;
+
+
+			if( null !== $date_query ) {
+				$args['date_query'] = $date_query;
+			}
+
+			$test = new WP_Date_Query( $date_query  );
+			var_dump( $test );
+
+
+
+			$query = new WP_Query( $args );
+
+			return $query->posts;
 		}
  
 
