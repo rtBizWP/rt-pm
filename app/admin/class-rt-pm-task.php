@@ -28,6 +28,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'init', array( $this, 'init_task' ) );
             add_action( "save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
             add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
+			add_filter( 'posts_where', array( $this, 'rtcrm_generate_task_sql'), 10, 2 );
 		}
 
         function task_add_bp_activity( $post_id, $operation_type ) {
@@ -228,7 +229,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $entity->posts;
 		}
                 
-		function get_autocomplate_task(){
+		function get_autocomplate_task() {
 			global $rt_pm_bp_pm;
 
 			if (!isset($_POST["query"])) {
@@ -312,31 +313,42 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_get_task_data( $author_id = 0, $task_status = 'any', $date_query = null ){
 
 
-			global $rt_crm_module;
+			global $rt_crm_module, $wpdb;
 
 			$args = array(
 				'nopaging' => true,
 				'post_status' => array( $task_status ),
 				'post_type' => $this->post_type,
 				'no_found_rows' => true,
+				'meta_key' => 'post_duedate',
 			);
 
 			if( $author_id !== 0 )
 				$args['author'] = $author_id;
 
-
-			if( null !== $date_query ) {
-				$args['date_query'] = $date_query;
-			}
-
-			$test = new WP_Date_Query( $date_query  );
-			var_dump( $test );
-
-
-
 			$query = new WP_Query( $args );
 
 			return $query->posts;
+		}
+
+		public function rtcrm_generate_task_sql( $where, &$wp_query ) {
+			global $wp_query, $wpdb, $rtbp_todo, $bp;
+
+			if( bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task') ) {
+
+				$period = isset( $_REQUEST['period'] ) ? $_REQUEST['period'] : 'today';
+
+				$date_query = $rtbp_todo->rtbiz_prepare_date_query( $period );
+
+				$task_wp_date_query = new WP_Date_Query( $date_query  );
+				$date_sql = $task_wp_date_query->get_sql();
+
+
+
+				$where .= str_replace( $wpdb->posts.".post_date",  " STR_TO_DATE( ". $wpdb->postmeta.".meta_value, '%Y-%m-%d %H:%i') ", $date_sql );
+			}
+
+			return $where;
 		}
  
 
