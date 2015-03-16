@@ -656,7 +656,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-                wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
+				wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
 				$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
 				die();
@@ -1359,6 +1359,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					wp_delete_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
+				do_action( 'remove_lead', $_REQUEST[$post_type.'_id'] );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
                 die();
             }
