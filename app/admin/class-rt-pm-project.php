@@ -548,6 +548,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 p2p_create_connection( $this->post_type.'_to_'.$post_type, array( 'from' => $from, 'to' => $to ) );
             }
         }
+		
+		function connect_post_to_user( $post_type, $from = '', $to = '', $clear_old = false ) {
+            global $rt_person;
+			$rt_person->connect_post_to_entity( $post_type, $from, $to );
+        }
+		
+		function remove_post_from_user( $post_type, $from = '') {
+            global $rt_person;
+			$rt_person->clear_post_connections_to_entity( $post_type, $from );
+        }
 
         /**
          * Delete relationship between project and task
@@ -737,6 +747,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     );
                     $post_id = @wp_update_post( $post );
                     $rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
+					
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+					
+					
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
