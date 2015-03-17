@@ -332,6 +332,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
                     $operation_type = 'update';
 
                 }else{
@@ -349,6 +355,12 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
                     $_REQUEST["new"]=true;
                     $newTask['post_id']= $post_id;
                     $operation_type = 'insert';
