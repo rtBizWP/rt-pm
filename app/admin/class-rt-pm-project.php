@@ -548,6 +548,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 p2p_create_connection( $this->post_type.'_to_'.$post_type, array( 'from' => $from, 'to' => $to ) );
             }
         }
+		
+		function connect_post_to_user( $post_type, $from = '', $to = '', $clear_old = false ) {
+            global $rt_person;
+			$rt_person->connect_post_to_entity( $post_type, $from, $to );
+        }
+		
+		function remove_post_from_user( $post_type, $from = '') {
+            global $rt_person;
+			$rt_person->clear_post_connections_to_entity( $post_type, $from );
+        }
 
         /**
          * Delete relationship between project and task
@@ -656,7 +666,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             //Trash action
             if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-                wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
+				wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
 				$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
 				die();
@@ -737,6 +747,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     );
                     $post_id = @wp_update_post( $post );
                     $rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
+					
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+					
+					
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
@@ -757,6 +776,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     foreach ( $data as $key=>$value ) {
                         update_post_meta( $post_id, $key, $value );
                     }
+					
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+					
                     $_REQUEST["new"]=true;
                     $newTask['post_id']= $post_id;
                     $operation_type = 'insert';
@@ -1359,6 +1386,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					wp_delete_post( $t );
 				}
 				$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
+				do_action( 'remove_lead', $_REQUEST[$post_type.'_id'] );
 				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-all-'.$post_type ) . '"; </script> ';
                 die();
             }

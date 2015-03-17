@@ -23,6 +23,7 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_R
 		wp_delete_post( $t );
 	}
 	$rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
+	do_action( 'remove_lead', $_REQUEST[$post_type.'_id'] );
 	echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
     die();
 }
