@@ -334,7 +334,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtcrm_generate_task_sql( $where, &$wp_query ) {
 			global $wp_query, $wpdb, $rtbp_todo, $bp;
 
-			if( bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task') ) {
+			if( bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task')  && false !== strpos( $where, 'post_duedate') ) {
 
 				$period = isset( $_REQUEST['period'] ) ? $_REQUEST['period'] : 'today';
 
@@ -349,6 +349,44 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			}
 
 			return $where;
+		}
+
+		public function rtpm_overdue_task_count( $project_id ) {
+			global $wpdb;
+
+			$result = $this->rtpm_get_projects_task_ids( $project_id );
+
+			$task_ids = $result->posts;
+
+			$task_count = count( $task_ids );
+
+			$placeholders = array_fill( 0, $task_count, '%d' );
+
+			$format = implode( ', ', $task_ids );
+
+			$current_date = gmdate('Y-m-d');
+
+
+			$query = "SELECT COUNT(meta_id) FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) < NOW()";
+
+			$overdue_task = $wpdb->get_var( $query );
+
+			return $overdue_task;
+		}
+
+		public function rtpm_get_projects_task_ids( $project_id ) {
+
+			$args = array(
+				'nopaging' => true,
+				'post_type' => $this->post_type,
+				'meta_key' => 'post_project_id',
+				'meta_value' => $project_id,
+				'fields' => 'ids',
+			);
+
+			$query = new WP_Query( $args );
+
+			return $query;
 		}
  
 
