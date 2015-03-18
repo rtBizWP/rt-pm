@@ -372,18 +372,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_overdue_task_count( $project_id ) {
 			global $wpdb;
 
-			$result = $this->rtpm_get_projects_task_ids( $project_id );
-
-			$task_ids = $result->posts;
-
-			$task_count = count( $task_ids );
-
-			$placeholders = array_fill( 0, $task_count, '%d' );
+			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
 
 			$format = implode( ', ', $task_ids );
-
-			$current_date = gmdate('Y-m-d');
-
 
 			$query = "SELECT COUNT(meta_id) FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) < NOW()";
 
@@ -453,7 +444,24 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$query = new WP_Query( $args );
 
-			return $query;
+			return $query->posts;
+
+		}
+
+		public function rtpm_task_chart_date_range( $project_id ) {
+			global $wpdb;
+
+			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
+
+			$format = implode( ', ', $task_ids );
+
+			$query = "SELECT MIN( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS start_date, MAX( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS end_date  FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate'";
+
+			var_dump( $query );
+
+			$result = $wpdb->get_row( $query );
+
+			var_dump( $result );
 		}
 
 	}
