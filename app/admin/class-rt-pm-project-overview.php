@@ -97,6 +97,12 @@ class Rt_Pm_Project_Overview {
                                 <div>
                                     <?php echo $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?>
                                 </div>
+                                <div>
+                                    <?php  echo $rt_pm_task->rtpm_open_task_count( $project->ID ) ?>
+                                </div>
+                                <div>
+                                    <?php  echo $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?>
+                                </div>
                             </div>
                         </div>
                     </li>
