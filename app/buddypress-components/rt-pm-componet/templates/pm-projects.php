@@ -72,7 +72,7 @@
                     'column_label' => __( 'Job Number', RT_PM_TEXT_DOMAIN ) ,
                     'sortable' => true,
                     'orderby' => 'meta_value',
-					'meta_key' => 'rt_pm_job_no',
+					'meta_key' => 'rtpm_job_no',
                     'order' => 'asc'
             ),
             array(
@@ -200,7 +200,7 @@
 							</td>
 
 							<td>
-								<?php echo get_post_meta( $get_the_id, 'rt_pm_job_no', true ); ?>
+								<?php echo get_post_meta( $get_the_id, 'rtpm_job_no', true ); ?>
 							</td>
 
 							<td>
