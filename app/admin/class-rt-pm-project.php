@@ -359,7 +359,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$args = array(
 				'post_type' => $this->post_type,
                 'post_parent' => $lead_id,
-				'post_status' => array('active' ,'publish', 'pending', 'inherit', 'trash')
+				'post_status' => array('new','active' ,'publish', 'pending', 'inherit', 'trash')
             );
 			$projects_array = get_children( $args, ARRAY_A );
 			return $projects_array;
