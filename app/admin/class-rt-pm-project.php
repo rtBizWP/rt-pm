@@ -352,6 +352,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             return false;
 
         }
+		
+		function get_opportunity_projects( $lead_id ){
+			$args = array(
+				'post_type' => $this->post_type,
+                'post_parent' => $lead_id,
+				'post_status' => array('new','active' ,'publish', 'pending', 'inherit', 'trash')
+            );
+			$projects_array = get_children( $args, ARRAY_A );
+			return $projects_array;
+		}
 
 		function register_custom_pages() {
             $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );

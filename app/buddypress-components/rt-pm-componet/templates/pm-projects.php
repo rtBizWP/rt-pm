@@ -1,5 +1,5 @@
 <?php
-	global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query;
+	global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query,$rt_person, $wp_roles;;
 	
 	if (isset($_GET['rt_project_id']) || isset($_GET['post_type']) && ($_GET['action'] != 'archives')){
 		$rt_pm_bp_pm_project->custom_page_ui();
@@ -104,12 +104,17 @@
 		?>
         <div class="list-heading">
 		    <div class="large-10 columns list-title">
-		        <h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
+				<?php if( bp_is_current_action('resources') ) { ?>
+					<h4><?php _e( 'Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
+				<?php }else{ ?>
+					<h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
+				<?php } ?>
 		    </div>
 		    <div class="large-2 columns">
 		       
 		    </div>
 		</div>
+		<?php if( !bp_is_current_action('resources') ) { ?>
 		<table class="responsive">
 			<thead>
 				<tr>
@@ -193,7 +198,7 @@
 								printf( __('<a class="hidden-for-small-only" href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'post_type' =>'rt_project','tab' => 'rt_project-details' ,'action'=>'view' ), $rt_pm_bp_pm->get_component_root_url().'details' ) ) );
 								printf( __('<span class="hidden-for-small-only"> | </span><a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ).'</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=> $archive ) ) ) );
 								if( bp_is_current_action('projects') )
-									printf( __('<span class="hidden-for-small-only"> | </span><a class="hidden-for-small-only deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
+									//printf( __('<span class="hidden-for-small-only"> | </span><a class="hidden-for-small-only deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 								?>
 							</div>
                                  <?php } ?>
@@ -223,6 +228,52 @@
 				?>
 			</tbody>
 		</table>
+	<?php } else { 
+		$page = max( 1, get_query_var('paged') );
+        $args = array(
+                'post_type' => $rt_person->post_type,
+                'post_status' => 'any',
+                'posts_per_page' => 20,
+                'paged' => $page,
+                      );
+		$wp_query = new WP_Query();
+        $wp_query->query( $args );
+								
+		?>
+<div class="rt-main-resources-container">
+	<div class="rt-left-container">
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<?php _e( 'Project Resources', RT_PM_TEXT_DOMAIN ); ?>
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+				while ( $wp_query->have_posts() ) : $wp_query->the_post(); 
+                        $people = $wp_query->post;
+				?>
+			<tr>
+				<td>
+                    <?php if( !empty( $people->post_title ) ) {
+                            echo $people->post_title;
+                            }else{
+                            $person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
+                            if( !empty( $person_wp_user_id ) ){
+                            echo rt_get_user_displayname( $person_wp_user_id );
+                        }
+                    } ?>
+                </td>
+			</tr>
+			<?php endwhile; ?>
+			</tbody>
+		</table>
+	</div>
+	<div class="rt-right-container"></div>
+</div>
+		<?php } ?>
 		<?php /*if ( $max_num_pages > 1 ) { ?>
 		<ul id="projects-pagination"><li id="prev"><a class="page-link"> &laquo; Previous</a></li><li id="next"><a class="page-link next">Next &raquo;</a></li></ul>
 		<?php } */

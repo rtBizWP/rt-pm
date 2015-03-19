@@ -198,6 +198,17 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 10,
 				);
 			}
+			
+			// Resources
+			
+//			$sub_nav[] = array(
+//					'name'            =>  __( 'Resources' ),
+//					'slug'            => 'resources',
+//					'parent_url'      => $people_link,
+//					'parent_slug'     =>  $this->id,
+//					'screen_function' => 'bp_pm_projects',
+//					'position'        => 10,
+//				);
 
 			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin );
 
@@ -324,7 +335,12 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		                    'name' =>  'Archives',
 		                    'slug'  => 'archives',
 		                    'screen_function' => 'bp_pm_projects',
-		                )               
+		                ),
+//						array(
+//		                    'name' =>  'Resources',
+//		                    'slug'  => 'resources',
+//		                    'screen_function' => 'bp_pm_projects',
+//		                )
 		            );
 		
 					// Add main Settings menu
