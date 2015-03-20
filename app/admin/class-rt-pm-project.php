@@ -57,6 +57,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
+			add_action( 'wp_ajax_rtpm_get_resources_calender', array( $this, 'rtpm_get_resources_calender_ajax' ) );
             add_action( 'wp_ajax_rtpm_remove_attachment', array( $this, 'attachment_remove_ajax') );
 
 			// CRM Lead to PM Project - Link Hook
@@ -77,6 +78,28 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_filter( 'posts_orderby', array( $this, 'pm_project_list_orderby' ), 10, 2 );    // Added the hack for sorting
 
         }
+		
+		function rtpm_get_resources_calender_ajax(){
+			
+			if(isset($_POST['date'])){
+				$date = $_POST['date'];
+			}
+			if(isset($_POST['flag'])){
+				$flag = $_POST['flag'];
+			}
+			if( $flag == "prev" ){
+				// get date before 7 days
+				$date_object = date_create( $date );
+				$start = date_timestamp_get( $date_object );
+				$date = date('Y-m-d', strtotime("-9 day", $start));
+			}
+			$dates = rt_get_next_dates( $date );
+			$first_date = $dates[0];
+			$last_date = $dates[count($dates)-1];
+			$html = rt_create_resources_calender( $dates );
+			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
+			die;
+		}
 
         function project_add_bp_activity( $post_id, $operation_type ) {
 

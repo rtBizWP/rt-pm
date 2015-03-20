@@ -41,6 +41,81 @@ function pm_pagination( $totalPage, $page ){
     }
 }
 
+function rt_get_next_dates( $date ){
+		$date_object = date_create( $date );
+		$start = date_timestamp_get( $date_object );
+		$dates=array();
+		for($i = 0; $i<=9; $i++)
+		{
+			array_push($dates,date('Y-m-d', strtotime("+$i day", $start)));
+		}
+		return $dates;
+}
+
+function rt_create_resources_calender( $dates ){
+	global $rt_person;
+	$page = max( 1, get_query_var('paged') );
+        $args = array(
+                'post_type' => $rt_person->post_type,
+                'post_status' => 'any',
+                'posts_per_page' => 20,
+                'paged' => $page,
+                      );
+		$wp_query = new WP_Query();
+        $wp_query->query( $args );
+		$table_html = '<thead><tr>';
+					foreach ( $dates as $key => $value ) {
+					$table_html .= '<td>'.date_format(date_create($value),"d M").'</td>';
+					}
+		$table_html .= '</tr></thead><tbody>';
+				while ( $wp_query->have_posts() ) : $wp_query->the_post(); 
+                        $people = $wp_query->post;
+		$table_html .= '<tr>';
+				foreach ( $dates as $key => $value ) {
+					$is_weekend = rt_isWeekend( $value);
+					if($is_weekend){
+						$weekend_class = "rt-weekend";
+					}else{
+						$weekend_class = "";
+					}
+		$table_html .= '<td class="'.$weekend_class.'">';
+					if( !$is_weekend ){
+						$tasks_array = rt_get_person_task($people->ID,$value);
+						$table_html .= count($tasks_array);
+                    } 
+        $table_html .= '</td>';
+			}
+		$table_html .=	'</tr>';
+			endwhile;
+		$table_html .=	'</tbody>';
+		return $table_html;
+}
+
+function rt_get_person_task($person_id,$date){
+	global $rt_pm_task, $rt_person;
+	// get month, year, day by exploading
+	$date_array = explode("-",$date);
+	$args = array(
+                'post_type' => $rt_pm_task->post_type,
+                'post_status' => 'any',
+                'connected_type' => $rt_pm_task->post_type . '_to_' . $rt_person->post_type,
+                'connected_items' => $person_id,
+                'nopaging' => true,
+                'suppress_filters' => false,
+				'year' => $date_array[0],
+				'monthnum' => $date_array[1],
+				'day' => $date_array[2],
+                );
+	$wp_query = new WP_Query();
+    $wp_query->query( $args );
+	wp_reset_postdata();
+	return $wp_query->posts;
+}
+
+function rt_isWeekend($date) {
+    return (date('N', strtotime($date)) >= 6);
+}
+
 function pm_get_attachment_data(){
   
     $meta = get_post( $_POST['attachment_id'] );

@@ -68,6 +68,35 @@ jQuery(document).ready(function($) {
     } catch (e) {
 
     }
+	
+	// get previous or next calender on resources page
+	
+	jQuery('.rtpm-get-calender').click( function(){
+		var date = jQuery(this).data("date");
+		var flag = jQuery(this).data("flag");
+		jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajaxurl,
+            data: {
+                'action': 'rtpm_get_resources_calender',
+                'date': date,
+                'flag': flag,
+            },
+            success: function (data) {
+                if (data.fetched) {
+                   jQuery( "#rtpm-resources-calender" ).empty();
+				   jQuery( "#rtpm-resources-calender" ).append( data.html );
+				   jQuery('#rtpm-get-next-calender').data("date",data.nextdate);
+				   jQuery('#rtpm-get-prev-calender').data("date",data.prevdate);
+                } else {
+
+                }
+            }
+
+        });
+		
+	});
 
     //autocomplete project organization
     try {
