@@ -81,7 +81,15 @@ function rt_create_resources_calender( $dates ){
 		$table_html .= '<td class="'.$weekend_class.'">';
 					if( !$is_weekend ){
 						$tasks_array = rt_get_person_task($people->ID,$value);
-						$table_html .= count($tasks_array);
+						$table_html .= '<div class="rtpm-show-tooltip">'.count($tasks_array);
+						if(!empty($tasks_array)){
+							$table_html .= '<span class="rtpm-task-info-tooltip"><ul>';
+							foreach ( $tasks_array as $key => $task ) {
+								$table_html .= '<li><a href="?rt_task_id='.$task->ID.'">'.$task->post_title.'</a></li>';
+							}
+							$table_html .= '</ul></div>';
+						}
+						$table_html .= '</div>';
                     } 
         $table_html .= '</td>';
 			}

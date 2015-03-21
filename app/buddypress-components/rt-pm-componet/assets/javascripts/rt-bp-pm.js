@@ -89,6 +89,7 @@ jQuery(document).ready(function($) {
 				   jQuery( "#rtpm-resources-calender" ).append( data.html );
 				   jQuery('#rtpm-get-next-calender').data("date",data.nextdate);
 				   jQuery('#rtpm-get-prev-calender').data("date",data.prevdate);
+				   loadhoverelement();
                 } else {
 
                 }
@@ -97,7 +98,28 @@ jQuery(document).ready(function($) {
         });
 		
 	});
-
+	
+	// show resources tooltip
+	loadhoverelement();
+	function loadhoverelement(){
+		jQuery( ".rtpm-show-tooltip" ).hover(
+				function( e ) {
+				var parentoffset = jQuery( '.rt-right-container' ).offset();
+				jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
+				}, function() {
+					//var tooltip = jQuery( this ).parent().find( '.rtpm-task-info-tooltip' );
+				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
+				}
+			);
+	
+		jQuery('#rtpm-resources-calender tbody td').mouseout( function(){
+			
+			//jQuery( this ).find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
+			
+		});
+	
+	}
+	
     //autocomplete project organization
     try {
         if (arr_project_organization != undefined) {
