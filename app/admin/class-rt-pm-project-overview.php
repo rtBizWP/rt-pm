@@ -34,6 +34,7 @@ class Rt_Pm_Project_Overview {
      */
     public function setup() {
 
+        add_action( 'wp_head', array( $this, 'rtpm_print_style' ) );
     }
 
     /**
@@ -96,16 +97,34 @@ class Rt_Pm_Project_Overview {
                                         </p>
                                     </div>
                                 </div>
-                                <div>
-                                    <?php echo $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?>
+                                <hr/>
+                                <div class="row">
+                                    <div class="small-6 columns">
+                                        <table class="no-outer-border">
+                                            <tr class="orange-text">
+                                                <td><strong class="right"><?php _e( 'Over Due', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                                <td><strong class="left"><?php echo $overdue_task = $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?></strong></td>
+                                            </tr>
+                                            <tr class="blue-text">
+                                                <td><strong class="right"><?php _e( 'Open', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                                <td><strong class="left"><?php  echo $open_task = $rt_pm_task->rtpm_open_task_count( $project->ID ) ?></strong></td>
+                                            </tr>
+                                            <tr class="green-text">
+                                                <td><strong class="right"><?php _e( 'Completed', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                                <td><strong class="left"><?php  echo $completed_task = $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?></strong></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="small-6 columns" style="  position: absolute;left: 60%;top: 20%;">
+                                        <div class="number-circle">
+                                            <div class="height_fix"></div>
+                                            <div class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <?php  echo $rt_pm_task->rtpm_open_task_count( $project->ID ) ?>
-                                </div>
-                                <div>
-                                    <?php  echo $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?>
-                                </div>
-                                <?php $rt_pm_task->rtpm_task_chart_date_range( $project->ID ) ?>
+                                <hr/>
+
+                                <?php $this->rtpm_prepare_task_chart( $project->ID ) ?>
                             </div>
                         </div>
                     </li>
@@ -119,7 +138,7 @@ class Rt_Pm_Project_Overview {
     /**
      * Render all charts
      */
-    public function rtpm_render_admin_charts() {
+    public function rtpm_render_project_charts() {
 
         global $rt_pm_reports;
 
@@ -129,30 +148,89 @@ class Rt_Pm_Project_Overview {
 
 
     public function rtpm_prepare_task_chart( $project_id ) {
+        global $rt_pm_task, $rt_pm_project_overview;
 
         $data_source = array();
         $cols = array( __( 'Time' ), __( 'Open' ), __( 'Completed' ) );
         $rows = array();
 
-        foreach ( $results as $item ) {
+        $project_start_date = get_post_field( 'post_date', $project_id );
 
-            $rows[] = array( rt_get_user_displayname( $item->assignee ), intval( $item->rtcrm_won_count ) );
-        }
+        $project_end_date = get_post_meta( $project_id, 'post_duedate', true );
+
+        $first_date = new DateTime( $project_start_date  );
+        $last_date = new DateTime( $project_end_date  );
+
+        do{
+
+            $date_query = array(
+                'before' => $first_date->format('Y-m-d')
+            );
+
+            $open_task_count = $rt_pm_task->rtpm_open_task_count( $project_id, $date_query );
+
+            $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
+
+
+            $rows[] = array( $first_date->format('d-m-Y'), $open_task_count, $completed_task_count );
+
+            $first_date->modify('+5 days');
+
+
+        }while( $first_date < $last_date );
+
+
+        $date_query = array(
+            'before' => $last_date->format('Y-m-d')
+        );
+
+
+        $open_task_count = $rt_pm_task->rtpm_open_task_count( $project_id, $date_query );
+
+        $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
+
+
+        $rows[] = array( $first_date->format('d-m-Y'), $open_task_count, $completed_task_count );
 
         $data_source['cols'] = $cols;
         $data_source['rows'] = $rows;
 
-        $this->rtcrm_chars[] = array(
+        $this->rtpm_chars[] = array(
             'id' => 1,
-            'chart_type' => 'pie',
+            'chart_type' => 'area',
             'data_source' => $data_source,
             'dom_element' => 'rtpm_task_status_burnup_'.$project_id,
             'options' => array(
-                'title' => __( 'Won opportunity' ),
-            ),
+                'colors' => [ '#66CCFF', '#32CD32' ],
+            )
         ); ?>
         <div id="rtpm_task_status_burnup_<?php echo $project_id; ?>"></div>
     <?php
     }
+
+    public function rtpm_print_style() { ?>
+    <style>
+        table.no-outer-border {
+            border-collapse: collapse;
+        }
+        table.no-outer-border td, table.no-outer-border th {
+            border: 1px solid black;
+        }
+        table.no-outer-border tr:first-child th {
+            border-top: 0;
+        }
+        table.no-outer-border tr:last-child td {
+            border-bottom: 0;
+        }
+        table.no-outer-border tr td:first-child,
+        table.no-outer-border tr th:first-child {
+            border-left: 0;
+        }
+        table.no-outer-border tr td:last-child,
+        table.no-outer-border tr th:last-child {
+            border-right: 0;
+        }
+    </style>
+    <?php }
 
 }

@@ -374,6 +374,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
 
+			if( empty( $task_ids ) )
+				return 0;
+
 			$format = implode( ', ', $task_ids );
 
 			$query = "SELECT COUNT(meta_id) FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) < NOW()";
@@ -388,7 +391,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $project_id
 		 * @return int
 		 */
-		public function rtpm_open_task_count( $project_id ) {
+		public function rtpm_open_task_count( $project_id, $date_query = null ) {
 
 			$statues_slug = array_column( $this->statuses, 'slug', 'slug' );
 
@@ -404,12 +407,22 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'post_status' => $statues_slug,
 			);
 
+
+			if( null !== $date_query )
+				$args['date_query'] = $date_query;
+
 			$query = new WP_Query( $args );
 
 			return $query->post_count;
 		}
 
-		public function rtpm_completed_task_count( $project_id ) {
+		/**
+		 * Return completed task count
+		 * @param $project_id
+		 * @param null $date_query
+		 * @return int
+		 */
+		public function rtpm_completed_task_count( $project_id, $date_query = null ) {
 
 			$args = array(
 				'nopaging' => true,
@@ -420,6 +433,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'meta_value' => $project_id,
 				'post_status' => 'completed'
 			);
+
+			if( null !== $date_query )
+				$args['date_query'] = $date_query;
 
 			$query = new WP_Query( $args );
 
@@ -448,21 +464,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 		}
 
-		public function rtpm_task_chart_date_range( $project_id ) {
-			global $wpdb;
+		/**
+		 * Return completed task percentage
+		 * @param $project_id
+		 * @return float|int
+		 */
+		public function rtpm_get_completed_task_per( $project_id ) {
 
-			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
+			$all_task_count = count( $this->rtpm_get_projects_task_ids( $project_id ) );
 
-			$format = implode( ', ', $task_ids );
+			if( $all_task_count <= 0 )
+				return 0;
 
-			$query = "SELECT MIN( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS start_date, MAX( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS end_date  FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate'";
+			$completed_task_count = $this->rtpm_completed_task_count( $project_id );
 
-			var_dump( $query );
+			$completed_task_per = ( $completed_task_count * 100 ) / $all_task_count;
 
-			$result = $wpdb->get_row( $query );
-
-			var_dump( $result );
+			return floor( $completed_task_per );
 		}
+
+
 
 	}
 
