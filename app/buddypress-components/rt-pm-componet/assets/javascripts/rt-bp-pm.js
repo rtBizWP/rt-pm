@@ -68,7 +68,58 @@ jQuery(document).ready(function($) {
     } catch (e) {
 
     }
+	
+	// get previous or next calender on resources page
+	
+	jQuery('.rtpm-get-calender').click( function(){
+		var date = jQuery(this).data("date");
+		var flag = jQuery(this).data("flag");
+		jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajaxurl,
+            data: {
+                'action': 'rtpm_get_resources_calender',
+                'date': date,
+                'flag': flag,
+            },
+            success: function (data) {
+                if (data.fetched) {
+                   jQuery( "#rtpm-resources-calender" ).empty();
+				   jQuery( "#rtpm-resources-calender" ).append( data.html );
+				   jQuery('#rtpm-get-next-calender').data("date",data.nextdate);
+				   jQuery('#rtpm-get-prev-calender').data("date",data.prevdate);
+				   loadhoverelement();
+                } else {
 
+                }
+            }
+
+        });
+		
+	});
+	
+	// show resources tooltip
+	loadhoverelement();
+	function loadhoverelement(){
+		jQuery( ".rtpm-show-tooltip" ).hover(
+				function( e ) {
+				var parentoffset = jQuery( '.rt-right-container' ).offset();
+				jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
+				}, function() {
+					//var tooltip = jQuery( this ).parent().find( '.rtpm-task-info-tooltip' );
+				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
+				}
+			);
+	
+		jQuery('#rtpm-resources-calender tbody td').mouseout( function(){
+			
+			//jQuery( this ).find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
+			
+		});
+	
+	}
+	
     //autocomplete project organization
     try {
         if (arr_project_organization != undefined) {
