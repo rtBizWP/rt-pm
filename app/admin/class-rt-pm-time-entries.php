@@ -53,6 +53,19 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             return $this->labels;
         }
 
+        public function rtpm_get_task_total_billed_hours( $task_id, $author_id = 0 ) {
+            global $wpdb, $rt_pm_time_entries_model;
+
+            $query = "SELECT COALESCE( SUM(time_duration), 0 ) FROM {$rt_pm_time_entries_model->table_name} WHERE task_id = {$task_id}";
+
+            if( 0 !== $author_id )
+                $query .= " AND author = {$author_id}";
+
+            $time_billed = $wpdb->get_var( $query );
+
+            return $time_billed;
+        }
+
 
 	}
 
