@@ -68,7 +68,7 @@ class Rt_Pm_Project_Overview {
 
 
     public function rtpm_render_project_grid( $project_data ) {
-        global $rt_biz_wall, $rt_pm_task;
+        global $rt_biz_wall, $rt_pm_task, $rt_pm_bp_pm;
         ?>
 
         <ul id="activity-stream" class="activity-list item-list">
@@ -79,15 +79,19 @@ class Rt_Pm_Project_Overview {
                 if (count( $project_data ) <= 1)
                     wp_localize_script('rt-biz-admin', 'NOT_INIT_MASONRY', 'false');
 
-                foreach( $project_data as $project ): ?>
+                foreach( $project_data as $project ):
+
+                    $project_edit_link = add_query_arg( array( 'rt_project_id' => $project->ID, 'action' => 'edit' ), $rt_pm_bp_pm->get_component_root_url() );
+
+                    ?>
 
                     <li class="activity-item">
                         <div class="activity-content">
                             <div class="row activity-inner rt-biz-activity">
                                 <div class="rt-voxxi-content-box">
-                                        <p><strong>Project Name: </strong><?php echo $project->post_title; ?></p>
-                                        <p><strong>Create date: </strong><?php echo $project->post_date; ?></p>
-                                        <p><strong>Due date: </strong><?php echo get_post_meta( $project->ID, 'post_duedate', true ); ?></p>
+                                        <p><strong>Project Name: </strong><a href="<?php echo $project_edit_link ?>" target="_blank"><?php echo $project->post_title; ?></a></p>
+                                        <p><strong>Create date: </strong><?php echo mysql2date( 'd M Y', $project->post_date ) ?></p>
+                                        <p><strong>Due date: </strong><?php echo mysql2date( 'd M Y', get_post_meta( $project->ID, 'post_duedate', true ) ); ?></p>
                                         <p><strong>Post status: </strong><?php echo $project->post_status; ?></p>
                                 </div>
                                 <div class="post-detail-comment column-title">
@@ -125,6 +129,35 @@ class Rt_Pm_Project_Overview {
                                 <hr/>
 
                                 <?php $this->rtpm_prepare_task_chart( $project->ID ) ?>
+
+                                <div class="row rt-pm-team">
+                                    <div class="column small-3 bdm-column">
+                                        <strong>BDM</strong>
+                                        <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true) ?>
+                                        <a data-team-member-id="<?php echo $bdm; ?>" class="rt-voxxi-context-menu">
+                                            <?php echo get_avatar( $bdm , 16 ) ; ?>
+                                        </a>
+                                    </div>
+                                    <div class="column small-9 team-column" style="float: left;">
+                                        <strong class="team-title">Team</strong>
+                                        <div class="row team-member">
+                                            <?php $team_member = get_post_meta($project->ID, "project_member", true);
+
+                                            if( !empty( $team_member ) ) {
+
+                                                foreach ( $team_member as $member ) { ?>
+                                                    <div class="columns small-3">
+                                                        <a data-team-member-id="<?php echo $member; ?>" class="rt-voxxi-context-menu">
+                                                            <?php echo get_avatar( $member ) ; ?>
+                                                        </a>
+                                                    </div>
+                                                <?php }
+
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -151,7 +184,7 @@ class Rt_Pm_Project_Overview {
         global $rt_pm_task, $rt_pm_project_overview;
 
         $data_source = array();
-        $cols = array( __( 'Time' ), __( 'Open' ), __( 'Completed' ) );
+        $cols = array( __( 'Tasks' ), __( 'Open' ), __( 'Completed' ) );
         $rows = array();
 
         $project_start_date = get_post_field( 'post_date', $project_id );
@@ -172,7 +205,7 @@ class Rt_Pm_Project_Overview {
             $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
 
 
-            $rows[] = array( $first_date->format('d-m-Y'), $open_task_count, $completed_task_count );
+            $rows[] = array( $first_date->format('d M y'), $open_task_count, $completed_task_count );
 
             $first_date->modify('+5 days');
 
@@ -190,7 +223,7 @@ class Rt_Pm_Project_Overview {
         $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
 
 
-        $rows[] = array( $first_date->format('d-m-Y'), $open_task_count, $completed_task_count );
+        $rows[] = array( $first_date->format('d M y'), $open_task_count, $completed_task_count );
 
         $data_source['cols'] = $cols;
         $data_source['rows'] = $rows;
@@ -201,7 +234,10 @@ class Rt_Pm_Project_Overview {
             'data_source' => $data_source,
             'dom_element' => 'rtpm_task_status_burnup_'.$project_id,
             'options' => array(
+                'vAxis' => json_encode( array( 'format' => '#', 'gridlines' => array( 'color' => 'transparent' ) ) ),
                 'colors' => [ '#66CCFF', '#32CD32' ],
+                'legend' => 'top',
+                'pointSize' => '5',
             )
         ); ?>
         <div id="rtpm_task_status_burnup_<?php echo $project_id; ?>"></div>

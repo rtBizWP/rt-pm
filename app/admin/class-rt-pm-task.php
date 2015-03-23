@@ -484,6 +484,17 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 
+		/**
+		 * Return project id of task
+		 * @param $task_id
+		 * @return mixed
+		 */
+		public function rtpm_get_task_project_id( $task_id ) {
+
+			return get_post_meta( $task_id, 'post_project_id', true );
+		}
+
+
 
 	}
 
