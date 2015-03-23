@@ -91,7 +91,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				// get date before 7 days
 				$date_object = date_create( $date );
 				$start = date_timestamp_get( $date_object );
-				$date = date('Y-m-d', strtotime("-9 day", $start));
+				if( wp_is_mobile() ){
+					$date = date('Y-m-d', strtotime("-4 day", $start));
+				}else{
+					$date = date('Y-m-d', strtotime("-9 day", $start));
+				}
 			}
 			$dates = rt_get_next_dates( $date );
 			$first_date = $dates[0];

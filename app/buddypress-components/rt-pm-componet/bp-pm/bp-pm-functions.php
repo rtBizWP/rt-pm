@@ -45,7 +45,12 @@ function rt_get_next_dates( $date ){
 		$date_object = date_create( $date );
 		$start = date_timestamp_get( $date_object );
 		$dates=array();
-		for($i = 0; $i<=9; $i++)
+		if( wp_is_mobile() ){
+			$table_cols = 4;	
+		}else{
+			$table_cols = 9;
+		}
+		for($i = 0; $i<=$table_cols; $i++)
 		{
 			array_push($dates,date('Y-m-d', strtotime("+$i day", $start)));
 		}
