@@ -312,7 +312,7 @@ if( !empty( $results_organization ) ) {
             <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
         <?php } ?>
         <div>
-        	<div class="large-3 columns">
+        	<div class="large-8 columns">
         		<h2><?php _e( '#'.get_post_meta( $post->ID, 'rtpm_job_no', true ).' '. $post->post_title, RT_PM_TEXT_DOMAIN );?></h2>
         	</div>
 			<?php
@@ -325,7 +325,7 @@ if( !empty( $results_organization ) ) {
             
                 
 			<?php if( $user_edit ) { ?>
-			<div class="large-9 columns action-bar">
+			<div class="large-4 columns action-bar">
 				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
 				<?php 
 				if(isset($post->ID)) { 
