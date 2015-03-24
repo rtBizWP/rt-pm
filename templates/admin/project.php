@@ -27,13 +27,13 @@
                 <?php
                 if (isset($_REQUEST["{$post_type}_id"])) {
                     $post_icon = "foundicon-".( ( $user_edit ) ? 'edit' : 'view-mode' );
-                    $page_title = ucfirst(get_the_title($_REQUEST["{$post_type}_id"]));
+                    $page_title = '#'.get_post_meta( $_REQUEST["{$post_type}_id"], 'rtpm_job_no', true ).' '.ucfirst(get_the_title($_REQUEST["{$post_type}_id"]));
                 } else {
                     $post_icon = "foundicon-add-doc";
                     $page_title = "Add ".ucfirst($labels['name']);
                 }
                 ?>
-                <h4><i class="gen-enclosed <?php echo $post_icon; ?>"></i> <?php echo isset($_REQUEST["{$post_type}_id"])?'#'.$_REQUEST["{$post_type}_id"].' : ':""; _e($page_title); ?></h4>
+                <h4><i class="gen-enclosed <?php echo $post_icon; ?>"></i> <?php _e($page_title); ?></h4>
             </div>
             <div style="padding:0;" class="large-6 columns">
                 <?php if(isset($post->ID) && current_user_can( "delete_{$post_type}s" ) ){ ?>
