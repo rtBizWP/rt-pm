@@ -679,6 +679,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         public function get_project_task_tab($labels,$user_edit){
             global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model;
 
+            $post_id = 0;
+
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
             }
@@ -687,199 +689,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $task_post_type=$rt_pm_task->post_type;
             $task_labels=$rt_pm_task->labels;
 
-            //Trash action
-            if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-				wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
-				$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
-				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-				die();
-            }
-
-            //restore action
-            if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'restore' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-                wp_untrash_post( $_REQUEST[$task_post_type.'_id'] );
-				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-				die();
-            }
-
-            //Delete action
-            if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
-                wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
-                $rt_pm_project->remove_connect_post_to_entity($task_post_type,$_REQUEST[$task_post_type.'_id']);
-				echo '<script> window.location="' . admin_url( 'edit.php?post_type='.$post_type.'&page=rtpm-add-'.$post_type.'&'.$post_type.'_id='.$_REQUEST[$post_type.'_id'].'&tab='.$post_type.'-task') . '"; </script> ';
-                die();
-            }
-
             //Check Post object is init or not
-            if ( isset( $_POST['post'] ) ) {
-                $action_complete= false;
-                $newTask = $_POST['post'];
-                $creationdate = $newTask['post_date'];
-                if ( isset( $creationdate ) && $creationdate != '' ) {
-                    try {
-                        $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
-                        $UTC = new DateTimeZone('UTC');
-                        $dr->setTimezone($UTC);
-                        $timeStamp = $dr->getTimestamp();
-                        $newTask['post_date'] = gmdate('Y-m-d H:i:s', intval($timeStamp) );
-                        $newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', (intval($timeStamp))) );
-                    } catch ( Exception $e ) {
-                        $newTask['post_date'] = current_time( 'mysql' );
-                        $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-                    }
-                } else {
-                    $newTask['post_date'] = current_time( 'mysql' );
-                    $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
-                }
-
-                $duedate = $newTask['post_duedate'];
-                if ( isset( $duedate ) && $duedate != '' ) {
-                    try {
-                        $dr = date_create_from_format( 'M d, Y H:i A', $duedate );
-                      //  $UTC = new DateTimeZone('UTC');
-                      //  $dr->setTimezone($UTC);
-                        $timeStamp = $dr->getTimestamp();
-                        $newTask['post_duedate'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
-                    } catch ( Exception $e ) {
-                        $newTask['post_duedate'] = current_time( 'mysql' );
-                    }
-                }
-
-                // Post Data to be saved.
-                $post = array(
-                    'post_content' => $newTask['post_content'],
-                    'post_status' => $newTask['post_status'],
-                    'post_title' => $newTask['post_title'],
-                    'post_date' => $newTask['post_date'],
-                    'post_date_gmt' => $newTask['post_date_gmt'],
-                    'post_type' => $task_post_type
-                );
-
-                $updateFlag = false;
-                //check post request is for Update or insert
-                if ( isset($newTask['post_id'] ) ) {
-                    $updateFlag = true;
-                    $post = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
-                    $data = array(
-						'post_assignee' => $newTask['post_assignee'],
-                        'post_project_id' => $newTask['post_project_id'],
-                        'post_duedate' => $newTask['post_duedate'],
-                        'date_update' => current_time( 'mysql' ),
-                        'date_update_gmt' => gmdate('Y-m-d H:i:s'),
-                        'user_updated_by' => get_current_user_id(),
-                    );
-                    $post_id = @wp_update_post( $post );
-                    $rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-					
-					// link post to user
-					
-					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-					// remove old data
-					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
-					
-					
-                    foreach ( $data as $key=>$value ) {
-                        update_post_meta( $post_id, $key, $value );
-                    }
-
-                    $operation_type = 'update';
-                }else{
-                    $data = array(
-						'post_assignee' => $newTask['post_assignee'],
-                        'post_project_id' => $newTask['post_project_id'],
-                        'post_duedate' => $newTask['post_duedate'],
-                        'date_update' => current_time( 'mysql' ),
-                        'date_update_gmt' => gmdate('Y-m-d H:i:s'),
-                        'user_updated_by' => get_current_user_id(),
-                        'user_created_by' => get_current_user_id(),
-                    );
-                    $post_id = @wp_insert_post($post);
-                    $rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-                    foreach ( $data as $key=>$value ) {
-                        update_post_meta( $post_id, $key, $value );
-                    }
-					
-					// link post to user
-					
-					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-					// remove old data
-					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
-					
-                    $_REQUEST["new"]=true;
-                    $newTask['post_id']= $post_id;
-                    $operation_type = 'insert';
-                }
-
-                // Attachments
-                $old_attachments = get_posts( array(
-                    'post_parent' => $newTask['post_id'],
-                    'post_type' => 'attachment',
-                    'fields' => 'ids',
-                    'posts_per_page' => -1,
-                ));
-                $new_attachments = array();
-                if ( isset( $_POST['attachment'] ) ) {
-                    $new_attachments = $_POST['attachment'];
-                    foreach ( $new_attachments as $attachment ) {
-                        if( !in_array( $attachment, $old_attachments ) ) {
-                            $file = get_post($attachment);
-                            $filepath = get_attached_file( $attachment );
-                            $post_attachment_hashes = get_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
-                            if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
-                                continue;
-                            }
-                            if( !empty( $file->post_parent ) ) {
-                                $args = array(
-                                    'post_mime_type' => $file->post_mime_type,
-                                    'guid' => $file->guid,
-                                    'post_title' => $file->post_title,
-                                    'post_content' => $file->post_content,
-                                    'post_parent' => $newTask['post_id'],
-                                    'post_author' => get_current_user_id(),
-                                    'post_status' => 'inherit'
-                                );
-                                $new_attachments_id = wp_insert_attachment( $args, $file->guid, $newTask['post_id'] );
-                                /*$new_attach_data=wp_generate_attachment_metadata($new_attachments_id,$filepath);
-                                wp_update_attachment_metadata( $new_attachments_id, $new_attach_data );*/
-                                add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                            } else {
-                                wp_update_post( array( 'ID' => $attachment, 'post_parent' => $newTask['post_id'] ) );
-                                $filepath = get_attached_file( $attachment );
-                                add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                            }
-                        }
-                    }
-
-                    foreach ( $old_attachments as $attachment ) {
-                        if( !in_array( $attachment, $new_attachments ) ) {
-                            wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
-                            $filepath = get_attached_file( $attachment );
-                            delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                        }
-                    }
-                } else {
-                    foreach ( $old_attachments as $attachment ) {
-                        wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
-                        $filepath = get_attached_file( $attachment );
-                        delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-                    }
-                    delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
-                }
-
-                do_action( 'save_task', $newTask['post_id'], $operation_type );
-
-				echo '<script>window.location="' . admin_url( "edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-task" ) . '";</script> ';
-				$_REQUEST["{$task_post_type}_id"] = null;
-                $action_complete= true;
-				die();
-            }
-
-            //Check for wp error
-            if ( isset( $post_id ) && is_wp_error( $post_id ) ) {
-                wp_die( 'Error while creating new '. ucfirst( $rt_pm_project->labels['name'] ) );
-            }
 
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
             ///alert Notification
@@ -965,6 +775,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			<?php
 				if( $user_edit ) {
 					if (isset($_REQUEST["{$task_post_type}_id"])) {
+
+                        $post_id = $_REQUEST["{$task_post_type}_id"];
 						$btntitle = 'Update Task';
 					}else{
 						$btntitle = 'Add Task';
@@ -983,6 +795,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
                     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+                        <?php wp_nonce_field( 'rtpm_save_task', 'rtpm_save_task_nonce' ); ?>
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
                         <?php } ?>
@@ -1043,7 +856,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
 
                                 <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo $duedate ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns">
@@ -1082,6 +895,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         }
                                     }
                                 } ?>
+                            </div>
+                        </div>
+
+                        <div class="row collapse">
+                            <div class="large-2 small-4 columns">
+                                <span class="prefix" title="Due Date"><label>Estimated time</label></span>
+                            </div>
+                            <div class="large-3 mobile-large-1 left columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                                <?php if( $user_edit ) { ?>
+                                    <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
+                                           value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
+
+                                <?php } else { ?>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
+                                <?php } ?>
+                            </div>
+                            <div class="large-1 mobile-large-1 columns left">
+                                <span class="postfix"><label class="foundicon-clock"></label></span>
                             </div>
                         </div>
                         <?php $attachments = array();
