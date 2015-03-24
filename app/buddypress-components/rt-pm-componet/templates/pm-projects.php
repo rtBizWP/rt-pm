@@ -248,11 +248,85 @@
 			$user_edit = true;
 			$task_post = get_post( $_REQUEST['rt_task_id'], OBJECT );
 			$task_post_type = $task_post->post_type;
-			$form_ulr = "#";
+			$form_ulr = "?update=true";
 			$project_id = get_post_meta( $task_post->ID,'post_project_id', TRUE );
-			$createdate = $task_post->post_date;
-			$due_date = get_post_meta($task_post->ID,'post_duedate',TRUE);
+			$createtimestamp = rt_convert_strdate_to_usertimestamp( $task_post->post_date_gmt );
+			$createdate = $createtimestamp->format("M d, Y h:i A");
+			$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task_post->ID,'post_duedate',TRUE) );
+			$due_date = $due->format("M d, Y h:i A");
 			$post_assignee = get_post_meta($task_post->ID, 'post_assignee', TRUE);
+		}
+		if( isset($_REQUEST['user_id']) ){
+			// user edit popup
+		}
+		if( isset($_REQUEST['update']) ){
+			if( $_REQUEST['update'] == "true" ){
+				$newTask = $_POST['post'];
+				global $rt_pm_task;
+				$task_post_type=$rt_pm_task->post_type;
+				$creationdate = $newTask['post_date'];
+                if ( isset( $creationdate ) && $creationdate != '' ) {
+                    try {
+                        $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
+                      //  $UTC = new DateTimeZone('UTC');
+                      //  $dr->setTimezone($UTC);
+                        $timeStamp = $dr->getTimestamp();
+                        $newTask['post_date'] = gmdate('Y-m-d H:i:s', intval($timeStamp) );
+                        $newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', (intval($timeStamp))) );
+                    } catch ( Exception $e ) {
+                        $newTask['post_date'] = current_time( 'mysql' );
+                        $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+                    }
+                } else {
+                    $newTask['post_date'] = current_time( 'mysql' );
+                    $newTask['post_date_gmt'] = gmdate('Y-m-d H:i:s');
+                }
+
+                $duedate = $newTask['post_duedate'];
+                if ( isset( $duedate ) && $duedate != '' ) {
+                    try {
+                        $dr = date_create_from_format( 'M d, Y H:i A', $duedate );
+                      //  $UTC = new DateTimeZone('UTC');
+                       // $dr->setTimezone($UTC);
+                        $timeStamp = $dr->getTimestamp();
+                        $newTask['post_duedate'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
+                    } catch ( Exception $e ) {
+                        $newTask['post_duedate'] = current_time( 'mysql' );
+                    }
+                }
+				
+				$post = array(
+                    'post_content' => $newTask['post_content'],
+                    'post_status' => $newTask['post_status'],
+                    'post_title' => $newTask['post_title'],
+                    'post_date' => $newTask['post_date'],
+                    'post_date_gmt' => $newTask['post_date_gmt'],
+                    'post_type' => $task_post_type
+                );
+				
+				
+					$post = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
+                    $data = array(
+						'post_assignee' => $newTask['post_assignee'],
+                        'post_project_id' => $newTask['post_project_id'],
+                        'post_duedate' => $newTask['post_duedate'],
+                        'date_update' => current_time( 'mysql' ),
+                        'date_update_gmt' => gmdate('Y-m-d H:i:s'),
+                        'user_updated_by' => get_current_user_id(),
+                    );
+                    $post_id = @wp_update_post( $post );
+                    $rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
+                    foreach ( $data as $key=>$value ) {
+                        update_post_meta( $post_id, $key, $value );
+                    }
+					// link post to user
+					
+					$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+					// remove old data
+					$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+					$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+					
+			}
 		}
 									
 		?>
@@ -274,11 +348,11 @@
 			<tr>
 				<td>
                     <?php if( !empty( $people->post_title ) ) {
-						printf( __('<a href="%s">'.$people->post_title.'</a>'), esc_url( add_query_arg( array( 'id'=> $people->ID, 'action'=>'edit' ) ) ) ); 
+						printf( __('<a href="%s">'.$people->post_title.'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) ); 
                             }else{
                             $person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
                             if( !empty( $person_wp_user_id ) ){
-							printf( __('<a href="%s">'.rt_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'id'=> $people->ID, 'action'=>'edit' ) ) ) );
+							printf( __('<a href="%s">'.rt_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) );
                         }
                     } ?>
                 </td>
@@ -294,11 +368,11 @@
 		$first_date = $dates[0];
 		$last_date = $dates[count($dates)-1];
 		?>
-		<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>"> < </a>
+		<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
 		<table id="rtpm-resources-calender">
 			<?php echo rt_create_resources_calender( $dates ); ?>
 		</table>
-		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>"> > </a>
+		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
 	</div>
 </div>
 <?php 

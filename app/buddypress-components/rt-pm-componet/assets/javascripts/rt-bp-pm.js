@@ -111,13 +111,6 @@ jQuery(document).ready(function($) {
 				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
 				}
 			);
-	
-		jQuery('#rtpm-resources-calender tbody td').mouseout( function(){
-			
-			//jQuery( this ).find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
-			
-		});
-	
 	}
 	
     //autocomplete project organization
