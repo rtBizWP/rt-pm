@@ -313,7 +313,7 @@ if( !empty( $results_organization ) ) {
         <?php } ?>
         <div>
         	<div class="large-3 columns">
-        		<h2><?php _e('Details', RT_PM_TEXT_DOMAIN);?></h2>
+        		<h2><?php _e( '#'.get_post_meta( $post->ID, 'rtpm_job_no', true ).' '. $post->post_title, RT_PM_TEXT_DOMAIN );?></h2>
         	</div>
 			<?php
 			if (isset($post->ID)) {

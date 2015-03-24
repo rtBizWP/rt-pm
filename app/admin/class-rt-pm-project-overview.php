@@ -7,6 +7,8 @@
  */
 class Rt_Pm_Project_Overview {
 
+    private $rtpm_chars = array();
+
     /**
      * Return singleton instance of class
      *
@@ -97,6 +99,13 @@ class Rt_Pm_Project_Overview {
                                 <div>
                                     <?php echo $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?>
                                 </div>
+                                <div>
+                                    <?php  echo $rt_pm_task->rtpm_open_task_count( $project->ID ) ?>
+                                </div>
+                                <div>
+                                    <?php  echo $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?>
+                                </div>
+                                <?php $rt_pm_task->rtpm_task_chart_date_range( $project->ID ) ?>
                             </div>
                         </div>
                     </li>
@@ -105,5 +114,45 @@ class Rt_Pm_Project_Overview {
         </ul>
 
     <?php }
+
+
+    /**
+     * Render all charts
+     */
+    public function rtpm_render_admin_charts() {
+
+        global $rt_pm_reports;
+
+        $rt_pm_reports->render_chart( $this->rtpm_chars );
+    }
+
+
+
+    public function rtpm_prepare_task_chart( $project_id ) {
+
+        $data_source = array();
+        $cols = array( __( 'Time' ), __( 'Open' ), __( 'Completed' ) );
+        $rows = array();
+
+        foreach ( $results as $item ) {
+
+            $rows[] = array( rt_get_user_displayname( $item->assignee ), intval( $item->rtcrm_won_count ) );
+        }
+
+        $data_source['cols'] = $cols;
+        $data_source['rows'] = $rows;
+
+        $this->rtcrm_chars[] = array(
+            'id' => 1,
+            'chart_type' => 'pie',
+            'data_source' => $data_source,
+            'dom_element' => 'rtpm_task_status_burnup_'.$project_id,
+            'options' => array(
+                'title' => __( 'Won opportunity' ),
+            ),
+        ); ?>
+        <div id="rtpm_task_status_burnup_<?php echo $project_id; ?>"></div>
+    <?php
+    }
 
 }

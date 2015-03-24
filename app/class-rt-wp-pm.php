@@ -32,13 +32,11 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			$this->init_globals();
 
 			add_action( 'init', array( $this, 'admin_init' ), 5 );
-			add_action( 'init', array( $this, 'init' ), 6 );
 
             do_action( 'rt_pm_init' );
 
             add_action( 'after_setup_theme', array( $this, 'init_pm_bp_component' ) );
 
-            add_action( 'shutdown', array( $this, 'rt_pm_remove_activation_option' ) );
 			add_action( "remove_lead", array( $this, 'lead_remove_bp_activity' ), 10, 2 );
 		}
 		
@@ -120,7 +118,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			global $rtpm_form,
                    $rt_pm_time_entries_model,$rtpm_custom_media_fields,
                    $rt_pm_project_type,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entry_type,$rt_pm_acl,
-                   $rt_pm_settings, $rt_pm_notification, $rt_pm_user_reports, $rt_pm_help, $rt_pm_project_overview;
+                   $rt_pm_settings, $rt_pm_notification, $rt_pm_user_reports, $rt_pm_help, $rt_pm_project_overview,
+                   $rt_pm_reports;
 
             $rtpm_form = new Rt_Form();
 
@@ -143,36 +142,19 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             $rt_pm_project_overview = Rt_Pm_Project_Overview::factory();
 
+
+            $page_slugs = array(
+                'rtpm-'.$rt_pm_project->post_type.'-dashboard',
+            );
+
+            $rt_pm_reports = new Rt_Reports( $page_slugs );
+
 		}
-
-		function init() {
-
-            $rt_pm_activated = get_option('rt_pm_activated');
-
-            if( !$rt_pm_activated )
-                return;
-
-            update_option('rt_pm_job_last_index', '3200');
-        }
 
 		function update_database() {
 			$updateDB = new RT_DB_Update( trailingslashit( RT_PM_PATH ) . 'index.php', trailingslashit( RT_PM_PATH_SCHEMA ) );
 			$updateDB->do_upgrade();
 		}
-
-        /**
-         * Remove flag option for plugin activation
-         */
-        function rt_pm_remove_activation_option(){
-
-            $rt_pm_activated = get_option('rt_pm_activated');
-
-            if( !$rt_pm_activated )
-                return;
-
-            delete_option('rt_pm_activated');
-
-        }
 
     }
 }

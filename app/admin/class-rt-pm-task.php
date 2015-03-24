@@ -264,7 +264,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * The days listed will not have work assigned to them and will have a greyed out background.
 		 * @param $project_id
 		 */
-		function disable_working_days( $project_id ) {
+		public function disable_working_days( $project_id ) {
 
             $project_working_days = get_post_meta( $project_id, 'working_days' , true);
 
@@ -310,6 +310,13 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		<?php
 		}
 
+		/**
+		 * Return task post data
+		 * @param int $author_id
+		 * @param string $task_status
+		 * @param null $date_query
+		 * @return array
+		 */
 		public function rtpm_get_task_data( $author_id = 0, $task_status = 'any', $date_query = null ){
 
 
@@ -331,6 +338,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $query->posts;
 		}
 
+		/**
+		 *	Post where clues filter for task due date
+		 * @param $where
+		 * @param $wp_query
+		 * @return string
+		 */
 		public function rtcrm_generate_task_sql( $where, &$wp_query ) {
 			global $wp_query, $wpdb, $rtbp_todo, $bp;
 
@@ -351,21 +364,17 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $where;
 		}
 
+		/**
+		 * Return count on overdue task
+		 * @param $project_id
+		 * @return mixed
+		 */
 		public function rtpm_overdue_task_count( $project_id ) {
 			global $wpdb;
 
-			$result = $this->rtpm_get_projects_task_ids( $project_id );
-
-			$task_ids = $result->posts;
-
-			$task_count = count( $task_ids );
-
-			$placeholders = array_fill( 0, $task_count, '%d' );
+			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
 
 			$format = implode( ', ', $task_ids );
-
-			$current_date = gmdate('Y-m-d');
-
 
 			$query = "SELECT COUNT(meta_id) FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) < NOW()";
 
@@ -374,6 +383,54 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $overdue_task;
 		}
 
+		/**
+		 * Return open task post count
+		 * @param $project_id
+		 * @return int
+		 */
+		public function rtpm_open_task_count( $project_id ) {
+
+			$statues_slug = array_column( $this->statuses, 'slug', 'slug' );
+
+			unset( $statues_slug['completed'] );
+
+			$args = array(
+				'nopaging' => true,
+				'post_type' => $this->post_type,
+				'fields' => 'ids',
+				'no_found_rows' => true,
+				'meta_key' => 'post_project_id',
+				'meta_value' => $project_id,
+				'post_status' => $statues_slug,
+			);
+
+			$query = new WP_Query( $args );
+
+			return $query->post_count;
+		}
+
+		public function rtpm_completed_task_count( $project_id ) {
+
+			$args = array(
+				'nopaging' => true,
+				'post_type' => $this->post_type,
+				'fields' => 'ids',
+				'no_found_rows' => true,
+				'meta_key' => 'post_project_id',
+				'meta_value' => $project_id,
+				'post_status' => 'completed'
+			);
+
+			$query = new WP_Query( $args );
+
+			return $query->post_count;
+		}
+
+		/**
+		 * Return all task ids for project
+		 * @param $project_id
+		 * @return WP_Query
+		 */
 		public function rtpm_get_projects_task_ids( $project_id ) {
 
 			$args = array(
@@ -382,13 +439,30 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'meta_key' => 'post_project_id',
 				'meta_value' => $project_id,
 				'fields' => 'ids',
+				'no_found_rows' => true,
 			);
 
 			$query = new WP_Query( $args );
 
-			return $query;
+			return $query->posts;
+
 		}
- 
+
+		public function rtpm_task_chart_date_range( $project_id ) {
+			global $wpdb;
+
+			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
+
+			$format = implode( ', ', $task_ids );
+
+			$query = "SELECT MIN( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS start_date, MAX( STR_TO_DATE( meta_value, '%Y-%m-%d %H:%i' ) ) AS end_date  FROM $wpdb->postmeta WHERE post_id IN($format) AND meta_key = 'post_duedate'";
+
+			var_dump( $query );
+
+			$result = $wpdb->get_row( $query );
+
+			var_dump( $result );
+		}
 
 	}
 
