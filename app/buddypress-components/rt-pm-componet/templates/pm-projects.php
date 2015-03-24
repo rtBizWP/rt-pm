@@ -69,7 +69,7 @@
                     'order' => 'asc'
             ),
 			array(
-                    'column_label' => __( 'Job Number', RT_PM_TEXT_DOMAIN ) ,
+                    'column_label' => __( 'Project Number', RT_PM_TEXT_DOMAIN ) ,
                     'sortable' => true,
                     'orderby' => 'meta_value',
 					'meta_key' => 'rt_pm_job_no',
