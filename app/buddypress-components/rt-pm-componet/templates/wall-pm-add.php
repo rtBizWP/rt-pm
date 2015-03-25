@@ -141,7 +141,7 @@ if( !empty( $results_client ) ) {
 
         <div class="row">
             <div class="small-10 columns">
-                <h2><?php echo ( isset($post->ID) ) ? $post->post_title : "Project"; ?></h2>
+                <h2><?php echo '#'.get_post_meta( $post->ID, 'rtpm_job_no', true ).' '.ucfirst( $post->post_title); ?></h2>
             </div>
             <div class="small-2 columns">
                 <a title="Close" class="right close-sidepanel"><i class="fa fa-caret-square-o-right fa-2x"></i></a>

@@ -48,7 +48,7 @@ $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 ?>
 <form method="post"   action="">
-    <?php wp_nonce_field('rt_pm_task_edit','rt_pm_task_edit') ?>
+    <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
@@ -184,6 +184,21 @@ $task_labels=$rt_pm_task->labels;
             <?php } ?>
         </div>
    </div>
+
+    <div class="row">
+        <div  class="small-4 columns">
+            <span title="Due Date"><label>Estimated time</label></span>
+        </div>
+        <div class="small-8 columns">
+            <?php if( $user_edit ) { ?>
+                <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
+                       value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
+
+            <?php } else { ?>
+                <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
+            <?php } ?>
+        </div>
+    </div>
 
     <?php   if( isset( $post_id ) ){ ?>
     <h3><?php _e('Attachments'); ?></h3>
