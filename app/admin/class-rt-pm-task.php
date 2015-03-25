@@ -472,6 +472,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		/**
+		 * @param $project_id
+		 */
+		public function rtpm_get_all_task_duedate( $project_id ) {
+			global $wpdb;
+
+			$tasks = $this->rtpm_get_projects_task_ids( $project_id );
+
+			if( empty( $tasks ) )
+				return;
+
+			$task_ids = implode( ',', $tasks );
+
+			$query = "SELECT STR_TO_DATE( meta_value,'%Y-%m-%d') AS task_duedate FROM $wpdb->postmeta WHERE post_id IN( $task_ids ) AND meta_key = 'post_duedate' ORDER BY task_duedate";
+
+			$result = $wpdb->get_col( $query );
+
+			return $result;
+		}
+
+		/**
 		 * Return completed task percentage
 		 * @param $project_id
 		 * @return float|int
@@ -735,6 +755,62 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 
 		}
+
+		public function rtpm_tasks_estimated_hours( $project_id, $due_date ) {
+			global $wpdb;
+
+			$tasks = $this->rtpm_get_tasks_by_duedate( $project_id, $due_date );
+
+			if( empty( $tasks ) )
+				return;
+
+			$task_ids = implode( ',', $tasks );
+
+
+			$query = "SELECT SUM( CAST( meta_value AS DECIMAL( 10, 2 ) ) ) FROM $wpdb->postmeta WHERE meta_key = 'post_estimated_hours' AND post_id in ( $task_ids )";
+
+			$result = $wpdb->get_var( $query );
+
+			return $result;
+		}
+
+		public function rtpm_tasks_billed_hours( $project_id, $due_date ) {
+			global $wpdb;
+
+			$tasks = $this->rtpm_get_tasks_by_duedate( $project_id, $due_date );
+
+			if( empty( $tasks ) )
+				return;
+
+			$task_ids = implode( ',', $tasks );
+
+			$timeentries_table_name = rtpm_get_time_entry_table_name();
+
+			$query = "SELECT SUM( CAST( time_duration AS DECIMAL( 10, 2 ) ) ) FROM $timeentries_table_name WHERE task_id in ( $task_ids )";
+
+			$result = $wpdb->get_var( $query );
+
+			return $result;
+		}
+
+		public function rtpm_get_tasks_by_duedate( $project_id, $due_date ) {
+			global $wpdb;
+
+			$tasks = $this->rtpm_get_projects_task_ids( $project_id );
+
+			if( empty( $tasks ) )
+				return;
+
+			$task_ids = implode( ',', $tasks );
+
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d' ) = '$due_date' and post_id in ( $task_ids )";
+
+			$result = $wpdb->get_col( $query );
+
+			return $result;
+		}
+
+
 	}
 
 }
