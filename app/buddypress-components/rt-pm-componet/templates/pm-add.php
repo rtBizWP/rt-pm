@@ -343,8 +343,8 @@ if( !empty( $results_organization ) ) {
 					}
 					
 				?>
-				<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
-				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
+			<!--	<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
+				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button> -->
 				<?php } ?>
 			</div>
 			<?php } ?>
