@@ -348,13 +348,47 @@
 			<tr>
 				<td>
                     <?php if( !empty( $people->post_title ) ) {
-						printf( __('<a href="%s">'.$people->post_title.'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) ); 
+						$employee_name = $people->post_title;
+						//printf( __('<a href="%s">'.$people->post_title.'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) ); 
                             }else{
-                            $person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
-                            if( !empty( $person_wp_user_id ) ){
-							printf( __('<a href="%s">'.rt_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) );
-                        }
+								$person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
+								$employee_name = rt_get_user_displayname( $person_wp_user_id );
+                         //   if( !empty( $person_wp_user_id ) ){
+						//	printf( __('<a href="%s">'.rt_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) );
+                       // }
                     } ?>
+					<div class="rtpm-show-user-tooltip">
+						<?php echo $employee_name; ?>
+						<div class="rtpm-task-info-tooltip">
+							<div class="large-4 columns">
+								<?php
+                                    $val = Rt_Person::get_meta( $people->ID, $rt_person->user_id_key );  
+                                    if (!empty($val) ){
+                                        echo  get_avatar( $val[0], 32 );
+                                        }
+                                ?>
+							</div>
+							<div class="large-8 columns">
+								<div class="emp_name">
+									<?php echo $employee_name; ?>
+								</div>
+								<div class="emp_country">
+									<span class="title">Country : </span>
+									<?php
+									$emp_country = get_post_meta( $people->ID ,'rt_biz_contact_country',true);
+									echo "<span class='desc'>$emp_country</span>";
+									?>
+								</div>
+								<div class="emp_phone">
+									<span class="title">Phone : </span>
+									<?php
+									$phone_number = get_post_meta( $people->ID ,'rt_biz_contact_phone',true);
+									echo "<span class='desc'><a title='click to call' href='tel:$phone_number'>$phone_number</a></span>";
+									?>
+								</div>
+							</div>
+						</div>
+					</div>
                 </td>
 			</tr>
 			<?php endwhile; 
