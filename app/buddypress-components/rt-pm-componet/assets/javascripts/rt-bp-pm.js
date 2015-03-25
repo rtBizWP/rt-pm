@@ -113,6 +113,16 @@ jQuery(document).ready(function($) {
 			);
 	}
 	
+	jQuery(".rtpm-show-user-tooltip").hover(
+				function( e ) {
+				var parentoffset = jQuery( '.rt-left-container' ).offset();
+				jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
+				}, function() {
+					//var tooltip = jQuery( this ).parent().find( '.rtpm-task-info-tooltip' );
+				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
+				}
+			);
+	
     //autocomplete project organization
     try {
         if (arr_project_organization != undefined) {
