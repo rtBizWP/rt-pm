@@ -315,37 +315,10 @@ if( !empty( $results_organization ) ) {
         	<div class="large-8 columns">
         		<h2><?php _e( '#'.get_post_meta( $post->ID, 'rtpm_job_no', true ).' '. $post->post_title, RT_PM_TEXT_DOMAIN );?></h2>
         	</div>
-			<?php
-			if (isset($post->ID)) {
-				$save_button = __( 'Update' );
-			} else {
-				$save_button = __( 'Add Project' );
-			}
-			?>
-            
                 
 			<?php if( $user_edit ) { ?>
 			<div class="large-4 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
-				<?php 
-				if(isset($post->ID)) { 
-					$get_post_status = get_post_status( $post->ID );
-					if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
-						$archive_action = 'unarchive';
-						$archive_button = __( 'Unarchive' );
-						$button_archive_id = 'button-unarchive';
-						$redirect = $rt_pm_bp_pm->get_component_root_url(). 'archives';
-					} else {
-						$archive_action = 'archive';
-						$archive_button = __( 'Archive' );
-						$button_archive_id = 'button-archive';
-						$redirect = $rt_pm_bp_pm->get_component_root_url();
-					}
-					
-				?>
-			<!--	<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
-				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button> -->
-				<?php } ?>
+			<?php render_project_summary_buttons( $post->ID); ?>	
 			</div>
 			<?php } ?>
             
@@ -623,23 +596,7 @@ if( !empty( $results_organization ) ) {
                 
 			<?php if( $user_edit ) { ?>
 			<div class="large-12 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
-				<?php 
-				if(isset($post->ID)) { 
-					$get_post_status = get_post_status( $post->ID );
-					if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
-						$archive_action = 'unarchive';
-						$archive_button = __( 'Unarchive' );
-						$button_archive_id = 'button-unarchive';
-					} else {
-						$archive_action = 'archive';
-						$archive_button = __( 'Archive' );
-						$button_archive_id = 'button-archive';
-					}
-				?>
-				<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
-				<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
-				<?php } ?>
+				<?php  render_project_summary_buttons( $post->ID); ?>
 			</div>
 			<?php } ?>
             
