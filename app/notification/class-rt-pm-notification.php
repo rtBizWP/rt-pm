@@ -127,7 +127,7 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 			$contexts = $this->hooks[ current_filter() ][ 'contexts' ];
 			$rules = $rt_biz_notification_rules_model->get( array( 'context' => array_keys( $contexts ), 'rule_type' => 'triggered' ) );
 			$project_id = $time_entry_post[ 'post_project_id' ];
-			$project = get_post( $project );
+			$project = get_post( $project_id );
 			$link = add_query_arg( array( 'post_type' => $project->post_type, 'page' => 'rtpm-add-' . $project->post_type, $project->post_type . '_id' => $project_id, 'tab' => $project->post_type . '-timeentry' ), admin_url( 'edit.php' ) );
 
 			foreach ( $rules as $r ) {
