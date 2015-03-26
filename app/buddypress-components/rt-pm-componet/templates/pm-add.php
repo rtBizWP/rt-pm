@@ -30,7 +30,9 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_R
 
 //Archive action
 if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'archive' && isset( $_REQUEST[$post_type.'_id'] ) ) {
-    wp_trash_post( $_REQUEST[$post_type.'_id'] );
+	
+	global $rt_crm_lead_history_model;
+	wp_trash_post( $_REQUEST[$post_type.'_id'] );
 	$args = array(
 		'post_type' =>  $rt_pm_task->post_type,
 		'post_status' => 'any',
@@ -43,6 +45,38 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'archive' && isset( $
 	foreach ( $tasks as $t ) {
 		// wp_trash_post( $t );
 	}
+	
+	// remove opportunity if project is archived
+	$opportunities_array = get_post_ancestors( $_REQUEST[$post_type.'_id'] );
+	foreach ($opportunities_array as $key => $oppor ){
+		$post_id =  $oppor;
+            $rt_crm_lead_history_model->insert(array(
+                    'lead_id' => $post_id,
+                    'type' => 'post_status',
+                    'old_value' =>  get_post_status( $post_id ) ,
+                    'new_value' => 'trash',
+                    'message' => '',
+                    'update_time' => current_time( 'mysql' ),
+                    'updated_by' => get_current_user_id(),
+                )
+            );
+
+            $my_post = array(
+                'ID' => $post_id,
+                'post_status'    => 'trash',
+            );
+
+            wp_update_post( $my_post );
+			$leadModel = new Rt_CRM_Lead_Model();
+
+            $leadModel->update_lead(
+                array(
+                    'post_status' => 'trash',	// string
+                ),
+                array( 'post_id' => $post_id )
+            );
+	}
+	
 	// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
 	echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
     die();
@@ -50,6 +84,7 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'archive' && isset( $
 
 //UnArchive action
 if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset( $_REQUEST[$post_type.'_id'] ) ) {
+	global $rt_crm_lead_history_model;
 	$unarchive_post = array(
 		'ID'           => $_REQUEST[$post_type.'_id'],
 		'post_status' => 'active'
@@ -67,6 +102,48 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset(
 	foreach ( $tasks as $t ) {
 		//wp_delete_post( $t );
 	}
+	
+	// restore opportunity if project is unarchived
+	
+	$opportunities_array = get_post_ancestors( $_REQUEST[$post_type.'_id'] );
+	foreach ($opportunities_array as $key => $oppor ){
+		$post_id =  $oppor;
+		$lead_history = $rt_crm_lead_history_model->get( array( 'lead_id' => $post_id, 'type' => 'post_status', 'new_value' => 'trash' ), '1' );
+
+            $new_status = $lead_history[0]->old_value;
+
+
+            if( !empty( $new_status ) ) {
+			 $my_post = array(
+                    'ID' => $post_id,
+                    'post_status'    => $new_status,
+                );
+
+                wp_update_post( $my_post );
+
+                $leadModel = new Rt_CRM_Lead_Model();
+
+                $leadModel->update_lead(
+                    array(
+                        'post_status' => $new_status,	// string
+                    ),
+                    array( 'post_id' => $post_id )
+                );
+
+
+                $rt_crm_lead_history_model->insert(array(
+                        'lead_id' => $post_id,
+                        'type' => 'post_status',
+                        'old_value' => 'trash' ,
+                        'new_value' =>  $new_status,
+                        'message' => '',
+                        'update_time' => current_time( 'mysql' ),
+                        'updated_by' => get_current_user_id(),
+                    )
+                );
+			}
+	}
+	
 	// $rt_pm_time_entries_model->delete_timeentry( array( 'project_id' => $_REQUEST[$post_type.'_id'] ) );
 	echo '<script> window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . '"; </script> ';
     die();
@@ -235,40 +312,13 @@ if( !empty( $results_organization ) ) {
             <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
         <?php } ?>
         <div>
-        	<div class="large-3 columns">
+        	<div class="large-8 columns">
         		<h2><?php _e( '#'.get_post_meta( $post->ID, 'rtpm_job_no', true ).' '. $post->post_title, RT_PM_TEXT_DOMAIN );?></h2>
         	</div>
-			<?php
-			if (isset($post->ID)) {
-				$save_button = __( 'Update' );
-			} else {
-				$save_button = __( 'Add Project' );
-			}
-			?>
-            
                 
 			<?php if( $user_edit ) { ?>
-			<div class="large-9 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
-				<?php 
-				if(isset($post->ID)) { 
-					$get_post_status = get_post_status( $post->ID );
-					if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
-						$archive_action = 'unarchive';
-						$archive_button = __( 'Unarchive' );
-						$button_archive_id = 'button-unarchive';
-						$redirect = $rt_pm_bp_pm->get_component_root_url(). 'archives';
-					} else {
-						$archive_action = 'archive';
-						$archive_button = __( 'Archive' );
-						$button_archive_id = 'button-archive';
-						$redirect = $rt_pm_bp_pm->get_component_root_url();
-					}
-					
-				?>
-				<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
-				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
-				<?php } ?>
+			<div class="large-4 columns action-bar">
+			<?php render_project_summary_buttons( $post->ID); ?>	
 			</div>
 			<?php } ?>
             
@@ -546,23 +596,7 @@ if( !empty( $results_organization ) ) {
                 
 			<?php if( $user_edit ) { ?>
 			<div class="large-12 columns action-bar">
-				<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
-				<?php 
-				if(isset($post->ID)) { 
-					$get_post_status = get_post_status( $post->ID );
-					if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
-						$archive_action = 'unarchive';
-						$archive_button = __( 'Unarchive' );
-						$button_archive_id = 'button-unarchive';
-					} else {
-						$archive_action = 'archive';
-						$archive_button = __( 'Archive' );
-						$button_archive_id = 'button-archive';
-					}
-				?>
-				<button id="<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
-				<button id="button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post->ID ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button>
-				<?php } ?>
+				<?php  render_project_summary_buttons( $post->ID); ?>
 			</div>
 			<?php } ?>
             
