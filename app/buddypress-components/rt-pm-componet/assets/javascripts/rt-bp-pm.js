@@ -105,7 +105,12 @@ jQuery(document).ready(function($) {
 		jQuery( ".rtpm-show-tooltip" ).hover(
 				function( e ) {
 				var parentoffset = jQuery( '.rt-right-container' ).offset();
-				jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
+				if( (e.pageX+250) > (jQuery(window).width()) )
+				{
+					jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left-200);
+				}else{
+					jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
+				}
 				}, function() {
 					//var tooltip = jQuery( this ).parent().find( '.rtpm-task-info-tooltip' );
 				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
@@ -116,9 +121,13 @@ jQuery(document).ready(function($) {
 	jQuery(".rtpm-show-user-tooltip").hover(
 				function( e ) {
 				var parentoffset = jQuery( '.rt-left-container' ).offset();
+				jQuery('#item-body').css('overflow','visible');
 				jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'block' ).css( 'top', e.pageY-parentoffset.top).css( 'left', e.pageX-parentoffset.left);
 				}, function() {
 					//var tooltip = jQuery( this ).parent().find( '.rtpm-task-info-tooltip' );
+					if( jQuery(window).width( ) < 680 ){
+						jQuery('#item-body').css('overflow','hidden');
+				}
 				  jQuery( this ).parent().find( '.rtpm-task-info-tooltip' ).css( 'display', 'none' );
 				}
 			);
