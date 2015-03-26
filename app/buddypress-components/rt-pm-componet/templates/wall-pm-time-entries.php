@@ -17,14 +17,13 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
 ?>
 <form method="post"  action="">
-    <?php wp_nonce_field('rt_pm_time_entry_save','rt_pm_time_entry_save') ?>
+    <?php wp_nonce_field('rtpm_save_timeentry','rtpm_save_timeentry_nonce') ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
     <input type="hidden" name="post[post_task_id]" value="<?php echo $task_id; ?>" />
-
 
     <div class="row">
         <div class="small-10 columns">

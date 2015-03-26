@@ -184,7 +184,7 @@ class Rt_Pm_Project_Overview {
         global $rt_pm_task, $rt_pm_project_overview;
 
         $data_source = array();
-        $cols = array( __( 'Tasks' ), __( 'Open' ), __( 'Completed' ) );
+        $cols = array( __( 'Hours' ), __( 'Estimated' ), __( 'Billed' ) );
         $rows = array();
 
         $project_start_date = get_post_field( 'post_date', $project_id );
@@ -194,36 +194,27 @@ class Rt_Pm_Project_Overview {
         $first_date = new DateTime( $project_start_date  );
         $last_date = new DateTime( $project_end_date  );
 
-        do{
+        $duedate_array = $rt_pm_task->rtpm_get_all_task_duedate( $project_id );
 
-            $date_query = array(
-                'before' => $first_date->format('Y-m-d')
-            );
+        if( null === $duedate_array )
+            return;
 
-            $open_task_count = $rt_pm_task->rtpm_open_task_count( $project_id, $date_query );
+        foreach( $duedate_array as $duedate ) {
 
-            $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
+            $due_date_obj = new DateTime( $duedate );
 
+            $billed_hours = $rt_pm_task->rtpm_tasks_billed_hours( $project_id, $duedate );
+            $estimated_hours = $rt_pm_task->rtpm_tasks_estimated_hours( $project_id, $duedate );
 
-            $rows[] = array( $first_date->format('d M y'), $open_task_count, $completed_task_count );
+            if( null === $billed_hours )
+                $billed_hours = 0;
 
-            $first_date->modify('+5 days');
+            if( null === $estimated_hours )
+                $estimated_hours = 0;
 
+            $rows[] = array( $due_date_obj->format('d-M-Y'), (float)$estimated_hours, (float)$billed_hours );
+        }
 
-        }while( $first_date < $last_date );
-
-
-        $date_query = array(
-            'before' => $last_date->format('Y-m-d')
-        );
-
-
-        $open_task_count = $rt_pm_task->rtpm_open_task_count( $project_id, $date_query );
-
-        $completed_task_count = $rt_pm_task->rtpm_completed_task_count( $project_id, $date_query );
-
-
-        $rows[] = array( $first_date->format('d M y'), $open_task_count, $completed_task_count );
 
         $data_source['cols'] = $cols;
         $data_source['rows'] = $rows;
@@ -234,7 +225,7 @@ class Rt_Pm_Project_Overview {
             'data_source' => $data_source,
             'dom_element' => 'rtpm_task_status_burnup_'.$project_id,
             'options' => array(
-                'vAxis' => json_encode( array( 'format' => '#', 'gridlines' => array( 'color' => 'transparent' ) ) ),
+                //'vAxis' => json_encode( array( 'format' => '#', 'gridlines' => array( 'color' => 'transparent' ) ) ),
                 'colors' => [ '#66CCFF', '#32CD32' ],
                 'legend' => 'top',
                 'pointSize' => '5',

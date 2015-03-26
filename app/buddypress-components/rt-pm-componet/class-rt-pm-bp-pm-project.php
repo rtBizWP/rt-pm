@@ -552,55 +552,6 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 die();
             }
 
-            //Check Post object is init or not
-            if ( isset( $_POST['post'] ) ) {
-                $action_complete = false;
-                $newTimeEntry = $_POST['post'];
-                $creationdate = $newTimeEntry['post_date'];
-                if ( isset( $creationdate ) && $creationdate != '' ) {
-                    try {
-                        $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
-                      //  $UTC = new DateTimeZone('UTC');
-                      //  $dr->setTimezone($UTC);
-                        $timeStamp = $dr->getTimestamp();
-                        $newTimeEntry['post_date'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
-                    } catch ( Exception $e ) {
-                        $newTimeEntry['post_date'] = current_time( 'mysql' );
-                    }
-                } else {
-                    $newTimeEntry['post_date'] = current_time( 'mysql' );
-                }
-
-                // Post Data to be saved.
-                $post = array(
-                    'project_id' => $newTimeEntry['post_project_id'],
-                    'task_id' => $newTimeEntry['post_task_id'],
-                    'type' => $newTimeEntry['post_timeentry_type'],
-                    'message' => $newTimeEntry['post_title'],
-                    'time_duration' => $newTimeEntry['post_duration'],
-                    'timestamp' => $newTimeEntry['post_date'],
-                    'author' => get_current_user_id(),
-                );
-                $updateFlag = false;
-                //check post request is for Update or insert
-                if ( isset($newTimeEntry['post_id'] ) ) {
-                    $updateFlag = true;
-                    $where = array( 'id' => $newTimeEntry['post_id'] );
-                    $post_id = $rt_pm_time_entries_model->update_timeentry($post,$where);
-                }else{
-                    $post_id = $rt_pm_time_entries_model->add_timeentry($post);
-                    $_REQUEST["new"]=true;
-                }
-				
-				// Used for notification -- Regeistered in RT_PM_Notification
-				do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
-
-				echo '<script>window.location="' . $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST[ "{$post_type}_id" ]}&tab={$post_type}-timeentry" . '";</script> ';
-                $_REQUEST["{$timeentry_post_type}_id"] = null;
-                $action_complete= true;
-				die();
-            }
-
             if ( isset( $action_complete ) && $action_complete ){
                 if (isset($_REQUEST["new"])) {
                     ?>
@@ -726,7 +677,8 @@ if( !class_exists( 'Rt_PM_Bp_PM_Project' ) ) {
                 <fieldset>
                     
                     <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
-                        <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+						<?php wp_nonce_field( 'rtpm_save_timeentry', 'rtpm_save_timeentry_nonce' ); ?>
+						<input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
                         <?php if (isset($post->id) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
                         <?php } ?>

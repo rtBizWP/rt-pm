@@ -41,6 +41,36 @@ function pm_pagination( $totalPage, $page ){
     }
 }
 
+function render_project_summary_buttons( $post_id ){
+	global $rt_pm_bp_pm;
+	if (isset($post_id)) {
+				$save_button = __( 'Update' );
+			} else {
+				$save_button = __( 'Add Project' );
+			}
+	?>
+	<button class="mybutton" type="submit" ><?php _e($save_button); ?></button>
+				<?php 
+				if(isset($post_id)) { 
+					$get_post_status = get_post_status( $post_id );
+					if ( isset( $get_post_status ) && $get_post_status == 'trash' ){
+						$archive_action = 'unarchive';
+						$archive_button = __( 'Unarchive' );
+						$button_archive_id = 'button-unarchive';
+						$redirect = $rt_pm_bp_pm->get_component_root_url(). 'archives';
+					} else {
+						$archive_action = 'archive';
+						$archive_button = __( 'Archive' );
+						$button_archive_id = 'button-archive';
+						$redirect = $rt_pm_bp_pm->get_component_root_url();
+					}
+					
+				?>
+			<!--	<button id="top-<?php echo $button_archive_id; ?>" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => $archive_action, 'rt_project_id' => $post_id ), $redirect ); ?>" class=""><?php _e($archive_button); ?></button>
+				<button id="top-button-trash" class="mybutton" data-href="<?php echo add_query_arg( array( 'action' => 'trash', 'rt_project_id' => $post_id ), $redirect ); ?>" class=""><?php _e( 'Delete' ); ?></button> -->
+				<?php  }
+}
+
 function rt_get_next_dates( $date ){
 		$date_object = date_create( $date );
 		$start = date_timestamp_get( $date_object );
