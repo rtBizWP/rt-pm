@@ -200,7 +200,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			}
 			
 			// Resources
-			
+			if( !isset($_GET['rt_project_id']) ){
 			$sub_nav[] = array(
 					'name'            =>  __( 'Resources' ),
 					'slug'            => 'resources',
@@ -209,6 +209,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'screen_function' => 'bp_pm_projects',
 					'position'        => 10,
 				);
+			}
 
 			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin );
 

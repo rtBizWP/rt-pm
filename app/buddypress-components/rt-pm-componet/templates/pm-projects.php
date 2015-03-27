@@ -1,5 +1,5 @@
 <?php
-	global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query;
+	global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb,  $wp_query,$rt_person;
 	
 	if (isset($_GET['rt_project_id']) || isset($_GET['post_type']) && ($_GET['action'] != 'archives')){
 		$rt_pm_bp_pm_project->custom_page_ui();
@@ -360,7 +360,7 @@
 					<div class="rtpm-show-user-tooltip">
 						<?php echo $employee_name; ?>
 						<div class="rtpm-task-info-tooltip">
-							<div class="large-4 columns">
+							<div class="large-3 columns">
 								<?php
                                     $val = Rt_Person::get_meta( $people->ID, $rt_person->user_id_key );  
                                     if (!empty($val) ){
@@ -368,22 +368,38 @@
                                         }
                                 ?>
 							</div>
-							<div class="large-8 columns">
+							<div class="large-9 columns">
 								<div class="emp_name">
 									<?php echo $employee_name; ?>
 								</div>
+								<div class="emp_position">
+									<?php 
+									$person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
+									$user_position = xprofile_get_field_data( 'Job Title', $person_wp_user_id );
+									if($user_position != ''){
+										echo "<span class='title'>Position : </span><span class='desc'>$user_position</span>";
+									}
+									?>
+								</div>
+								<div class="emp_timezone">
+									<?php 
+									$user_timezone = xprofile_get_field_data( 'Timezone', $person_wp_user_id );
+									if( $user_timezone != '' )
+									echo "<span class='title'>Timezone : </span><span class='desc'>$user_timezone</span>";
+									?>
+								</div>
 								<div class="emp_country">
-									<span class="title">Country : </span>
 									<?php
 									$emp_country = get_post_meta( $people->ID ,'rt_biz_contact_country',true);
-									echo "<span class='desc'>$emp_country</span>";
+									if( $emp_country != '' )
+									echo "<span class='title'>Country : </span><span class='desc'>$emp_country</span>";
 									?>
 								</div>
 								<div class="emp_phone">
-									<span class="title">Phone : </span>
 									<?php
 									$phone_number = get_post_meta( $people->ID ,'rt_biz_contact_phone',true);
-									echo "<span class='desc'><a title='click to call' href='tel:$phone_number'>$phone_number</a></span>";
+									if( $phone_number != '' )
+									echo "<span class='title'>Phone : </span><span class='desc'><a title='click to call' href='tel:$phone_number'>$phone_number</a></span>";
 									?>
 								</div>
 							</div>
