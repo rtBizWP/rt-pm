@@ -36,6 +36,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_filter( 'posts_where', array( $this, 'rtcrm_generate_task_sql'), 10, 2 );
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
 			add_action( 'init', array( $this, 'rtpm_task_actions' ) );
+			add_action( 'wp_ajax_rtpm_get_user_tasks', array( $this, 'rtpm_get_user_tasks' ) );
 		}
 
         function task_add_bp_activity( $post_id, $operation_type ) {
@@ -808,6 +809,62 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$result = $wpdb->get_col( $query );
 
 			return $result;
+		}
+
+
+		public function rtpm_get_task_by_user( $assignee_id ) {
+
+			$args = array(
+				'nopaging' => true,
+				'post_type' => $this->post_type,
+				'meta_key' => 'post_project_id',
+				'meta_key' => 'post_assignee',
+				'meta_value' => $assignee_id,
+				'no_found_rows' => true,
+			);
+
+			$query = new WP_Query( $args );
+
+			if( $query->have_posts() )
+				return $query->posts;
+			else
+				return null;
+		}
+
+		public function rtpm_get_user_tasks() {
+			global $rt_pm_bp_pm, $rt_pm_project;
+
+			$project_post_type = $rt_pm_project->post_type;
+			$data = $_REQUEST['post'];
+
+			$author_id = $data['author_id'];
+
+			$tasks_data = $this->rtpm_get_task_by_user( $author_id );
+
+			$send_data = array();
+
+			$send_data['assignee_name'] = rt_get_user_displayname( $author_id );
+
+			$send_data['tasks'] = array();
+
+			if( null !== $tasks_data ) {
+
+				foreach( $tasks_data as $task ) {
+
+					$task_project_id = $this->rtpm_get_task_project_id( $task->ID );
+
+					$task_edit_url = add_query_arg( array( 'post_type' => $project_post_type, "{$project_post_type}_id" => $task_project_id, 'tab' => "{$project_post_type}-task", "{$this->post_type}_id" => $task->ID  ), $rt_pm_bp_pm->get_component_root_url().'tasks' );
+					$send_data['tasks'][] = array(
+						'task_edit_url' => $task_edit_url,
+						'post_title' => $task->post_title,
+					);
+				}
+			}
+
+			if( ! empty( $send_data ) )
+				wp_send_json_success( $send_data );
+			else
+				wp_send_json_error();
 		}
 
 
