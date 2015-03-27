@@ -134,7 +134,9 @@ if( !empty( $results_client ) ) {
        <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
        <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
 
-       <?php if (isset($post->ID) && $user_edit ) { ?>
+       <?php
+       wp_nonce_field( 'rtpm_save_project_detail', 'rtpm_save_project_detail_nonce' );
+       if (isset($post->ID) && $user_edit ) { ?>
            <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
            <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
        <?php } ?>
