@@ -356,10 +356,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			global $wp_query, $wpdb, $rtbp_todo, $bp;
 
 			$author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-			if (  ! current_user_can( $author_cap ) )
-				return;
 
-			if( bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task')  && false !== strpos( $where, 'post_duedate') ) {
+			if( current_user_can( $author_cap ) && bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task')  && false !== strpos( $where, 'post_duedate') ) {
 
 				$period = isset( $_REQUEST['period'] ) ? $_REQUEST['period'] : 'today';
 
