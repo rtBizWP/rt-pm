@@ -67,6 +67,10 @@ class Rt_Pm_Project_Overview {
     }
 
 
+    /**
+     * Render all grids for project overview
+     * @param $project_data
+     */
     public function rtpm_render_project_grid( $project_data ) {
         global $rt_biz_wall, $rt_pm_task, $rt_pm_bp_pm;
         ?>
@@ -218,7 +222,10 @@ class Rt_Pm_Project_Overview {
     }
 
 
-
+    /**
+     * Prepare chart of tasks
+     * @param $project_id
+     */
     public function rtpm_prepare_task_chart( $project_id ) {
         global $rt_pm_task, $rt_pm_project_overview;
 
@@ -274,6 +281,9 @@ class Rt_Pm_Project_Overview {
     <?php
     }
 
+    /**
+     * Style for table without outer border
+     */
     public function rtpm_print_style() { ?>
     <style>
         table.no-outer-border {

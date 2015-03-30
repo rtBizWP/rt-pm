@@ -21,41 +21,16 @@
         wp_die("Opsss!! You are in restricted area");
     }
 
-    $error=$projectTable->page_action();
+   // $error=$projectTable->page_action();
     $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-all-{$post_type}");
 ?>
 <?php screen_icon(); ?>
 <div class="rtpm-container wrap">
     <h2>
         <?php echo $labels['all_items']; ?>
-        <a href="#" id="btn-add-new-post" class="add-new-h2"><?php _e( 'Add new' ); ?></a>
-    </h2>
-    <?php $form_container_class = 'large-12 small-12 columns rtpm-project-form-container ';
-    if ( isset( $error ) && ! empty( $error ) && $error != 1  ){
-        $form_container_class.= 'collapse';
-    }else{
-        $form_container_class.= 'closed';
-    }
-    if(isset( $error ) && ! empty( $error )){
-        if( $error == 1  ){
-            ?><div style="padding:10px;" class="success"><?php
-            echo 'Project Successfully Added';
-            ?> </div><?php
-        }else{
-            ?><div style="padding:10px;" class="error"><?php
-            echo $error;
-            ?> </div><?php
-        }
-    } ?>
 
-    <div id="add-new-post" class="<?php echo $form_container_class ?>">
-        <div class="inside">
-            <h4 class="hndle"><span><i class="general foundicon-tools"></i> <?php _e( 'Start a New Project' ); ?></span></h4>
-            <form method="post" id="form-add-project" action="<?php echo $form_ulr; ?>">
-                <?php $projectTable->ui_create_project($user_edit); ?>
-            </form>
-        </div>
-    </div>
+    </h2>
+
     <div style="padding:0" class="large-12 columns rtpm-projects">
             <?php $projectTable->table_view(); ?>
     </div>

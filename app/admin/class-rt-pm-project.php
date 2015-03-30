@@ -199,29 +199,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $project['post_date'] = $result->date_create_gmt;
             $project['post_date_gmt'] = $result->date_create_gmt;
 
-            $project_id = @wp_insert_post( $project );
-
-            // Update lead status to win after converted to project
-            if( $project_id ){
-
-                $leadModel = new Rt_CRM_Lead_Model();
-
-                $args = array(
-                    'ID' => $lead_id,
-                    'post_status' => 'win',
-                );
-
-                @wp_update_post( $args );
-
-                $data = array(
-                    'post_status' => 'win',
-                );
-                $where = array( 'post_id' => $lead_id );
-
-                $leadModel->update_lead( $data, $where );
-            }
-
-
             $attachments = get_posts( array(
                 'post_parent' => $lead_id,
                 'post_type' => 'attachment',
@@ -257,6 +234,29 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $data['project_manager'] = $lead->post_author;
             $data['business_manager'] = $lead->post_author;
 
+
+            $project_id = $this->rtpm_save_project_data( $project, $data );
+
+            //Set post( project ) parent to lead
+            if( $project_id ) {
+
+                $leadModel = new Rt_CRM_Lead_Model();
+
+                $args = array(
+                    'ID' => $lead_id,
+                    'post_status' => 'win',
+                );
+
+                @wp_update_post( $args );
+
+                $data = array(
+                    'post_status' => 'win',
+                );
+                $where = array( 'post_id' => $lead_id );
+
+                $leadModel->update_lead( $data, $where );
+            }
+
             // Pull external file to project
             $lead_ext_files = get_post_meta( $lead_id, 'lead_external_file' );
             foreach ( $lead_ext_files as $ext_file ) {
@@ -277,10 +277,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
             }
 
-            foreach ( $data as $key=>$value ) {
-                  update_post_meta( $project_id, $key, $value );
-            }
-                        
             foreach ( $attachments as $attachment ) {
 
                 $filepath = get_attached_file( $attachment );
@@ -317,10 +313,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }else{
                 $redirect_url = add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) );
             }
-
-
-            do_action( 'save_project', $project_id, 'convert' );
-
 
 			wp_safe_redirect( $redirect_url );
 			die();
@@ -397,7 +389,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
             add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['new_item'], $this->labels['new_item'], $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+
+            if( isset( $_REQUEST['rt_project_id'] ) ) {
+
+                add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['edit_item'], $this->labels['edit_item'], $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+            }
 			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $editor_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
         }
 
@@ -2716,9 +2712,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( isset( $newProject['rt_voxxi_blog_id'] ) )
                 switch_to_blog( $newProject['rt_voxxi_blog_id'] );
 
-            $creationdate = $newProject['post_date'];
-            if ( isset( $creationdate ) && $creationdate != '' ) {
+            if ( isset( $newProject['post_date'] ) && ! empty( $newProject['post_date'] ) ) {
                 try {
+                    $creationdate = $newProject['post_date'];
                     $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
                     $UTC = new DateTimeZone('UTC');
                     $dr->setTimezone($UTC);
@@ -2735,8 +2731,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             // Change format for post_duedate
-            $postduedate = $newProject['post_duedate'];
-            if ( isset( $postduedate ) && $postduedate != '' ) {
+            if ( isset( $newProject['post_duedate'] ) && ! empty( $newProject['post_duedate'] ) ) {
+
+                $postduedate = $newProject['post_duedate'];
                 $dr = date_create_from_format( 'M d, Y H:i A', $postduedate );
                 $UTC = new DateTimeZone('UTC');
                 $dr->setTimezone($UTC);
@@ -2765,9 +2762,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
                     'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
                     'project_estimated_time' => $newProject['project_estimated_time'],
-                    'project_client' => $newProject['project_client'],
+                    'project_client' => isset( $newProject['project_client'] ) ? $newProject['project_client'] : array(),
                     'project_organization' => isset( $newProject['project_organization'] ) ? $newProject['project_organization']: '',
-                    'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : '',
+                    'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : array(),
                     'business_manager' => $newProject['business_manager'],
                     '_rtpm_status_detail' => isset( $newProject['status_detail'] ) ? $newProject['status_detail'] : '',
                     '_rtpm_project_budget' => $newProject['project_budget'],
@@ -2775,12 +2772,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'date_update_gmt' => gmdate('Y-m-d H:i:s'),
                     'user_updated_by' => get_current_user_id(),
                 );
-                $post_id = @wp_update_post( $post );
-                $rt_pm_project_type->save_project_type($post_id,$newProject);
-                $data = apply_filters( 'rt_pm_project_detail_meta', $data);
-                foreach ( $data as $key=>$value ) {
-                    update_post_meta( $post_id, $key, $value );
-                }
+
+                $post_id = $this->rtpm_save_project_data( $post, $data );
+
+                $rt_pm_project_type->save_project_type( $post_id,$newProject);
 
                 do_action( 'save_project', $post_id, 'update' );
             }else{
@@ -2789,9 +2784,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'post_completiondate' => ( !empty( $newProject['post_completiondate'] ) ) ? rt_set_date_to_utc( $newProject['post_completiondate'] ) : '',
                     'post_duedate' => ( !empty( $newProject['post_duedate'] )) ? rt_set_date_to_utc( $newProject['post_duedate'] ): '',
                     'project_estimated_time' => $newProject['project_estimated_time'],
-                    'project_client' => $newProject['project_client'],
-                    'project_organization' => $newProject['project_organization'],
-                    'project_member' => $newProject['project_member'],
+                    'project_client' => isset( $newProject['project_client'] ) ? $newProject['project_client'] : array(),
+                    'project_organization' => isset( $newProject['project_organization'] ) ? $newProject['project_organization']: '',
+                    'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : array(),
                     'business_manager' => $newProject['business_manager'],
                     '_rtpm_status_detail' => $newProject['status_detail'],
                     '_rtpm_project_budget' => $newProject['project_budget'],
@@ -2800,18 +2795,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'user_updated_by' => get_current_user_id(),
                     'user_created_by' => get_current_user_id(),
                 );
-                $post_id = @wp_insert_post($post);
-                $rt_pm_project_type->save_project_type($post_id,$newProject);
-                $data = apply_filters( 'rt_pm_project_detail_meta', $data);
-                foreach ( $data as $key=>$value ) {
-                    update_post_meta( $post_id, $key, $value );
-                }
 
-                do_action( 'save_project', $post_id, 'insert' );
+                $post_id = $this->rtpm_save_project_data( $post, $data );
+
+                $rt_pm_project_type->save_project_type($post_id,$newProject);
+
 
             }
-
-            $data['rtpm_people_on_project'][] = array();
 
             if( ! is_admin() ) {
 
@@ -2823,6 +2813,41 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     add_action ( 'wp_head', 'rt_voxxi_js_variables' );
                 }
             }
+        }
+
+        /**
+         * Save project data
+         * @param $post_date
+         * @param $meta_data
+         * @return int|WP_Error
+         */
+        public function rtpm_save_project_data( $post_date, $meta_data ) {
+
+            if( isset( $post_date['ID'] ) ){
+
+                $post_id = @wp_update_post( $post_date );
+                $action = 'update';
+            }else {
+
+                $post_id = @wp_insert_post( $post_date );
+                $action = 'insert';
+            }
+
+            $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
+
+            foreach ( $data as $key=>$value ) {
+                update_post_meta( $post_id, $key, $value );
+            }
+
+            $meta_data['rtpm_people_on_project'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
+
+            $meta_data['rtpm_people_on_project'] = array_merge( $meta_data['rtpm_people_on_project'] , $meta_data['project_client'], $meta_data['project_member'] );
+
+            update_post_meta( $post_id, 'rtpm_people_on_project', array_filter( $meta_data['rtpm_people_on_project'] ) );
+
+            do_action( 'save_project', $post_id, $action );
+
+            return $post_id;
         }
     }
 }
