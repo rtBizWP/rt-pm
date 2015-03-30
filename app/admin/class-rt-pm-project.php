@@ -2841,13 +2841,53 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $meta_data['rtpm_people_on_project'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
 
-            $meta_data['rtpm_people_on_project'] = array_merge( $meta_data['rtpm_people_on_project'] , $meta_data['project_client'], $meta_data['project_member'] );
+            $project_client = array();
+             foreach( $meta_data['project_client'] as $client ) {
+                 $project_client[] = rt_biz_get_wp_user_for_person( $client );
+             }
 
-            update_post_meta( $post_id, 'rtpm_people_on_project', array_filter( $meta_data['rtpm_people_on_project'] ) );
+            $meta_data['rtpm_people_on_project'] = array_merge( $meta_data['rtpm_people_on_project'] , $project_client, $meta_data['project_member'] );
+
+            $meta_data['rtpm_people_on_project'] = array_unique( $meta_data['rtpm_people_on_project'] );
+
+            $rtpm_peoples = implode( ' ', array_filter( $meta_data['rtpm_people_on_project'] ) );
+
+            update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
 
             do_action( 'save_project', $post_id, $action );
 
             return $post_id;
+        }
+
+
+        /**
+         * Get project data
+         * @param $args
+         * @return array
+         */
+        public function rtpm_get_project_data( $args = array() ){
+            global $rt_pm_project;
+
+            $args['post_type'] = $rt_pm_project->post_type;
+
+            $query = new WP_Query( $args );
+
+            return $query->posts;
+        }
+
+        /**
+         * Return all projects id to whom user is belong
+         * @param $user_id
+         * @return mixed
+         */
+        public function rtpm_get_users_projects( $user_id ) {
+            global $wpdb;
+
+            $query = $wpdb->prepare("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'rtpm_people_on_project' AND meta_value REGEXP '[[:<:]]%d[[:>:]]'", $user_id );
+
+            $result = $wpdb->get_col( $query );
+
+            return $result;
         }
     }
 }

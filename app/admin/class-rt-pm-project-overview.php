@@ -38,36 +38,6 @@ class Rt_Pm_Project_Overview {
     }
 
     /**
-     * Project list
-     * @param int $author_id
-     * @param string $project_status_type
-     * @param null $date_query
-     * @return array
-     */
-    public function rtpm_get_project_data( $author_id = 0, $project_status_type = 'any', $date_query = null ){
-        global $rt_pm_project;
-
-        $args = array(
-            'nopaging' => true,
-            'post_status' => array( $project_status_type ),
-            'post_type' => $rt_pm_project->post_type,
-            'no_found_rows' => true,
-        );
-
-        if( $author_id !== 0 )
-            $args['author'] = $author_id;
-
-
-        if( null !== $date_query )
-            $args['date_query'] = $date_query;
-
-        $query = new WP_Query( $args );
-
-        return $query->posts;
-    }
-
-
-    /**
      * Render all grids for project overview
      * @param $project_data
      */

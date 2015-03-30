@@ -104,10 +104,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rt_pm_bp_pm;
             	
-			// Determine user to use -- only
-			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
-				return;
-			}
+//			// Determine user to use -- only
+//			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
+//				return;
+//			}
 			
             $nav_name = __( 'PM', 'buddypress' );
 
@@ -216,7 +216,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'overview',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => 'rtpm_project_overview_screen',
 					'position'        => 10,
 				);
 			}
