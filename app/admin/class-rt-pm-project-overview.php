@@ -233,7 +233,8 @@ class Rt_Pm_Project_Overview {
 
 
         $data_source['cols'] = $cols;
-        $data_source['rows'] = $rows;
+
+        $data_source['rows'] = array_map( 'unserialize', array_unique( array_map( 'serialize', $rows ) ) );;
 
         $this->rtpm_chars[] = array(
             'id' => 1,
