@@ -388,7 +388,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
+            $url = add_query_arg( array( 'post_type' => $this->post_type ), 'edit.php' );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, $url );
 
             if( isset( $_REQUEST['rt_project_id'] ) ) {
 
@@ -413,6 +414,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				'menu_position' => $menu_position,
 				'supports' => array('title', 'editor', 'comments', 'custom-fields'),
 				'capability_type' => $this->post_type,
+                'map_meta_cap' => true,
 			);
 
 
@@ -487,6 +489,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				self::$dashboard_slug,
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
+                'edit.php?post_type='.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax,
 				Rt_PM_User_Reports::$user_reports_page_slug,
