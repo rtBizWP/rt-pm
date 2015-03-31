@@ -103,12 +103,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rt_pm_bp_pm;
-            	
-			// Determine user to use -- only
-			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
-				return;
-			}
-			
+
+            if( is_main_site() )
+                return;
+            
             $nav_name = __( 'PM', 'buddypress' );
 
 			// Add 'hrm' to the main navigation
@@ -198,15 +196,25 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 10,
 				);
 			}
-			
+
 			// Resources
 			if( !isset($_GET['rt_project_id']) ){
-			$sub_nav[] = array(
+
+				$sub_nav[] = array(
 					'name'            =>  __( 'Resources' ),
 					'slug'            => 'resources',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
 					'screen_function' => 'bp_pm_projects',
+					'position'        => 10,
+				);
+
+				$sub_nav[] = array(
+					'name'            =>  __( 'Overview' ),
+					'slug'            => 'overview',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'rtpm_project_overview_screen',
 					'position'        => 10,
 				);
 			}
@@ -315,7 +323,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		}
 
 		public function setup_admin_bar( $wp_admin_nav = array() ) {
-                   
+
+            if( is_main_site() )
+                return;
+
 				// The instance
 				$bp = buddypress();
 		
@@ -340,6 +351,11 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 						array(
 		                    'name' =>  'Resources',
 		                    'slug'  => 'resources',
+		                    'screen_function' => 'bp_pm_projects',
+		                ),
+						array(
+		                    'name' =>  'Overview',
+		                    'slug'  => 'overview',
 		                    'screen_function' => 'bp_pm_projects',
 		                )
 		            );

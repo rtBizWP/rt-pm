@@ -38,39 +38,48 @@ class Rt_Pm_Project_Overview {
     }
 
     /**
-     * Project list
-     * @param int $author_id
-     * @param string $project_status_type
-     * @param null $date_query
-     * @return array
+     * Render all grids for project overview
+     * @param $project_data
      */
-    public function rtpm_get_project_data( $author_id = 0, $project_status_type = 'any', $date_query = null ){
-        global $rt_pm_project;
-
-        $args = array(
-            'nopaging' => true,
-            'post_status' => array( $project_status_type ),
-            'post_type' => $rt_pm_project->post_type,
-            'no_found_rows' => true,
-        );
-
-        if( $author_id !== 0 )
-            $args['author'] = $author_id;
-
-
-        if( null !== $date_query )
-            $args['date_query'] = $date_query;
-
-        $query = new WP_Query( $args );
-
-        return $query->posts;
-    }
-
-
     public function rtpm_render_project_grid( $project_data ) {
         global $rt_biz_wall, $rt_pm_task, $rt_pm_bp_pm;
         ?>
 
+        <script id="task-list-template" type="text/x-handlebars-template">
+            <h2>{{assignee_name}}'s Tasks</h2>
+            <ul style="list-style-type: none; margin: 0;">
+                {{#each tasks}}
+                <li style="margin: 0;"><a target="_blank" href="{{task_edit_url}}">{{post_title}}</a></li>
+                {{/each}}
+            </ul>
+        </script>
+
+        <script>
+            jQuery(document).ready(function($) {
+
+                $('a.rtcontext-taskbox').contextMenu('div.rtcontext-box');
+
+                var source   = $('#task-list-template').html();
+                var template = Handlebars.compile(source);
+
+                $('a.rtcontext-taskbox').click(function(event) {
+                    event.stopPropagation();
+                    var post = {};
+                    var data = {};
+                    post.author_id = $(this).data('team-member-id');
+                    data.action = 'rtpm_get_user_tasks'
+                    data.post = post;
+                    var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
+
+                    $.post( ajax_adminurl, data, function( res ){
+
+                        if( res.success ){
+                            $('div.rtcontext-box').html( template( res.data ) );
+                        }
+                    });
+                });
+            });
+        </script>
         <ul id="activity-stream" class="activity-list item-list">
             <?php
             if( ! empty( $project_data ) ) {
@@ -85,7 +94,7 @@ class Rt_Pm_Project_Overview {
 
                     ?>
 
-                    <li class="activity-item">
+                    <li class="activity-item" style="display: none;">
                         <div class="activity-content">
                             <div class="row activity-inner rt-biz-activity">
                                 <div class="rt-voxxi-content-box">
@@ -134,7 +143,7 @@ class Rt_Pm_Project_Overview {
                                     <div class="column small-3 bdm-column">
                                         <strong>BDM</strong>
                                         <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true) ?>
-                                        <a data-team-member-id="<?php echo $bdm; ?>" class="rt-voxxi-context-menu">
+                                        <a data-team-member-id="<?php echo $bdm; ?>" class="rtcontext-taskbox">
                                             <?php echo get_avatar( $bdm , 16 ) ; ?>
                                         </a>
                                     </div>
@@ -147,7 +156,7 @@ class Rt_Pm_Project_Overview {
 
                                                 foreach ( $team_member as $member ) { ?>
                                                     <div class="columns small-3">
-                                                        <a data-team-member-id="<?php echo $member; ?>" class="rt-voxxi-context-menu">
+                                                        <a data-team-member-id="<?php echo $member; ?>" class="rtcontext-taskbox">
                                                             <?php echo get_avatar( $member ) ; ?>
                                                         </a>
                                                     </div>
@@ -165,6 +174,10 @@ class Rt_Pm_Project_Overview {
             } ?>
         </ul>
 
+        <div class="rtcontext-box iw-contextMenu" style="display: none;">
+        </div>
+
+
     <?php }
 
 
@@ -179,7 +192,10 @@ class Rt_Pm_Project_Overview {
     }
 
 
-
+    /**
+     * Prepare chart of tasks
+     * @param $project_id
+     */
     public function rtpm_prepare_task_chart( $project_id ) {
         global $rt_pm_task, $rt_pm_project_overview;
 
@@ -217,7 +233,8 @@ class Rt_Pm_Project_Overview {
 
 
         $data_source['cols'] = $cols;
-        $data_source['rows'] = $rows;
+
+        $data_source['rows'] = array_map( 'unserialize', array_unique( array_map( 'serialize', $rows ) ) );;
 
         $this->rtpm_chars[] = array(
             'id' => 1,
@@ -235,6 +252,9 @@ class Rt_Pm_Project_Overview {
     <?php
     }
 
+    /**
+     * Style for table without outer border
+     */
     public function rtpm_print_style() { ?>
     <style>
         table.no-outer-border {

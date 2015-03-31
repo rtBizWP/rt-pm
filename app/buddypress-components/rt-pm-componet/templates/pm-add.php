@@ -314,7 +314,9 @@ if( !empty( $results_organization ) ) {
     <?php if( $user_edit ) { ?>
     <div class="rtpm-container">
     <form method="post" id="form-add-post" data-posttype="<?php echo $post_type ?>" action="<?php echo $form_ulr; ?>">
-    <?php } ?>
+    <?php }
+    wp_nonce_field( 'rtpm_save_project_detail', 'rtpm_save_project_detail_nonce' );
+    ?>
         <?php if (isset($post->ID) && $user_edit ) { ?>
             <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
             <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
