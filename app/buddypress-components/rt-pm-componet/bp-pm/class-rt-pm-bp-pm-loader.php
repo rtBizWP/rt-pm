@@ -20,7 +20,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                  *
                  * @since BuddyPress (1.5)
                  */
-                private $sub_nav_items = array();
+                private $sub_nav_items;
                 static $projects_slug = 'projects';
                 static $gantt_admin = 'gantt';
                 private $menu_order = 92;
@@ -103,12 +103,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rt_pm_bp_pm;
-            	
-//			// Determine user to use -- only
-//			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
-//				return;
-//			}
-			
+
+            if( is_main_site() )
+                return;
+            
             $nav_name = __( 'PM', 'buddypress' );
 
 			// Add 'hrm' to the main navigation
@@ -175,7 +173,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'position'        => 10,
 				);
 			}
-
+			
 			// Add the subnav items
 			/*$sub_nav[] = array(
 				'name'            =>  __( 'Add New' ),
@@ -185,7 +183,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'screen_function' => 'bp_pm_projects_new',
 				'position'        => 10,
 			);*/
-
+			
 			
 			if( $add_archive == true){
 				// Add the subnav items
@@ -325,7 +323,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		}
 
 		public function setup_admin_bar( $wp_admin_nav = array() ) {
-                   
+
+            if( is_main_site() )
+                return;
+
 				// The instance
 				$bp = buddypress();
 		
@@ -335,7 +336,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					// Setup the logged in user variables
 					$user_domain   = bp_loggedin_user_domain();
 					$crm_link = trailingslashit( $user_domain . $this->slug );
-
+					
 					$this->sub_nav_items = array(
 		                array(
 		                    'name' => __( 'Projects' ),
@@ -367,7 +368,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 						'href'   => trailingslashit( $crm_link )
 					);
 		
-
+					
 					foreach ($this->sub_nav_items as $item) {
 						// Add a few subnav items
 						$wp_admin_nav[] = array(
@@ -382,6 +383,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				}
 		
 				parent::setup_admin_bar( $wp_admin_nav );
+			
 		}
 		
 
