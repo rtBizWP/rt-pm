@@ -54,6 +54,7 @@ if ( ! class_exists( 'RT_PM_Bp_PM' ) ) {
 		
 		function get_component_root_url(){
 			global $bp;
+            $link = '';
 			foreach ( $bp->bp_nav as $nav ) {
 			    
 			  if ( $nav['slug'] == RT_PM_BP_PM_SLUG ){

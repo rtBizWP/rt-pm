@@ -103,7 +103,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rt_pm_bp_pm;
-            	
+
+            if( is_main_site() )
+                return;
+
 			// Determine user to use -- only
 			if ( bp_loggedin_user_id() !== bp_displayed_user_id() ) {
 				return;
@@ -314,7 +317,10 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		}
 
 		public function setup_admin_bar( $wp_admin_nav = array() ) {
-                   
+
+            if( is_main_site() )
+                return;
+
 				// The instance
 				$bp = buddypress();
 		
