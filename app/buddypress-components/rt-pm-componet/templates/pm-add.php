@@ -46,6 +46,10 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'archive' && isset( $
 		// wp_trash_post( $t );
 	}
 	
+	// hide activity
+			
+	do_action( 'hide_lead_activity',$_REQUEST[$post_type.'_id'] );
+	
 	// remove opportunity if project is archived
 	$opportunities_array = get_post_ancestors( $_REQUEST[$post_type.'_id'] );
 	foreach ($opportunities_array as $key => $oppor ){
@@ -103,6 +107,10 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'unarchive' && isset(
 		//wp_delete_post( $t );
 	}
 	
+	// show activity
+			
+	do_action( 'show_lead_activity',$_REQUEST[$post_type.'_id'] );
+
 	// restore opportunity if project is unarchived
 	
 	$opportunities_array = get_post_ancestors( $_REQUEST[$post_type.'_id'] );
