@@ -390,6 +390,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				'supports' => array('title', 'editor', 'comments', 'custom-fields'),
 				'capability_type' => $this->post_type,
 			);
+
+
+            if( is_main_site() )
+                $args['show_ui'] = false;
+
 			register_post_type( $this->post_type, $args );
 		}
 
