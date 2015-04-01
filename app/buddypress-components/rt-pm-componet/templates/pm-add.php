@@ -5,6 +5,16 @@ if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_projec
     wp_die("Opsss!! You are in restricted area");
 }
 
+$author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
+if( current_user_can( $author_cap ) ){
+
+    $user_edit = true;
+}else {
+
+    $user_edit = false;
+}
+
+
 $post_type=$_REQUEST['post_type'];
 
 //Trash action
@@ -337,7 +347,7 @@ if( !empty( $results_organization ) ) {
             <!-- Post title START -->
             <div class="small-12 columns">
                 <?php if( $user_edit ) { ?>
-                    <input name="post[post_title]" id="new_<?php echo $post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
+                    <input name="post[post_title]" id="new_<?php echo $post_type ?>_title" type="text" placeholder="Project title" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
                 <?php } else { ?>
                     <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
                 <?php } ?>

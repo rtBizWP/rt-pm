@@ -81,6 +81,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             add_filter( "manage_edit-{$this->post_type}_columns", array( $this, 'rtpm_set_custom_edit_project_columns' ) );
             add_action( "manage_{$this->post_type}_posts_custom_column" , array( $this, 'rtpm_custom_project_column' ), 10, 2  );
 
+            add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
+            add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -2901,6 +2903,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             return $result;
         }
 
+        /**
+         * Project list custom column filter
+         * @param $columns
+         * @return mixed
+         */
         public function rtpm_set_custom_edit_project_columns( $columns ) {
 
             $columns['job_no'] = __( 'Job Number', RT_PM_TEXT_DOMAIN );
@@ -2911,6 +2918,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             return $columns;
         }
 
+        /**
+         * Project list custom column hook
+         * @param $column
+         * @param $post_id
+         */
         public function rtpm_custom_project_column( $column, $post_id  ) {
 
             switch( $column ) {
@@ -2935,6 +2947,56 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             }
 
+        }
+
+        /**
+         * Save project working hource
+         */
+        public function rtpm_save_project_working_hours() {
+
+            if ( ! isset( $_POST['rt_pm_edit_work_hours_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_hours_nonce'], 'rt_pm_edit_work_hours' ) )
+                return;
+
+            $data = $_POST['post'];
+
+            update_post_meta( $data['project_id'], 'working_hours', $data['working_hours'] );
+        }
+
+        /**
+         * Save project working days
+         * @return bool|void
+         */
+        public function rtpm_save_project_working_days() {
+
+            if ( ! isset( $_POST['rt_pm_edit_work_days_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_days_nonce'], 'rt_pm_edit_work_days' ) )
+                return;
+
+
+            $data = $_POST['post'];
+
+            if( !isset( $data ) )
+                return false;
+
+            $working_days = array();
+
+            if( isset( $data['days'] ) )
+                $working_days['days'] = $data['days'];
+
+
+            if( isset( $data['occasion_name'] ) ){
+
+                foreach($data['occasion_name'] as $index => $occasion_name) {
+
+                    if ( empty( $occasion_name ) || empty( $data['occasion_date'][ $index ] ) ) continue;
+
+                    $working_days['occasions'][] = array(
+                        'name'  => $occasion_name,
+                        'date' =>$data['occasion_date'][ $index ]
+                    );
+                }
+            }
+
+            update_post_meta( $data['project_id'], 'working_days', $working_days );
         }
     }
 }

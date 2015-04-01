@@ -600,19 +600,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'user_updated_by' => get_current_user_id(),
 				);
 				$post_id = @wp_update_post( $post );
-				$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-
-				// link post to user
-
-				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-				// remove old data
-				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
-
-
-				foreach ( $data as $key=>$value ) {
-					update_post_meta( $post_id, $key, $value );
-				}
 
 				$operation_type = 'update';
 			}else{
@@ -627,22 +614,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'user_created_by' => get_current_user_id(),
 				);
 				$post_id = @wp_insert_post($post);
-				$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-				foreach ( $data as $key=>$value ) {
-					update_post_meta( $post_id, $key, $value );
-				}
-
-				// link post to user
-
-				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-				// remove old data
-				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
 
 				$_REQUEST["new"]=true;
 				$newTask['post_id']= $post_id;
 				$operation_type = 'insert';
 			}
+
+			$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
+			foreach ( $data as $key=>$value ) {
+				update_post_meta( $post_id, $key, $value );
+			}
+
+			// link post to user
+			if( ! empty( $newTask['post_assignee'] ) ) {
+
+				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+				// remove old data
+				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+			}
+
 
 			// Attachments
 			$old_attachments = get_posts( array(

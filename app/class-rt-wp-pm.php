@@ -98,9 +98,9 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
                     global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend, $rt_pm_bp_pm_project;
 
                     $rt_pm_bp_pm = new RT_PM_Bp_PM();
-                    $rt_pm_bp_pm_frontend = new Rt_PM_Bp_PM_Frontend();
+                  //  $rt_pm_bp_pm_frontend = new Rt_PM_Bp_PM_Frontend();
                     if ( ! is_admin() ){
-                        $rt_pm_bp_pm_project = new Rt_PM_Bp_PM_Project();
+                       // $rt_pm_bp_pm_project = new Rt_PM_Bp_PM_Project();
                     }
                 }
             }

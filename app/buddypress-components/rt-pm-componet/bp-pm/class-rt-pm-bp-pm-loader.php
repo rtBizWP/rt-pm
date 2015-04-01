@@ -102,7 +102,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 * @global obj $bp
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
-			global $rt_pm_bp_pm;
+			global $rtbp_pm_screen;
 
             if( is_main_site() )
                 return;
@@ -114,7 +114,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'name' 		      => __( $this->pm_label ),
 				'slug' 		      => $this->id,
 				'position' 	      => $this->menu_order,
-				'screen_function'     => 'bp_pm_screen',
+				'screen_function'     => array( $rtbp_pm_screen, 'bp_pm_screen' ),
 				'default_subnav_slug' => 'projects',
 			);
 
@@ -169,7 +169,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => self::$projects_slug,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 			}
@@ -192,7 +192,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'archives',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 			}
@@ -205,7 +205,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'resources',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 
@@ -214,7 +214,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'overview',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'rtpm_project_overview_screen',
+					'screen_function' => array( $rtbp_pm_screen, 'rtpm_project_overview_screen' ),
 					'position'        => 10,
 				);
 			}
@@ -234,7 +234,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_details',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_details' ),
                     'position'        => 20,
                 );
 
@@ -251,7 +251,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_attachments',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_attachments' ),
                     'position'        => 30,
                 );
 
@@ -266,7 +266,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_tasks',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_tasks' ),
                     'position'        => 40,
                 );
 
@@ -283,7 +283,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      =>  $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_time_entries',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_time_entries' ),
                     'position'        => 50,
                 );
 
@@ -298,7 +298,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_notifications',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_notifications' ),
                     'position'        => 60,
                 );
 
@@ -312,7 +312,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_gantt',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_gantt' ),
                     'position'        => 70,
                 );
 
@@ -341,22 +341,18 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		                array(
 		                    'name' => __( 'Projects' ),
 		                    'slug'  => 'projects',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 		                array(
 		                    'name' =>  'Archives',
 		                    'slug'  => 'archives',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 						array(
 		                    'name' =>  'Resources',
 		                    'slug'  => 'resources',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 						array(
 		                    'name' =>  'Overview',
 		                    'slug'  => 'overview',
-		                    'screen_function' => 'bp_pm_projects',
 		                )
 		            );
 		
