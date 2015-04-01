@@ -132,7 +132,7 @@ if( !empty( $results_client ) ) {
        <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
        <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
        <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
-       <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+       <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
 
        <?php if (isset($post->ID) && $user_edit ) { ?>
            <input type="hidden" name="post[post_id]" id='rt_pm_post_id' value="<?php echo $post->ID; ?>" />

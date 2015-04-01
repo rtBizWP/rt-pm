@@ -55,7 +55,7 @@ $task_labels=$rt_pm_task->labels;
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <?php } ?>
 
-    <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+    <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
