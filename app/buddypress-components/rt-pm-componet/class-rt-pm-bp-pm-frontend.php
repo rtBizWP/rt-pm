@@ -88,7 +88,7 @@ if( !class_exists( 'Rt_PM_Bp_PM_Frontend' ) ) {
         function localize_scripts() {
             global $rt_pm_project, $rt_pm_bp_pm;
              $user_edit = false;
-                if ( current_user_can( "edit_{$rt_pm_project->post_type}" ) ) {
+                if ( current_user_can( "edit_{$rt_pm_project->post_type}s" ) ) {
                     $user_edit = true;
                 }
                 wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );

@@ -78,6 +78,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             add_action( 'init', array( $this, 'rtpm_save_project_detail' ) ); // Save project details
 
+            add_filter( "manage_edit-{$this->post_type}_columns", array( $this, 'rtpm_set_custom_edit_project_columns' ) );
+            add_action( "manage_{$this->post_type}_posts_custom_column" , array( $this, 'rtpm_custom_project_column' ), 10, 2  );
+
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -487,9 +490,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         function get_custom_menu_order(){
             $this->custom_menu_order = array(
 				self::$dashboard_slug,
+                'edit.php?post_type='.$this->post_type,
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
-                'edit.php?post_type='.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax,
 				Rt_PM_User_Reports::$user_reports_page_slug,
@@ -2896,6 +2899,42 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $result = $wpdb->get_col( $query );
 
             return $result;
+        }
+
+        public function rtpm_set_custom_edit_project_columns( $columns ) {
+
+            $columns['job_no'] = __( 'Job Number', RT_PM_TEXT_DOMAIN );
+            $columns['status'] = __( 'Project Status', RT_PM_TEXT_DOMAIN );
+            $columns['project_manager'] = __( 'Project Manager', RT_PM_TEXT_DOMAIN );
+            $columns['business_manager'] = __( 'Business Manager', RT_PM_TEXT_DOMAIN );
+
+            return $columns;
+        }
+
+        public function rtpm_custom_project_column( $column, $post_id  ) {
+
+            switch( $column ) {
+
+                case 'job_no' :
+                    echo get_post_meta( $post_id , 'rtpm_job_no' , true );
+                    break;
+
+                case 'status':
+                    echo get_post_status( $post_id );
+                    break;
+
+                case 'project_manager':
+                    $project_manager_wp_user_id = get_post_meta( $post_id, 'project_manager', true );
+                    echo rt_get_user_displayname( $project_manager_wp_user_id );
+                    break;
+
+                case 'business_manager':
+                    $business_manager_wp_user_id =  get_post_meta( $post_id, 'business_maanger', true );
+                    echo rt_get_user_displayname( $business_manager_wp_user_id );
+                    break;
+
+            }
+
         }
     }
 }

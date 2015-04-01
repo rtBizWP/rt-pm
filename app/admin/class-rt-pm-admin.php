@@ -83,7 +83,7 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
             $pagearray = array( 'rtpm-all-'.$rt_pm_project->post_type,'rtpm-add-'.$rt_pm_project->post_type );
             if( wp_script_is( 'rtpm-admin-js' ) && isset( $_REQUEST['post_type'] ) && isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pagearray ) ) {
                 $user_edit = false;
-                if ( current_user_can( "edit_{$rt_pm_project->post_type}" ) ) {
+                if ( current_user_can( "edit_{$rt_pm_project->post_type}s" ) ) {
                     $user_edit = true;
                 }
                 wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
