@@ -797,7 +797,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$task_ids = implode( ',', $tasks );
 
-			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d' ) = '$due_date' and post_id in ( $task_ids )";
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d' ) <= '$due_date' and post_id in ( $task_ids )";
 
 			$result = $wpdb->get_col( $query );
 

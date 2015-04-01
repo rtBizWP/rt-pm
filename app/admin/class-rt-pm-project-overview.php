@@ -42,7 +42,7 @@ class Rt_Pm_Project_Overview {
      * @param $project_data
      */
     public function rtpm_render_project_grid( $project_data ) {
-        global $rt_biz_wall, $rt_pm_task, $rt_pm_bp_pm;
+        global $rt_pm_project, $rt_pm_task, $rt_pm_bp_pm;
         ?>
 
         <script id="task-list-template" type="text/x-handlebars-template">
@@ -90,11 +90,11 @@ class Rt_Pm_Project_Overview {
 
                 foreach( $project_data as $project ):
 
-                    $project_edit_link = add_query_arg( array( 'rt_project_id' => $project->ID, 'action' => 'edit' ), $rt_pm_bp_pm->get_component_root_url() );
+                    $project_edit_link = add_query_arg( array( 'rt_project_id' => $project->ID, 'action' => 'edit', 'post_type' => $rt_pm_project->post_type, 'tab' => "{$rt_pm_project->post_type}-details" ), $rt_pm_bp_pm->get_component_root_url().'/details' );
 
                     ?>
 
-                    <li class="activity-item" style="display: none;">
+                    <li class="activity-item">
                         <div class="activity-content">
                             <div class="row activity-inner rt-biz-activity">
                                 <div class="rt-voxxi-content-box">
@@ -103,15 +103,16 @@ class Rt_Pm_Project_Overview {
                                         <p><strong>Due date: </strong><?php echo mysql2date( 'd M Y', get_post_meta( $project->ID, 'post_duedate', true ) ); ?></p>
                                         <p><strong>Post status: </strong><?php echo $project->post_status; ?></p>
                                 </div>
-                                <div class="post-detail-comment column-title">
-                                    <div class="columns small-12">
+
+                                <div class="row post-detail-comment column-title">
+                                    <div class="column small-12">
                                         <p>
-                                           <?php echo  $project->post_content ?>
+                                           <?php echo rtbiz_read_more( $project->post_content ); ?>
                                         </p>
                                     </div>
                                 </div>
-                                <hr/>
-                                <div class="row">
+
+                                <div class="row column-title">
                                     <div class="small-6 columns">
                                         <table class="no-outer-border">
                                             <tr class="orange-text">
@@ -128,24 +129,25 @@ class Rt_Pm_Project_Overview {
                                             </tr>
                                         </table>
                                     </div>
-                                    <div class="small-6 columns" style="  position: absolute;left: 60%;top: 20%;">
+                                    <div class="small-6 columns" style="  position: absolute;left: 60%;">
                                         <div class="number-circle">
                                             <div class="height_fix"></div>
-                                            <div class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?></div>
+                                            <div class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?>%</div>
                                         </div>
                                     </div>
                                 </div>
-                                <hr/>
 
                                 <?php $this->rtpm_prepare_task_chart( $project->ID ) ?>
 
                                 <div class="row rt-pm-team">
                                     <div class="column small-3 bdm-column">
                                         <strong>BDM</strong>
-                                        <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true) ?>
-                                        <a data-team-member-id="<?php echo $bdm; ?>" class="rtcontext-taskbox">
-                                            <?php echo get_avatar( $bdm , 16 ) ; ?>
-                                        </a>
+                                        <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true);
+                                            if( ! empty( $bdm ) ){ ?>
+                                                <a data-team-member-id="<?php echo $bdm; ?>" class="rtcontext-taskbox">
+                                                    <?php echo get_avatar( $bdm , 16 ) ; ?>
+                                                </a>
+                                           <?php } ?>
                                     </div>
                                     <div class="column small-9 team-column" style="float: left;">
                                         <strong class="team-title">Team</strong>
@@ -154,7 +156,11 @@ class Rt_Pm_Project_Overview {
 
                                             if( !empty( $team_member ) ) {
 
-                                                foreach ( $team_member as $member ) { ?>
+                                                foreach ( $team_member as $member ) {
+
+                                                    if( empty( $member ) )
+                                                        continue;
+                                                    ?>
                                                     <div class="columns small-3">
                                                         <a data-team-member-id="<?php echo $member; ?>" class="rtcontext-taskbox">
                                                             <?php echo get_avatar( $member ) ; ?>
@@ -203,12 +209,6 @@ class Rt_Pm_Project_Overview {
         $cols = array( __( 'Hours' ), __( 'Estimated' ), __( 'Billed' ) );
         $rows = array();
 
-        $project_start_date = get_post_field( 'post_date', $project_id );
-
-        $project_end_date = get_post_meta( $project_id, 'post_duedate', true );
-
-        $first_date = new DateTime( $project_start_date  );
-        $last_date = new DateTime( $project_end_date  );
 
         $duedate_array = $rt_pm_task->rtpm_get_all_task_duedate( $project_id );
 
