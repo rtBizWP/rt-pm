@@ -135,7 +135,7 @@ if( !empty( $results_client ) ) {
        <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
 
        <?php if (isset($post->ID) && $user_edit ) { ?>
-           <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
+           <input type="hidden" name="post[post_id]" id='rt_pm_post_id' value="<?php echo $post->ID; ?>" />
            <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
        <?php } ?>
 
@@ -450,7 +450,7 @@ if( !empty( $results_client ) ) {
                        </div>
                    <?php }else{ ?>
                        <div class="small-12 mobile-large-3 columns no-attachment-item">
-                           <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+                           <?php delete_post_meta($post->ID, '_rt_wp_pm_attachment_hash'); ?>
                            Attachment Not found!
                        </div>
                    <?php } ?>

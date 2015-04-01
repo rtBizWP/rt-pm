@@ -585,7 +585,7 @@ jQuery(document).ready(function($) {
                 var data = {
                     attachment_id: value.id,
                     action: "rtbiz_add_new_documents",
-                    post_id: $("#project_id").val(),
+                    post_id: $("#rt_pm_post_id").val(),
                     filename: value.url,
 
                 }
