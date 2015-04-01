@@ -312,9 +312,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             // Hook for proprerty metabox value save to project
             do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
-            if ( bp_is_current_component( BP_CRM_SLUG ) ){
+            if ( ! is_admin() ){
 
-                $redirect_url = add_query_arg( array( 'rt_project_id' => $project_id, 'action' => 'edit' ), $rt_pm_bp_pm->get_component_root_url() );
+                $redirect_url = rtpm_bp_get_project_details_url( $project_id );
             }else{
                 $redirect_url = add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) );
             }

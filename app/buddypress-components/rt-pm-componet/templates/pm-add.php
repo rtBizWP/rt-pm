@@ -15,7 +15,7 @@ if( current_user_can( $author_cap ) ){
 }
 
 
-$post_type=$_REQUEST['post_type'];
+$post_type = $_REQUEST['post_type'];
 
 //Trash action
 if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$post_type.'_id'] ) ) {
@@ -274,7 +274,7 @@ $arrProjectClient = array();
 $subProjectClientHTML = "";
 if( !empty( $results_client ) ) {
     foreach ( $results_client as $client ) {
-		$email = rt_biz_get_entity_meta( $client->ID, $this->contact_email_key, true );
+		$email = rt_biz_get_entity_meta( $client->ID, $rt_pm_project->contact_email_key, true );
         $client_url = add_query_arg( array( 'id'=>$client->ID, 'action'=>'edit' ), get_people_root_url().Rt_User_Category::$clients_category_slug ) ;
         if (isset($project_client) && $project_client && !empty($project_client) && in_array($client->ID, $project_client)) {
             $subProjectClientHTML .= "<li id='project-client-auth-" . $client->ID
@@ -308,7 +308,7 @@ if( !empty( $results_organization ) ) {
 
             $logo = '<img src="'.RT_PM_URL.'app/buddypress-components/rt-pm-componet/assets/img/logo-default.png" width="32" height="32" class="attachment-32x32 wp-post-image"/>';
         }
-		$email = rt_biz_get_entity_meta( $organization->ID, $this->organization_email_key, true );
+		$email = rt_biz_get_entity_meta( $organization->ID, $rt_pm_project->organization_email_key, true );
         $company_url = add_query_arg( array( 'id'=>$organization->ID, 'action'=>'edit' ), get_people_root_url().Rt_Bp_People_Loader::$companies_slug) ;
         if (isset($project_organization) && $project_organization && !empty($project_organization) && in_array($organization->ID, $project_organization)) {
             $subProjectOrganizationsHTML .= "<li id='project-org-auth-" . $organization->ID

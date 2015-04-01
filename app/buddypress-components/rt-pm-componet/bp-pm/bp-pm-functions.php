@@ -486,3 +486,15 @@ function rtpm_render_manager_selectbox( $project_manager ){ ?>
     </select>
 <?php }
 
+/**
+ * Get project edit url
+ * @param $project_id
+ * @return string
+ */
+function rtpm_bp_get_project_details_url( $project_id ) {
+    global $rt_pm_bp_pm, $rt_pm_project;
+
+    $project_edit_link = add_query_arg( array( 'rt_project_id' => $project_id, 'action' => 'edit', 'post_type' => $rt_pm_project->post_type, 'tab' => "{$rt_pm_project->post_type}-details" ), $rt_pm_bp_pm->get_component_root_url().'/details' );
+    return $project_edit_link;
+}
+

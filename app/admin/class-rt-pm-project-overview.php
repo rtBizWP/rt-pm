@@ -90,7 +90,7 @@ class Rt_Pm_Project_Overview {
 
                 foreach( $project_data as $project ):
 
-                    $project_edit_link = add_query_arg( array( 'rt_project_id' => $project->ID, 'action' => 'edit', 'post_type' => $rt_pm_project->post_type, 'tab' => "{$rt_pm_project->post_type}-details" ), $rt_pm_bp_pm->get_component_root_url().'/details' );
+                    $project_edit_link = rtpm_bp_get_project_details_url( $project->ID );
 
                     ?>
 
