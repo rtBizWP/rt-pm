@@ -861,6 +861,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 
+        /**
+         * Save tasks data
+         * @param $args
+         * @param $meta_data
+         * @return int
+         */
+        public function rtpm_save_task_data( $args, $meta_data = array() ) {
+
+            $args['post_type'] = $this->post_type;
+
+            $post_id = @wp_insert_post( $args );
+
+            foreach ( $meta_data as $key => $value ) {
+                update_post_meta( $post_id, $key, $value );
+            }
+
+            return $post_id;
+        }
+
+
 	}
 
 }
