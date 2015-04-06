@@ -857,8 +857,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
             $args['post_type'] = $this->post_type;
 
-            $post_id = @wp_insert_post( $args );
+			//Save post data
+			if( isset ( $args['ID'] ) ) {
+				$post_id = @wp_update_post( $args );
+			}else{
+				$post_id = @wp_insert_post( $args );
+			}
 
+			//Save post meta data
             foreach ( $meta_data as $key => $value ) {
                 update_post_meta( $post_id, $key, $value );
             }
