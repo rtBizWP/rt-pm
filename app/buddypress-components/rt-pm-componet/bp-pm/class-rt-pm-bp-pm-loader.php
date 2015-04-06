@@ -118,15 +118,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'default_subnav_slug' => 'projects',
 			);
 
-            // Determine user to use
-            if ( bp_displayed_user_domain() ) {
-                    $user_domain = bp_displayed_user_domain();
-            } elseif ( bp_loggedin_user_domain() ) {
-                    $user_domain = bp_loggedin_user_domain();
-            } else {
-                    return;
-            }
-
+            $user_domain = rtbiz_get_user_domain();
             // Link to user people
             $people_link = trailingslashit( $user_domain . $this->slug );
 			

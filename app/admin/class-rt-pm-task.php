@@ -318,28 +318,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		<?php
 		}
 
+
 		/**
-		 * Return task post data
-		 * @param int $author_id
-		 * @param string $task_status
-		 * @param null $date_query
+		 * @param array $args
 		 * @return array
 		 */
-		public function rtpm_get_task_data( $author_id = 0, $task_status = 'any', $date_query = null ){
+		public function rtpm_get_task_data( $args = array() ) {
 
-
-			global $rt_crm_module, $wpdb;
-
-			$args = array(
-				'nopaging' => true,
-				'post_status' => array( $task_status ),
-				'post_type' => $this->post_type,
-				'no_found_rows' => true,
-				'meta_key' => 'post_duedate',
-			);
-
-			if( $author_id !== 0 )
-				$args['author'] = $author_id;
+			$args['post_type'] = $this->post_type;
 
 			$query = new WP_Query( $args );
 
