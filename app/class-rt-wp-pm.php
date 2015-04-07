@@ -148,7 +148,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 		function init_globals() {
 			global $rtpm_form,
-                   $rt_pm_time_entries_model,$rtpm_custom_media_fields,
+                   $rt_pm_time_entries_model, $rt_pm_task_links_model ,$rtpm_custom_media_fields,
                    $rt_pm_project_type,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entry_type,$rt_pm_acl,
                    $rt_pm_settings, $rt_pm_notification, $rt_pm_user_reports, $rt_pm_help, $rt_pm_project_overview,
                    $rt_pm_reports;
@@ -158,6 +158,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			$rt_pm_notification = new RT_PM_Notification();
 
 			$rt_pm_time_entries_model = new Rt_PM_Time_Entries_Model();
+			$rt_pm_task_links_model = Rt_PM_Task_Links_Model::factory();
+
             $rtpm_custom_media_fields = new Rt_Custom_Media_Fields();
 
             $rt_pm_project_type = new Rt_PM_Project_Type();
