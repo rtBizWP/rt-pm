@@ -22,7 +22,6 @@ class Rtbp_Pm_Screens {
         $this->setup();
     }
 
-
     /**
      * Setup actions and filters
      */
@@ -145,6 +144,23 @@ class Rtbp_Pm_Screens {
     public function rtpm_project_overview_template(){
         include  RT_PM_BP_PM_PATH.'/templates/pm-project-overview.php';
     }
+
+
+    public function bp_pm_ganttchart(){
+        global $rt_pm_project_gantt, $rtpm_ganttchart ;
+        $rtpm_ganttchart->rtgantt_enqueue_script_style();
+        $rt_pm_project_gantt = Rt_PM_Project_Gantt ::factory();
+
+        wp_enqueue_script( 'rtbiz-notify-script', RT_BP_PEOPLE_URL.'/assets/js/jquery.noty.packaged.min.js', array('jquery') );
+
+        add_action('bp_template_content', array( $this, 'load_project_ganttchart_template' ) );
+    }
+
+    public function load_project_ganttchart_template() {
+
+        include  RT_PM_BP_PM_PATH.'/templates/pm-ganttchart.php';
+    }
+
 
 }
 

@@ -23,6 +23,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                 private $sub_nav_items;
                 static $projects_slug = 'projects';
                 static $gantt_admin = 'gantt';
+				static $ganttchart_slug = 'ganttchart';
                 private $menu_order = 92;
                 public function __construct() {
                 		global $rt_biz_options;
@@ -190,7 +191,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			}
 
 			// Resources
-			if( !isset($_GET['rt_project_id']) ){
+			if( ! isset($_GET['rt_project_id']) ){
 
 				$sub_nav[] = array(
 					'name'            =>  __( 'Resources' ),
@@ -211,15 +212,12 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				);
 			}
 
-			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin );
+			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin, self::$ganttchart_slug );
 
 			if ( isset($_GET['rt_project_id']) && in_array( bp_current_action(), $project_detail_actions ) ){
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/details');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-details'  ), $main_url ) );
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Details' ),
                     'slug'            => 'details',
@@ -232,11 +230,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-files'  ), $main_url ) );
-
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Attachments' ),
                     'slug'            => 'attachments',
@@ -248,10 +242,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                 );
 
 				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Tasks' ),
                     'slug'            => 'tasks',
@@ -264,11 +255,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
-
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Time Entries' ),
                     'slug'            => 'time-entries',
@@ -281,9 +268,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/notifications');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-notification'  ), $main_url ) );
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Notifications' ),
                     'slug'            => 'notifications',
@@ -295,9 +280,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                 );
 
                 $main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$gantt_admin);
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$gantt_admin  ), $main_url ) );
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Gantt admin' ),
                     'slug'            => self::$gantt_admin,
@@ -306,6 +289,18 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_gantt' ),
                     'position'        => 70,
+                );
+
+				$main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$ganttchart_slug);
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$ganttchart_slug  ), $main_url ) );
+                $sub_nav[] = array(
+                    'name'            =>  __( 'GanttChart' ),
+                    'slug'            => self::$ganttchart_slug,
+                    'link'			  => $url,
+                    'parent_url'      => $people_link,
+                    'parent_slug'     =>  $this->id,
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_ganttchart' ),
+                    'position'        => 80,
                 );
 
 			}

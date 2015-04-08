@@ -178,7 +178,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function convert_lead_to_project() {
 
-            global $rt_pm_bp_pm, $wpdb;
+            global $rt_pm_bp_pm, $wpdb, $rt_pm_task, $wpdb;
 
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
@@ -187,23 +187,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
 			$lead = get_post( $lead_id );       
 
+            //Pull lead data
 			$project = array();
 			$project['post_title'] = $lead->post_title;
 			$project['post_author'] = $lead->post_author;
 			$project['post_type'] = $this->post_type;
 			$project['post_status'] = 'new';
 			$project['post_content'] = $lead->post_content;
-
             $project['post_parent'] = $lead_id;
 
             $lead_index_tabel_name = rtcrm_get_lead_table_name();
             $query = $wpdb->prepare( "SELECT * FROM  {$lead_index_tabel_name} WHERE post_id = %s", $lead_id );
-
             $result = $wpdb->get_row( $query );
 
             $project['post_date'] = $result->date_create_gmt;
             $project['post_date_gmt'] = $result->date_create_gmt;
 
+            //Pull or attachments
             $attachments = get_posts( array(
                 'post_parent' => $lead_id,
                 'post_type' => 'attachment',
@@ -225,6 +225,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                   array_push($project_client,$tterm->p2p_to);
             }
 
+
+
+            //Pull lead meta
             $data = array(
                 'project_organization' => $project_organization,
                 'project_client' => $project_client,
@@ -241,6 +244,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 
             $project_id = $this->rtpm_save_project_data( $project, $data );
+
+
 
             //Set post( project ) parent to lead
             if( $project_id ) {
@@ -260,6 +265,28 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $where = array( 'post_id' => $lead_id );
 
                 $leadModel->update_lead( $data, $where );
+            }
+
+            //Pull task
+            $args = array(
+                'fields' => 'ids',
+                'post_parent' => $lead_id,
+                'nopaging' => true,
+                'no_found_rows' => true,
+            );
+
+            $task_ids = $rt_pm_task->rtpm_get_task_data( $args );
+
+            if( ! empty( $task_ids ) ) {
+
+                $task_list = implode( ',', $task_ids );
+
+                $task_updated = $wpdb->query( "UPDATE $wpdb->posts SET post_parent = $project_id WHERE ID IN ( $task_list )");
+
+                if( false !== $task_updated ) {
+
+                    $wpdb->query( "UPDATE $wpdb->postmeta SET  meta_value = $project_id, meta_key = 'post_project_id' WHERE post_id IN ( $task_list ) ");
+                }
             }
 
             // Pull external file to project
@@ -282,6 +309,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
             }
 
+            //Push all attachments
             foreach ( $attachments as $attachment ) {
 
                 $filepath = get_attached_file( $attachment );

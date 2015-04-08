@@ -37,6 +37,10 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
 			add_action( 'init', array( $this, 'rtpm_task_actions' ) );
 			add_action( 'wp_ajax_rtpm_get_user_tasks', array( $this, 'rtpm_get_user_tasks' ) );
+			add_action( 'wp_ajax_rtpm_save_project_task', array( $this, 'rtpm_save_project_task' ) );
+			add_action( 'wp_ajax_rtpm_delete_project_task', array( $this, 'rtpm_delete_project_task' ) );
+			add_action( 'wp_ajax_rtpm_save_project_task_link', array( $this, 'rtpm_save_project_task_link' ) );
+			add_action( 'wp_ajax_rtpm_delete_project_task_link', array( $this, 'rtpm_delete_project_task_link' ) );
 		}
 
         function task_add_bp_activity( $post_id, $operation_type ) {
@@ -873,6 +877,112 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
         }
 
 
+		/**
+		 *  Save project task from gantt chart (ajax)
+		 */
+		public function rtpm_save_project_task() {
+			global $rt_pm_task;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$args = array(
+				'post_title' => $post['task_title'],
+				'post_date' => $post['start_date'],
+				'post_parent' => $post['parent_project'],
+				'post_status' => 'new',
+			);
+
+			if( isset( $post['task_id'] ) )
+				$args['ID'] = $post['task_id'];
+
+
+			$meta_values = array(
+				'post_duedate' => $post['end_date'],
+				'rtpm_task_type' => $post['task_type'],
+				'rtpm_parent_task' => $post['parent_task'],
+			);
+
+			$post_id = $rt_pm_task->rtpm_save_task_data( $args, $meta_values );
+
+			if( $post_id )
+				@wp_send_json_success( array( 'task_id' => $post_id ) );
+
+		}
+
+		/**
+		 * Delete project task ( ajax )
+		 */
+		public function rtpm_delete_project_task() {
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$task = @wp_delete_post( $post['task_id'] );
+
+
+			if( $task ) {
+				wp_send_json_success( $task );
+			}
+		}
+
+		/**
+		 * Create or Update task link ( ajax )
+		 */
+		public function rtpm_save_project_task_link() {
+			global $rt_pm_task_links_model;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$data = array(
+				'project_id' => $post['parent_project'],
+				'source_task_id' => $post['source_task_id'],
+				'target_task_id' => $post['target_task_id'],
+				'type' => $post['connection_type'],
+			);
+
+			$link_id = $rt_pm_task_links_model->rtpm_create_task_link( $data );
+
+			if( $link_id ) {
+				wp_send_json_success( array( 'id' => $link_id) );
+			}else {
+				wp_send_json_error();
+			}
+		}
+
+		/**
+		 * Delete task link ( ajax )
+		 */
+		public function rtpm_delete_project_task_link() {
+
+			global $rt_pm_task_links_model;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$data = array(
+				'id' => $post['link_id'],
+			);
+
+			$link_id = $rt_pm_task_links_model->rtpm_delete_task_link( $data );
+
+
+			if( $link_id ) {
+
+				wp_send_json_success( array( 'id' => $link_id ) );
+			}else {
+				wp_send_json_error();
+			}
+		}
 	}
 
 }
