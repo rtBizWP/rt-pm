@@ -903,6 +903,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'post_duedate' => $post['end_date'],
 				'rtpm_task_type' => $post['task_type'],
 				'rtpm_parent_task' => $post['parent_task'],
+				'post_estimated_hours' => $post['estimated_hours']
 			);
 
 			$post_id = $rt_pm_task->rtpm_save_task_data( $args, $meta_values );

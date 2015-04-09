@@ -178,7 +178,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function convert_lead_to_project() {
 
-            global $rt_pm_bp_pm, $wpdb, $rt_pm_task, $wpdb;
+            global $rt_pm_bp_pm, $wpdb, $rt_pm_task, $wpdb, $rt_pm_task_links_model;
 
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
@@ -281,12 +281,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 $task_list = implode( ',', $task_ids );
 
+                //Set task post parent to new project
                 $task_updated = $wpdb->query( "UPDATE $wpdb->posts SET post_parent = $project_id WHERE ID IN ( $task_list )");
 
-                if( false !== $task_updated ) {
-
-                    $wpdb->query( "UPDATE $wpdb->postmeta SET  meta_value = $project_id, meta_key = 'post_project_id' WHERE post_id IN ( $task_list ) ");
+                //Add meta in task for project parent
+                foreach( $task_ids as $task_id ) {
+                  update_post_meta( $task_id, 'post_project_id', $project_id );
                 }
+
+                //Point new project in link table
+                $rt_pm_task_links_model->rtpm_update_task_link( array( 'project_id' => $project_id ), array( 'project_id' => $lead_id ) );
             }
 
             // Pull external file to project
@@ -395,11 +399,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'post_type' => $this->post_type,
                 'post_parent' => $lead_id,
                 'no_found_rows' => true,
+                'fields' => 'ids',
             ));
 
             if( !empty( $query->posts ) ){
 
-                return true;
+                return $query->posts[0];
             }
 
             return false;

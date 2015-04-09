@@ -60,7 +60,7 @@ class Rt_PM_Project_Gantt {
         $lightbox =  array(
             array( 'name' => 'description', 'height' => 70, 'map_to' => 'text', 'type' => 'textarea' ),
             array( 'name' => 'type', 'type' => 'typeselect', 'map_to' => 'type' ),
-            array( 'name' => 'estimated_hours', 'type' => 'template', 'map_to' => 'estimated_hours_template' ),
+            array( 'name' => 'estimated_hours', 'type' => 'number', 'map_to' => 'estimated_hours' ),
             array( 'name' => 'time', 'height' => 72, 'type' => 'duration', 'map_to' => 'auto' ),
 
         );
@@ -87,7 +87,7 @@ class Rt_PM_Project_Gantt {
                 $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours_template' => $estimated_hours, 'open' => true, 'parent' => $parent_task  );
+                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task  );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -124,14 +124,14 @@ class Rt_PM_Project_Gantt {
             //Add new taske
             gantt.attachEvent("onAfterTaskAdd", function( id, item ) {
 
-                console.log( item );
                 var data = {
                     start_date :  rtcrm_get_postdata( item.start_date ),
                     end_date :  rtcrm_get_postdata( item.end_date ),
                     task_title : item.text,
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
-                    parent_task: item.parent
+                    parent_task: item.parent,
+                    estimated_hours:    item.estimated_hours,
                 };
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
@@ -162,7 +162,8 @@ class Rt_PM_Project_Gantt {
                     task_title : item.text,
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
-                    parent_task: item.parent
+                    parent_task: item.parent,
+                    estimated_hours:    item.estimated_hours,
                 };
 
                 var send_data = { 'action' : 'rtpm_save_project_task', 'post': data };
@@ -245,14 +246,25 @@ class Rt_PM_Project_Gantt {
 
             gantt.locale.labels.section_estimated_hours = "Estimated hours";
 
-            //Estimated hours field
-            gantt.attachEvent("onBeforeLightbox", function( id ) {
+            gantt.form_blocks["number"] = {
+                render:function( sns ){ //sns - the section's configuration object
 
-                var task = gantt.getTask( id );
-                task.estimated_hours_template = "<input type='number' step='0.25' min='0.25' value='"+task.estimated_hours+"' />" ;
-                return true;
+                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
+                },
+                set_value:function( node,value,task,section ) {
+                    var input = node.getElementsByTagName("input")[0];
+                    input.value = value || 0;
+                },
+                get_value:function( node,task,section ) {
+                    var input = node.getElementsByTagName("input")[0];
+                    return input.value*1;
+                },
+                focus:function( node ) {
+                    var input = node.getElementsByTagName("input")[0];
+                    input.focus();
+                }
+            };
 
-            });
 
 
 
