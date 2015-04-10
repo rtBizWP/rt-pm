@@ -650,6 +650,7 @@ jQuery(document).ready(function($) {
                     action: "rtbiz_add_new_documents",
                     post_id: $("#rt_pm_post_id").val(),
                     filename: value.url,
+					blog_id: $("#rt-pm-blog-id").val(),
 
                 }
 				console.log(data);
