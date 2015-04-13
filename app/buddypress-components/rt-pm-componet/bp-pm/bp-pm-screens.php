@@ -153,6 +153,11 @@ class Rtbp_Pm_Screens {
 
         wp_enqueue_script( 'rtbiz-notify-script', RT_BP_PEOPLE_URL.'/assets/js/jquery.noty.packaged.min.js', array('jquery') );
 
+        wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri().'/assets/js/contextMenu.min.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+        wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri().'/assets/css/contextMenu.css');
+
+        wp_enqueue_script('rtpm-handleba-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true);
+
         add_action('bp_template_content', array( $this, 'load_project_ganttchart_template' ) );
     }
 

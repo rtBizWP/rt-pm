@@ -41,6 +41,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'wp_ajax_rtpm_delete_project_task', array( $this, 'rtpm_delete_project_task' ) );
 			add_action( 'wp_ajax_rtpm_save_project_task_link', array( $this, 'rtpm_save_project_task_link' ) );
 			add_action( 'wp_ajax_rtpm_delete_project_task_link', array( $this, 'rtpm_delete_project_task_link' ) );
+			add_Action( 'wp_ajax_rtpm_get_task_data_for_ganttchart', array( $this, 'rtpm_get_task_data_for_ganttchart' ) );
 		}
 
         function task_add_bp_activity( $post_id, $operation_type ) {
@@ -981,6 +982,73 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				wp_send_json_success( array( 'id' => $link_id ) );
 			}else {
+				wp_send_json_error();
+			}
+		}
+
+		/**
+		 * Get all unassigned task ids
+		 * @param $project_id
+		 * @return array
+		 */
+		public function rtpm_get_unassigned_task( $project_id ) {
+			global $wpdb;
+
+			$tasks_ids = $this->rtpm_get_projects_task_ids( $project_id );
+
+			$args = array(
+				'post__in' => 	$tasks_ids,
+				'meta_query' => array(
+					array(
+						'relation' => 'OR',
+						array(
+							'key' => 'post_assignee',
+							'value' => '',
+						),
+						array(
+							'key' => 'post_assignee',
+							'value' => 'test',
+							'compare' => 'NOT EXISTS',
+						)
+					)
+				),
+				'fields' => 'ids',
+				'nopaging' => true,
+				'no_found_rows' => true,
+			);
+
+			$result = $this->rtpm_get_task_data( $args );
+
+			return $result;
+		}
+
+		/**
+		 * Render task detail in context box
+		 */
+		public function rtpm_get_task_data_for_ganttchart() {
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$task_id = $post['task_id'];
+
+			$task_data = $this->rtpm_get_task_data( array( 'p' => $task_id ) );
+
+
+			$start_date = rt_convert_strdate_to_usertimestamp( $task_data[0]->post_date );
+			$end_date = rt_convert_strdate_to_usertimestamp( get_post_meta( $task_id, 'post_duedate', true ) );
+			if( ! empty( $task_data ) ){
+				$data = array(
+					'task_title' => $task_data[0]->post_title,
+					'start_date' => $start_date->format('d M Y'),
+					'end_date' => $end_date->format('d M  Y'),
+					'task_status' => $task_data[0]->post_status,
+				);
+
+				wp_send_json_success( $data );
+			} else {
 				wp_send_json_error();
 			}
 		}

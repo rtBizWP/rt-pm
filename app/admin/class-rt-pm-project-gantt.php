@@ -77,6 +77,8 @@ class Rt_PM_Project_Gantt {
 
         $links = array();
 
+        $tentative_tasks = $rt_pm_task->rtpm_get_unassigned_task( $project_id );
+
         if( !empty( $task_list ) ) {
 
             foreach( $task_list as $task ) {
@@ -104,7 +106,7 @@ class Rt_PM_Project_Gantt {
             }
         }
 
-        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox' );
+        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks' );
 
         ?>
 
@@ -118,7 +120,23 @@ class Rt_PM_Project_Gantt {
      * Print script for ganttchart Tasks ajax
      */
     public function rtpm_print_ganttchart_script() { ?>
+        <script id="task-detail-template" type="text/x-handlebars-template">
+
+            <ul style="list-style-type: none; margin: 0;">
+                <li style="margin: 0;"><strong>Task Title: </strong><span>{{task_title}}</span></li>
+                <li style="margin: 0;"><strong>Start Date: </strong><span>{{start_date}}</span></li>
+                <li style="margin: 0;"><strong>End Date: </strong><span>{{end_date}}</span></li>
+                <li style="margin: 0;"><strong>Status: </strong><span>{{task_status}}</span></li>
+            </ul>
+
+        </script>
+
         <script type="text/javascript">
+
+            var source   = $('#task-detail-template').html();
+            var template = Handlebars.compile(source);
+
+
             var admin_url = '<?php echo admin_url('admin-ajax.php');  ?>';
 
             //Add new taske
@@ -265,8 +283,26 @@ class Rt_PM_Project_Gantt {
                 }
             };
 
+            gantt.attachEvent("onTaskSelected", function(id,item){
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box');
 
+                var data = { task_id : id };
 
+                var senddata = {
+                    action: 'rtpm_get_task_data_for_ganttchart',
+                    post: data
+                };
+
+                $.post( admin_url, senddata, function( response ){
+                    if( response.success ){
+                        $('div.rtcontext-box').html( template( response.data ) );
+                    }
+                } );
+
+            });
+            jQuery( document ).ready( function( $ ) {
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box');
+            });
 
             function rtcrm_get_postdata( post_date ) {
 
@@ -285,6 +321,10 @@ class Rt_PM_Project_Gantt {
 
             }
         </script>
+
+
+        <div class="rtcontext-box iw-contextMenu" style="display: none;">
+        </div>
     <?php }
 
 }
