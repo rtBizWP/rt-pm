@@ -201,6 +201,24 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
+				
+				$sub_nav[] = array(
+					'name'            =>  __( 'All Resources' ),
+					'slug'            => 'all-resources',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_projects',
+					'position'        => 10,
+				);
+				
+				$sub_nav[] = array(
+					'name'            =>  __( 'My Tasks' ),
+					'slug'            => 'my-tasks',
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => 'bp_pm_projects',
+					'position'        => 10,
+				);
 
 				$sub_nav[] = array(
 					'name'            =>  __( 'Overview' ),

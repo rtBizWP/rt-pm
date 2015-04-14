@@ -24,3 +24,71 @@
 
   }
 }
+
+// all resources table css
+
+#buddypress{
+	.rt-all-resources-container{
+		.rtpm-task-info-tooltip{
+			padding: 5px;
+			P{
+				color: black;
+			}
+		}
+	}
+	.rt-left-container{
+		table{
+			.rt_project_assignee{
+				padding-left: 30px !important;
+			}
+			.rt_project_resources_title{
+				&:before{
+					content: "";
+					background: url(../img/folder-xxl.png);
+					width: 15px;
+					height: 15px;
+					display: block;
+					background-size: 100%;
+					background-repeat: no-repeat;
+					float: left;
+					margin-right: 5px;
+				}
+			}
+		}
+	}
+	.rt-right-container{
+		.rtpm-task-info-tooltip{
+			p{
+				margin: 0 0 0 10px;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 680px) and (min-width: 320px){
+	.rt-main-resources-container{
+		#rtpm-get-prev-calender{
+			top: 95%;
+		}
+		#rtpm-get-next-calender{
+			top: 95%;
+		}
+	}
+	#buddypress .rt-main-resources-container .rt-right-container{
+		width: 60%;
+		table{
+			border-left: 1px solid #ddd;
+			td{
+				padding: 8px 2px !important;
+				text-align: center;
+			}
+		}
+	}
+	#buddypress .rt-main-resources-container .rt-left-container{
+		width: 39%;
+		overflow-x: auto;
+		table{
+			width: 220px;
+		}
+	}
+}

@@ -107,6 +107,8 @@
 		    <div class="large-10 columns list-title">
 				<?php if( bp_is_current_action('resources') ) { ?>
 					<h4><?php _e( 'Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
+				<?php }else if( bp_is_current_action('all-resources') ){?>
+					<h4><?php _e( 'All Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
 				<?php }else{ ?>
 					<h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
 				<?php } ?>
@@ -115,7 +117,7 @@
 		       
 		    </div>
 		</div>
-		<?php if( !bp_is_current_action('resources') ) { ?>
+		<?php if( !bp_is_current_action('resources') && !bp_is_current_action('all-resources') && !bp_is_current_action('my-tasks') ) { ?>
 		<table class="responsive">
 			<thead>
 				<tr>
@@ -229,7 +231,7 @@
 				?>
 			</tbody>
 		</table>
-	<?php } else { 
+	<?php } else if( bp_is_current_action('resources') ) { 
 		$page = max( 1, get_query_var('paged') );
         $args = array(
                 'post_type' => $rt_person->post_type,
@@ -241,21 +243,7 @@
         $my_query->query( $args );
 		$current_date = date("Y-m-d");
 		$dates = rt_get_next_dates( $current_date );
-		if( isset($_REQUEST['rt_task_id']) ){
-			global $rt_pm_task;
-			$task_labels=$rt_pm_task->labels;
-			$task_post_type=$rt_pm_task->post_type;
-			$user_edit = true;
-			$task_post = get_post( $_REQUEST['rt_task_id'], OBJECT );
-			$task_post_type = $task_post->post_type;
-			$form_ulr = "?update=true";
-			$project_id = get_post_meta( $task_post->ID,'post_project_id', TRUE );
-			$createtimestamp = rt_convert_strdate_to_usertimestamp( $task_post->post_date_gmt );
-			$createdate = $createtimestamp->format("M d, Y h:i A");
-			$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task_post->ID,'post_duedate',TRUE) );
-			$due_date = $due->format("M d, Y h:i A");
-			$post_assignee = get_post_meta($task_post->ID, 'post_assignee', TRUE);
-		}
+		
 		if( isset($_REQUEST['user_id']) ){
 			// user edit popup
 		}
@@ -418,15 +406,197 @@
 		$first_date = $dates[0];
 		$last_date = $dates[count($dates)-1];
 		?>
-		<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
+		<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="resources"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
 		<table id="rtpm-resources-calender">
 			<?php echo rt_create_resources_calender( $dates ); ?>
 		</table>
-		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
+		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
 	</div>
 </div>
 <?php 
-if(isset($_REQUEST['rt_task_id'])){
+	} else if( bp_is_current_action('all-resources') ) {
+		
+		$current_date = date("Y-m-d");
+		$dates = rt_get_next_dates( $current_date );
+		
+		// lets start with all projects
+		// $the_query contains all projects
+		if ( $the_query->have_posts() ) { ?>
+			
+			<div class="rt-main-resources-container rt-all-resources-container">
+				<div class="rt-left-container">
+					<table>
+						<thead>
+							<tr>
+								<td>
+									<?php _e( 'Resources by project', RT_PM_TEXT_DOMAIN ); ?>
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+				<?php	while ( $the_query->have_posts() ) { ?>
+						<?php
+						$the_query->the_post();
+						$get_the_id =  get_the_ID();
+						//project manager & project members
+						$team_member = get_post_meta($get_the_id, "project_member", true);
+						?>
+							<tr><td class="rt_project_resources_title"><?php the_title(); ?></td></tr>	
+						<?php
+					foreach ( $team_member as $key => $member_id) {
+						$user = get_userdata( $member_id);
+						$people = rt_biz_get_person_for_wp_user($member_id);
+						$people = $people[0];
+						$employee_name = $people->post_title;
+						?>
+						<tr>
+							<td class="rt_project_assignee">
+								<div class="rtpm-show-user-tooltip">
+							<?php echo $employee_name; ?>
+							<div class="rtpm-task-info-tooltip">
+								<div class="large-3 columns">
+									<?php
+										$val = Rt_Person::get_meta( $people->ID, $rt_person->user_id_key );  
+										if (!empty($val) ){
+											echo  get_avatar( $val[0], 32 );
+											}
+									?>
+								</div>
+								<div class="large-9 columns">
+									<div class="emp_name">
+										<?php echo $employee_name; ?>
+									</div>
+									<div class="emp_position">
+										<?php 
+										$person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
+										$user_position = xprofile_get_field_data( 'Job Title', $person_wp_user_id );
+										if($user_position != ''){
+											echo "<span class='title'>Position : </span><span class='desc'>$user_position</span>";
+										}
+										?>
+									</div>
+									<div class="emp_timezone">
+										<?php 
+										$user_timezone = xprofile_get_field_data( 'Timezone', $person_wp_user_id );
+										if( $user_timezone != '' )
+										echo "<span class='title'>Timezone : </span><span class='desc'>$user_timezone</span>";
+										?>
+									</div>
+									<div class="emp_country">
+										<?php
+										$emp_country = get_post_meta( $people->ID ,'rt_biz_contact_country',true);
+										if( $emp_country != '' )
+										echo "<span class='title'>Country : </span><span class='desc'>$emp_country</span>";
+										?>
+									</div>
+									<div class="emp_phone">
+										<?php
+										$phone_number = get_post_meta( $people->ID ,'rt_biz_contact_phone',true);
+										if( $phone_number != '' )
+										echo "<span class='title'>Phone : </span><span class='desc'><a title='click to call' href='tel:$phone_number'>$phone_number</a></span>";
+										?>
+									</div>
+								</div>
+							</div>
+						</div>
+							</td>
+						</tr>		
+						<?php
+					}
+					}?>
+						</tbody></table></div>
+			<div class="rt-right-container">
+				<?php 
+				$first_date = $dates[0];
+				$last_date = $dates[count($dates)-1];
+				?>
+				<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
+				<table id="rtpm-resources-calender">
+					<?php echo rt_create_all_resources_calender( $dates ); ?>
+				</table>
+				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
+			</div>
+			</div>	
+					<?php
+					wp_reset_postdata();
+		}
+	} else if( bp_is_current_action('my-tasks') ) {
+		
+		$current_date = date("Y-m-d");
+		$dates = rt_get_next_dates( $current_date );
+		$project_array = rt_get_project_task_list();
+		// lets start with all projects
+		if ( $project_array != null ) { ?>
+			
+			<div class="rt-main-resources-container rt-my-tasks-container">
+				<div class="rt-left-container">
+					<table>
+						<thead>
+							<tr>
+								<td>
+									<?php _e( 'My Tasks by Project', RT_PM_TEXT_DOMAIN ); ?>
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+				<?php foreach ( $project_array as $key => $value ) { ?>
+						<?php
+						$project_id = $key;
+						$task_list = $value;
+						?>
+							<tr><td class="rt_project_resources_title"><?php echo get_the_title($project_id); ?></td></tr>	
+						<?php
+					foreach ( $task_list as $key => $task_data) {
+						$createtimestamp = rt_convert_strdate_to_usertimestamp( $task_data->post_date );
+						$createdate = $createtimestamp->format("M d, Y h:i A");
+						$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task_data->ID,'post_duedate',TRUE) );
+						$due_date = $due->format("M d, Y h:i A");
+						?>
+						<tr>
+							<td class="rt_project_tasks">
+								<div class="rtpm-show-user-tooltip">
+							<?php echo $task_data->post_title; ?>
+							<div class="rtpm-task-info-tooltip">
+								<p><b>Task : </b><a href="?rt_task_id=<?php echo $task_data->ID ; ?>"><?php echo $task_data->post_title; ?></a></p>
+								<p><b>Status : </b><?php echo $task_data->post_status; ?></p>
+								<p><b>Start Date : </b><?php echo $createdate; ?></p>
+								<p><b>Due Date : </b><?php echo $due_date; ?></p>
+							</div>
+						</div>
+							</td>
+						</tr>		
+						<?php
+					}
+					}?>
+						</tbody></table></div>
+			<div class="rt-right-container">
+				<?php 
+				$first_date = $dates[0];
+				$last_date = $dates[count($dates)-1];
+				?>
+				<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
+				<table id="rtpm-resources-calender">
+					<?php echo rt_create_my_task_calender( $dates ); ?>
+				</table>
+				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
+			</div>
+			</div>	<?php
+		}		
+	}
+	if(isset($_REQUEST['rt_task_id'])){
+		global $rt_pm_task;
+			$task_labels=$rt_pm_task->labels;
+			$task_post_type=$rt_pm_task->post_type;
+			$user_edit = true;
+			$task_post = get_post( $_REQUEST['rt_task_id'], OBJECT );
+			$task_post_type = $task_post->post_type;
+			$form_ulr = "?update=true";
+			$project_id = get_post_meta( $task_post->ID,'post_project_id', TRUE );
+			$createtimestamp = rt_convert_strdate_to_usertimestamp( $task_post->post_date_gmt );
+			$createdate = $createtimestamp->format("M d, Y h:i A");
+			$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task_post->ID,'post_duedate',TRUE) );
+			$due_date = $due->format("M d, Y h:i A");
+			$post_assignee = get_post_meta($task_post->ID, 'post_assignee', TRUE);
 	?>
  <div id="div-add-task" class="reveal-modal">
 
@@ -611,8 +781,6 @@ if(isset($_REQUEST['rt_task_id'])){
 
             <a class="close-reveal-modal">×</a>
             </div>
-		<?php }
-			?>
 			<script>
                     jQuery(document).ready(function($) {
                         setTimeout(function() {
@@ -622,11 +790,9 @@ if(isset($_REQUEST['rt_task_id'])){
                             });
                         },10);
                     });
-                </script>	
-			<?php
-		}
-		?>
-		<?php /*if ( $max_num_pages > 1 ) { ?>
+                </script>
+		<?php }
+       /*if ( $max_num_pages > 1 ) { ?>
 		<ul id="projects-pagination"><li id="prev"><a class="page-link"> &laquo; Previous</a></li><li id="next"><a class="page-link next">Next &raquo;</a></li></ul>
 		<?php } */
 		pm_pagination($totalPage, $page);
