@@ -76,7 +76,7 @@ function rt_get_next_dates( $date ){
 		$start = date_timestamp_get( $date_object );
 		$dates=array();
 		if( wp_is_mobile() ){
-			$table_cols = 4;	
+			$table_cols = 3;	
 		}else{
 			$table_cols = 9;
 		}
@@ -85,6 +85,121 @@ function rt_get_next_dates( $date ){
 			array_push($dates,date('Y-m-d', strtotime("+$i day", $start)));
 		}
 		return $dates;
+}
+
+function rt_create_all_resources_calender( $dates ){
+	global $rt_pm_project;
+	$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
+	$args = array(
+			'post_type' => $rt_pm_project->post_type,
+			'post_status' => $post_status,
+			'posts_per_page' => 200,
+		);
+	$table_html = '<thead><tr>';
+					foreach ( $dates as $key => $value ) {
+					$table_html .= '<td>'.date_format(date_create($value),"d M").'</td>';
+					}
+	$table_html .= '</tr></thead><tbody>';
+	$projects_query = new WP_Query( $args );
+	while ( $projects_query->have_posts() ) {
+		$projects_query->the_post();
+		$project_flag = true;
+		$project_id = get_the_ID();
+		$table_html .= '<tr>';
+		foreach ( $dates as $key => $value ) {
+			$table_html .= '<td style="height: 24px;"></td>';
+		}
+		$table_html .= '</tr>';
+		//project manager & project members
+		$team_member = get_post_meta(  $project_id, "project_member", true);
+				foreach ( $team_member as $member_key => $member_id ) {
+					$member_data = get_userdata($member_id);
+					$table_html .= '<tr>';
+						foreach ( $dates as $key => $value ) {
+							$is_weekend = rt_isWeekend( $value);
+						if($is_weekend){
+							$weekend_class = "rt-weekend";
+						}else{
+							$weekend_class = "";
+						}
+						$table_html .= '<td class="'.$weekend_class.'">';
+							if( !$is_weekend ){
+							$person = rt_biz_get_person_for_wp_user($member_data->data->ID);
+							$person_id = $person[0]->ID;
+							$tasks_array = rt_get_person_task_by_project($person_id,$value,$project_id);
+							$table_html .= '<div class="rtpm-show-tooltip">'.count($tasks_array);
+							if(!empty($tasks_array)){
+								$table_html .= '<div class="rtpm-task-info-tooltip">';
+								foreach ( $tasks_array as $key => $task ) {
+									$createtimestamp = rt_convert_strdate_to_usertimestamp( $task->post_date_gmt );
+									$createdate = $createtimestamp->format("M d, Y h:i A");
+									$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task->ID,'post_duedate',TRUE) );
+									$due_date = $due->format("M d, Y h:i A");
+									$table_html .= '<p><b>Task : </b><a href="?rt_task_id='.$task->ID.'">'.$task->post_title.'</a></p>';
+									$table_html .= '<p><b>Status : </b>'.$task->post_status.'</p>';
+									$table_html .= '<p><b>Start date : </b>'.$createdate.'</p>';
+									$table_html .= '<p><b>Due date : </b>'.$due_date.'</p>';
+								}
+								$table_html .= '</div></div>';
+							}
+							$table_html .= '</div>';
+						} 
+					}
+					$table_html .= '</tr>';
+			}
+	}
+	$table_html .= '</tbody>';
+	return $table_html;
+}
+
+function rt_create_my_task_calender( $dates ){
+	global $rt_pm_project;
+	$project_array = rt_get_project_task_list();
+	
+	$table_html = '<thead><tr>';
+					foreach ( $dates as $key => $value ) {
+					$table_html .= '<td>'.date_format(date_create($value),"d M").'</td>';
+					}
+	$table_html .= '</tr></thead><tbody>';
+	
+	foreach ( $project_array as $key => $value ) {
+		$project_id = $key;
+		$task_array = $value;
+		$table_html .= '<tr>';
+		foreach ( $dates as $date_key => $date_value ) {
+			$table_html .= '<td style="height: 24px;"></td>';
+		}
+		$table_html .= '</tr>';
+			foreach ( $task_array as $task_key => $task_data ) {
+				$table_html .= '<tr>';
+					foreach ( $dates as $date_key => $date_value ) {
+						$is_weekend = rt_isWeekend( $date_value);
+					if($is_weekend){
+						$weekend_class = "rt-weekend";
+					}else{
+						$weekend_class = "";
+					}
+					$table_html .= '<td class="'.$weekend_class.'">';
+						if( !$is_weekend ){
+							$createtimestamp = rt_convert_strdate_to_usertimestamp( $task_data->post_date );
+							$createdate = $createtimestamp->format("Y-m-d");
+								if( $createdate == $date_value ){
+									$estimated_hours = get_post_meta($task_data->ID,'post_estimated_hours',true);
+									$table_html .= '<div class="rtpm-show-tooltip">'.$estimated_hours;
+									$table_html .= '<div class="rtpm-task-info-tooltip">';
+									foreach ( $tasks_array as $key => $task ) {
+									}
+									$table_html .= '</div></div></div>';
+								}else{
+									$table_html .= '<div class="rtpm-show-tooltip">0</div>';
+								}
+					} 
+				}
+				$table_html .= '</tr>';
+		}
+	}
+	$table_html .= '</tbody>';
+	return $table_html;
 }
 
 function rt_create_resources_calender( $dates ){
@@ -122,7 +237,7 @@ function rt_create_resources_calender( $dates ){
 							foreach ( $tasks_array as $key => $task ) {
 								$table_html .= '<li><a href="?rt_task_id='.$task->ID.'">'.$task->post_title.'</a></li>';
 							}
-							$table_html .= '</ul></div>';
+							$table_html .= '</ul></span></div>';
 						}
 						$table_html .= '</div>';
                     } 
@@ -148,6 +263,121 @@ function rt_get_person_task($person_id,$date){
 				'year' => $date_array[0],
 				'monthnum' => $date_array[1],
 				'day' => $date_array[2],
+                );
+	$wp_query = new WP_Query();
+    $wp_query->query( $args );
+	wp_reset_postdata();
+	return $wp_query->posts;
+}
+
+function rt_get_task_by_project( $project_id ){
+	
+	global $rt_pm_task;
+	// get month, year, day by exploading
+	$args = array(
+                'post_type' => $rt_pm_task->post_type,
+                'post_status' => 'any',
+                'nopaging' => true,
+                'suppress_filters' => false,
+				'meta_query'             => array(
+						array(
+							'key'       => 'post_project_id',
+							'value'     => $project_id,
+						),
+					),
+                );
+	$wp_query = new WP_Query();
+    $wp_query->query( $args );
+	return $wp_query->posts;
+	
+}
+
+function rt_get_project_task_list(){
+	$task_list = rt_get_task_by_user( get_current_user_id() );
+		if( !empty($task_list) ){
+			$project_array = array();
+			foreach ( $task_list as $key => $value ) {
+				$project_id = get_post_meta( $value->ID, 'post_project_id', true );
+				if( $project_array[ $project_id ] == null ){
+				$project_array[ $project_id ] = array($value);
+				}else{
+					$project_list_array = $project_array[ $project_id ];
+					array_push($project_list_array,$value);
+					$project_array[ $project_id ] = $project_list_array;
+				}
+			}
+		}
+		return $project_array;
+}
+
+function rt_get_task_by_user( $user_id ){
+	
+	global $rt_pm_task;
+	// get month, year, day by exploading
+	$args = array(
+                'post_type' => $rt_pm_task->post_type,
+                'post_status' => 'any',
+                'nopaging' => true,
+                'suppress_filters' => false,
+				'meta_query'             => array(
+						array(
+							'key'       => 'post_assignee',
+							'value'     => $user_id,
+						),
+					),
+                );
+	$wp_query = new WP_Query();
+    $wp_query->query( $args );
+	return $wp_query->posts;
+	
+}
+
+function rt_get_task_by_date( $user_id, $date ){
+	
+	global $rt_pm_task;
+	// get month, year, day by exploading
+	$date_array = explode("-",$date);
+	$args = array(
+                'post_type' => $rt_pm_task->post_type,
+                'post_status' => 'any',
+                'nopaging' => true,
+                'suppress_filters' => false,
+				'year' => $date_array[0],
+				'monthnum' => $date_array[1],
+				'day' => $date_array[2],
+				'meta_query'             => array(
+						array(
+							'key'       => 'post_assignee',
+							'value'     => $user_id,
+						),
+					),
+                );
+	$wp_query = new WP_Query();
+    $wp_query->query( $args );
+	return $wp_query->posts;
+	
+}
+
+function rt_get_person_task_by_project($person_id,$date,$project_id){
+	global $rt_pm_task, $rt_person;
+	// get month, year, day by exploading
+	$date_array = explode("-",$date);
+	$args = array(
+                'post_type' => $rt_pm_task->post_type,
+                'post_status' => 'any',
+                'connected_type' => $rt_pm_task->post_type . '_to_' . $rt_person->post_type,
+                'connected_items' => $person_id,
+                'nopaging' => true,
+                'suppress_filters' => false,
+				'year' => $date_array[0],
+				'monthnum' => $date_array[1],
+				'day' => $date_array[2],
+				'meta_query'             => array(
+						array(
+							'key'       => 'post_project_id',
+							'value'     => $project_id,
+						),
+					),
                 );
 	$wp_query = new WP_Query();
     $wp_query->query( $args );

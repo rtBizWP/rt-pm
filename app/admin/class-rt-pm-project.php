@@ -88,6 +88,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			if(isset($_POST['flag'])){
 				$flag = $_POST['flag'];
 			}
+			if(isset($_POST['calender'])){
+				$calender = $_POST['calender'];
+			}
 			if( $flag == "prev" ){
 				// get date before 7 days
 				$date_object = date_create( $date );
@@ -101,7 +104,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$dates = rt_get_next_dates( $date );
 			$first_date = $dates[0];
 			$last_date = $dates[count($dates)-1];
-			$html = rt_create_resources_calender( $dates );
+			if( $calender == 'all-resources' ){
+				$html = rt_create_all_resources_calender( $dates );
+			} else {
+			$html = rt_create_resources_calender( $dates );	
+			}
 			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
 			die;
 		}
@@ -2707,12 +2714,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             global $rt_pm_project_type;
 
             $post_type = $this->post_type;
-
+			
             if( ! isset( $_REQUEST['rtpm_save_project_detail_nonce'] ) || ! wp_verify_nonce( $_REQUEST['rtpm_save_project_detail_nonce'], 'rtpm_save_project_detail' ) )
                 return;
 
             $newProject = $_POST['post'];
-
 
             if( isset( $newProject['rt_voxxi_blog_id'] ) )
                 switch_to_blog( $newProject['rt_voxxi_blog_id'] );

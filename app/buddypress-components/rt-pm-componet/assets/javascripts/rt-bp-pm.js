@@ -74,6 +74,7 @@ jQuery(document).ready(function($) {
 	jQuery('.rtpm-get-calender').click( function(){
 		var date = jQuery(this).data("date");
 		var flag = jQuery(this).data("flag");
+		var calender = jQuery(this).data("calender");
 		jQuery.ajax({
             type: 'POST',
             dataType: 'json',
@@ -82,6 +83,7 @@ jQuery(document).ready(function($) {
                 'action': 'rtpm_get_resources_calender',
                 'date': date,
                 'flag': flag,
+				'calender' : calender,
             },
             success: function (data) {
                 if (data.fetched) {
