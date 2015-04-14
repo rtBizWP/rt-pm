@@ -16,6 +16,9 @@ class Rt_PM_Project_Gantt {
      * Placeholder method
      *
      */
+
+    private $task_color_hash = '#32CD32';
+
     public function __construct() {
 
         $this->setup();
@@ -89,7 +92,7 @@ class Rt_PM_Project_Gantt {
                 $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task  );
+                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $this->task_color_hash  );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -152,6 +155,8 @@ class Rt_PM_Project_Gantt {
                     estimated_hours:    item.estimated_hours,
                 };
 
+                gantt.getTask(id).color = '<?php echo $this->task_color_hash ?>';
+
                 var send_data = { action : 'rtpm_save_project_task', post: data };
 
                 $.post( admin_url, send_data, function( response ) {
@@ -172,7 +177,6 @@ class Rt_PM_Project_Gantt {
             //Update task
             gantt.attachEvent("onAfterTaskUpdate", function( id,item ) {
 
-                console.log( item );
                 var data = {
                     task_id : id,
                     start_date :  rtcrm_get_postdata( item.start_date ),
