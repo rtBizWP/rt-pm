@@ -23,6 +23,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                 private $sub_nav_items;
                 static $projects_slug = 'projects';
                 static $gantt_admin = 'gantt';
+				static $ganttchart_slug = 'ganttchart';
                 private $menu_order = 92;
                 public function __construct() {
                 		global $rt_biz_options;
@@ -102,7 +103,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		 * @global obj $bp
 		 */
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
-			global $rt_pm_bp_pm;
+			global $rtbp_pm_screen;
 
             if( is_main_site() )
                 return;
@@ -114,19 +115,11 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				'name' 		      => __( $this->pm_label ),
 				'slug' 		      => $this->id,
 				'position' 	      => $this->menu_order,
-				'screen_function'     => 'bp_pm_screen',
+				'screen_function'     => array( $rtbp_pm_screen, 'bp_pm_screen' ),
 				'default_subnav_slug' => 'projects',
 			);
 
-            // Determine user to use
-            if ( bp_displayed_user_domain() ) {
-                    $user_domain = bp_displayed_user_domain();
-            } elseif ( bp_loggedin_user_domain() ) {
-                    $user_domain = bp_loggedin_user_domain();
-            } else {
-                    return;
-            }
-
+            $user_domain = rtbiz_get_user_domain();
             // Link to user people
             $people_link = trailingslashit( $user_domain . $this->slug );
 			
@@ -169,7 +162,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => self::$projects_slug,
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 			}
@@ -192,20 +185,20 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'archives',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 			}
 
 			// Resources
-			if( !isset($_GET['rt_project_id']) ){
+			if( ! isset($_GET['rt_project_id']) ){
 
 				$sub_nav[] = array(
 					'name'            =>  __( 'Resources' ),
 					'slug'            => 'resources',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 				
@@ -232,106 +225,100 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'overview',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'rtpm_project_overview_screen',
+					'screen_function' => array( $rtbp_pm_screen, 'rtpm_project_overview_screen' ),
 					'position'        => 10,
 				);
 			}
 
-			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin );
+			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin, self::$ganttchart_slug );
 
 			if ( isset($_GET['rt_project_id']) && in_array( bp_current_action(), $project_detail_actions ) ){
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/details');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-details'  ), $main_url ) );
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Details' ),
                     'slug'            => 'details',
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_details',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_details' ),
                     'position'        => 20,
                 );
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-files'  ), $main_url ) );
-
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Attachments' ),
                     'slug'            => 'attachments',
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_attachments',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_attachments' ),
                     'position'        => 30,
                 );
 
 				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Tasks' ),
                     'slug'            => 'tasks',
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_tasks',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_tasks' ),
                     'position'        => 40,
                 );
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
-
-
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Time Entries' ),
                     'slug'            => 'time-entries',
                     'link'			  => $url,
                     'parent_url'      =>  $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_time_entries',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_time_entries' ),
                     'position'        => 50,
                 );
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/notifications');
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-notification'  ), $main_url ) );
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Notifications' ),
                     'slug'            => 'notifications',
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_notifications',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_notifications' ),
                     'position'        => 60,
                 );
 
                 $main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$gantt_admin);
-
                 $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$gantt_admin  ), $main_url ) );
-                // Add a few subnav items
                 $sub_nav[] = array(
                     'name'            =>  __( 'Gantt admin' ),
                     'slug'            => self::$gantt_admin,
                     'link'			  => $url,
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
-                    'screen_function' => 'bp_pm_gantt',
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_gantt' ),
                     'position'        => 70,
+                );
+
+				$main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$ganttchart_slug);
+				$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$ganttchart_slug  ), $main_url ) );
+                $sub_nav[] = array(
+                    'name'            =>  __( 'GanttChart' ),
+                    'slug'            => self::$ganttchart_slug,
+                    'link'			  => $url,
+                    'parent_url'      => $people_link,
+                    'parent_slug'     =>  $this->id,
+                    'screen_function' => array( $rtbp_pm_screen, 'bp_pm_ganttchart' ),
+                    'position'        => 80,
                 );
 
 			}
@@ -359,22 +346,18 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		                array(
 		                    'name' => __( 'Projects' ),
 		                    'slug'  => 'projects',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 		                array(
 		                    'name' =>  'Archives',
 		                    'slug'  => 'archives',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 						array(
 		                    'name' =>  'Resources',
 		                    'slug'  => 'resources',
-		                    'screen_function' => 'bp_pm_projects',
 		                ),
 						array(
 		                    'name' =>  'Overview',
 		                    'slug'  => 'overview',
-		                    'screen_function' => 'bp_pm_projects',
 		                )
 		            );
 		

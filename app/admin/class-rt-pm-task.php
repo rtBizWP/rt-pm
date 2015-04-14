@@ -37,6 +37,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
 			add_action( 'init', array( $this, 'rtpm_task_actions' ) );
 			add_action( 'wp_ajax_rtpm_get_user_tasks', array( $this, 'rtpm_get_user_tasks' ) );
+			add_action( 'wp_ajax_rtpm_save_project_task', array( $this, 'rtpm_save_project_task' ) );
+			add_action( 'wp_ajax_rtpm_delete_project_task', array( $this, 'rtpm_delete_project_task' ) );
+			add_action( 'wp_ajax_rtpm_save_project_task_link', array( $this, 'rtpm_save_project_task_link' ) );
+			add_action( 'wp_ajax_rtpm_delete_project_task_link', array( $this, 'rtpm_delete_project_task_link' ) );
+			add_Action( 'wp_ajax_rtpm_get_task_data_for_ganttchart', array( $this, 'rtpm_get_task_data_for_ganttchart' ) );
 		}
 
         function task_add_bp_activity( $post_id, $operation_type ) {
@@ -318,28 +323,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		<?php
 		}
 
+
 		/**
-		 * Return task post data
-		 * @param int $author_id
-		 * @param string $task_status
-		 * @param null $date_query
+		 * @param array $args
 		 * @return array
 		 */
-		public function rtpm_get_task_data( $author_id = 0, $task_status = 'any', $date_query = null ){
+		public function rtpm_get_task_data( $args = array() ) {
 
-
-			global $rt_crm_module, $wpdb;
-
-			$args = array(
-				'nopaging' => true,
-				'post_status' => array( $task_status ),
-				'post_type' => $this->post_type,
-				'no_found_rows' => true,
-				'meta_key' => 'post_duedate',
-			);
-
-			if( $author_id !== 0 )
-				$args['author'] = $author_id;
+			$args['post_type'] = $this->post_type;
 
 			$query = new WP_Query( $args );
 
@@ -600,19 +591,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'user_updated_by' => get_current_user_id(),
 				);
 				$post_id = @wp_update_post( $post );
-				$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-
-				// link post to user
-
-				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-				// remove old data
-				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
-
-
-				foreach ( $data as $key=>$value ) {
-					update_post_meta( $post_id, $key, $value );
-				}
 
 				$operation_type = 'update';
 			}else{
@@ -627,22 +605,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'user_created_by' => get_current_user_id(),
 				);
 				$post_id = @wp_insert_post($post);
-				$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-				foreach ( $data as $key=>$value ) {
-					update_post_meta( $post_id, $key, $value );
-				}
-
-				// link post to user
-
-				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
-				// remove old data
-				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
-				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
 
 				$_REQUEST["new"]=true;
 				$newTask['post_id']= $post_id;
 				$operation_type = 'insert';
 			}
+
+			$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
+			foreach ( $data as $key=>$value ) {
+				update_post_meta( $post_id, $key, $value );
+			}
+
+			// link post to user
+			if( ! empty( $newTask['post_assignee'] ) ) {
+
+				$employee_id = rt_biz_get_person_for_wp_user( $newTask['post_assignee'] );
+				// remove old data
+				$rt_pm_project->remove_post_from_user( $task_post_type, $post_id );
+				$rt_pm_project->connect_post_to_user( $task_post_type,$post_id,$employee_id[0]->ID );
+			}
+
 
 			// Attachments
 			$old_attachments = get_posts( array(
@@ -806,7 +788,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$task_ids = implode( ',', $tasks );
 
-			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d' ) = '$due_date' and post_id in ( $task_ids )";
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'post_duedate' AND STR_TO_DATE( meta_value, '%Y-%m-%d' ) <= '$due_date' and post_id in ( $task_ids )";
 
 			$result = $wpdb->get_col( $query );
 
@@ -870,6 +852,206 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 
+        /**
+         * Save tasks data
+         * @param $args
+         * @param $meta_data
+         * @return int
+         */
+        public function rtpm_save_task_data( $args, $meta_data = array() ) {
+
+            $args['post_type'] = $this->post_type;
+
+			//Save post data
+			if( isset ( $args['ID'] ) ) {
+				$post_id = @wp_update_post( $args );
+			}else{
+				$post_id = @wp_insert_post( $args );
+			}
+
+			//Save post meta data
+            foreach ( $meta_data as $key => $value ) {
+                update_post_meta( $post_id, $key, $value );
+            }
+
+            return $post_id;
+        }
+
+
+		/**
+		 *  Save project task from gantt chart (ajax)
+		 */
+		public function rtpm_save_project_task() {
+			global $rt_pm_task;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$args = array(
+				'post_title' => $post['task_title'],
+				'post_date' => $post['start_date'],
+				'post_parent' => $post['parent_project'],
+				'post_status' => 'new',
+			);
+
+			if( isset( $post['task_id'] ) )
+				$args['ID'] = $post['task_id'];
+
+
+			$meta_values = array(
+				'post_duedate' => $post['end_date'],
+				'rtpm_task_type' => $post['task_type'],
+				'rtpm_parent_task' => $post['parent_task'],
+				'post_estimated_hours' => $post['estimated_hours']
+			);
+
+			$post_id = $rt_pm_task->rtpm_save_task_data( $args, $meta_values );
+
+			if( $post_id )
+				@wp_send_json_success( array( 'task_id' => $post_id ) );
+
+		}
+
+		/**
+		 * Delete project task ( ajax )
+		 */
+		public function rtpm_delete_project_task() {
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$task = @wp_delete_post( $post['task_id'] );
+
+
+			if( $task ) {
+				wp_send_json_success( $task );
+			}
+		}
+
+		/**
+		 * Create or Update task link ( ajax )
+		 */
+		public function rtpm_save_project_task_link() {
+			global $rt_pm_task_links_model;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$data = array(
+				'project_id' => $post['parent_project'],
+				'source_task_id' => $post['source_task_id'],
+				'target_task_id' => $post['target_task_id'],
+				'type' => $post['connection_type'],
+			);
+
+			$link_id = $rt_pm_task_links_model->rtpm_create_task_link( $data );
+
+			if( $link_id ) {
+				wp_send_json_success( array( 'id' => $link_id) );
+			}else {
+				wp_send_json_error();
+			}
+		}
+
+		/**
+		 * Delete task link ( ajax )
+		 */
+		public function rtpm_delete_project_task_link() {
+
+			global $rt_pm_task_links_model;
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$data = array(
+				'id' => $post['link_id'],
+			);
+
+			$link_id = $rt_pm_task_links_model->rtpm_delete_task_link( $data );
+
+
+			if( $link_id ) {
+
+				wp_send_json_success( array( 'id' => $link_id ) );
+			}else {
+				wp_send_json_error();
+			}
+		}
+
+		/**
+		 * Get all unassigned task ids
+		 * @param $project_id
+		 * @return array
+		 */
+		public function rtpm_get_unassigned_task( $project_id ) {
+			global $wpdb;
+
+			$tasks_ids = $this->rtpm_get_projects_task_ids( $project_id );
+
+			$args = array(
+				'post__in' => 	$tasks_ids,
+				'meta_query' => array(
+					array(
+						'relation' => 'OR',
+						array(
+							'key' => 'post_assignee',
+							'value' => '',
+						),
+						array(
+							'key' => 'post_assignee',
+							'value' => 'test',
+							'compare' => 'NOT EXISTS',
+						)
+					)
+				),
+				'fields' => 'ids',
+				'nopaging' => true,
+				'no_found_rows' => true,
+			);
+
+			$result = $this->rtpm_get_task_data( $args );
+
+			return $result;
+		}
+
+		/**
+		 * Render task detail in context box
+		 */
+		public function rtpm_get_task_data_for_ganttchart() {
+
+			if( ! isset( $_REQUEST['post'] ) )
+				return;
+
+			$post = $_REQUEST['post'];
+
+			$task_id = $post['task_id'];
+
+			$task_data = $this->rtpm_get_task_data( array( 'p' => $task_id ) );
+
+
+			$start_date = rt_convert_strdate_to_usertimestamp( $task_data[0]->post_date );
+			$end_date = rt_convert_strdate_to_usertimestamp( get_post_meta( $task_id, 'post_duedate', true ) );
+			if( ! empty( $task_data ) ){
+				$data = array(
+					'task_title' => $task_data[0]->post_title,
+					'start_date' => $start_date->format('d M Y'),
+					'end_date' => $end_date->format('d M  Y'),
+					'task_status' => $task_data[0]->post_status,
+				);
+
+				wp_send_json_success( $data );
+			} else {
+				wp_send_json_error();
+			}
+		}
 	}
 
 }

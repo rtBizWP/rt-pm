@@ -63,7 +63,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
                         
-            add_action("init",  array( $this,"project_list_switch_view"));
+            //add_action("init",  array( $this,"project_list_switch_view"));
             add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
             add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
             add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
@@ -78,6 +78,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             add_action( 'init', array( $this, 'rtpm_save_project_detail' ) ); // Save project details
 
+            add_filter( "manage_edit-{$this->post_type}_columns", array( $this, 'rtpm_set_custom_edit_project_columns' ) );
+            add_action( "manage_{$this->post_type}_posts_custom_column" , array( $this, 'rtpm_custom_project_column' ), 10, 2  );
+
+            add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
+            add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -180,7 +185,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 		function convert_lead_to_project() {
 
-            global $rt_pm_bp_pm, $wpdb;
+            global $rt_pm_bp_pm, $wpdb, $rt_pm_task, $wpdb, $rt_pm_task_links_model;
 
 			if ( ! isset( $_REQUEST['rt_pm_convert_to_project'] ) ) {
 				return;
@@ -189,23 +194,23 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$lead_id = $_REQUEST['rt_pm_convert_to_project'];
 			$lead = get_post( $lead_id );       
 
+            //Pull lead data
 			$project = array();
 			$project['post_title'] = $lead->post_title;
 			$project['post_author'] = $lead->post_author;
 			$project['post_type'] = $this->post_type;
 			$project['post_status'] = 'new';
 			$project['post_content'] = $lead->post_content;
-
             $project['post_parent'] = $lead_id;
 
             $lead_index_tabel_name = rtcrm_get_lead_table_name();
             $query = $wpdb->prepare( "SELECT * FROM  {$lead_index_tabel_name} WHERE post_id = %s", $lead_id );
-
             $result = $wpdb->get_row( $query );
 
             $project['post_date'] = $result->date_create_gmt;
             $project['post_date_gmt'] = $result->date_create_gmt;
 
+            //Pull or attachments
             $attachments = get_posts( array(
                 'post_parent' => $lead_id,
                 'post_type' => 'attachment',
@@ -227,6 +232,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                   array_push($project_client,$tterm->p2p_to);
             }
 
+
+
+            //Pull lead meta
             $data = array(
                 'project_organization' => $project_organization,
                 'project_client' => $project_client,
@@ -243,6 +251,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 
             $project_id = $this->rtpm_save_project_data( $project, $data );
+
+
 
             //Set post( project ) parent to lead
             if( $project_id ) {
@@ -262,6 +272,32 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $where = array( 'post_id' => $lead_id );
 
                 $leadModel->update_lead( $data, $where );
+            }
+
+            //Pull task
+            $args = array(
+                'fields' => 'ids',
+                'post_parent' => $lead_id,
+                'nopaging' => true,
+                'no_found_rows' => true,
+            );
+
+            $task_ids = $rt_pm_task->rtpm_get_task_data( $args );
+
+            if( ! empty( $task_ids ) ) {
+
+                $task_list = implode( ',', $task_ids );
+
+                //Set task post parent to new project
+                $task_updated = $wpdb->query( "UPDATE $wpdb->posts SET post_parent = $project_id WHERE ID IN ( $task_list )");
+
+                //Add meta in task for project parent
+                foreach( $task_ids as $task_id ) {
+                  update_post_meta( $task_id, 'post_project_id', $project_id );
+                }
+
+                //Point new project in link table
+                $rt_pm_task_links_model->rtpm_update_task_link( array( 'project_id' => $project_id ), array( 'project_id' => $lead_id ) );
             }
 
             // Pull external file to project
@@ -284,6 +320,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 /*update_post_meta($attachment_id, '_flagExternalLink', "true");*/
             }
 
+            //Push all attachments
             foreach ( $attachments as $attachment ) {
 
                 $filepath = get_attached_file( $attachment );
@@ -314,9 +351,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             // Hook for proprerty metabox value save to project
             do_action( 'rt_pm_convert_lead_to_project', $lead_id, $project_id );
 
-            if ( bp_is_current_component( BP_CRM_SLUG ) ){
+            if ( ! is_admin() ){
 
-                $redirect_url = add_query_arg( array( 'rt_project_id' => $project_id, 'action' => 'edit' ), $rt_pm_bp_pm->get_component_root_url() );
+                $redirect_url = rtpm_bp_get_project_details_url( $project_id );
             }else{
                 $redirect_url = add_query_arg( array( 'post_type' => $this->post_type, 'page' => 'rtpm-add-'.$this->post_type, $this->post_type.'_id' => $project_id ), admin_url( 'edit.php' ) );
             }
@@ -369,11 +406,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'post_type' => $this->post_type,
                 'post_parent' => $lead_id,
                 'no_found_rows' => true,
+                'fields' => 'ids',
             ));
 
             if( !empty( $query->posts ) ){
 
-                return true;
+                return $query->posts[0];
             }
 
             return false;
@@ -395,7 +433,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, 'rtpm-all-'.$this->post_type, array( $this, 'projects_list_view' ) );
+            $url = add_query_arg( array( 'post_type' => $this->post_type ), 'edit.php' );
+            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, $url );
 
             if( isset( $_REQUEST['rt_project_id'] ) ) {
 
@@ -420,6 +459,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				'menu_position' => $menu_position,
 				'supports' => array('title', 'editor', 'comments', 'custom-fields'),
 				'capability_type' => $this->post_type,
+                'map_meta_cap' => true,
 			);
 
 
@@ -492,6 +532,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         function get_custom_menu_order(){
             $this->custom_menu_order = array(
 				self::$dashboard_slug,
+                'edit.php?post_type='.$this->post_type,
                 'rtpm-all-'.$this->post_type,
                 'rtpm-add-'.$this->post_type,
                 'edit-tags.php?taxonomy='.Rt_PM_Project_Type::$project_type_tax.'&amp;post_type='.$this->post_type,
@@ -2899,6 +2940,102 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $result = $wpdb->get_col( $query );
 
             return $result;
+        }
+
+        /**
+         * Project list custom column filter
+         * @param $columns
+         * @return mixed
+         */
+        public function rtpm_set_custom_edit_project_columns( $columns ) {
+
+            $columns['job_no'] = __( 'Job Number', RT_PM_TEXT_DOMAIN );
+            $columns['status'] = __( 'Project Status', RT_PM_TEXT_DOMAIN );
+            $columns['project_manager'] = __( 'Project Manager', RT_PM_TEXT_DOMAIN );
+            $columns['business_manager'] = __( 'Business Manager', RT_PM_TEXT_DOMAIN );
+
+            return $columns;
+        }
+
+        /**
+         * Project list custom column hook
+         * @param $column
+         * @param $post_id
+         */
+        public function rtpm_custom_project_column( $column, $post_id  ) {
+
+            switch( $column ) {
+
+                case 'job_no' :
+                    echo get_post_meta( $post_id , 'rtpm_job_no' , true );
+                    break;
+
+                case 'status':
+                    echo get_post_status( $post_id );
+                    break;
+
+                case 'project_manager':
+                    $project_manager_wp_user_id = get_post_meta( $post_id, 'project_manager', true );
+                    echo rt_get_user_displayname( $project_manager_wp_user_id );
+                    break;
+
+                case 'business_manager':
+                    $business_manager_wp_user_id =  get_post_meta( $post_id, 'business_maanger', true );
+                    echo rt_get_user_displayname( $business_manager_wp_user_id );
+                    break;
+
+            }
+
+        }
+
+        /**
+         * Save project working hource
+         */
+        public function rtpm_save_project_working_hours() {
+
+            if ( ! isset( $_POST['rt_pm_edit_work_hours_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_hours_nonce'], 'rt_pm_edit_work_hours' ) )
+                return;
+
+            $data = $_POST['post'];
+
+            update_post_meta( $data['project_id'], 'working_hours', $data['working_hours'] );
+        }
+
+        /**
+         * Save project working days
+         * @return bool|void
+         */
+        public function rtpm_save_project_working_days() {
+
+            if ( ! isset( $_POST['rt_pm_edit_work_days_nonce'] ) || ! wp_verify_nonce( $_POST['rt_pm_edit_work_days_nonce'], 'rt_pm_edit_work_days' ) )
+                return;
+
+
+            $data = $_POST['post'];
+
+            if( !isset( $data ) )
+                return false;
+
+            $working_days = array();
+
+            if( isset( $data['days'] ) )
+                $working_days['days'] = $data['days'];
+
+
+            if( isset( $data['occasion_name'] ) ){
+
+                foreach($data['occasion_name'] as $index => $occasion_name) {
+
+                    if ( empty( $occasion_name ) || empty( $data['occasion_date'][ $index ] ) ) continue;
+
+                    $working_days['occasions'][] = array(
+                        'name'  => $occasion_name,
+                        'date' =>$data['occasion_date'][ $index ]
+                    );
+                }
+            }
+
+            update_post_meta( $data['project_id'], 'working_days', $working_days );
         }
     }
 }
