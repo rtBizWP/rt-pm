@@ -27,7 +27,21 @@
 
 // all resources table css
 
+
 #buddypress{
+	.rt-main-resources-container{
+		.rt-right-container{
+			.rtpm-task-info-tooltip{
+				text-align: left;
+			}
+			table{
+				td{
+					border-left: 1px solid #eaeaea;
+					text-align: center;
+				}
+			}
+		}
+	}
 	.rt-all-resources-container{
 		.rtpm-task-info-tooltip{
 			padding: 5px;
@@ -38,13 +52,21 @@
 	}
 	.rt-left-container{
 		table{
+			.rtpm-task-info-tooltip{
+					p{
+					padding: 5px;
+					margin: 0 0 0 10px;
+					line-height: 10px;
+					color: black;
+				}
+			}
 			.rt_project_assignee{
 				padding-left: 30px !important;
 			}
 			.rt_project_resources_title{
 				&:before{
 					content: "";
-					background: url(../img/folder-xxl.png);
+					background: url(../img/folder.png);
 					width: 15px;
 					height: 15px;
 					display: block;

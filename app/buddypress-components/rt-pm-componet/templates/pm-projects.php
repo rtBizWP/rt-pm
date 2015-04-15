@@ -101,7 +101,6 @@
 		$the_query = new WP_Query( $args );
 		$totalPage= $max_num_pages =  $the_query->max_num_pages;
         $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-		
 		?>
         <div class="list-heading">
 		    <div class="large-10 columns list-title">
@@ -109,6 +108,8 @@
 					<h4><?php _e( 'Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
 				<?php }else if( bp_is_current_action('all-resources') ){?>
 					<h4><?php _e( 'All Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
+				<?php }else if( bp_is_current_action('my-tasks') ){?>
+					<h4><?php _e( 'My Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
 				<?php }else{ ?>
 					<h4><?php _e( 'Projects', RT_PM_TEXT_DOMAIN ) ?></h4>
 				<?php } ?>
@@ -415,7 +416,6 @@
 </div>
 <?php 
 	} else if( bp_is_current_action('all-resources') ) {
-		
 		$current_date = date("Y-m-d");
 		$dates = rt_get_next_dates( $current_date );
 		
@@ -440,12 +440,14 @@
 						$get_the_id =  get_the_ID();
 						//project manager & project members
 						$team_member = get_post_meta($get_the_id, "project_member", true);
-						?>
-							<tr><td class="rt_project_resources_title"><?php the_title(); ?></td></tr>	
-						<?php
+						if( $team_member != '' && !empty($team_member) ){
+							?>
+								<tr><td class="rt_project_resources_title"><?php the_title(); ?></td></tr>	
+							<?php
 					foreach ( $team_member as $key => $member_id) {
 						$user = get_userdata( $member_id);
 						$people = rt_biz_get_person_for_wp_user($member_id);
+						if( !empty($people) ) {
 						$people = $people[0];
 						$employee_name = $people->post_title;
 						?>
@@ -502,7 +504,9 @@
 							</td>
 						</tr>		
 						<?php
+						}
 					}
+						}
 					}?>
 						</tbody></table></div>
 			<div class="rt-right-container">
@@ -526,7 +530,7 @@
 		$dates = rt_get_next_dates( $current_date );
 		$project_array = rt_get_project_task_list();
 		// lets start with all projects
-		if ( $project_array != null ) { ?>
+		if ( !empty($project_array) ) { ?>
 			
 			<div class="rt-main-resources-container rt-my-tasks-container">
 				<div class="rt-left-container">
@@ -554,7 +558,7 @@
 						?>
 						<tr>
 							<td class="rt_project_tasks">
-								<div class="rtpm-show-user-tooltip">
+								<div class="rtpm-show-user-tooltip rtpm-task-icon">
 							<?php echo $task_data->post_title; ?>
 							<div class="rtpm-task-info-tooltip">
 								<p><b>Task : </b><a href="?rt_task_id=<?php echo $task_data->ID ; ?>"><?php echo $task_data->post_title; ?></a></p>
@@ -574,14 +578,17 @@
 				$first_date = $dates[0];
 				$last_date = $dates[count($dates)-1];
 				?>
-				<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
+				<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="my-tasks"><?php if( wp_is_mobile() ){ echo "prev";}else{ echo "<"; } ?></a>
 				<table id="rtpm-resources-calender">
 					<?php echo rt_create_my_task_calender( $dates ); ?>
 				</table>
-				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
+				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="my-tasks"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
 			</div>
 			</div>	<?php
-		}		
+		}else{?>
+		<div>No tasks to show</div>	
+		<?php
+		}
 	}
 	if(isset($_REQUEST['rt_task_id'])){
 		global $rt_pm_task;
