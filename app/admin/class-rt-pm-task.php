@@ -1045,12 +1045,31 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'start_date' => $start_date->format('d M Y'),
 					'end_date' => $end_date->format('d M  Y'),
 					'task_status' => $task_data[0]->post_status,
+					'task_progress' => $this->rtpm_get_task_progress_percentage( $task_id ),
 				);
 
 				wp_send_json_success( $data );
 			} else {
 				wp_send_json_error();
 			}
+		}
+
+		/**
+		 * Get task progress percentage
+		 * @param $task_id
+		 * @return float|int
+		 */
+		public function rtpm_get_task_progress_percentage( $task_id ) {
+			global $rt_pm_time_entries;
+
+			$total_billed_hours = (float)$rt_pm_time_entries->rtpm_get_task_total_billed_hours( $task_id );
+
+			$estimated_hours = (float)get_post_meta( $task_id, 'post_estimated_hours', true );
+
+			if( 0 < $estimated_hours )
+			 return sprintf( '%0.2f', $total_billed_hours/$estimated_hours * 100 ) ;
+
+			return 0;
 		}
 	}
 

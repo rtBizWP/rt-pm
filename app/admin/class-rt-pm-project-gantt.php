@@ -92,7 +92,9 @@ class Rt_PM_Project_Gantt {
                 $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $this->task_color_hash  );
+                $progress_percentage = $rt_pm_task->rtpm_get_task_progress_percentage( $task->ID ) / 100;
+
+                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $this->task_color_hash, 'progress' => $progress_percentage  );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -124,14 +126,13 @@ class Rt_PM_Project_Gantt {
      */
     public function rtpm_print_ganttchart_script() { ?>
         <script id="task-detail-template" type="text/x-handlebars-template">
-
             <ul style="list-style-type: none; margin: 0;">
                 <li style="margin: 0;"><strong>Task Title: </strong><span>{{task_title}}</span></li>
+                <li style="margin: 0;"><strong>Status: </strong><span>{{task_status}}</span></li>
+                <li style="margin: 0;"><strong>Progress: </strong><span>{{task_progress}}%</span></li>
                 <li style="margin: 0;"><strong>Start Date: </strong><span>{{start_date}}</span></li>
                 <li style="margin: 0;"><strong>End Date: </strong><span>{{end_date}}</span></li>
-                <li style="margin: 0;"><strong>Status: </strong><span>{{task_status}}</span></li>
             </ul>
-
         </script>
 
         <script type="text/javascript">
@@ -287,30 +288,47 @@ class Rt_PM_Project_Gantt {
                 }
             };
 
-            gantt.attachEvent("onTaskSelected", function(id,item){
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box');
+            var request;
+            gantt.attachEvent("onMouseMove", function(id,item) {
 
-                var data = { task_id : id };
+                if ('undefined' != typeof request)
+                    request.abort();
+
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+
+                if (null === id)
+                    return;
+
+
+                var data = {task_id: id};
 
                 var senddata = {
                     action: 'rtpm_get_task_data_for_ganttchart',
                     post: data
                 };
 
-                $.post( admin_url, senddata, function( response ){
+                if ('undefined' != typeof request) {
+                    request.abort();
+                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
+                }
+
+                request = $.post( admin_url, senddata, function( response ){
                     if( response.success ){
                         $('div.rtcontext-box').html( template( response.data ) );
                     }
                 } );
 
             });
+
             jQuery( document ).ready( function( $ ) {
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box');
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
             });
 
             function rtcrm_get_postdata( post_date ) {
 
-                return post_date.toISOString().substring(0, 10)+' 00:00:00';
+                var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
+                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
+
             }
 
             function rtcrm_gantt_notiy( message, type ) {
@@ -328,6 +346,7 @@ class Rt_PM_Project_Gantt {
 
 
         <div class="rtcontext-box iw-contextMenu" style="display: none;">
+            <strong>Loading...</strong>
         </div>
     <?php }
 
