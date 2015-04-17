@@ -11,7 +11,7 @@ global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
 $user_edit = true;
 $task_post_type = $rt_pm_task->post_type;
 
-if( isset( $_GET["id"] ) ){
+if( isset( $_GET["id"] ) ) {
 
     $post_id = $_GET["id"];
 
@@ -33,7 +33,7 @@ if( isset( $_GET["id"] ) ){
         $post_assignee = $post_id;
     }
 
-}else if( isset( $_GET['project_id'] ) ){
+}else if( isset( $_GET['project_id'] ) ) {
 
     $post_assignee = $_GET['user_id'];
     $post_project_id = $_GET['project_id'];
