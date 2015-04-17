@@ -111,8 +111,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$last_date = $dates[count($dates)-1];
 			if( $calender == 'all-resources' ){
 				$html = rt_create_all_resources_calender( $dates );
+			} else if( $calender == 'my-tasks' ){
+				$html = rt_create_my_task_calender( $dates );	
 			} else {
-			$html = rt_create_resources_calender( $dates );	
+				$html = rt_create_resources_calender( $dates );	
 			}
 			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
 			die;

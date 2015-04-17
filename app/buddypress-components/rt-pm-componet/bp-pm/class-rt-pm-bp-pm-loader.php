@@ -207,7 +207,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'all-resources',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 				
@@ -216,7 +216,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					'slug'            => 'my-tasks',
 					'parent_url'      => $people_link,
 					'parent_slug'     =>  $this->id,
-					'screen_function' => 'bp_pm_projects',
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
 					'position'        => 10,
 				);
 
