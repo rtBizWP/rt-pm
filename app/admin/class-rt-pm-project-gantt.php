@@ -30,8 +30,23 @@ class Rt_PM_Project_Gantt {
      */
     public function setup() {
 
+        add_action('wp_enqueue_scripts', array( $this, 'rtpm_ganttchart_load_style_script' ) );
+        add_action('buddyboss_after_header', array( $this, 'buddyboss_after_header_rt_wrapper' ) );
     }
 
+    /**
+     * Load script and stylesheets
+     */
+    public function rtpm_ganttchart_load_style_script() {
+
+        wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri().'/css/jquery.sidr.light.css',  array() );
+        wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri().'/assets/js/jquery.sidr.min.js', array('jquery') );
+        wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
+    }
+
+    function buddyboss_after_header_rt_wrapper(){ ?>
+        <div id="rt-action-panel" class="sidr right"></div>
+    <?php }
 
     /**
      * Return singleton instance of class
@@ -267,8 +282,8 @@ class Rt_PM_Project_Gantt {
             });
 
 
+            //Estimated hours field template
             gantt.locale.labels.section_estimated_hours = "Estimated hours";
-
             gantt.form_blocks["number"] = {
                 render:function( sns ){ //sns - the section's configuration object
 
@@ -288,6 +303,7 @@ class Rt_PM_Project_Gantt {
                 }
             };
 
+            //Show task detail on hover
             var request;
             gantt.attachEvent("onMouseMove", function(id,item) {
 
@@ -320,8 +336,65 @@ class Rt_PM_Project_Gantt {
 
             });
 
+            //Open task edit side panel
+            gantt.attachEvent("onTaskClick", function( id, e ) {
+
+                gantt.hideLightbox();
+
+                var data = {
+                    action: 'render_project_slide_panel',
+                    template: 'open',
+                    id: id,
+                    rt_voxxi_blog_id: <?php echo get_current_blog_id(); ?>,
+                    actvity_element_id: '',
+                    template_name: 'task'
+                };
+
+                var pm_script_url = '<?php echo  RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js'; ?>';
+
+                $.get( ajaxurl, data, function( data ) {
+                    $("#rt-action-panel").html( data.html );
+
+                    $.cachedScript( pm_script_url ).done(function( script, textStatus ) {
+                        console.log( textStatus );
+                    }).fail(function( qXHR, textStatus, errorThrown )  {
+                        console.log(  errorThrown );
+                    });
+
+                });
+
+
+                try{
+                    $.sidr('open', 'rt-action-panel');
+                } catch( err ){
+
+                }
+            });
+
             jQuery( document ).ready( function( $ ) {
+
+//                // Foundation scss error fix
+//                Foundation.global.namespace = '';
+//
+//                $(document).foundation();
+
+
                 $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+
+                jQuery.cachedScript = function( url, options ) {
+
+                    // Allow user to set any option except for dataType, cache, and url
+                    options = $.extend( options || {}, {
+                        dataType: "script",
+                        cache: true,
+                        url: url
+                    });
+
+                    // Use $.ajax() since it is more flexible than $.getScript
+                    // Return the jqXHR object so we can chain callbacks
+                    return jQuery.ajax( options );
+                };
+
             });
 
             function rtcrm_get_postdata( post_date ) {
