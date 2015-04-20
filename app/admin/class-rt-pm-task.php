@@ -634,54 +634,55 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'posts_per_page' => -1,
 			));
 			$new_attachments = array();
-			if ( isset( $_POST['attachment'] ) ) {
-				$new_attachments = $_POST['attachment'];
-				foreach ( $new_attachments as $attachment ) {
-					if( !in_array( $attachment, $old_attachments ) ) {
-						$file = get_post($attachment);
-						$filepath = get_attached_file( $attachment );
-						$post_attachment_hashes = get_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
-						if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
-							continue;
-						}
-						if( !empty( $file->post_parent ) ) {
-							$args = array(
-								'post_mime_type' => $file->post_mime_type,
-								'guid' => $file->guid,
-								'post_title' => $file->post_title,
-								'post_content' => $file->post_content,
-								'post_parent' => $newTask['post_id'],
-								'post_author' => get_current_user_id(),
-								'post_status' => 'inherit'
-							);
-							$new_attachments_id = wp_insert_attachment( $args, $file->guid, $newTask['post_id'] );
-							/*$new_attach_data=wp_generate_attachment_metadata($new_attachments_id,$filepath);
-							wp_update_attachment_metadata( $new_attachments_id, $new_attach_data );*/
-							add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-						} else {
-							wp_update_post( array( 'ID' => $attachment, 'post_parent' => $newTask['post_id'] ) );
+			if( !isset( $_POST['front_end'] ) ){
+				if ( isset( $_POST['attachment'] ) ) {
+					$new_attachments = $_POST['attachment'];
+					foreach ( $new_attachments as $attachment ) {
+						if( !in_array( $attachment, $old_attachments ) ) {
+							$file = get_post($attachment);
 							$filepath = get_attached_file( $attachment );
-							add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+							$post_attachment_hashes = get_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
+							if ( ! empty( $post_attachment_hashes ) && in_array( md5_file( $filepath ), $post_attachment_hashes ) ) {
+								continue;
+							}
+							if( !empty( $file->post_parent ) ) {
+								$args = array(
+									'post_mime_type' => $file->post_mime_type,
+									'guid' => $file->guid,
+									'post_title' => $file->post_title,
+									'post_content' => $file->post_content,
+									'post_parent' => $newTask['post_id'],
+									'post_author' => get_current_user_id(),
+									'post_status' => 'inherit'
+								);
+								$new_attachments_id = wp_insert_attachment( $args, $file->guid, $newTask['post_id'] );
+								/*$new_attach_data=wp_generate_attachment_metadata($new_attachments_id,$filepath);
+								wp_update_attachment_metadata( $new_attachments_id, $new_attach_data );*/
+								add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+							} else {
+								wp_update_post( array( 'ID' => $attachment, 'post_parent' => $newTask['post_id'] ) );
+								$filepath = get_attached_file( $attachment );
+								add_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+							}
 						}
 					}
-				}
 
-				foreach ( $old_attachments as $attachment ) {
-					if( !in_array( $attachment, $new_attachments ) ) {
+					foreach ( $old_attachments as $attachment ) {
+						if( !in_array( $attachment, $new_attachments ) ) {
+							wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
+							$filepath = get_attached_file( $attachment );
+							delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
+						}
+					}
+				} else {
+					foreach ( $old_attachments as $attachment ) {
 						wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
 						$filepath = get_attached_file( $attachment );
 						delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
 					}
+					delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
 				}
-			} else {
-				foreach ( $old_attachments as $attachment ) {
-					wp_update_post( array( 'ID' => $attachment, 'post_parent' => '0' ) );
-					$filepath = get_attached_file( $attachment );
-					delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash', md5_file( $filepath ) );
-				}
-				delete_post_meta($newTask['post_id'], '_rt_wp_pm_attachment_hash' );
 			}
-
 			do_action( 'save_task', $newTask['post_id'], $operation_type );
 
 			//Add success message

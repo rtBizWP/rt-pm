@@ -250,6 +250,33 @@ jQuery(document).ready(function($) {
                      addError(eleDueDate, "Please Enter valid Date");
                      return false;
                 }
+				
+				// check if estimated hours are correct
+				
+				jQuery.ajax({
+					type: 'POST',
+					dataType: 'json',
+					url: ajaxurl,
+					async: false,
+					data: {
+						'action': 'rtpm_validate_estimated_date',
+						'start_date': $("#create_rt_task_date").val(),
+						'end_date': $("#due_rt_task_date").val(),
+						'est_time' : $('input[name="post[post_estimated_hours]"]').val(),
+						'project_id': $('#project_id').val(),
+					},
+					success: function (data) {
+						if (data.fetched) {
+						   
+						} else {
+							var hours_element = $('input[name="post[post_estimated_hours]"]');
+							addError(hours_element, "Please Enter valid Time");
+							e.preventDefault();
+						}
+					}
+
+				});
+				
                 
                 removeError(eleDueDate);
             }else if ($(this).data("posttype")=="rt_time_entry") {

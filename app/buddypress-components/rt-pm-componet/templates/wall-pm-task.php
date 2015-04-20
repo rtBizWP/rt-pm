@@ -52,6 +52,7 @@ $task_labels=$rt_pm_task->labels;
     <?php if( isset( $_GET["id"] ) ){ ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
+	<input type="hidden" name="front_end" value="front" />
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <?php } ?>
 

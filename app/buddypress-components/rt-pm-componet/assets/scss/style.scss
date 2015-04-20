@@ -27,9 +27,28 @@
 
 // all resources table css
 
+.rt-export-button{
+	position: absolute;
+	top: -50px;
+	padding: 6px 10px;
+	border-radius: 5px;
+	background: #E2E2E2;
+	color: #757575;
+	&:hover{
+		text-decoration: none;
+	}
+}
+
+#export-csv{
+	right: 20px;
+}
+#export-pdf{
+	right: 120px;
+}
 
 #buddypress{
 	.rt-main-resources-container{
+		position:relative;
 		.rt-right-container{
 			.rtpm-task-info-tooltip{
 				text-align: left;
@@ -52,6 +71,9 @@
 	}
 	.rt-left-container{
 		table{
+			.rt_project_tasks{
+				padding-left: 25px !important;
+			}
 			.rtpm-task-info-tooltip{
 					p{
 					padding: 5px;

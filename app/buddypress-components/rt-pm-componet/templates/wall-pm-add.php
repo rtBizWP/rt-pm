@@ -138,7 +138,8 @@ if( !empty( $results_client ) ) {
        wp_nonce_field( 'rtpm_save_project_detail', 'rtpm_save_project_detail_nonce' );
        if (isset($post->ID) && $user_edit ) { ?>
            <input type="hidden" name="post[post_id]" id='project_id' value="<?php echo $post->ID; ?>" />
-           <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
+           <input type="hidden" name="rt-pm-project-id" id="rt_pm_post_id" value="<?php echo $post->ID; ?>" />
+		   <input type="hidden" name="post[post_type]"  value="<?php echo $post->post_type; ?>" />
        <?php } ?>
 
         <div class="row">
@@ -452,7 +453,7 @@ if( !empty( $results_client ) ) {
                        </div>
                    <?php }else{ ?>
                        <div class="small-12 mobile-large-3 columns no-attachment-item">
-                           <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+                           <?php delete_post_meta($post->ID, '_rt_wp_pm_attachment_hash'); ?>
                            Attachment Not found!
                        </div>
                    <?php } ?>

@@ -24,6 +24,104 @@ jQuery(document).ready(function($) {
         exf_count++;
         $("#external-files-container").append(tmpstr);
     });
+	
+	
+	// Export to PDF
+	
+	var specialElementHandlers = {
+		'#editor': function (element, renderer) {
+			return true;
+		}
+	};
+
+	$('#export-pdf').click(function () {
+		var doc = new jsPDF('p', 'pt', 'a4');
+		var element = $('#item-body .rt-main-resources-container').clone();
+		element.find('.rtpm-task-info-tooltip').remove();
+		var left_table = $('#item-body .rt-left-container').clone();
+		left_table.find('.rtpm-task-info-tooltip').remove();
+		var right_table = $('#item-body .rt-right-container table').clone();
+		right_table.find('.rtpm-task-info-tooltip').remove();
+		var main_table = mergetwotables(left_table,right_table);
+		doc.fromHTML(main_table.html(),10,10, {
+                        //'width': 600,
+                        'elementHandlers': specialElementHandlers
+                    },
+            function(dispose) {
+                doc.save('Resources.pdf');
+            });
+
+	});
+
+	function mergetwotables(left_table,right_table){
+		var thead = right_table.find('thead td');
+		var tbody = right_table.find('tbody tr');
+		var left_table_head = left_table.find('thead tr');
+		for(var i=0;i<thead.length;i++){
+			left_table_head.append(thead[i]);
+		}
+		for(var i=0;i<tbody.length;i++){
+			var tr_element = tbody[i];
+			var td_element = tr_element.innerHTML;
+			left_table.find('tbody tr:nth-child('+ (i+1) +')').append(td_element);
+		}
+		return left_table;
+	}
+	
+	// Export to CSV
+	
+			function exportTableToCSV($table_1, $table_2, filename) {
+
+			var headers_1 = $table_1.find('thead td');
+			var headers_2 = $table_2.find('thead td');
+			var csv = '"';
+			for( var i=0; i<headers_1.length;i++ ){
+				var text = headers_1[i].innerText;
+				var csv = csv + text + '","';
+			}
+			for( var i=0; i<headers_2.length;i++ ){
+				var text = headers_2[i].innerText;
+				var csv = csv + text + '","';
+			}
+			var csv = csv + '"\r\n"';
+
+			var rows_1 = $table_1.find('tbody tr');
+			var rows_2 = $table_2.find('tbody tr');
+
+			for( var i=0; i<rows_1.length;i++ ){
+
+				var td_1 = rows_1[i].getElementsByTagName('td');
+				var text_1 = td_1[0].innerText;
+				var csv = csv + text_1 + '","';
+				var td_2 = rows_2[i].getElementsByTagName('td');
+				for( var j=0; j<td_2.length;j++ ){
+				var text_2 = td_2[j].innerText;
+				var csv = csv + text_2 + '","';
+
+					}
+				var csv = csv + '"\r\n"';
+			}
+			
+			var csv = csv + '"';
+					
+				// Data URI
+                var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+                $(this)
+                    .attr({
+                    'download': filename,
+					'href': csvData
+                    //,'target' : '_blank' //if you want it to open in a new window
+                });
+
+            }
+			
+			jQuery('#export-csv').click(function (event) {
+                 
+                exportTableToCSV.apply(this, [$('.rt-left-container table'), $('.rt-right-container table'), 'Resource.csv']);
+                
+            });
+
 
 
 
