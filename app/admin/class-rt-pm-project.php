@@ -119,6 +119,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
 			die;
 		}
+		
 
         function project_add_bp_activity( $post_id, $operation_type ) {
 
@@ -436,7 +437,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
             $url = add_query_arg( array( 'post_type' => $this->post_type ), 'edit.php' );
-            add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, $url );
+			if( isset($this->labels['all_items']) )
+				add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, $url );
 
             if( isset( $_REQUEST['rt_project_id'] ) ) {
 
@@ -2853,7 +2855,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $post_id = $this->rtpm_save_project_data( $post, $data );
 
                 $rt_pm_project_type->save_project_type($post_id,$newProject);
-
 
             }
 

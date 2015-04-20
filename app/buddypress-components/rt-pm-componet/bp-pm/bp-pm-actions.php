@@ -49,7 +49,13 @@ class Rtbp_Pm_Actions {
             wp_enqueue_script('foundation-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/foundation/foundation.js',array("jquery","foundation.zepto"), RT_PM_VERSION, true);
             wp_enqueue_script('rtpm-readmore', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/readmore.min.js',array("jquery"), "", true);
             wp_enqueue_script('moment-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
-
+			
+			// include all files in js pdf lib
+			$files = scandir(RT_PM_PATH . 'app/lib/rt-js-pdf/');
+			foreach($files as $file) {
+				if( strlen( $file) > 2 )
+					wp_enqueue_script($file, RT_PM_URL . 'app/lib/rt-js-pdf/'.$file ,array("jquery"), RT_PM_VERSION, true);
+			}
 
             if( !wp_script_is('jquery-ui-accordion') ) {
                 wp_enqueue_script( 'jquery-ui-accordion' );

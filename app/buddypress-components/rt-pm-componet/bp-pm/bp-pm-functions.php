@@ -104,7 +104,7 @@ function rt_get_next_dates( $date ){
  */
 
 function rt_create_all_resources_calender( $dates ){
-	global $rt_pm_project;
+	global $rt_pm_project,$rt_pm_task;
 	$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
 	$args = array(
 			'post_type' => $rt_pm_project->post_type,
@@ -136,14 +136,8 @@ function rt_create_all_resources_calender( $dates ){
 				
 				$table_html .= '<tr>';
 					foreach ( $dates as $key => $value ) {
-						$is_weekend = rt_isWeekend( $value);
-							if($is_weekend){
-								$weekend_class = "rt-weekend";
-							}else{
-								$weekend_class = "";
-							}
-					$table_html .= '<td style="height: 24px;" class="'.$weekend_class.'"></td>';
-				}
+						$table_html .= '<td style="height: 24px;"></td>';
+					}
 				$table_html .= '</tr>';
 				
 				// travel through all team members and print resources for each member
@@ -177,12 +171,14 @@ function rt_create_all_resources_calender( $dates ){
 									if(!empty($tasks_array)){
 										$table_html .= '<div class="rtpm-task-info-tooltip">';
 										foreach ( $tasks_array as $key => $task ) {
+											$progress = $rt_pm_task->rtpm_get_task_progress_percentage( $task->ID ) / 100;
 											$createtimestamp = rt_convert_strdate_to_usertimestamp( $task->post_date );
 											$createdate = $createtimestamp->format("M d, Y h:i A");
 											$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task->ID,'post_duedate',TRUE) );
 											$due_date = $due->format("M d, Y h:i A");
 											$table_html .= '<p><b>Task : </b><a href="?rt_task_id='.$task->ID.'">'.$task->post_title.'</a></p>';
 											$table_html .= '<p><b>Status : </b>'.$task->post_status.'</p>';
+											$table_html .= '<p><b>Progress : </b>'.$progress.' %</p>';
 											$table_html .= '<p><b>Start date : </b>'.$createdate.'</p>';
 											$table_html .= '<p><b>Due date : </b>'.$due_date.'</p>';
 										}
@@ -310,11 +306,17 @@ function rt_create_resources_calender( $dates ){
                       );
 		$wp_query = new WP_Query();
         $wp_query->query( $args );
+		
+		// print all dates in head
+		
 		$table_html = '<thead><tr>';
 					foreach ( $dates as $key => $value ) {
 					$table_html .= '<td>'.date_format(date_create($value),"d M").'</td>';
 					}
 		$table_html .= '</tr></thead><tbody>';
+		
+		// travel through all users
+		
 				while ( $wp_query->have_posts() ) : $wp_query->the_post(); 
                         $people = $wp_query->post;
 		$table_html .= '<tr>';
@@ -326,6 +328,9 @@ function rt_create_resources_calender( $dates ){
 						$weekend_class = "";
 					}
 		$table_html .= '<td class="'.$weekend_class.'">';
+		
+		// no data to show on weekend
+		
 					if( !$is_weekend ){
 						$tasks_array = rt_get_person_task($people->ID,$value);
 						$table_html .= '<div class="rtpm-show-tooltip">'.count($tasks_array);
@@ -404,6 +409,37 @@ function rt_get_task_by_project( $project_id ){
 	return $wp_query->posts;
 }
 
+add_action( 'wp_ajax_rtpm_validate_estimated_date', 'rtpm_validate_estimated_date_ajax' );
+add_action( 'wp_ajax_nopriv_rtpm_validate_estimated_date', 'rtpm_validate_estimated_date_ajax' );
+
+/**
+ *  Function to check if estimated hours are less than max working hours
+ */
+
+function rtpm_validate_estimated_date_ajax(){
+	
+	$start_date = $_POST['start_date'];
+	$end_date = $_POST['end_date'];
+	$est_time = $_POST['est_time'];
+	$project_id = $_POST['project_id'];
+	$max_working_hours = get_post_meta($project_id,'working_hours',true);
+	$first_date = date_create_from_format( 'M d, Y H:i A', $start_date );
+	$second_date = date_create_from_format( 'M d, Y H:i A', $end_date );
+	$diff = $second_date->diff($first_date);
+	$diff_hours = $diff->h;
+	
+	// hours between start date and end date
+	
+	$diff_hours = $diff_hours + ($diff->days*(int)$max_working_hours);
+
+	if( (int)$diff_hours < (int)$est_time ){
+		echo json_encode( array( 'fetched' => false,'diff'=>$diff_hours ) );
+	}else{
+		echo json_encode( array( 'fetched' => true ) );
+	}
+	die;
+}
+		
 /*
  * function to create a project_id => task list array
  */

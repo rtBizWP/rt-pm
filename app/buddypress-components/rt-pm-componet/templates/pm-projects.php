@@ -320,6 +320,8 @@
 									
 		?>
 <div class="rt-main-resources-container">
+	<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
+	<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
 	<div class="rt-left-container">
 		<table>
 			<thead>
@@ -422,8 +424,9 @@
 		// lets start with all projects
 		// $the_query contains all projects
 		if ( $the_query->have_posts() ) { ?>
-			
 			<div class="rt-main-resources-container rt-all-resources-container">
+				<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
+				<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
 				<div class="rt-left-container">
 					<table>
 						<thead>
@@ -525,13 +528,13 @@
 					wp_reset_postdata();
 		}
 	} else if( bp_is_current_action('my-tasks') ) {
-		
+		global $rt_pm_task;
+
 		$current_date = date("Y-m-d");
 		$dates = rt_get_next_dates( $current_date );
 		$project_array = rt_get_project_task_list();
 		// lets start with all projects
 		if ( !empty($project_array) ) { ?>
-			
 			<div class="rt-main-resources-container rt-my-tasks-container">
 				<div class="rt-left-container">
 					<table>
@@ -555,6 +558,7 @@
 						$createdate = $createtimestamp->format("M d, Y h:i A");
 						$due = rt_convert_strdate_to_usertimestamp( get_post_meta($task_data->ID,'post_duedate',TRUE) );
 						$due_date = $due->format("M d, Y h:i A");
+						$progress = $rt_pm_task->rtpm_get_task_progress_percentage( $task_data->ID ) / 100;
 						?>
 						<tr>
 							<td class="rt_project_tasks">
@@ -563,6 +567,7 @@
 							<div class="rtpm-task-info-tooltip">
 								<p><b>Task : </b><a href="?rt_task_id=<?php echo $task_data->ID ; ?>"><?php echo $task_data->post_title; ?></a></p>
 								<p><b>Status : </b><?php echo $task_data->post_status; ?></p>
+								<p><b>Progress : </b><?php echo $progress.' %'; ?></p>
 								<p><b>Start Date : </b><?php echo $createdate; ?></p>
 								<p><b>Due Date : </b><?php echo $due_date; ?></p>
 							</div>
