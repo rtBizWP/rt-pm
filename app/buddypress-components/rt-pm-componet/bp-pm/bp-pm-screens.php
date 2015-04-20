@@ -146,7 +146,7 @@ class Rtbp_Pm_Screens {
     }
 
 
-    public function bp_pm_ganttchart(){
+    public function bp_pm_ganttchart() {
         global $rt_pm_project_gantt, $rtpm_ganttchart ;
         $rtpm_ganttchart->rtgantt_enqueue_script_style();
         $rt_pm_project_gantt = Rt_PM_Project_Gantt ::factory();
@@ -157,6 +157,9 @@ class Rtbp_Pm_Screens {
         wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri().'/assets/css/contextMenu.css');
 
         wp_enqueue_script('rtpm-handleba-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true);
+
+        wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri().'/css/jquery.sidr.light.css',  array() );
+        wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri().'/assets/js/jquery.sidr.min.js', array('jquery') );
 
         add_action('bp_template_content', array( $this, 'load_project_ganttchart_template' ) );
     }

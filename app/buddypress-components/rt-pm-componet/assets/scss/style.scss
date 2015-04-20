@@ -1,5 +1,5 @@
 @charset "UTF-8";
-#item-body, .reveal-modal{
+div#rt-action-panel, #item-body, .reveal-modal{
   @import "rtp-foundation";
   @import "pm-custom";
   @import "pm-add";

@@ -17,7 +17,8 @@ class Rt_PM_Project_Gantt {
      *
      */
 
-    private $task_color_hash = '#32CD32';
+    private $child_task_color = '#32CD32';
+    private $parent_task_color = '#C0C0C0';
 
     public function __construct() {
 
@@ -30,8 +31,31 @@ class Rt_PM_Project_Gantt {
      */
     public function setup() {
 
+        add_action('wp_enqueue_scripts', array( $this, 'rtpm_ganttchart_load_style_script' ) );
+        add_action('buddyboss_after_header', array( $this, 'buddyboss_after_header_rt_wrapper' ) );
     }
 
+    /**
+     * Load script and stylesheets
+     */
+    public function rtpm_ganttchart_load_style_script() {
+
+        wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri().'/css/jquery.sidr.light.css',  array() );
+        wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri().'/assets/js/jquery.sidr.min.js', array('jquery') );
+
+        wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
+
+        wp_enqueue_script( 'rt-biz-wall-script', get_stylesheet_directory_uri().'/js/rt-biz-wall.min.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+
+        wp_localize_script('rt-biz-wall-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
+    }
+
+    /**
+     * Add div for sidr side panel
+     */
+    function buddyboss_after_header_rt_wrapper(){ ?>
+        <div id="rt-action-panel" class="sidr right"></div>
+    <?php }
 
     /**
      * Return singleton instance of class
@@ -92,9 +116,15 @@ class Rt_PM_Project_Gantt {
                 $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
+                //Set task color
+                if( ! empty( $parent_task ) )
+                    $task_color = $this->child_task_color;
+                else
+                    $task_color = $this->parent_task_color;
+
                 $progress_percentage = $rt_pm_task->rtpm_get_task_progress_percentage( $task->ID ) / 100;
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $this->task_color_hash, 'progress' => $progress_percentage  );
+                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $task_color, 'progress' => $progress_percentage  );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -143,7 +173,7 @@ class Rt_PM_Project_Gantt {
 
             var admin_url = '<?php echo admin_url('admin-ajax.php');  ?>';
 
-            //Add new taske
+            //Add new task
             gantt.attachEvent("onAfterTaskAdd", function( id, item ) {
 
                 var data = {
@@ -156,7 +186,12 @@ class Rt_PM_Project_Gantt {
                     estimated_hours:    item.estimated_hours,
                 };
 
-                gantt.getTask(id).color = '<?php echo $this->task_color_hash ?>';
+                //Set task color after adding
+                if( 0 === item.parent ) {
+                    gantt.getTask(id).color = '<?php echo $this->parent_task_color ?>';
+                }else {
+                    gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
+                }
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
 
@@ -242,12 +277,6 @@ class Rt_PM_Project_Gantt {
             });
 
 
-            //Update task link
-            gantt.attachEvent("onAfterLinkUpdate", function( id,item ) {
-                console.log(id);
-            });
-
-
             //Delete task link
             gantt.attachEvent("onAfterLinkDelete", function(id,item){
 
@@ -267,8 +296,8 @@ class Rt_PM_Project_Gantt {
             });
 
 
+            //Estimated hours field template
             gantt.locale.labels.section_estimated_hours = "Estimated hours";
-
             gantt.form_blocks["number"] = {
                 render:function( sns ){ //sns - the section's configuration object
 
@@ -288,6 +317,7 @@ class Rt_PM_Project_Gantt {
                 }
             };
 
+            //Show task detail on hover
             var request;
             gantt.attachEvent("onMouseMove", function(id,item) {
 
@@ -307,7 +337,7 @@ class Rt_PM_Project_Gantt {
                     post: data
                 };
 
-                if ('undefined' != typeof request) {
+                if ( 'undefined' != typeof request ) {
                     request.abort();
                     $('div.rtcontext-box').html('<strong>Loading...</strong>');
                 }
@@ -320,26 +350,65 @@ class Rt_PM_Project_Gantt {
 
             });
 
-            jQuery( document ).ready( function( $ ) {
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+            //Close side panel before open lightbox
+            gantt.attachEvent("onTaskCreated", function(task){
+                try{
+                    $.sidr('close', 'rt-action-panel');
+                } catch( err ){
+
+                }
+                return true;
             });
 
-            function rtcrm_get_postdata( post_date ) {
 
-                var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
-                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
+            //Open task edit side panel
+            gantt.attachEvent("onTaskSelected", function( id, item ) {
 
-            }
+                var task = gantt.getTask(id);
 
+                if ( task.$new )
+                    return false;
+
+                gantt.hideLightbox();
+
+                block_ui();
+
+                render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
+            });
+
+            jQuery( document ).ready( function( $ ) {
+
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+
+            });
+
+
+            /**
+             * Notify message after ajax action
+             * @param message
+             * @param type
+             */
             function rtcrm_gantt_notiy( message, type ) {
 
                 noty({
                     text: message,
                     layout: 'topRight',
                     type:  type || 'success',
-                    timeout: 'delay',
+                    timeout: 2000,
                     killer: true
                 });
+
+            }
+
+            /**
+             * Convert date into wp default date format(yyyy-mm-dd hh:mm:ss)
+             * @param post_date
+             * @returns {string}
+             */
+            function rtcrm_get_postdata( post_date ) {
+
+                var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
+                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
 
             }
         </script>
