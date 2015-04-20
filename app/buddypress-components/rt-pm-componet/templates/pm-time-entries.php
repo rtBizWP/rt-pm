@@ -20,8 +20,8 @@ if( current_user_can( $author_cap ) ){
     $user_edit = false;
 }
 
-
 $post_type=$_REQUEST['post_type'];
+$project_id = $_REQUEST["{$post_type}_id"];
 $task_post_type=$rt_pm_task->post_type;
 $timeentry_labels = $rt_pm_time_entries->labels;
 $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
@@ -99,7 +99,7 @@ if (isset($post->id)) {
             $btntitle = 'Add Time Entry';
         }
         ?>
-        <div class="row list-heading">
+        <div class="list-heading">
             <div class="large-8 columns list-title">
                 <h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
             </div>
@@ -127,7 +127,7 @@ if (isset($post->id)) {
     }
     ?>
 
-    <div id="rtpm_project_cost_report" class="row collapse">
+    <div id="rtpm_project_cost_report" class="row">
         <div class="large-3 columns">
             <strong><?php _e( 'Project Cost:'); ?></strong>
             <span><?php echo '$ '.$project_current_budget_cost; ?></span>
@@ -154,8 +154,7 @@ if (isset($post->id)) {
 </div>
 
 <!--reveal-modal-add-task -->
-<div id="div-add-time-entry" class="reveal-modal">
-    <fieldset>
+<div id="div-add-time-entry" class="reveal-modal medium" data-reveal>
 
         <form method="post" id="form-add-post" data-posttype="<?php echo $timeentry_post_type; ?>" action="<?php echo $form_ulr; ?>">
             <?php wp_nonce_field( 'rtpm_save_timeentry', 'rtpm_save_timeentry_nonce' ); ?>
@@ -163,19 +162,15 @@ if (isset($post->id)) {
             <?php if (isset($post->id) && $user_edit ) { ?>
                 <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->id; ?>" />
             <?php } ?>
-            <legend><h4><?php _e( 'Time Entry', RT_PM_TEXT_DOMAIN ); ?></h4></legend><hr />
+           <h4><?php _e( 'Time Entry', RT_PM_TEXT_DOMAIN ); ?></h4>
+            <br/>
             <div class="row collapse">
                 <div class="large-2 mobile-large-2 columns">
                     <label for="Task">Task<small class="required"> * </small></label>
                 </div>
                 <div class="large-10 mobile-large-6 columns">
                     <?php
-                    $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
-                    $rtpm_task_list->prepare_items();
-                    if( isset( $task_id ) )
-                        $rtpm_task_list->get_drop_down($task_id);
-                    else
-                        $rtpm_task_list->get_drop_down();
+                        $rt_pm_task->rtpm_tasks_dropdown( $project_id );
                     ?>
                 </div>
             </div>
@@ -242,6 +237,6 @@ if (isset($post->id)) {
             ?>
             <button class="mybutton right" type="submit" id="save-task"><?php _e( $btntitle ); ?></button>
         </form>
-    </fieldset>
-    <a class="close-reveal-modal">×</a>
+
+    <a class="close-reveal-modal">&#215;</a>
 </div>

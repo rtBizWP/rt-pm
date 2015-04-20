@@ -183,7 +183,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			$perpage = $this->get_items_per_page( rtpm_post_type_name( $this->labels['name'] ).'_per_page', 5 );
 
 			//Which page is this?
-			$paged = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+			$paged = ! empty( $_GET['paged'] ) ?  $_GET['paged'] : '';
 			//Page Number
 			if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) { $paged=1; }
 			//How many pages do we have in total?

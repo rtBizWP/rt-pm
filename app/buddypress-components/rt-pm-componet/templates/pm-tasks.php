@@ -116,8 +116,8 @@ $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
             $btntitle = 'Add Task';
         }
         ?>
-        <div class="row list-heading">
-            <div class="large-9 columns list-title">
+        <div class="list-heading">
+            <div class="large-9 columns">
                 <h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
             </div>
             <div class="large-3 columns">

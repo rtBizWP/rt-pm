@@ -27,7 +27,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
 
     <div class="row">
         <div class="small-10 columns">
-            <h2><?php _e('Time entry') ?></h2>
+            <h2><?php _e('Time entry', RT_PM_TEXT_DOMAIN) ?></h2>
         </div>
         <div class="small-2 columns">
             <a title="Close" class="right close-sidepanel"><i class="fa fa-caret-square-o-right fa-2x"></i></a>
