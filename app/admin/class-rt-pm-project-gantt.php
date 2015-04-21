@@ -408,8 +408,7 @@ class Rt_PM_Project_Gantt {
             function rtcrm_get_postdata( post_date ) {
 
                 var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
-                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
-
+                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' 00:00:00';
             }
         </script>
 
