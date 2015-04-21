@@ -43,6 +43,7 @@ jQuery(document).ready(function($) {
 		var right_table = $('#item-body .rt-right-container table').clone();
 		right_table.find('.rtpm-task-info-tooltip').remove();
 		var main_table = mergetwotables(left_table,right_table);
+		
 		doc.fromHTML(main_table.html(),10,10, {
                         //'width': 600,
                         'elementHandlers': specialElementHandlers

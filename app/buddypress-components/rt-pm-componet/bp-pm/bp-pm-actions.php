@@ -68,7 +68,7 @@ class Rtbp_Pm_Actions {
             wp_enqueue_style('foundation-icon-social-css', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/css/social_foundicons.css', false, "", 'all');
             wp_enqueue_style('foundation-icon-social-ie-css', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/css/social_foundicons_ie7.css', false, "", 'all');
             wp_enqueue_style('foundation.table-css', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/css/responsive-tables.css', false, '', 'all');
-            //wp_enqueue_style('rtpm-frontend-css', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/css/style.css', false, RT_PM_VERSION, 'all');
+            wp_enqueue_style('rtpm-frontend-css', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/css/style.css', false, RT_PM_VERSION, 'all');
 
             if( !wp_script_is('jquery-ui-autocomplete') ) {
                 wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.9.2',true);
