@@ -573,7 +573,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'post_title' => $newTask['post_title'],
 				'post_date' => $newTask['post_date'],
 				'post_date_gmt' => $newTask['post_date_gmt'],
-				'post_type' => $task_post_type
+				'post_type' => $task_post_type,
+				'post_parent' => $newTask['post_project_id'],
 			);
 
 			$updateFlag = false;
@@ -583,28 +584,28 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$post = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
 				$data = array(
 					'post_assignee' => $newTask['post_assignee'],
-					'post_project_id' => $newTask['post_project_id'],
 					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'post_duedate' => $newTask['post_duedate'],
 					'date_update' => current_time( 'mysql' ),
 					'date_update_gmt' => gmdate('Y-m-d H:i:s'),
 					'user_updated_by' => get_current_user_id(),
+					'rtpm_parent_task' => '0'
 				);
-				$post_id = @wp_update_post( $post );
+				$post_id = $this->rtpm_save_task_data( $post, $data );
 
 				$operation_type = 'update';
 			}else{
 				$data = array(
 					'post_assignee' => $newTask['post_assignee'],
-					'post_project_id' => $newTask['post_project_id'],
 					'post_duedate' => $newTask['post_duedate'],
 					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'date_update' => current_time( 'mysql' ),
 					'date_update_gmt' => gmdate('Y-m-d H:i:s'),
 					'user_updated_by' => get_current_user_id(),
 					'user_created_by' => get_current_user_id(),
+					'rtpm_parent_task' => '0'
 				);
-				$post_id = @wp_insert_post($post);
+				$post_id = $this->rtpm_save_task_data( $post, $data );
 
 				$_REQUEST["new"]=true;
 				$newTask['post_id']= $post_id;
@@ -612,9 +613,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			}
 
 			$rt_pm_project->connect_post_to_entity($task_post_type,$newTask['post_project_id'],$post_id);
-			foreach ( $data as $key=>$value ) {
-				update_post_meta( $post_id, $key, $value );
-			}
 
 			// link post to user
 			if( ! empty( $newTask['post_assignee'] ) ) {
@@ -703,29 +701,28 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_task_actions() {
 			global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model, $rt_pm_bp_pm;
 
-			$task_post_type = $rt_pm_task->post_type;
-
-
 			if( ! isset( $_REQUEST['post_type'] ) || $rt_pm_project->post_type !== $_REQUEST['post_type'])
 				return;
+
+			$task_post_type = $this->post_type;
 
 			$post_type=$_REQUEST['post_type'];
 
 			if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'trash' && isset( $_REQUEST[$task_post_type.'_id'] ) ) {
 
-				switch( $_REQUEST['action'] ){
+				$task_id = $_REQUEST[$task_post_type.'_id'];
+
+				switch( $_REQUEST['action'] ) {
 					case 'trash':
-						wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
-						$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $_REQUEST[$task_post_type.'_id'] ) );
+						$this->rtpm_trash_task( $task_id );
 						break;
 
 					case 'restore':
-						wp_untrash_post( $_REQUEST[$task_post_type.'_id'] );
+						$this->rtpm_untrash_task( $task_id );
 						break;
 
 					case 'delete':
-						wp_delete_post( $_REQUEST[$task_post_type.'_id'] );
-						$rt_pm_project->remove_connect_post_to_entity($task_post_type,$_REQUEST[$task_post_type.'_id']);
+						$this->rtpm_delete_task( $task_id );
 						break;
 				}
 
@@ -738,7 +735,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				wp_safe_redirect( $redirect_url );
 			}
-
 
 		}
 
@@ -868,7 +864,28 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$post_id = @wp_update_post( $args );
 			}else{
 				$post_id = @wp_insert_post( $args );
+
+				if( isset( $meta_data['rtpm_parent_task'] ) ) {
+					$parent_task_id = $meta_data['rtpm_parent_task'];
+					$child_task_count = get_post_meta( $parent_task_id, 'rtpm_child_task_count', true );
+
+					if( ! empty( $child_task_count ) ) {
+						$child_task_count = intval( $child_task_count ) + 1;
+						update_post_meta( $parent_task_id, 'rtpm_child_task_count', $child_task_count );
+					} else {
+
+						update_post_meta( $parent_task_id, 'rtpm_child_task_count', 1 );
+					}
+				}
+
+				$meta_data['rtpm_child_task_count'] = 0;
 			}
+
+			/**
+			 * Since phase 4
+			 */
+			if( isset( $args['post_parent'] ) )
+				$meta_data['post_project_id'] = $args['post_parent'];
 
 			//Save post meta data
             foreach ( $meta_data as $key => $value ) {
@@ -877,6 +894,56 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
             return $post_id;
         }
+
+		/**
+		 * Delete task by id
+		 * @param $task_id
+		 * @return array|bool|WP_Post
+		 */
+		public function rtpm_delete_task( $task_id ) {
+			global $rt_pm_project;
+
+			//Update child task count before delete task
+			$parent_task_id = get_post_meta( $task_id, 'rtpm_parent_task', true );
+			if( ! empty( $parent_task ) ) {
+				$child_task_count = get_post_meta( $parent_task_id, 'rtpm_child_task_count' );
+
+				if( ! empty( $child_task_count ) ) {
+					$child_task_count = intval( $child_task_count ) - 1;
+					update_post_meta( $parent_task_id, 'rtpm_child_task_count', $child_task_count );
+				}
+			}
+
+			$result = wp_delete_post( $task_id );
+			$rt_pm_project->remove_connect_post_to_entity( $this->post_type, $task_id );
+
+			return $result;
+		}
+
+		/**
+		 * Trash task by id
+		 * @param $task_id
+		 * @return array|bool
+		 */
+		public function rtpm_trash_task( $task_id ) {
+			global $rt_pm_time_entries_model;
+
+			$result = wp_trash_post( $task_id );
+			$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $task_id ) );
+
+			return $result;
+		}
+
+		/**
+		 * Untrash task by id
+		 * @param $task_id
+		 * @return bool|WP_Post
+		 */
+		public function rtpm_untrash_task( $task_id ) {
+
+			$result = wp_untrash_post( $task_id );
+			return $result;
+		}
 
 
 		/**
@@ -904,12 +971,15 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$meta_values = array(
 				'post_duedate' => $post['end_date'],
 				'rtpm_task_type' => $post['task_type'],
-				'rtpm_parent_task' => $post['parent_task'],
 				'post_estimated_hours' => $post['estimated_hours'],
 				'post_project_id' => $post['parent_project'],
 			);
 
-			$post_id = $rt_pm_task->rtpm_save_task_data( $args, $meta_values );
+			//Check for parent task id is set
+			if( '0' !== $post['parent_task'] )
+				$meta_values['rtpm_parent_task'] = $post['parent_task'];
+
+			$post_id = $this->rtpm_save_task_data( $args, $meta_values );
 
 			if( $post_id )
 				@wp_send_json_success( array( 'task_id' => $post_id ) );
@@ -1072,6 +1142,53 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			return 0;
 		}
+
+		/**
+		 * Get all sub task of projects
+		 * @param $project_id
+		 * @return array
+		 */
+		public function rtpm_get_timeentries_tasks( $project_id ) {
+
+			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
+			$args = array(
+					'post_parent' => $project_id,
+					'nppaging' => true,
+					'fields' => 'ids',
+					'post__in' =>  $task_ids,
+					'no_found_rows' => true,
+					'meta_query' => array(
+						array(
+							'key' => 'rtpm_child_task_count',
+							'value' => '0',
+							'compare' => '='
+						)
+					),
+				);
+
+			$results = $this->rtpm_get_task_data( $args );
+
+			return $results;
+		}
+
+		public function rtpm_tasks_dropdown( $project_id ) {
+
+			$tasks = $this->rtpm_get_timeentries_tasks( $project_id );
+
+			$output = "<select required='required' name='post[post_task_id]' id='task_id'>";
+
+			foreach( $tasks as $task ) {
+
+				$task_title = get_post_field( 'post_title', $task );
+				$output .= "<option value='$task'>$task_title</option>";
+			}
+
+			$output .= "<select>";
+
+			echo $output;
+		}
+
+
 	}
 
 }

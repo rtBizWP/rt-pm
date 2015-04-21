@@ -693,7 +693,7 @@ function pm_add_documents_section( $post_id ){ ?>
 									   </div>
 								   <?php }else{ ?>
 									   <div class="small-12 mobile-large-3 columns no-attachment-item">
-										   <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
+										   <?php delete_post_meta($post_id, '_rt_wp_pm_attachment_hash'); ?>
 										   Attachment Not found!
 									   </div>
 								   <?php } ?>
