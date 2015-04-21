@@ -536,6 +536,8 @@
 		// lets start with all projects
 		if ( !empty($project_array) ) { ?>
 			<div class="rt-main-resources-container rt-my-tasks-container">
+				<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
+				<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
 				<div class="rt-left-container">
 					<table>
 						<thead>

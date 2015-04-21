@@ -277,7 +277,7 @@
 			headers[i] = {
 				name : cell.textContent.toLowerCase().replace(/\s+/g, ''),
 				prompt : cell.textContent.replace(/\r?\n/g, ''),
-				width : (cell.clientWidth / table_with) * renderer.pdf.internal.pageSize.width + 10
+				width : (cell.clientWidth / table_with) * renderer.pdf.internal.pageSize.width + 45
 			};		
 			}else{
 			headers[i] = {
