@@ -35,15 +35,26 @@ class Rt_Pm_Project_Overview {
     public function setup() {
 
         add_action( 'wp_head', array( $this, 'rtpm_print_style' ) );
+        add_action( 'wp_ajax_rtpm_get_older_projects', array( $this, 'rtpm_get_older_projects') );
+
+        add_action( 'wp_enqueue_scripts', array( $this, 'rtpm_load_style_script' ) );
+    }
+
+    public function rtpm_load_style_script() {
+
+        wp_enqueue_style( 'rtpm-grid-style', get_stylesheet_directory_uri().'/css/style.css' );
     }
 
     /**
      * Render all grids for project overview
      * @param $project_data
      */
-    public function rtpm_render_project_grid( $project_data ) {
+    public function rtpm_render_project_grid() {
         global $rt_pm_project, $rt_pm_task, $rt_pm_bp_pm;
         ?>
+        <ul id="activity-stream" class="activity-list item-list" >
+            <?php $max_num_pages = $this->rtpm_project_block_list( 1 ); ?>
+        </ul>
 
         <script id="task-list-template" type="text/x-handlebars-template">
             <h2>{{assignee_name}}'s Tasks</h2>
@@ -55,6 +66,7 @@ class Rt_Pm_Project_Overview {
         </script>
 
         <script>
+            var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
             jQuery(document).ready(function($) {
 
                 $('a.rtcontext-taskbox').contextMenu('div.rtcontext-box');
@@ -62,14 +74,54 @@ class Rt_Pm_Project_Overview {
                 var source   = $('#task-list-template').html();
                 var template = Handlebars.compile(source);
 
-                $('a.rtcontext-taskbox').click(function(event) {
+
+                $('#rtpm-loadmore').on('click', function(e) {
+
+                    $button = $(this);
+
+                    var page = parseInt( $button.data('page') );
+
+                    var total_page = parseInt( $button.data('max-pages') );
+
+                    var post = { 'page' : page };
+
+                    var senddata = { 'action': 'rtpm_get_older_projects', 'post' : post };
+
+                    $.post( ajax_adminurl, senddata, function( response ) {
+
+                        if( response.success ) {
+                            var data = response.data;
+
+                            $('#activity-stream').append( response.data.content );
+
+                            rt_reports_draw_charts();
+
+                            init_masonary_container();
+
+                            bol_masonry_reload();
+
+                            if( total_page <= page ) {
+                                $button.hide();
+                            } else {
+                                $button.data( 'page', page+1 );
+                            }
+
+                            $('a.rtcontext-taskbox').contextMenu('refresh');
+                            $('a.rtcontext-taskbox').contextMenu('popup');
+                            $('a.rtcontext-taskbox').contextMenu('update');
+                        }
+                    });
+                });
+
+                $('a.rtcontext-taskbox').on('click', function(event) {
+
+                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
                     event.stopPropagation();
                     var post = {};
                     var data = {};
                     post.author_id = $(this).data('team-member-id');
                     data.action = 'rtpm_get_user_tasks'
                     data.post = post;
-                    var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
 
                     $.post( ajax_adminurl, data, function( res ){
 
@@ -80,111 +132,154 @@ class Rt_Pm_Project_Overview {
                 });
             });
         </script>
-        <ul id="activity-stream" class="activity-list item-list">
-            <?php
-            if( ! empty( $project_data ) ) {
 
-                //Masonry container fix
-                if (count( $project_data ) <= 1)
-                    wp_localize_script('rt-biz-admin', 'NOT_INIT_MASONRY', 'false');
+        <input type="button" class="load-more activity-item" value="Load More" id="rtpm-loadmore" data-page="2" data-max-pages="<?php echo $max_num_pages?>"/>
+        <div class="rtcontext-box iw-contextMenu" style="display: none;">
+            <strong>Loading...</strong>
+        </div>
+    <?php }
 
-                foreach( $project_data as $project ):
+    public function rtpm_project_block_list( $page ) {
+        global $rt_pm_project, $rt_pm_task;
 
-                    $project_edit_link = rtpm_bp_get_project_details_url( $project->ID );
+        $displayed_user_id = bp_displayed_user_id();
 
-                    ?>
+        $admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
 
-                    <li class="activity-item">
-                        <div class="activity-content">
-                            <div class="row activity-inner rt-biz-activity">
-                                <div class="rt-voxxi-content-box">
-                                        <p><strong>Project Name: </strong><a href="<?php echo $project_edit_link ?>" target="_blank"><?php echo $project->post_title; ?></a></p>
-                                        <p><strong>Create date: </strong><?php echo mysql2date( 'd M Y', $project->post_date ) ?></p>
-                                        <p><strong>Due date: </strong><?php echo mysql2date( 'd M Y', get_post_meta( $project->ID, 'post_duedate', true ) ); ?></p>
-                                        <p><strong>Post status: </strong><?php echo $project->post_status; ?></p>
-                                </div>
+        $args = array(
+            'paged' => $page,
+            'post_type' => $rt_pm_project->post_type,
+            'posts_per_page' => 1,
+        );
 
-                                <div class="row post-detail-comment column-title">
-                                    <div class="column small-12">
-                                        <p>
-                                           <?php echo rtbiz_read_more( $project->post_content ); ?>
-                                        </p>
-                                    </div>
-                                </div>
+        if (  ! current_user_can( $admin_cap ) ) {
 
-                                <div class="row column-title">
-                                    <div class="small-6 columns">
-                                        <table class="no-outer-border">
-                                            <tr class="orange-text">
-                                                <td><strong class="right"><?php _e( 'Over Due', RT_PM_TEXT_DOMAIN ) ?></strong></td>
-                                                <td><strong class="left"><?php echo $overdue_task = $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?></strong></td>
-                                            </tr>
-                                            <tr class="blue-text">
-                                                <td><strong class="right"><?php _e( 'Open', RT_PM_TEXT_DOMAIN ) ?></strong></td>
-                                                <td><strong class="left"><?php  echo $open_task = $rt_pm_task->rtpm_open_task_count( $project->ID ) ?></strong></td>
-                                            </tr>
-                                            <tr class="green-text">
-                                                <td><strong class="right"><?php _e( 'Completed', RT_PM_TEXT_DOMAIN ) ?></strong></td>
-                                                <td><strong class="left"><?php  echo $completed_task = $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?></strong></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="small-6 columns" style="  position: absolute;left: 60%;">
-                                        <div class="number-circle">
-                                            <div class="height_fix"></div>
-                                            <div class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?>%</div>
-                                        </div>
-                                    </div>
-                                </div>
+            $projects = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
+            $args['post__in'] = ( ! empty( $projects ) ) ? $projects : array('0');
+        }
 
-                                <?php $this->rtpm_prepare_task_chart( $project->ID ) ?>
+        $query = new WP_Query( $args );
+        $project_data = $query->posts;
 
-                                <div class="row rt-pm-team">
-                                    <div class="column small-3 bdm-column">
-                                        <strong>BDM</strong>
-                                        <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true);
-                                            if( ! empty( $bdm ) ){ ?>
-                                                <a data-team-member-id="<?php echo $bdm; ?>" class="rtcontext-taskbox">
-                                                    <?php echo get_avatar( $bdm , 16 ) ; ?>
-                                                </a>
-                                           <?php } ?>
-                                    </div>
-                                    <div class="column small-9 team-column" style="float: left;">
-                                        <strong class="team-title">Team</strong>
-                                        <div class="row team-member">
-                                            <?php $team_member = get_post_meta($project->ID, "project_member", true);
+        if(  empty( $project_data ) )
+            return;
 
-                                            if( !empty( $team_member ) ) {
+        //Masonry container fix
+        if (count( $project_data ) <= 1)
+            wp_localize_script('rt-biz-admin', 'NOT_INIT_MASONRY', 'false');
 
-                                                foreach ( $team_member as $member ) {
+        foreach( $project_data as $project ):
+            $project_edit_link = rtpm_bp_get_project_details_url( $project->ID );
+            ?>
+            <li class="activity-item">
+                <div class="activity-content">
+                    <div class="row activity-inner rt-biz-activity">
+                        <div class="rt-voxxi-content-box">
+                            <p><strong>Project Name: </strong><a href="<?php echo $project_edit_link ?>" target="_blank"><?php echo $project->post_title; ?></a></p>
+                            <p><strong>Create date: </strong><?php echo mysql2date( 'd M Y', $project->post_date ) ?></p>
+                            <p><strong>Due date: </strong><?php echo mysql2date( 'd M Y', get_post_meta( $project->ID, 'post_duedate', true ) ); ?></p>
+                            <p><strong>Post status: </strong><?php echo $project->post_status; ?></p>
+                        </div>
 
-                                                    if( empty( $member ) )
-                                                        continue;
-                                                    ?>
-                                                    <div class="columns small-3">
-                                                        <a data-team-member-id="<?php echo $member; ?>" class="rtcontext-taskbox">
-                                                            <?php echo get_avatar( $member ) ; ?>
-                                                        </a>
-                                                    </div>
-                                                <?php }
+                        <div class="row post-detail-comment column-title">
+                            <div class="column small-12">
+                                <p>
+                                    <?php echo rtbiz_read_more( $project->post_content ); ?>
+                                </p>
+                            </div>
+                        </div>
 
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
+                        <div class="row column-title">
+                            <div class="small-6 columns">
+                                <table class="no-outer-border">
+                                    <tr class="orange-text">
+                                        <td><strong class="right"><?php _e( 'Over Due', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                        <td><strong class="left"><?php echo $overdue_task = $rt_pm_task->rtpm_overdue_task_count( $project->ID ) ?></strong></td>
+                                    </tr>
+                                    <tr class="blue-text">
+                                        <td><strong class="right"><?php _e( 'Open', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                        <td><strong class="left"><?php  echo $open_task = $rt_pm_task->rtpm_open_task_count( $project->ID ) ?></strong></td>
+                                    </tr>
+                                    <tr class="green-text">
+                                        <td><strong class="right"><?php _e( 'Completed', RT_PM_TEXT_DOMAIN ) ?></strong></td>
+                                        <td><strong class="left"><?php  echo $completed_task = $rt_pm_task->rtpm_completed_task_count( $project->ID ) ?></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="small-6 columns" style="  position: absolute;left: 60%;">
+                                <div class="number-circle">
+                                    <div class="height_fix"></div>
+                                    <div class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?>%</div>
                                 </div>
                             </div>
                         </div>
-                    </li>
-                <?php endforeach;
-            } ?>
-        </ul>
 
-        <div class="rtcontext-box iw-contextMenu" style="display: none;">
-        </div>
+                        <?php $this->rtpm_prepare_task_chart( $project->ID ) ?>
 
+                        <div class="row rt-pm-team">
+                            <div class="column small-3 bdm-column">
+                                <strong>BDM</strong>
+                                <?php $bdm =  get_post_meta( $project->ID, 'business_manager', true);
+                                if( ! empty( $bdm ) ){ ?>
+                                    <a data-team-member-id="<?php echo $bdm; ?>" class="rtcontext-taskbox">
+                                        <?php echo get_avatar( $bdm , 16 ) ; ?>
+                                    </a>
+                                <?php } ?>
+                            </div>
+                            <div class="column small-9 team-column" style="float: left;">
+                                <strong class="team-title">Team</strong>
+                                <div class="row team-member">
+                                    <?php $team_member = get_post_meta($project->ID, "project_member", true);
 
-    <?php }
+                                    if( !empty( $team_member ) ) {
+
+                                        foreach ( $team_member as $member ) {
+
+                                            if( empty( $member ) )
+                                                continue;
+                                            ?>
+                                            <div class="columns small-3">
+                                                <a data-team-member-id="<?php echo $member; ?>" class="rtcontext-taskbox">
+                                                    <?php echo get_avatar( $member ) ; ?>
+                                                </a>
+                                            </div>
+                                        <?php }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        <?php endforeach;
+        return $query->max_num_pages;
+    }
+
+    public function rtpm_get_older_projects() {
+
+        if( ! isset( $_POST['post'] ) )
+            wp_send_json_error();
+
+        $data = $_POST['post'];
+
+        ob_start();
+
+        if( isset( $data['page'] ) )
+            $this->rtpm_project_block_list( $data['page'] );
+
+        $this->rtpm_render_project_charts();
+
+        $html_content = ob_get_contents();
+        ob_end_clean();
+
+        $send_data = array(
+            'content' => $html_content,
+        );
+
+        wp_send_json_success( $send_data );
+
+    }
 
 
     /**
