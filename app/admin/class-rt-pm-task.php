@@ -1207,7 +1207,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$tasks = $this->rtpm_get_task_subtasks( $task_id );
 
-			if( empty( $sub_tasks ) ) {
+			if( empty( $tasks ) ) {
 
 				$tasks = array( $task_id );
 			}
@@ -1305,7 +1305,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$args = array(
 				'nopaging' => true,
-				'p' => $task_id,
 				'post_status' => $post_status,
 				'no_found_rows' => true,
 				'fields' => 'ids',
