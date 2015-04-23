@@ -991,6 +991,34 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             ));
                         }
                         ?>
+
+                        <div class="row collaspse postbox">
+                            <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>
+                            <div class="inside resources-list">
+
+                                <div class="row parent-row">
+                                    <div class="small-3 medium-3 columns">
+                                        <input type="text" class="search-contact" />
+                                        <input type="hidden" class="contact-wp-user-id" name="post[assignee_id][]" />
+                                    </div>
+
+                                    <div class="small-1 medium-1 columns">
+                                        <input type="number" step=".25" min="0" name="post[time_duration][]" />
+                                    </div>
+
+                                    <div class="small-3 medium-3 columns">
+
+                                        <input type="text" class="datetimepicker" name="post[timestamp][]">
+                                    </div>
+
+                                    <div class="small-2 columns left">
+                                        <a class="add-multiple button"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                         <div class="row collapse postbox">
                             <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
                             <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>

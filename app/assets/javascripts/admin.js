@@ -206,7 +206,78 @@ jQuery(document).ready(function($) {
             $(this).datepicker("setDate",new Date($(this).attr("title")));
         }
     });
-    
+
+    $(document).on('click', 'a.add-multiple', function(e){
+
+        $input = $(this).parents('div.parent-row').find('input');
+
+        var $emptyFields = $input.filter(function() {
+            // remove the $.trim if whitespace is counted as filled
+            return $.trim(this.value) === "";
+        });
+
+        if ( $emptyFields.length )
+            return false;
+
+
+        $element = $(this).parents('div.parent-row').clone();
+
+        $element.find('a').removeClass('add-multiple').addClass('delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
+
+
+        $parent = $(this).parents('div.resources-list').append( $element );
+
+        $input.val('');
+
+    });
+
+    try {
+        if ('undefined' != typeof jQuery('input.search-contact')) {
+
+            jQuery("input.search-contact").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: ajaxurl,
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            action: "rtcrm_search_contact",
+                            query: request.term,
+                            post_type: ''
+                        },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    id: item.id,
+                                    imghtml: item.imghtml,
+                                    label: item.label,
+                                    url: item.url
+                                }
+                            }));
+                        }
+                    });
+                }, minLength: 2,
+                select: function (event, ui) {
+                    jQuery( this ).val( ui.item.label );
+                    jQuery( this ).siblings('input.contact-wp-user-id').val( ui.item.id );
+                    return false;
+
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-subscribe-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
+            };
+        }
+    } catch(e) {
+
+    }
+
+
+// Remove occassion from list
+    $( document ).on( 'click', "a.delete-multiple", function( e ) {
+        $(this).parents('div.parent-row').remove();
+    } );
+
+
     $(".datepicker-toggle").click(function(e) {
         $(this).parent("div").prev().find(".hasDatepicker").click();
         $(this).parent("div").prev().find(".hasDatepicker").datepicker("show");
@@ -460,8 +531,9 @@ jQuery(document).ready(function($) {
             }
         });
     });
-    
-    });
 
+
+
+});
 
 
