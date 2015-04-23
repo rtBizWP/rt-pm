@@ -4,7 +4,7 @@
   	Plugin Name: Voxxi Plus Projects
 	Plugin URI: http://voxxi.me
 	Description: Part of the Voxxi Business
-	Version: 0.0.4
+	Version: 0.0.5
 	Author: Voxxi
 	Author URI: http://voxxi.me
 	License: GPL
