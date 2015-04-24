@@ -611,6 +611,51 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+
+    try {
+        if ('undefined' != typeof jQuery('input.search-contact')) {
+
+            jQuery("input.search-contact").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: ajaxurl,
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            action: "rtbiz_search_person",
+                            query: request.term,
+                        },
+                        success: function (response_data) {
+                            if( response_data.success ) {
+
+                                response($.map(response_data.data, function (item) {
+                                    return {
+                                        id: item.contact_wp_user_id,
+                                        label: item.contact_display_name,
+                                        imghtml: item.contact_imghtml,
+                                    }
+                                }));
+                            }
+
+                        }
+                    });
+                }, minLength: 2,
+                select: function (event, ui) {
+                    jQuery( this ).val( ui.item.label );
+                    jQuery( this ).siblings('input.contact-wp-user-id').val( ui.item.id );
+                    return false;
+
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-subscribe-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
+            };
+        }
+    } catch(e) {
+
+    }
+
+
     $(document).on("click",".add-time-entry",function(e){
         $("#div-add-time-entry").reveal({
             opened: function(){
@@ -881,10 +926,14 @@ jQuery(document).ready(function($) {
     });
 
     // Add multiple occasion button
-    $('a.add-multiple').click(function(){
+    $( document ).on('click', 'a.add-multiple', function( e ) {
 
-        $input = $(this).parents('div.collapse').find('input');
 
+        $main_div =  $(this).parents('div.collapse');
+
+        $input = $main_div.find('input');
+
+       // console.log( $(this).parents('div.collapse').html() );
         var $emptyFields = $input.filter(function() {
             // remove the $.trim if whitespace is counted as filled
             return $.trim(this.value) === "";
@@ -893,21 +942,18 @@ jQuery(document).ready(function($) {
         if ( $emptyFields.length )
             return false;
 
-
-        $element = $(this).parents('div.collapse').clone();
+        $element = $main_div.clone();
 
         $element.find('a').removeClass('add-multiple').addClass('delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
-
 
         $parent = $(this).parents('div.main').append( $element );
 
         $input.val('');
-
     });
 
     // Remove occassion from list
-    $( document ).on( 'click', "a.delete-multiple", function( e ) {
-        $(this).parents('.collapse').remove();
+    $( document ).on( 'click', 'a.delete-multiple',function( e ) {
+        $(this).parents('div.collapse').remove();
     } );
 
     // Attachment section js end

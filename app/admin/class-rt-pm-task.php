@@ -718,6 +718,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					delete_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
 				}
 			}
+
+			$this->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
+
 			do_action( 'save_task', $newTask['post_id'], $operation_type );
 
 			//Add success message
@@ -1332,9 +1335,63 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $wpdb->get_var( $query );
 		}
 
+		/**
+		 * Save resource data
+		 * @param $task_id
+		 * @param $project_id
+		 * @param $post_data
+		 */
+		public function rtpm_save_task_resources( $task_id, $project_id, $post_data ) {
+			global $rt_pm_task_resources_model;
+
+			$where = array(
+				'task_id' => $task_id,
+				'project_id' => $project_id,
+			);
+
+			$rt_pm_task_resources_model->rtpm_delete_task_resources( $where );
 
 
+			foreach( $post_data['resource_wp_user_id'] as $key => $value ) {
 
+				if( empty( $post_data['resource_wp_user_id'] ) ||
+				    empty( $post_data['resource_wp_user_id'][$key] ) ||
+				    empty( $post_data['time_duration'][$key] )
+				)
+					continue;
+
+				$dr = date_create_from_format( 'M d, Y H:i A', $post_data['timestamp'][$key] );
+
+				$insert_rows = array(
+					'project_id' => $project_id,
+					'task_id' => $task_id,
+					'user_id' => $post_data['resource_wp_user_id'][$key],
+					'time_duration' => $post_data['time_duration'][$key],
+					'timestamp' => $dr->format('Y-m-d H:i:s'),
+				);
+
+				$rt_pm_task_resources_model->rtpm_add_task_resources( $insert_rows );
+			}
+		}
+
+
+		/**
+		 * Get all reources in task
+		 * @param $task_is
+		 * @param $project_id
+		 *
+		 * @return mixed
+		 */
+		public function rtpm_get_task_resources( $task_is, $project_id ) {
+			global $rt_pm_task_resources_model;
+
+			$where = array(
+				'task_id' => $task_is,
+				'project_id' =>$project_id,
+			);
+
+			return $rt_pm_task_resources_model->get( $where );
+		}
 	}
 
 }

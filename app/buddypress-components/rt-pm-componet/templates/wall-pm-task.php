@@ -201,6 +201,64 @@ $task_labels=$rt_pm_task->labels;
         </div>
     </div>
 
+    <div class="row">
+        <span title="Resources"><label><?php _e('Resources') ?></label></span>
+        <div class="main">
+            <div class="row collapse">
+                <div class="small-4 medium-4 column">
+                    <input type="text" class="search-contact" />
+                    <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
+                </div>
+
+                <div class="small-3 medium-3 columns">
+                    <input type="number" step=".25" min="0" name="post[time_duration][]" />
+                </div>
+
+                <div class="small-4 medium-4 columns">
+
+                    <input type="text" class="datetimepicker" name="post[timestamp][]">
+                </div>
+
+                <div class="small-1 columns">
+                    <a class="add-multiple button"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+            <?php
+
+            $task_resources = array();
+            if( isset( $post->ID ) ) {
+                $task_resources = $rt_pm_task->rtpm_get_task_resources( $post->ID, $post_project_id );
+            }
+
+            foreach( $task_resources as  $resource ) {
+
+                $dr = rt_convert_strdate_to_usertimestamp( $resource->timestamp )
+                ?>
+                <div class="row collapse">
+                    <div class="small-4 medium-4 columns">
+                        <input type="text" class="search-contact" value="<?php echo rt_get_user_displayname( $resource->user_id ) ?>"/>
+                        <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
+                    </div>
+
+                    <div class="small-3 medium-3 columns">
+                        <input type="number" va step=".25" min="0" name="post[time_duration][]" value="<?php echo $resource->time_duration ?>" />
+                    </div>
+
+                    <div class="small-4 medium-4 columns">
+
+                        <input type="text" class="datetimepicker" name="post[timestamp][]" value="<?php echo $dr->format('M d, Y h:i A'); ?>">
+                    </div>
+
+                    <div class="small-1 columns">
+                        <a class="delete-multiple button"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+            <?php }
+            ?>
+        </div>
+    </div>
+
+
     <?php   
 	
 	if( isset( $post_id ) ){ ?>

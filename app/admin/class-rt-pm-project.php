@@ -982,15 +982,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="postfix"><label class="foundicon-clock"></label></span>
                             </div>
                         </div>
-                        <?php $attachments = array();
-                        if ( isset( $post->ID ) ) {
-                            $attachments = get_posts( array(
-                                'posts_per_page' => -1,
-                                'post_parent' => $post->ID,
-                                'post_type' => 'attachment',
-                            ));
-                        }
-                        ?>
+
 
                         <div class="row collaspse postbox">
                             <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>
@@ -999,7 +991,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <div class="row parent-row">
                                     <div class="small-3 medium-3 columns">
                                         <input type="text" class="search-contact" />
-                                        <input type="hidden" class="contact-wp-user-id" name="post[assignee_id][]" />
+                                        <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
                                     </div>
 
                                     <div class="small-1 medium-1 columns">
@@ -1015,10 +1007,50 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         <a class="add-multiple button"><i class="fa fa-plus"></i></a>
                                     </div>
                                 </div>
+                                <?php
 
+                                $task_resources = array();
+                                if( isset( $post->ID ) ) {
+                                    $task_resources = $rt_pm_task->rtpm_get_task_resources( $post->ID, $_REQUEST["{$post_type}_id"] );
+                                }
+
+                                foreach( $task_resources as  $resource ) {
+
+                                    $dr = rt_convert_strdate_to_usertimestamp( $resource->timestamp )
+                                    ?>
+                                    <div class="row parent-row">
+                                        <div class="small-3 medium-3 columns">
+                                            <input type="text" class="search-contact" value="<?php echo rt_get_user_displayname( $resource->user_id ) ?>"/>
+                                            <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
+                                        </div>
+
+                                        <div class="small-1 medium-1 columns">
+                                            <input type="number" va step=".25" min="0" name="post[time_duration][]" value="<?php echo $resource->time_duration ?>" />
+                                        </div>
+
+                                        <div class="small-3 medium-3 columns">
+
+                                            <input type="text" class="datetimepicker" name="post[timestamp][]" value="<?php echo $dr->format('M d, Y h:i A'); ?>">
+                                        </div>
+
+                                        <div class="small-2 columns left">
+                                            <a class="delete-multiple button"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                <?php }
+                                ?>
                             </div>
                         </div>
 
+                        <?php $attachments = array();
+                        if ( isset( $post->ID ) ) {
+                            $attachments = get_posts( array(
+                                'posts_per_page' => -1,
+                                'post_parent' => $post->ID,
+                                'post_type' => 'attachment',
+                            ));
+                        }
+                        ?>
                         <div class="row collapse postbox">
                             <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
                             <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>

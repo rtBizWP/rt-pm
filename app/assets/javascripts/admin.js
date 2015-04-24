@@ -241,19 +241,21 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         type: 'post',
                         data: {
-                            action: "rtcrm_search_contact",
+                            action: "rtbiz_search_person",
                             query: request.term,
-                            post_type: ''
                         },
-                        success: function (data) {
-                            response($.map(data, function (item) {
-                                return {
-                                    id: item.id,
-                                    imghtml: item.imghtml,
-                                    label: item.label,
-                                    url: item.url
-                                }
-                            }));
+                        success: function (response_data) {
+                            if( response_data.success ) {
+
+                                response($.map(response_data.data, function (item) {
+                                    return {
+                                        id: item.contact_wp_user_id,
+                                        label: item.contact_display_name,
+                                        imghtml: item.contact_imghtml,
+                                    }
+                                }));
+                            }
+
                         }
                     });
                 }, minLength: 2,
@@ -324,29 +326,29 @@ jQuery(document).ready(function($) {
 				
 				// check if estimated hours are correct
 				
-				jQuery.ajax({
-					type: 'POST',
-					dataType: 'json',
-					url: ajaxurl,
-					async: false,
-					data: {
-						'action': 'rtpm_validate_estimated_date',
-						'start_date': $("#create_rt_task_date").val(),
-						'end_date': $("#due_rt_task_date").val(),
-						'est_time' : $('input[name="post[post_estimated_hours]"]').val(),
-						'project_id': $('#project_id').val(),
-					},
-					success: function (data) {
-						if (data.fetched) {
-						   
-						} else {
-							var hours_element = $('input[name="post[post_estimated_hours]"]');
-							addError(hours_element, "Please Enter valid Time");
-							e.preventDefault();
-						}
-					}
-
-				});
+				//jQuery.ajax({
+				//	type: 'POST',
+				//	dataType: 'json',
+				//	url: ajaxurl,
+				//	async: false,
+				//	data: {
+				//		'action': 'rtpm_validate_estimated_date',
+				//		'start_date': $("#create_rt_task_date").val(),
+				//		'end_date': $("#due_rt_task_date").val(),
+				//		'est_time' : $('input[name="post[post_estimated_hours]"]').val(),
+				//		'project_id': $('#project_id').val(),
+				//	},
+				//	success: function (data) {
+				//		if (data.fetched) {
+				//
+				//		} else {
+				//			var hours_element = $('input[name="post[post_estimated_hours]"]');
+				//			addError(hours_element, "Please Enter valid Time");
+				//			e.preventDefault();
+				//		}
+				//	}
+                //
+				//});
 				
                 
                 removeError(eleDueDate);

@@ -49,7 +49,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		parent::update( $data, $where );
 	}
 
-	public function rtpm_delete_task_resources( $where ){
+	public function rtpm_delete_task_resources( $where ) {
 		parent::delete( $where );
 	}
 }
