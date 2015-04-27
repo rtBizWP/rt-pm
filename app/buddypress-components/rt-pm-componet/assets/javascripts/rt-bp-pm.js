@@ -928,8 +928,7 @@ jQuery(document).ready(function($) {
     // Add multiple occasion button
     $( document ).on('click', 'a.add-multiple', function( e ) {
 
-
-        $main_div =  $(this).parents('div.collapse');
+        $main_div =  $(this).parents('div.rt-row');
 
         $input = $main_div.find('input');
 
@@ -946,15 +945,15 @@ jQuery(document).ready(function($) {
 
         $element.find('a').removeClass('add-multiple').addClass('delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
 
-        $parent = $(this).parents('div.main').append( $element );
+        $parent = $(this).parents('div.rt-parent-row').append( $element );
 
         $input.val('');
     });
 
     // Remove occassion from list
     $( document ).on( 'click', 'a.delete-multiple',function( e ) {
-        $(this).parents('div.collapse').remove();
-    } );
+        $(this).parents('div.rt-row').remove();
+    });
 
     // Attachment section js end
 	

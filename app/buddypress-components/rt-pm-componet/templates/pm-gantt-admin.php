@@ -77,7 +77,7 @@ if( isset( $project_working_days['occasions'] )  )
         </div>
     </div>
 
-    <div class="row main">
+    <div class="row rt-parent-row">
         <div class="row collapse">
             <div class="small-8 medium-4 columns">
                 <label><?php _e( 'Occasion', RT_PM_TEXT_DOMAIN ) ?> <span class="required">*</span></label>
@@ -87,7 +87,7 @@ if( isset( $project_working_days['occasions'] )  )
                 <label><?php _e( 'Date', RT_PM_TEXT_DOMAIN ) ?> <span class="required">*</span></label>
             </div>
         </div>
-        <div class="row collapse">
+        <div class="row rt-row">
             <div class="small-6 medium-4 columns">
 
                 <input type="text" name="post[occasion_name][]">
@@ -107,7 +107,7 @@ if( isset( $project_working_days['occasions'] )  )
             foreach( $occasions as  $occasion ){
                 ?>
 
-                <div class="row collapse">
+                <div class="row rt-row">
                     <div class="small-6 medium-4 columns">
 
                         <input type="text" name="post[occasion_name][]" value=<?php _e( $occasion['name'], RT_PM_TEXT_DOMAIN ) ?>>
