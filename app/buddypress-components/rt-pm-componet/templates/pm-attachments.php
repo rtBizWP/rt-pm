@@ -132,77 +132,8 @@ $form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id
     </div>
 
     <div id="attachment-search-row" class="row collapse postbox">
-        <!--<form id ="attachment-search" method="post" action="<?php echo $form_ulr; ?>">
-					   		<div class="row list-heading">
-					   			<div class="large-4 columns">
-                    				<?php _e('Attachments'); ?>
-                				</div>
-                				<div class="large-8 columns">
-                    				<button class="right mybutton" type="submit" ><?php _e('Search'); ?></button>
-                    				<?php
-        if ( isset( $_REQUEST['attachment_tag'] ) ) {
-            wp_dropdown_categories('taxonomy=attachment_tag&hide_empty=0&orderby=name&name=attachment_tag&show_option_none=Select Media tag&selected='.$_REQUEST['attachment_tag']);
-        }
-        ?>
-                				</div>
-                    		</div>
-					   </form></h6>-->
-        <input type='hidden' id='post-id' name='post[rt_project_id]' value=<?php echo $projectid; ?>>
-        <?php pm_add_documents_section( $projectid ); ?>
-        <!--<div class="inside">
-					   <div class="row collapse" id="attachment-container">
-
-						   <div class="scroll-height">
-							   <?php if ( $attachments ){ ?>
-								   <?php foreach ($attachments as $attachment) { ?>
-									   <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1];
-            if ( get_post_meta( $attachment->ID, '_wp_attached_external_file', true) == 1){
-                $extn ='unknown';
-            }
-            ?>
-									   <div class="large-12 mobile-large-3 columns attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
-										   <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
-											   <img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" />
-											   <?php echo $attachment->post_title; ?>
-										   </a>
-										   <?php $taxonomies=get_attachment_taxonomies($attachment);
-            $taxonomies=get_the_terms($attachment,$taxonomies[0]);
-            $term_html = '';
-            if ( isset( $taxonomies ) && !empty( $taxonomies ) ){?>
-											   <div style="display:inline-flex;margin-left: 20px;" class="attachment-meta">[&nbsp;
-												   <?php foreach( $taxonomies as $taxonomy){
-                if ( !empty($term_html) ){
-                    $term_html.=',&nbsp;';
-                }
-                $term_html .= '<a href="'.$rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='.$post_type.'&'.$post_type.'_id='.$_REQUEST["{$post_type}_id"].'&tab='.$post_type.'-files&attachment_tag='.$taxonomy->term_id.'"'.'" title="'. $taxonomy->name .'" >'.$taxonomy->name.'</a>';
-            }
-                echo $term_html;?>&nbsp;]
-
-											   </div>
-										   <?php } ?>
-										   <?php if( $user_edit ) { ?>
-											   <a href="#" data-attachmentid="<?php echo $attachment->ID; ?>"  class="rtpm_delete_project_attachment right">x</a>
-										   <?php } ?>
-										   <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
-										  <?php /*var_dump( get_post_meta($attachment, '_flagExternalLink') ) */?>
-									   </div>
-								   <?php } ?>
-							   <?php }else{ ?>
-								   <?php if (  isset($_POST['attachment_tag']) && $_POST['attachment_tag']!= -1 ){ ?>
-									   <div class="large-12 mobile-large-3 columns no-attachment-item">
-										   <?php $term = get_term( $_POST['attachment_tag'], 'attachment_tag' ); ?>
-										   Not Found Attachment<?php echo isset( $term )? ' of ' . $term->name . ' Term!' :'!' ?>
-									   </div>
-								   <?php }else{ ?>
-									   <div class="large-12 mobile-large-3 columns no-attachment-item">
-										   <?php delete_post_meta($projectid, '_rt_wp_pm_attachment_hash'); ?>
-										   Attachment Not found!
-									   </div>
-								   <?php } ?>
-							   <?php } ?>
-						   </div>
-					   </div>
-				   </div>-->
+        <input type='hidden' id='rt_pm_post_id' name='post[rt_project_id]' value=<?php echo $projectid; ?>>
+        <?php add_documents_section( $projectid ); ?>
     </div>
 </div>
 
