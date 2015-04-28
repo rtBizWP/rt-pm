@@ -450,7 +450,7 @@ if( !empty( $results_client ) ) {
                        </div>
                    <?php }else{ ?>
                        <div class="small-12 mobile-large-3 columns no-attachment-item">
-                           <?php delete_post_meta($post->ID, '_rt_wp_pm_attachment_hash'); ?>
+                           <?php // delete_post_meta($post->ID, '_rt_wp_pm_attachment_hash'); ?>
                            Attachment Not found!
                        </div>
                    <?php } ?>

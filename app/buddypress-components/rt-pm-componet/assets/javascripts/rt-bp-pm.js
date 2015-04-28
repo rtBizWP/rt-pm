@@ -607,7 +607,7 @@ jQuery(document).ready(function($) {
 
     });
 
-    $('li.document-attachment').live('click', function(){
+    $( document ).on('click', 'li.document-attachment',function(){
 
         var is_checked = $(this).attr('aria-checked');
 
@@ -703,12 +703,12 @@ jQuery(document).ready(function($) {
     });
 
 
-    $('a.document-check').live('click', function(e){
+    $('ul.attachments').on('click', 'a.document-check', function(e){
         e.preventDefault();
         $element =  $(this).parent();
         var data = {
             action: "rtbiz_remove_document",
-            attachment_id: $(this).data('document-id'),
+            attachment_id: $(this).data('document-id')
         }
         $.post(ajaxurl,data,function( res ) {
             $element.remove();
