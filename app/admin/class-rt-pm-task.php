@@ -348,11 +348,24 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 */
 		public function rtpm_get_task_data( $args = array() ) {
 
+			$query = $this->rtpm_prepare_task_wp_query( $args );
+
+			return $query->posts;
+		}
+
+		/**
+		 * Return wp_query object of get task data
+		 * @param array $args
+		 *
+		 * @return WP_Query
+		 */
+		public function rtpm_prepare_task_wp_query( $args = array() ) {
+
 			$args['post_type'] = $this->post_type;
 
 			$query = new WP_Query( $args );
 
-			return $query->posts;
+			return $query;
 		}
 
 		/**
