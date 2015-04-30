@@ -45,9 +45,10 @@ class Rt_PM_Project_Gantt {
 
         wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
 
-        wp_enqueue_script( 'rt-biz-wall-script', get_stylesheet_directory_uri().'/js/rt-biz-wall.min.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+        wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+        wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
 
-        wp_localize_script('rt-biz-wall-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
+        wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
     }
 
     /**
@@ -278,7 +279,7 @@ class Rt_PM_Project_Gantt {
 
 
             //Delete task link
-            gantt.attachEvent("onAfterLinkDelete", function(id,item){
+            gantt.attachEvent("onAfterLinkDelete", function(id,item) {
 
                 var data = {
                     link_id : id
@@ -292,14 +293,14 @@ class Rt_PM_Project_Gantt {
                     }else {
                         rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
                     }
-                } );
+                });
             });
 
 
             //Estimated hours field template
             gantt.locale.labels.section_estimated_hours = "Estimated hours";
             gantt.form_blocks["number"] = {
-                render:function( sns ){ //sns - the section's configuration object
+                render:function( sns ) { //sns - the section's configuration object
 
                     return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
                 },
@@ -319,39 +320,39 @@ class Rt_PM_Project_Gantt {
 
             //Show task detail on hover
             var request;
-            gantt.attachEvent("onMouseMove", function(id,item) {
-
-                if ('undefined' != typeof request)
-                    request.abort();
-
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-
-                if (null === id)
-                    return;
-
-
-                var data = {task_id: id};
-
-                var senddata = {
-                    action: 'rtpm_get_task_data_for_ganttchart',
-                    post: data
-                };
-
-                if ( 'undefined' != typeof request ) {
-                    request.abort();
-                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
-                }
-
-                request = $.post( admin_url, senddata, function( response ){
-                    if( response.success ){
-                        $('div.rtcontext-box').html( template( response.data ) );
-                    }
-                } );
-
-            });
+//            gantt.attachEvent("onMouseMove", function(id,item) {
+//
+//                if ('undefined' != typeof request)
+//                    request.abort();
+//
+//                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+//
+//                if (null === id)
+//                    return;
+//
+//
+//                var data = {task_id: id};
+//
+//                var senddata = {
+//                    action: 'rtpm_get_task_data_for_ganttchart',
+//                    post: data
+//                };
+//
+//                if ( 'undefined' != typeof request ) {
+//                    request.abort();
+//                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
+//                }
+//
+//                request = $.post( admin_url, senddata, function( response ){
+//                    if( response.success ){
+//                        $('div.rtcontext-box').html( template( response.data ) );
+//                    }
+//                } );
+//
+//            });
 
             //Close side panel before open lightbox
-            gantt.attachEvent("onTaskCreated", function(task){
+            gantt.attachEvent("onTaskCreated", function(task) {
                 try{
                     $.sidr('close', 'rt-action-panel');
                 } catch( err ){

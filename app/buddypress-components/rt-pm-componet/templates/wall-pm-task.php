@@ -144,7 +144,7 @@ $task_labels=$rt_pm_task->labels;
 
     <div class="row">
         <div  class="small-4 columns">
-            <span class="hidden" title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
+            <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
         </div>
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 
