@@ -12,6 +12,7 @@ global $rt_pm_project,$rt_pm_bp_pm, $rt_pm_project_type, $rt_pm_task, $rt_pm_tim
 $post_id = $_GET["id"];
 
 $post = get_post( $post_id );
+$blog_id = isset( $_REQUEST['rt_voxxi_blog_id'] ) ?  $_REQUEST['rt_voxxi_blog_id'] : get_current_blog_id();
 
 $user_edit = true;
 // get project meta
@@ -132,7 +133,7 @@ if( !empty( $results_client ) ) {
        <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
        <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
        <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
-       <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+       <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
 
        <?php
        wp_nonce_field( 'rtpm_save_project_detail', 'rtpm_save_project_detail_nonce' );
@@ -464,7 +465,7 @@ if( !empty( $results_client ) ) {
        <h3><?php _e('Attachments'); ?></h3>
        <hr/>
 
-       <?php render_rt_bp_wall_documents_section( $post_id ) ?>
+       <?php render_rt_bp_wall_documents_section( $post_id, $blog_id ) ?>
 
        <div class="row">
            <div class="samll-12 columns right">

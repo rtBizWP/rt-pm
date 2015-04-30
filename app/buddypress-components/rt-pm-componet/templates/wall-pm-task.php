@@ -10,6 +10,7 @@ global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
 
 $user_edit = true;
 $task_post_type = $rt_pm_task->post_type;
+$blog_id = isset( $_REQUEST['rt_voxxi_blog_id'] ) ?  $_REQUEST['rt_voxxi_blog_id'] : get_current_blog_id();
 
 if( isset( $_GET["id"] ) ) {
 
@@ -56,7 +57,7 @@ $task_labels=$rt_pm_task->labels;
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <?php } ?>
 
-    <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+    <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
@@ -264,7 +265,7 @@ $task_labels=$rt_pm_task->labels;
 	if( isset( $post_id ) ){ ?>
     <h3><?php _e('Attachments'); ?></h3>
     <hr/>
-    <?php render_rt_bp_wall_documents_section( $post_id );
+    <?php render_rt_bp_wall_documents_section( $post_id, $blog_id );
     }
     ?>
 
