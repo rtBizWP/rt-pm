@@ -799,7 +799,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		public function rtpm_tasks_estimated_hours( $project_id, $due_date ) {
-			global $wpdb;
+			global $rt_pm_task_resources_model;
 
 			$tasks = $this->rtpm_get_tasks_by_duedate( $project_id, $due_date );
 
@@ -809,10 +809,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$task_ids = implode( ',', $tasks );
 
-
-			$query = "SELECT SUM( CAST( meta_value AS DECIMAL( 10, 2 ) ) ) FROM $wpdb->postmeta WHERE meta_key = 'post_estimated_hours' AND post_id in ( $task_ids )";
-
-			$result = $wpdb->get_var( $query );
+			$result = (float) $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task_ids );
 
 			return $result;
 		}
@@ -1046,7 +1043,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$meta_values = array(
 				'post_duedate'         => $post['end_date'],
 				'rtpm_task_type'       => $post['task_type'],
-				'post_estimated_hours' => $post['estimated_hours'],
+		//		'post_estimated_hours' => $post['estimated_hours'],
 				'post_project_id'      => $post['parent_project'],
 			);
 
@@ -1215,7 +1212,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @return float|int
 		 */
 		public function rtpm_get_task_progress_percentage( $task_id ) {
-			global $rt_pm_time_entries;
+			global $rt_pm_time_entries, $rt_pm_task_resources_model;
 
 			$tasks = $this->rtpm_get_task_subtasks( $task_id );
 
@@ -1225,7 +1222,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			}
 
 			$total_billed_hours = (float) $rt_pm_time_entries->rtpm_get_tasks_total_billed_hours( $tasks );
-			$estimated_hours = (float) $this->rtpm_get_tasks_estimated_hours( $tasks );
+			$estimated_hours = (float) $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $tasks );
 
 			if ( 0 < $estimated_hours ) {
 				return sprintf( '%0.2f', $total_billed_hours / $estimated_hours * 100 );
@@ -1246,7 +1243,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
 			$args     = array(
 				'post_parent'   => $project_id,
-				'nppaging'      => true,
+				'nopaging'      => true,
 				'fields'        => 'ids',
 				'post__in'      => $task_ids,
 				'no_found_rows' => true,
@@ -1329,19 +1326,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			);
 
 			return $this->rtpm_get_task_data( $args );
-		}
-
-		public function rtpm_get_tasks_estimated_hours( $task_ids ) {
-			global $wpdb;
-
-			if( ! is_array( $task_ids ) )
-				return false;
-
-			$tasks = implode(', ', $task_ids );
-
-			$query = "SELECT SUM( CAST( meta_value AS DECIMAL( 10, 2 ) )  ) AS total_estimated_hours FROM {$wpdb->postmeta} WHERE post_id IN ( $tasks ) AND meta_key = 'post_estimated_hours'";
-
-			return $wpdb->get_var( $query );
 		}
 
 		/**

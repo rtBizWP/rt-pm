@@ -1204,13 +1204,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php } ?>
                         <div class="row collapse">
                             <?php
-                            $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
-                            $rtpm_task_list->prepare_items();
-
-                            if( isset( $task_id ) )
-                                $rtpm_task_list->get_drop_down($task_id);
-                            else
-                                $rtpm_task_list->get_drop_down();
+                                $rt_pm_task->rtpm_tasks_dropdown( $_REQUEST["{$post_type}_id"] );
                             ?>
                         </div>
                         <div class="row collapse">

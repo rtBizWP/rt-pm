@@ -184,7 +184,6 @@ class Rt_PM_Project_Gantt {
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
                     parent_task: item.parent,
-                    estimated_hours:    item.estimated_hours,
                 };
 
                 //Set task color after adding
@@ -222,7 +221,6 @@ class Rt_PM_Project_Gantt {
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
                     parent_task: item.parent,
-                    estimated_hours:    item.estimated_hours,
                 };
 
                 var send_data = { 'action' : 'rtpm_save_project_task', 'post': data };
@@ -296,27 +294,27 @@ class Rt_PM_Project_Gantt {
                 });
             });
 
-
-            //Estimated hours field template
-            gantt.locale.labels.section_estimated_hours = "Estimated hours";
-            gantt.form_blocks["number"] = {
-                render:function( sns ) { //sns - the section's configuration object
-
-                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
-                },
-                set_value:function( node,value,task,section ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    input.value = value || 0;
-                },
-                get_value:function( node,task,section ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    return input.value*1;
-                },
-                focus:function( node ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    input.focus();
-                }
-            };
+//
+//            //Estimated hours field template
+//            gantt.locale.labels.section_estimated_hours = "Estimated hours";
+//            gantt.form_blocks["number"] = {
+//                render:function( sns ) { //sns - the section's configuration object
+//
+//                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
+//                },
+//                set_value:function( node,value,task,section ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    input.value = value || 0;
+//                },
+//                get_value:function( node,task,section ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    return input.value*1;
+//                },
+//                focus:function( node ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    input.focus();
+//                }
+//            };
 
             //Show task detail on hover
             var request;

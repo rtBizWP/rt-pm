@@ -378,7 +378,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 			}
 		}
 
-        function get_drop_down($task_Id=0){
+        function get_drop_down($task_Id=0) {
             $records = $this->items;
             echo '<select required="required" name="post[post_task_id]" id="task_id">';
             if ( ! empty( $records ) ) {
