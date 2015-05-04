@@ -52,7 +52,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
+            add_action( "rtpm_after_save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -83,6 +83,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
             add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
+
+            add_action( 'rtpm_after_insert_new_project', array( $this, 'rtpm_after_insert_new_project' ) );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -2942,10 +2944,17 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 $post_id = @wp_update_post( $post_date );
                 $action = 'update';
+
+                do_action('rtpm_after_update_new_project', $post_id );
             }else {
 
                 $post_id = @wp_insert_post( $post_date );
                 $action = 'insert';
+
+                /**
+                 * Action for after insert new project
+                 */
+                do_action('rtpm_after_insert_new_project', $post_id );
             }
 
             $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
@@ -2969,7 +2978,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
 
-            do_action( 'save_project', $post_id, $action );
+            do_action( 'rtpm_after_save_project', $post_id, $action );
 
             return $post_id;
         }
@@ -3085,7 +3094,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $working_days['days'] = $data['days'];
 
 
-            if( isset( $data['occasion_name'] ) ){
+            if( isset( $data['occasion_name'] ) ) {
 
                 foreach($data['occasion_name'] as $index => $occasion_name) {
 
@@ -3099,6 +3108,20 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             update_post_meta( $data['project_id'], 'working_days', $working_days );
+        }
+
+
+        /**
+         * After project insert action callback
+         * @param $post_id
+         */
+        public function rtpm_after_insert_new_project( $post_id ) {
+
+            //Set working hours to 7
+            update_post_meta( $post_id, 'working_hours', '7' );
+
+            //Set saturday, sunday weekend days
+            update_post_meta( $post_id, 'working_days', array( 'days' => array( 0, 6 ) ) );
         }
     }
 }

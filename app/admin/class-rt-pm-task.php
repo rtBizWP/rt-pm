@@ -31,7 +31,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		private function setup() {
 
 			add_action( 'init', array( $this, 'init_task' ) );
-			add_action( "save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
+			add_action( "rtpm_after_save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
 			add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 			add_filter( 'posts_where', array( $this, 'rtcrm_generate_task_sql' ), 10, 2 );
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
@@ -734,7 +734,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$this->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 
-			do_action( 'save_task', $newTask['post_id'], $operation_type );
+			do_action( 'rtpm_after_save_task', $newTask['post_id'], $operation_type );
 
 			//Add success message
 			if ( ! is_admin() ) {
