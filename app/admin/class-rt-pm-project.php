@@ -906,32 +906,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns">
-                                <span class="prefix" title="Assigned To"><label for="post[post_assignee]"><strong>Assigned To</strong></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-3 columns">
-                                <?php if( $user_edit ) {
-                                    rt_pm_render_task_assignee_selectbox( $post_assignee );
-                                 } ?>
-                            </div>
-                        </div>
-                        <div class="row collapse">
-                            <div class="large-2 small-4 columns">
-                                <span class="prefix" title="Due Date"><label>Due Date</label></span>
-                            </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
-                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
-
-                                <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
-                                <?php } ?>
-                            </div>
-                            <div class="large-1 mobile-large-1 columns">
-                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-1 columns">
                                 <span class="prefix" title="Status">Status</span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
@@ -966,25 +940,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 } ?>
                             </div>
                         </div>
-
                         <div class="row collapse">
                             <div class="large-2 small-4 columns">
-                                <span class="prefix" title="Due Date"><label>Estimated time</label></span>
+                                <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 left columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
-                                           value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
+                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
+                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
+                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
 
                                 <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns left">
-                                <span class="postfix"><label class="foundicon-clock"></label></span>
+                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                         </div>
-
 
                         <div class="row collaspse postbox">
                             <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>

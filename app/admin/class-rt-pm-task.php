@@ -634,8 +634,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$updateFlag = true;
 				$post       = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
 				$data       = array(
-					'post_assignee'        => $newTask['post_assignee'],
-					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'post_duedate'         => $newTask['post_duedate'],
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
@@ -646,9 +644,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$operation_type = 'update';
 			} else {
 				$data    = array(
-					'post_assignee'        => $newTask['post_assignee'],
 					'post_duedate'         => $newTask['post_duedate'],
-					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),

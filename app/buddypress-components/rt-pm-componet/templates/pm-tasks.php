@@ -221,42 +221,23 @@ $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
                             <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
                         <?php } ?>
                     </div>
-                    <div class="large-6 columns">
-                        <span title="Assigned To"><label for="post[post_assignee]">Assigned To</label></span>
-                        <?php if( $user_edit ) {
-                            rt_pm_render_task_assignee_selectbox( $post_assignee );
-                        } ?>
-                    </div>
                 </div>
-                <div class="row">
-                    <div class="large-6 mobile-large-1 left columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                        <span title="Estimated time"><label>Estimated time</label></span>
-                        <?php if( $user_edit ) { ?>
-                            <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
-                                   value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
-
-                        <?php } else { ?>
-                            <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
-                        <?php } ?>
-                    </div>
-                </div>
-
                 <div class="row">
                     <span title="Estimated time"><label><?php _e('Resources') ?></label></span>
                     <div class="rt-parent-row">
                         <div class="row rt-row">
                             <div class="small-4 medium-4 columns">
-                                <input type="text" class="search-contact" />
+                                <input type="text" class="search-contact" placeholder="Assignee"  />
                                 <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
                             </div>
 
                             <div class="small-3 medium-3 large-2 columns">
-                                <input type="number" step=".25" min="0" name="post[time_duration][]" />
+                                <input type="number" step=".25" min="0" placeholder="Duration" name="post[time_duration][]" />
                             </div>
 
                             <div class="small-4 medium-4 large-5 columns">
 
-                                <input type="text" class="datetimepicker" name="post[timestamp][]">
+                                <input type="text" class="datetimepicker" placeholder="Due" name="post[timestamp][]">
                             </div>
 
                             <div class="small-1 columns left">

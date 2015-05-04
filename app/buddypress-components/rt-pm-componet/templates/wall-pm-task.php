@@ -162,17 +162,6 @@ $task_labels=$rt_pm_task->labels;
 
     <div class="row">
         <div  class="small-4 columns">
-            <span class="assigned-to-hidden" title="Assigned To"><label for="post[post_assignee]">Assigned To<small class="required"> * </small></label></span>
-        </div>
-        <div class="small-8 columns">
-        <?php if( $user_edit ) {
-            rt_pm_render_task_assignee_selectbox( $post_assignee );
-        } ?>
-        </div>
-   </div>
-
-    <div class="row">
-        <div  class="small-4 columns">
             <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
         </div>
         <div class="small-8 columns">
@@ -188,36 +177,21 @@ $task_labels=$rt_pm_task->labels;
    </div>
 
     <div class="row">
-        <div  class="small-4 columns">
-            <span title="Due Date"><label>Estimated time</label></span>
-        </div>
-        <div class="small-8 columns">
-            <?php if( $user_edit ) { ?>
-                <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
-                       value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
-
-            <?php } else { ?>
-                <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
-            <?php } ?>
-        </div>
-    </div>
-
-    <div class="row">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
         <div class="rt-parent-row">
             <div class="row rt-row">
                 <div class="small-4 medium-4 column">
-                    <input type="text" class="search-contact" />
+                    <input type="text" class="search-contact" placeholder="Assignee"/>
                     <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
                 </div>
 
                 <div class="small-3 medium-3 large-2 columns">
-                    <input type="number" step=".25" min="0" name="post[time_duration][]" />
+                    <input type="number" step=".25" min="0" placeholder="Duration" name="post[time_duration][]" />
                 </div>
 
                 <div class="small-4 medium-4 large-5 columns">
 
-                    <input type="text" class="datetimepicker" name="post[timestamp][]">
+                    <input type="text" class="datetimepicker" placeholder="Due" name="post[timestamp][]">
                 </div>
 
                 <div class="small-1 columns">
