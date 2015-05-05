@@ -31,7 +31,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		private function setup() {
 
 			add_action( 'init', array( $this, 'init_task' ) );
-			add_action( "save_post_{$this->post_type}", array( $this, 'task_add_bp_activity' ), 10, 3 );
+			add_action( "rtpm_after_save_task", array( $this, 'task_add_bp_activity' ), 10, 3 );
+			add_action( "save_post_{$this->post_type}", array( $this, 'rtpm_set_task_group' ), 10, 3 );
 			add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 			add_filter( 'posts_where', array( $this, 'rtcrm_generate_task_sql' ), 10, 2 );
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
@@ -49,7 +50,15 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_filter( 'rtpm_insert_task_meta', array( $this, 'rtpm_set_task_parent_and_child_task_count'), 10, 1 );
 		}
 
-		function task_add_bp_activity( $post_id, $post, $update ) {
+		function task_add_bp_activity( $post_id, $update ) {
+
+			$args = array(
+				'p' => $post_id,
+			);
+
+			$posts = $this->rtpm_get_task_data( $args );
+
+			$post = $posts[0];
 
 			if ( $update ) {
 
@@ -937,8 +946,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$args['post_type'] = $this->post_type;
 
+			$update = false;
+
 			//Save post data
 			if ( isset ( $args['ID'] ) ) {
+				$update = true;
 				$post_id = @wp_update_post( $args );
 			} else {
 				$post_id = @wp_insert_post( $args );
@@ -959,6 +971,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				update_post_meta( $post_id, $key, $value );
 			}
 
+
+			do_action( 'rtpm_after_save_task', $post_id, $update );
 			return $post_id;
 		}
 
@@ -1407,6 +1421,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			);
 
 			return $rt_pm_task_resources_model->get( $where );
+		}
+
+		public function rtpm_set_task_group( $post_id, $post, $update ) {
+
+
 		}
 	}
 

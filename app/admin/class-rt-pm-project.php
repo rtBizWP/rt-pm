@@ -52,7 +52,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "save_post_{$this->post_type}", array( $this, 'project_add_bp_activity' ), 10, 3 );
+            add_action( "rtpm_after_save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -125,7 +125,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 		
 
-        function project_add_bp_activity( $post_id, $post, $update ) {
+        function project_add_bp_activity( $post_id, $update ) {
+
+            $args = array(
+                'p' => $post_id,
+            );
+
+            $post = $this->rtpm_get_project_data( $args );
+
+            $post = $post[0];
 
             if ( ! $update ) {
                 $action = 'Project created';
@@ -2891,8 +2899,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          */
         public function rtpm_save_project_data( $post_date, $meta_data ) {
 
+            $update = false;
             if( isset( $post_date['ID'] ) ){
 
+                $update = true;
                 $post_id = @wp_update_post( $post_date );
             }else {
 
@@ -2905,6 +2915,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 update_post_meta( $post_id, $key, $value );
             }
 
+            do_action('rtpm_after_save_project', $post_id, $update );
             return $post_id;
         }
 
