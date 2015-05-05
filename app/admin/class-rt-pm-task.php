@@ -292,6 +292,52 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $project_id
 		 */
 		public function disable_working_days( $project_id ) {
+			$result = $this->rtpm_get_non_working_days( $project_id );
+			?>
+			<script>
+				// Disable working days and working hours
+				jQuery(document).ready(function ($) {
+
+					var days_array = [<?php echo implode( ',', $result['days'] );?>];
+					var occasion_array = [<?php echo '"'.implode( '","', $result['occasions'] ).'"' ?>];
+
+					occasion_array = $.map( occasion_array, function( occasion ) {
+						return occasion.substring( 0, 10 );
+					});
+
+					if ($(".datetimepicker").length > 0) {
+						$('.datetimepicker').datetimepicker({
+							dateFormat: "M d, yy",
+							timeFormat: "hh:mm TT",
+							beforeShowDay: function (date) {
+
+								var day = date.getDay();
+								if ($.inArray(day, days_array) !== -1) {
+									return [false];
+								}
+
+								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
+								if ($.inArray( string, occasion_array) !== -1) {
+									return [false];
+								}
+
+								return [true];
+							}
+						}).attr('readonly', 'readonly');
+						;
+					}
+				});
+			</script>
+		<?php
+		}
+
+		/**
+		 * Return a non working days of project
+		 * @param $project_id
+		 *
+		 * @return array4
+		 */
+		public function rtpm_get_non_working_days( $project_id ) {
 
 			$project_working_days = get_post_meta( $project_id, 'working_days', true );
 
@@ -306,38 +352,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$occasions = array_column( $project_working_days['occasions'], 'date' );
 			}
 
-			?>
-			<script>
-				// Disable working days and working hours
-				jQuery(document).ready(function ($) {
+			$result = array(
+				'days' => $days,
+				'occasions' => $occasions,
+			);
 
-					var days_array = [<?php echo implode( ',', $days );?>];
-					var occasion_array = [<?php echo '"'.implode( '","', $occasions ).'"' ?>];
-
-					if ($(".datetimepicker").length > 0) {
-						$('.datetimepicker').datetimepicker({
-							dateFormat: "M d, yy",
-							timeFormat: "hh:mm TT",
-							beforeShowDay: function (date) {
-
-								var day = date.getDay();
-								if ($.inArray(day, days_array) !== -1) {
-									return [false];
-								}
-
-								var string = jQuery.datepicker.formatDate('dd/mm/yy', date);
-								if ($.inArray(string, occasion_array) !== -1) {
-									return [false];
-								}
-
-								return [true];
-							}
-						}).attr('readonly', 'readonly');
-						;
-					}
-				});
-			</script>
-		<?php
+			return $result;
 		}
 
 
@@ -1369,7 +1389,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 
 		/**
-		 * Get all reources in task
+		 * Get all resources in task
 		 * @param $task_is
 		 * @param $project_id
 		 *

@@ -3067,9 +3067,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                     if ( empty( $occasion_name ) || empty( $data['occasion_date'][ $index ] ) ) continue;
 
+                    $occasion_date = date_create_from_format( 'M d, Y H:i A', $data['occasion_date'][ $index ] );
+                    $occasion_date->setTime( 0, 0 );
+
                     $working_days['occasions'][] = array(
                         'name'  => $occasion_name,
-                        'date' =>$data['occasion_date'][ $index ]
+                        'date' => $occasion_date->format('Y-m-d H:i:s'),
                     );
                 }
             }
