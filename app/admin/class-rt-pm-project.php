@@ -85,6 +85,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
 
             add_action( "save_post_{$this->post_type}", array( $this, 'rtpm_set_default_working_days_and_hours' ), 10, 3 );
+
+            add_filter( 'rt_pm_project_detail_meta', array( $this, 'rtpm_set_people_on_project_meta'), 10, 1 );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -2892,18 +2894,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if( isset( $post_date['ID'] ) ){
 
                 $post_id = @wp_update_post( $post_date );
-                $action = 'update';
-
-                do_action('rtpm_after_update_project', $post_id );
             }else {
 
                 $post_id = @wp_insert_post( $post_date );
-                $action = 'insert';
-
-                /**
-                 * Action for after insert new project
-                 */
-                do_action('rtpm_after_insert_project', $post_id );
             }
 
             $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
@@ -2912,24 +2905,33 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 update_post_meta( $post_id, $key, $value );
             }
 
-            $meta_data['rtpm_people_on_project'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
+            return $post_id;
+        }
+
+        /**
+         * Set people on project in meta
+         * @param $meta_data
+         *
+         * @return mixed
+         */
+        public function rtpm_set_people_on_project_meta( $meta_data ) {
+
+            $meta_data['rtpm_project_members'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
 
             $project_client = array();
-             foreach( $meta_data['project_client'] as $client ) {
-                 $project_client[] = rt_biz_get_wp_user_for_person( $client );
-             }
+            foreach( $meta_data['project_client'] as $client ) {
+                $project_client[] = rt_biz_get_wp_user_for_person( $client );
+            }
 
-            $meta_data['rtpm_people_on_project'] = array_merge( $meta_data['rtpm_people_on_project'] , $project_client, $meta_data['project_member'] );
+            $meta_data['rtpm_project_members'] = array_merge( $meta_data['rtpm_project_members'] , $project_client, $meta_data['project_member'] );
 
-            $meta_data['rtpm_people_on_project'] = array_unique( $meta_data['rtpm_people_on_project'] );
+            $meta_data['rtpm_project_members'] = array_unique( $meta_data['rtpm_project_members'] );
 
-            $rtpm_peoples = implode( ' ', array_filter( $meta_data['rtpm_people_on_project'] ) );
+            $rtpm_peoples = implode( ' ', array_filter( $meta_data['rtpm_project_members'] ) );
 
-            update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
+            $meta_data['rtpm_people_on_project']  = $rtpm_peoples;
 
-            do_action( 'rtpm_after_save_project', $post_id );
-
-            return $post_id;
+            return $meta_data;
         }
 
 
