@@ -41,10 +41,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'wp_ajax_rtpm_delete_project_task', array( $this, 'rtpm_delete_project_task' ) );
 			add_action( 'wp_ajax_rtpm_save_project_task_link', array( $this, 'rtpm_save_project_task_link' ) );
 			add_action( 'wp_ajax_rtpm_delete_project_task_link', array( $this, 'rtpm_delete_project_task_link' ) );
-			add_Action( 'wp_ajax_rtpm_get_task_data_for_ganttchart', array(
+			add_action( 'wp_ajax_rtpm_get_task_data_for_ganttchart', array(
 				$this,
 				'rtpm_get_task_data_for_ganttchart'
 			) );
+
+			add_filter( 'rtpm_insert_task_meta', array( $this, 'rtpm_set_task_parent_and_child_task_count'), 10, 1 );
 		}
 
 		function task_add_bp_activity( $post_id, $post, $update ) {
@@ -941,20 +943,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			} else {
 				$post_id = @wp_insert_post( $args );
 
-				if ( isset( $meta_data['rtpm_parent_task'] ) ) {
-					$parent_task_id   = $meta_data['rtpm_parent_task'];
-					$child_task_count = get_post_meta( $parent_task_id, 'rtpm_child_task_count', true );
-
-					if ( ! empty( $child_task_count ) ) {
-						$child_task_count = intval( $child_task_count ) + 1;
-						update_post_meta( $parent_task_id, 'rtpm_child_task_count', $child_task_count );
-					} else {
-
-						update_post_meta( $parent_task_id, 'rtpm_child_task_count', 1 );
-					}
-				}
-
-				$meta_data['rtpm_child_task_count'] = 0;
+				$meta_data = apply_filters( 'rtpm_insert_task_meta', $meta_data );
 			}
 
 			/**
@@ -964,12 +953,39 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$meta_data['post_project_id'] = $args['post_parent'];
 			}
 
+			$meta_data = apply_filters( 'rtpm_task_meta', $meta_data );
 			//Save post meta data
 			foreach ( $meta_data as $key => $value ) {
 				update_post_meta( $post_id, $key, $value );
 			}
 
 			return $post_id;
+		}
+
+		/**
+		 * Set parent task and update child tsk count for parent task
+		 * @param $meta_data
+		 *
+		 * @return mixed
+		 */
+		public function rtpm_set_task_parent_and_child_task_count( $meta_data ) {
+
+			if ( isset( $meta_data['rtpm_parent_task'] ) ) {
+				$parent_task_id   = $meta_data['rtpm_parent_task'];
+				$child_task_count = get_post_meta( $parent_task_id, 'rtpm_child_task_count', true );
+
+				if ( ! empty( $child_task_count ) ) {
+					$child_task_count = intval( $child_task_count ) + 1;
+					update_post_meta( $parent_task_id, 'rtpm_child_task_count', $child_task_count );
+				} else {
+
+					update_post_meta( $parent_task_id, 'rtpm_child_task_count', 1 );
+				}
+			}
+
+			$meta_data['rtpm_child_task_count'] = 0;
+
+			return $meta_data;
 		}
 
 		/**
