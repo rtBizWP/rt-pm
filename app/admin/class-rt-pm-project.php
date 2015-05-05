@@ -52,7 +52,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
+            add_action( "rtpm_after_save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -83,6 +83,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
             add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
+
+            add_action( 'rtpm_after_insert_new_project', array( $this, 'rtpm_after_insert_new_project' ) );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -904,32 +906,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns">
-                                <span class="prefix" title="Assigned To"><label for="post[post_assignee]"><strong>Assigned To</strong></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-3 columns">
-                                <?php if( $user_edit ) {
-                                    rt_pm_render_task_assignee_selectbox( $post_assignee );
-                                 } ?>
-                            </div>
-                        </div>
-                        <div class="row collapse">
-                            <div class="large-2 small-4 columns">
-                                <span class="prefix" title="Due Date"><label>Due Date</label></span>
-                            </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
-                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
-                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
-
-                                <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
-                                <?php } ?>
-                            </div>
-                            <div class="large-1 mobile-large-1 columns">
-                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
-                            </div>
-                            <div class="large-3 mobile-large-1 columns">
                                 <span class="prefix" title="Status">Status</span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
@@ -964,25 +940,24 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 } ?>
                             </div>
                         </div>
-
                         <div class="row collapse">
                             <div class="large-2 small-4 columns">
-                                <span class="prefix" title="Due Date"><label>Estimated time</label></span>
+                                <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 left columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
-                                    <input type="number" min="0.25" step="0.25" name="post[post_estimated_hours]" placeholder="Enter estimated hours"
-                                           value="<?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?>" />
+                                    <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
+                                           value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
+                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
 
                                 <?php } else { ?>
-                                    <span class="rtpm_view_mode moment-from-now"><?php echo get_post_meta( $post_id, 'post_estimated_hours', true ) ?></span>
+                                    <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
                                 <?php } ?>
                             </div>
                             <div class="large-1 mobile-large-1 columns left">
-                                <span class="postfix"><label class="foundicon-clock"></label></span>
+                                <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
                         </div>
-
 
                         <div class="row collaspse postbox">
                             <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>
@@ -1229,13 +1204,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php } ?>
                         <div class="row collapse">
                             <?php
-                            $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
-                            $rtpm_task_list->prepare_items();
-
-                            if( isset( $task_id ) )
-                                $rtpm_task_list->get_drop_down($task_id);
-                            else
-                                $rtpm_task_list->get_drop_down();
+                                $rt_pm_task->rtpm_tasks_dropdown( $_REQUEST["{$post_type}_id"] );
                             ?>
                         </div>
                         <div class="row collapse">
@@ -2942,10 +2911,17 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 $post_id = @wp_update_post( $post_date );
                 $action = 'update';
+
+                do_action('rtpm_after_update_new_project', $post_id );
             }else {
 
                 $post_id = @wp_insert_post( $post_date );
                 $action = 'insert';
+
+                /**
+                 * Action for after insert new project
+                 */
+                do_action('rtpm_after_insert_new_project', $post_id );
             }
 
             $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
@@ -2969,7 +2945,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
 
-            do_action( 'save_project', $post_id, $action );
+            do_action( 'rtpm_after_save_project', $post_id, $action );
 
             return $post_id;
         }
@@ -3085,20 +3061,37 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $working_days['days'] = $data['days'];
 
 
-            if( isset( $data['occasion_name'] ) ){
+            if( isset( $data['occasion_name'] ) ) {
 
                 foreach($data['occasion_name'] as $index => $occasion_name) {
 
                     if ( empty( $occasion_name ) || empty( $data['occasion_date'][ $index ] ) ) continue;
 
+                    $occasion_date = date_create_from_format( 'M d, Y H:i A', $data['occasion_date'][ $index ] );
+                    $occasion_date->setTime( 0, 0 );
+
                     $working_days['occasions'][] = array(
                         'name'  => $occasion_name,
-                        'date' =>$data['occasion_date'][ $index ]
+                        'date' => $occasion_date->format('Y-m-d H:i:s'),
                     );
                 }
             }
 
             update_post_meta( $data['project_id'], 'working_days', $working_days );
+        }
+
+
+        /**
+         * After project insert action callback
+         * @param $post_id
+         */
+        public function rtpm_after_insert_new_project( $post_id ) {
+
+            //Set working hours to 7
+            update_post_meta( $post_id, 'working_hours', '7' );
+
+            //Set saturday, sunday weekend days
+            update_post_meta( $post_id, 'working_days', array( 'days' => array( 0, 6 ) ) );
         }
     }
 }

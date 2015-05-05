@@ -677,35 +677,6 @@ function rt_pm_render_bdm_selectbox( $business_manager ){ ?>
 <?php }
 
 /**
- * Render assignee selectbox in Add new Task
- * @param $task_assignee
- */
-function rt_pm_render_task_assignee_selectbox( $task_assignee ){ ?>
-
-    <select name="post[post_assignee]" >
-        <option value=""><?php _e( 'Select Assignee' ); ?></option>
-        <?php
-        $employees = rt_biz_get_employees();
-        if (!empty( $employees )) {
-            foreach ( $employees as $author) {
-
-                $employee_wp_user_id = rt_biz_get_wp_user_for_person( $author->ID );
-
-                if ( $employee_wp_user_id == $task_assignee ) {
-                    $selected = " selected";
-                } else {
-                    $selected = " ";
-                }
-                echo '<option value="' . $employee_wp_user_id . '"' . $selected . '>' . rt_get_user_displayname( $employee_wp_user_id ) . '</option>';
-            }
-        }
-        ?>
-    </select>
-<?php }
-
-
-
-/**
  * Render BDM selectbox
  * @param $business_manager
  */

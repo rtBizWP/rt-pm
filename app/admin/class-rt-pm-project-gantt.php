@@ -90,7 +90,6 @@ class Rt_PM_Project_Gantt {
             array( 'name' => 'type', 'type' => 'typeselect', 'map_to' => 'type' ),
             array( 'name' => 'estimated_hours', 'type' => 'number', 'map_to' => 'estimated_hours' ),
             array( 'name' => 'time', 'height' => 72, 'type' => 'duration', 'map_to' => 'auto' ),
-
         );
 
         $args = array(
@@ -106,6 +105,8 @@ class Rt_PM_Project_Gantt {
         $links = array();
 
         $tentative_tasks = $rt_pm_task->rtpm_get_unassigned_task( $project_id );
+
+        $non_working_days = $rt_pm_task->rtpm_get_non_working_days( $project_id );
 
         if( !empty( $task_list ) ) {
 
@@ -142,7 +143,7 @@ class Rt_PM_Project_Gantt {
             }
         }
 
-        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks' );
+        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks', 'non_working_days' );
 
         ?>
 
@@ -184,7 +185,6 @@ class Rt_PM_Project_Gantt {
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
                     parent_task: item.parent,
-                    estimated_hours:    item.estimated_hours,
                 };
 
                 //Set task color after adding
@@ -222,7 +222,6 @@ class Rt_PM_Project_Gantt {
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
                     parent_task: item.parent,
-                    estimated_hours:    item.estimated_hours,
                 };
 
                 var send_data = { 'action' : 'rtpm_save_project_task', 'post': data };
@@ -296,60 +295,60 @@ class Rt_PM_Project_Gantt {
                 });
             });
 
+//
+//            //Estimated hours field template
+//            gantt.locale.labels.section_estimated_hours = "Estimated hours";
+//            gantt.form_blocks["number"] = {
+//                render:function( sns ) { //sns - the section's configuration object
+//
+//                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
+//                },
+//                set_value:function( node,value,task,section ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    input.value = value || 0;
+//                },
+//                get_value:function( node,task,section ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    return input.value*1;
+//                },
+//                focus:function( node ) {
+//                    var input = node.getElementsByTagName("input")[0];
+//                    input.focus();
+//                }
+//            };
 
-            //Estimated hours field template
-            gantt.locale.labels.section_estimated_hours = "Estimated hours";
-            gantt.form_blocks["number"] = {
-                render:function( sns ) { //sns - the section's configuration object
-
-                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
-                },
-                set_value:function( node,value,task,section ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    input.value = value || 0;
-                },
-                get_value:function( node,task,section ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    return input.value*1;
-                },
-                focus:function( node ) {
-                    var input = node.getElementsByTagName("input")[0];
-                    input.focus();
-                }
-            };
-
-            //Show task detail on hover
-            var request;
-            gantt.attachEvent("onMouseMove", function(id,item) {
-
-                if ('undefined' != typeof request)
-                    request.abort();
-
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-
-                if (null === id)
-                    return;
-
-
-                var data = {task_id: id};
-
-                var senddata = {
-                    action: 'rtpm_get_task_data_for_ganttchart',
-                    post: data
-                };
-
-                if ( 'undefined' != typeof request ) {
-                    request.abort();
-                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
-                }
-
-                request = $.post( admin_url, senddata, function( response ){
-                    if( response.success ){
-                        $('div.rtcontext-box').html( template( response.data ) );
-                    }
-                } );
-
-            });
+//            //Show task detail on hover
+//            var request;
+//            gantt.attachEvent("onMouseMove", function(id,item) {
+//
+//                if ('undefined' != typeof request)
+//                    request.abort();
+//
+//                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+//
+//                if (null === id)
+//                    return;
+//
+//
+//                var data = {task_id: id};
+//
+//                var senddata = {
+//                    action: 'rtpm_get_task_data_for_ganttchart',
+//                    post: data
+//                };
+//
+//                if ( 'undefined' != typeof request ) {
+//                    request.abort();
+//                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
+//                }
+//
+//                request = $.post( admin_url, senddata, function( response ){
+//                    if( response.success ){
+//                        $('div.rtcontext-box').html( template( response.data ) );
+//                    }
+//                } );
+//
+//            });
 
             //Close side panel before open lightbox
             gantt.attachEvent("onTaskCreated", function(task) {
@@ -379,7 +378,7 @@ class Rt_PM_Project_Gantt {
 
             jQuery( document ).ready( function( $ ) {
 
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+              //  $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
 
             });
 

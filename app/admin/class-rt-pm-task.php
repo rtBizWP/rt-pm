@@ -31,7 +31,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		private function setup() {
 
 			add_action( 'init', array( $this, 'init_task' ) );
-			add_action( "save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
+			add_action( "rtpm_after_save_task", array( $this, 'task_add_bp_activity' ), 10, 2 );
 			add_action( 'wp_ajax_rtpm_get_task', array( $this, 'get_autocomplate_task' ) );
 			add_filter( 'posts_where', array( $this, 'rtcrm_generate_task_sql' ), 10, 2 );
 			add_action( 'init', array( $this, 'rtpm_save_task' ) );
@@ -292,6 +292,52 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $project_id
 		 */
 		public function disable_working_days( $project_id ) {
+			$result = $this->rtpm_get_non_working_days( $project_id );
+			?>
+			<script>
+				// Disable working days and working hours
+				jQuery(document).ready(function ($) {
+
+					var days_array = [<?php echo implode( ',', $result['days'] );?>];
+					var occasion_array = [<?php echo '"'.implode( '","', $result['occasions'] ).'"' ?>];
+
+					occasion_array = $.map( occasion_array, function( occasion ) {
+						return occasion.substring( 0, 10 );
+					});
+
+					if ($(".datetimepicker").length > 0) {
+						$('.datetimepicker').datetimepicker({
+							dateFormat: "M d, yy",
+							timeFormat: "hh:mm TT",
+							beforeShowDay: function (date) {
+
+								var day = date.getDay();
+								if ($.inArray(day, days_array) !== -1) {
+									return [false];
+								}
+
+								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
+								if ($.inArray( string, occasion_array) !== -1) {
+									return [false];
+								}
+
+								return [true];
+							}
+						}).attr('readonly', 'readonly');
+						;
+					}
+				});
+			</script>
+		<?php
+		}
+
+		/**
+		 * Return a non working days of project
+		 * @param $project_id
+		 *
+		 * @return array4
+		 */
+		public function rtpm_get_non_working_days( $project_id ) {
 
 			$project_working_days = get_post_meta( $project_id, 'working_days', true );
 
@@ -306,38 +352,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$occasions = array_column( $project_working_days['occasions'], 'date' );
 			}
 
-			?>
-			<script>
-				// Disable working days and working hours
-				jQuery(document).ready(function ($) {
+			$result = array(
+				'days' => $days,
+				'occasions' => $occasions,
+			);
 
-					var days_array = [<?php echo implode( ',', $days );?>];
-					var occasion_array = [<?php echo '"'.implode( '","', $occasions ).'"' ?>];
-
-					if ($(".datetimepicker").length > 0) {
-						$('.datetimepicker').datetimepicker({
-							dateFormat: "M d, yy",
-							timeFormat: "hh:mm TT",
-							beforeShowDay: function (date) {
-
-								var day = date.getDay();
-								if ($.inArray(day, days_array) !== -1) {
-									return [false];
-								}
-
-								var string = jQuery.datepicker.formatDate('dd/mm/yy', date);
-								if ($.inArray(string, occasion_array) !== -1) {
-									return [false];
-								}
-
-								return [true];
-							}
-						}).attr('readonly', 'readonly');
-						;
-					}
-				});
-			</script>
-		<?php
+			return $result;
 		}
 
 
@@ -634,8 +654,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$updateFlag = true;
 				$post       = array_merge( $post, array( 'ID' => $newTask['post_id'] ) );
 				$data       = array(
-					'post_assignee'        => $newTask['post_assignee'],
-					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'post_duedate'         => $newTask['post_duedate'],
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
@@ -646,9 +664,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$operation_type = 'update';
 			} else {
 				$data    = array(
-					'post_assignee'        => $newTask['post_assignee'],
 					'post_duedate'         => $newTask['post_duedate'],
-					'post_estimated_hours' => $newTask['post_estimated_hours'],
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
@@ -734,7 +750,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$this->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 
-			do_action( 'save_task', $newTask['post_id'], $operation_type );
+			do_action( 'rtpm_after_save_task', $newTask['post_id'], $operation_type );
 
 			//Add success message
 			if ( ! is_admin() ) {
@@ -803,7 +819,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		public function rtpm_tasks_estimated_hours( $project_id, $due_date ) {
-			global $wpdb;
+			global $rt_pm_task_resources_model;
 
 			$tasks = $this->rtpm_get_tasks_by_duedate( $project_id, $due_date );
 
@@ -813,10 +829,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$task_ids = implode( ',', $tasks );
 
-
-			$query = "SELECT SUM( CAST( meta_value AS DECIMAL( 10, 2 ) ) ) FROM $wpdb->postmeta WHERE meta_key = 'post_estimated_hours' AND post_id in ( $task_ids )";
-
-			$result = $wpdb->get_var( $query );
+			$result = (float) $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task_ids );
 
 			return $result;
 		}
@@ -1050,7 +1063,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$meta_values = array(
 				'post_duedate'         => $post['end_date'],
 				'rtpm_task_type'       => $post['task_type'],
-				'post_estimated_hours' => $post['estimated_hours'],
+		//		'post_estimated_hours' => $post['estimated_hours'],
 				'post_project_id'      => $post['parent_project'],
 			);
 
@@ -1219,7 +1232,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @return float|int
 		 */
 		public function rtpm_get_task_progress_percentage( $task_id ) {
-			global $rt_pm_time_entries;
+			global $rt_pm_time_entries, $rt_pm_task_resources_model;
 
 			$tasks = $this->rtpm_get_task_subtasks( $task_id );
 
@@ -1229,7 +1242,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			}
 
 			$total_billed_hours = (float) $rt_pm_time_entries->rtpm_get_tasks_total_billed_hours( $tasks );
-			$estimated_hours = (float) $this->rtpm_get_tasks_estimated_hours( $tasks );
+			$estimated_hours = (float) $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $tasks );
 
 			if ( 0 < $estimated_hours ) {
 				return sprintf( '%0.2f', $total_billed_hours / $estimated_hours * 100 );
@@ -1250,7 +1263,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
 			$args     = array(
 				'post_parent'   => $project_id,
-				'nppaging'      => true,
+				'nopaging'      => true,
 				'fields'        => 'ids',
 				'post__in'      => $task_ids,
 				'no_found_rows' => true,
@@ -1335,19 +1348,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $this->rtpm_get_task_data( $args );
 		}
 
-		public function rtpm_get_tasks_estimated_hours( $task_ids ) {
-			global $wpdb;
-
-			if( ! is_array( $task_ids ) )
-				return false;
-
-			$tasks = implode(', ', $task_ids );
-
-			$query = "SELECT SUM( CAST( meta_value AS DECIMAL( 10, 2 ) )  ) AS total_estimated_hours FROM {$wpdb->postmeta} WHERE post_id IN ( $tasks ) AND meta_key = 'post_estimated_hours'";
-
-			return $wpdb->get_var( $query );
-		}
-
 		/**
 		 * Save resource data
 		 * @param $task_id
@@ -1389,7 +1389,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 
 		/**
-		 * Get all reources in task
+		 * Get all resources in task
 		 * @param $task_is
 		 * @param $project_id
 		 *

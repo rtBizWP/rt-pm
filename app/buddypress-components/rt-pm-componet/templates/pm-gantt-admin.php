@@ -95,7 +95,7 @@ if( isset( $project_working_days['occasions'] )  )
 
             <div class="small-4 medium-3 columns">
 
-                <input type="text" placeholder="DD/MM/YYYY" class="datepicker" name="post[occasion_date][]">
+                <input type="text" class="datetimepicker" readonly name="post[occasion_date][]">
             </div>
 
             <div class="small-2 columns left">
@@ -105,17 +105,19 @@ if( isset( $project_working_days['occasions'] )  )
 
         <?php
             foreach( $occasions as  $occasion ){
+                $dr = date_create_from_format('Y-m-d H:i:s', $occasion['date'] );
+                $occasion_date = $dr->format('M d, Y H:i A');
                 ?>
 
                 <div class="row rt-row">
                     <div class="small-6 medium-4 columns">
 
-                        <input type="text" name="post[occasion_name][]" value=<?php _e( $occasion['name'], RT_PM_TEXT_DOMAIN ) ?>>
+                        <input type="text" name="post[occasion_name][]" value="<?php _e( $occasion['name'], RT_PM_TEXT_DOMAIN ) ?>" />
                     </div>
 
                     <div class="small-4 medium-3 columns">
 
-                        <input type="text" placeholder="DD/MM/YYYY" class="datepicker" name="post[occasion_date][]" value=<?php _e( $occasion['date'] ) ?>>
+                        <input type="text" class="datetimepicker" readonly name="post[occasion_date][]" value="<?php _e( $occasion_date ) ?>" />
                     </div>
 
                     <div class="small-2 columns left">

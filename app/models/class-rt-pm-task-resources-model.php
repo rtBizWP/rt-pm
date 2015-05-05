@@ -52,4 +52,29 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_delete_task_resources( $where ) {
 		parent::delete( $where );
 	}
+
+	public function rtpm_get_tasks_estimated_hours( $task_ids ) {
+		global $wpdb;
+
+		if( empty( $task_ids ) )
+			return false;
+
+		if(  is_array( $task_ids ) ) {
+			$tasks = implode(', ', $task_ids );
+		} else {
+			$tasks =  $task_ids ;
+		}
+
+		$query = "SELECT SUM( time_duration)  AS estimated_hours FROM {$this->table_name} WHERE task_id IN ( $tasks )";
+
+		return $wpdb->get_var( $query );
+	}
+
+	public function rtpm_get_all_task_id_by_user( $user_id ) {
+		global $wpdb;
+
+		$query = "SELECT task_id  FROM {$this->table_name} WHERE user_id = {$user_id}";
+
+		return $wpdb->get_col( $query );
+	}
 }
