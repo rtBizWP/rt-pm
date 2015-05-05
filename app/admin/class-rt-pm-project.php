@@ -52,7 +52,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			add_action( 'admin_menu', array( $this, 'register_custom_pages' ), 1 );
             add_filter( 'custom_menu_order', array($this, 'custom_pages_order') );
             add_action( 'p2p_init', array( $this, 'create_connection' ) );
-            add_action( "rtpm_after_save_project", array( $this, 'project_add_bp_activity' ), 10, 2 );
+            add_action( "save_post_{$this->post_type}", array( $this, 'project_add_bp_activity' ), 10, 3 );
 
 
 			add_action( 'wp_ajax_rtpm_add_attachement', array( $this, 'attachment_added_ajax' ) );
@@ -84,7 +84,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
             add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
 
-            add_action( 'rtpm_after_insert_new_project', array( $this, 'rtpm_after_insert_new_project' ) );
+            add_action( "save_post_{$this->post_type}", array( $this, 'rtpm_set_default_working_days_and_hours' ), 10, 3 );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -123,31 +123,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 		
 
-        function project_add_bp_activity( $post_id, $operation_type ) {
+        function project_add_bp_activity( $post_id, $post, $update ) {
 
-            $post_action = 0;
-
-            $query = new WP_Query( array(
-                'p' => $post_id,
-                'post_type' => $this->post_type,
-                'no_found_rows' => true,
-            ));
-
-            $post = $query->posts[0];
-
-            if( $operation_type == 'convert' ) {
-
-                $action = 'Opportunity to project conversion';
-
-            } else if ( $operation_type == 'insert' ) {
-
+            if ( ! $update ) {
                 $action = 'Project created';
-
-            } else if(  $operation_type == 'update' ) {
-
+            } else {
                 $action = 'Project updated';
             }
-
 
             $activity_users = array();
 
@@ -2912,7 +2894,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $post_id = @wp_update_post( $post_date );
                 $action = 'update';
 
-                do_action('rtpm_after_update_new_project', $post_id );
+                do_action('rtpm_after_update_project', $post_id );
             }else {
 
                 $post_id = @wp_insert_post( $post_date );
@@ -2921,7 +2903,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 /**
                  * Action for after insert new project
                  */
-                do_action('rtpm_after_insert_new_project', $post_id );
+                do_action('rtpm_after_insert_project', $post_id );
             }
 
             $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
@@ -2945,7 +2927,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
 
-            do_action( 'rtpm_after_save_project', $post_id, $action );
+            do_action( 'rtpm_after_save_project', $post_id );
 
             return $post_id;
         }
@@ -3083,15 +3065,18 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         /**
          * After project insert action callback
-         * @param $post_id
+
          */
-        public function rtpm_after_insert_new_project( $post_id ) {
+        public function rtpm_set_default_working_days_and_hours( $post_id, $post, $update ) {
+
+            if( $update )
+                return false;
 
             //Set working hours to 7
             update_post_meta( $post_id, 'working_hours', '7' );
 
             //Set saturday, sunday weekend days
-            update_post_meta( $post_id, 'working_days', array( 'days' => array( 0, 6 ) ) );
+            update_post_meta( $post_id, 'working_days', array( 'days' => array( '0', '6' ), 'occasions' => array() ) );
         }
     }
 }
