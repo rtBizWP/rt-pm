@@ -136,7 +136,7 @@ function rt_create_all_resources_calender( $dates ){
 				
 				$table_html .= '<tr>';
 					foreach ( $dates as $key => $value ) {
-						$table_html .= '<td style="height: 24px;"></td>';
+						$table_html .= '<td style="height: 32px;"></td>';
 					}
 				$table_html .= '</tr>';
 				
@@ -144,6 +144,8 @@ function rt_create_all_resources_calender( $dates ){
 				
 				foreach ( $team_member as $member_key => $member_id ) {
 					$member_data = get_userdata($member_id);
+					$person = rt_biz_get_person_for_wp_user($member_id);
+					if( !empty($person) ){
 					$table_html .= '<tr>';
 					
 					// get the data for each date
@@ -160,8 +162,6 @@ function rt_create_all_resources_calender( $dates ){
 							}
 							$table_html .= '<td class="'.$weekend_class.'">';
 								if( !$is_weekend ){
-								$person = rt_biz_get_person_for_wp_user($member_data->data->ID);
-								if( !empty($person) ){
 									$person_id = $person[0]->ID;
 									
 									// get task list for user by project id on this date
@@ -185,10 +185,11 @@ function rt_create_all_resources_calender( $dates ){
 										$table_html .= '</div></div>';
 									}
 									$table_html .= '</div>';
-								}
-							} 
+							}
+							$table_html .= '</td>';
 						}
 					$table_html .= '</tr>';
+				}
 			}
 		}
 	}
