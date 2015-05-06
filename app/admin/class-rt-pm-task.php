@@ -50,6 +50,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'rtpm_before_trash_task', array( $this, 'rtpm_before_trash_task' ), 10, 1 );
 			add_action( 'rtpm_before_untrash_task', array( $this, 'rtpm_before_untrash_task' ), 10, 1 );
 			add_action( 'rtpm_after_untrash_task', array( $this, 'rtpm_after_untrash_task' ) );
+
+
 		}
 
 		function task_add_bp_activity( $post_id, $update ) {
@@ -1431,8 +1433,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $post_id
 		 * @return bool|void
 		 */
-		public function rtpm_set_task_group( $post_id ) {
-
+		public function rtpm_set_task_group( $post_id, $save ) {
+			global $wpdb;
 			$parent_task_id = get_post_meta( $post_id, 'rtpm_parent_task',true );
 
 			if( empty( $parent_task_id ) )
@@ -1443,25 +1445,46 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			if( empty( $child_task_count ) )
 				return;
 
-			$parent_task_start_date =  get_post_field( 'post_date', $parent_task_id  );
-			$parent_task_end_date = get_post_meta( $parent_task_id, 'post_duedate', true );
+			if( $save ) {
+				$parent_task_start_date =  get_post_field( 'post_date', $parent_task_id  );
+				$parent_task_end_date = get_post_meta( $parent_task_id, 'post_duedate', true );
 
-			$child_task_start_date =   get_post_field( 'post_date', $post_id  );
-			$child_task_end_date = get_post_meta( $post_id, 'post_duedate', true );
+				$child_task_start_date =   get_post_field( 'post_date', $post_id  );
+				$child_task_end_date = get_post_meta( $post_id, 'post_duedate', true );
 
-			$parent_task_start_date_obj = new DateTime( $parent_task_start_date );
-			$parent_task_end_date_obj = new DateTime( $parent_task_end_date );
+				$parent_task_start_date_obj = new DateTime( $parent_task_start_date );
+				$parent_task_end_date_obj = new DateTime( $parent_task_end_date );
 
-			$child_task_start_date_obj = new DateTime( $child_task_start_date );
-			$child_task_end_date_obj = new DateTime( $child_task_end_date );
+				$child_task_start_date_obj = new DateTime( $child_task_start_date );
+				$child_task_end_date_obj = new DateTime( $child_task_end_date );
 
-			if( $parent_task_start_date_obj > $child_task_start_date_obj )
-				$parent_task_start_date = $child_task_start_date;
+				if( $parent_task_start_date_obj > $child_task_start_date_obj )
+					$parent_task_start_date = $child_task_start_date;
 
-			if( $parent_task_end_date_obj < $child_task_end_date_obj )
-				$parent_task_end_date = $child_task_end_date;
+				if( $parent_task_end_date_obj < $child_task_end_date_obj )
+					$parent_task_end_date = $child_task_end_date;
+			} else {
+
+				$sub_task_ids = $this->rtpm_get_task_subtasks( $parent_task_id );
+
+				$ids = implode( ',', apply_filters( 'rtpm_sub_tasks_to_exclude', $sub_task_ids, $post_id ) );
+
+				$query = "SELECT MIN( post_date ) FROM {$wpdb->posts} WHERE ID IN( $ids )";
+
+				$parent_task_start_date = $wpdb->get_var( $query );
+
+				$query = "SELECT MAX( STR_TO_DATE( meta_value ,'%Y-%m-%d %H:%i:%s' ) ) FROM {$wpdb->postmeta} WHERE meta_key = 'post_duedate' AND post_id IN ( $ids ) ";
+
+				$parent_task_end_date = $wpdb->get_var( $query );
+			}
 
 			$this->rtpm_set_task_group_date( $parent_task_id, $parent_task_start_date, $parent_task_end_date );
+		}
+
+		public function rtpm_sub_tasks_to_exclude( $task_ids, $exclude_task_id ) {
+
+			$sub_task_ids = array_diff( $task_ids, array( $exclude_task_id ) );
+			return $sub_task_ids;
 		}
 
 		/**
@@ -1470,7 +1493,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $update
 		 */
 		public function rtpm_after_save_task( $post_id, $update ) {
-			$this->rtpm_set_task_group( $post_id );
+				$this->rtpm_set_task_group( $post_id, true );
 		}
 
 		/**
@@ -1478,39 +1501,18 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $post_id
 		 */
 		public function rtpm_after_untrash_task( $post_id ) {
-			$this->rtpm_set_task_group( $post_id );
+			$this->rtpm_set_task_group( $post_id, false );
 		}
+
+
 
 		/**
 		 * Action before trashing task
 		 * @param $post_id
 		 */
 		public function rtpm_before_trash_task( $post_id ) {
-			global $wpdb;
-
-			$this->rtpm_update_child_task_count( $post_id, 'trash' );
-
-
-			$parent_task_id = get_post_meta( $post_id, 'rtpm_parent_task', true );
-
-			$child_task_count = get_post_meta( $parent_task_id, 'rtpm_child_task_count', true );
-
-			if( empty( $child_task_count ) )
-				return;
-
-			$sub_task_ids = $arr = array_diff( $this->rtpm_get_task_subtasks( $parent_task_id ), array( $post_id ) );;
-
-			$ids = implode( ',', $sub_task_ids );
-
-			$query = "SELECT MIN( post_date ) FROM {$wpdb->posts} WHERE ID IN( $ids )";
-
-			$parent_task_start_date = $wpdb->get_var( $query );
-
-			$query = "SELECT MAX( STR_TO_DATE( meta_value ,'%Y-%m-%d %H:%i:%s' ) ) FROM {$wpdb->postmeta} WHERE meta_key = 'post_duedate' AND post_id IN ( $ids ) ";
-
-			$parent_task_end_date = $wpdb->get_var( $query );
-
-			$this->rtpm_set_task_group_date( $parent_task_id, $parent_task_start_date, $parent_task_end_date );
+			add_filter( 'rtpm_sub_tasks_to_exclude', array( $this, 'rtpm_sub_tasks_to_exclude' ), 10, 2 );
+			$this->rtpm_set_task_group( $post_id, false );
 		}
 
 		/**
