@@ -192,15 +192,6 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 			// Resources
 			if( ! isset($_GET['rt_project_id']) ){
-
-				$sub_nav[] = array(
-					'name'            =>  __( 'Resources' ),
-					'slug'            => 'resources',
-					'parent_url'      => $people_link,
-					'parent_slug'     =>  $this->id,
-					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_projects' ),
-					'position'        => 10,
-				);
 				
 				$sub_nav[] = array(
 					'name'            =>  __( 'All Resources' ),
@@ -230,7 +221,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				);
 			}
 
-			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin, self::$ganttchart_slug );
+			$project_detail_actions = array('details', 'attachments', 'time-entries', 'tasks', 'notifications', self::$gantt_admin, self::$ganttchart_slug,  'resources' );
 
 			if ( isset($_GET['rt_project_id']) && in_array( bp_current_action(), $project_detail_actions ) ){
 				
@@ -245,6 +236,19 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_details' ),
                     'position'        => 20,
                 );
+				
+				
+				$main_url = trailingslashit( $user_domain . $this->slug .'/resources');
+                $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_resources-details'  ), $main_url ) );
+				$sub_nav[] = array(
+					'name'            =>  __( 'Resources' ),
+					'slug'            => 'resources',
+					'link'			  => $url,
+					'parent_url'      => $people_link,
+					'parent_slug'     =>  $this->id,
+					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_resources' ),
+					'position'        => 30,
+				);
 
 				
 				$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
@@ -256,7 +260,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_attachments' ),
-                    'position'        => 30,
+                    'position'        => 40,
                 );
 
 				$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
@@ -268,7 +272,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_tasks' ),
-                    'position'        => 40,
+                    'position'        => 50,
                 );
 
 				
@@ -281,7 +285,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      =>  $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_time_entries' ),
-                    'position'        => 50,
+                    'position'        => 60,
                 );
 
 				
@@ -294,7 +298,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_notifications' ),
-                    'position'        => 60,
+                    'position'        => 70,
                 );
 
                 $main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$gantt_admin);
@@ -306,7 +310,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_gantt' ),
-                    'position'        => 70,
+                    'position'        => 80,
                 );
 
 				$main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$ganttchart_slug);
@@ -318,7 +322,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                     'parent_url'      => $people_link,
                     'parent_slug'     =>  $this->id,
                     'screen_function' => array( $rtbp_pm_screen, 'bp_pm_ganttchart' ),
-                    'position'        => 80,
+                    'position'        => 90,
                 );
 
 			}

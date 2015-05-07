@@ -168,6 +168,16 @@ class Rtbp_Pm_Screens {
 
         include  RT_PM_BP_PM_PATH.'/templates/pm-ganttchart.php';
     }
+	
+	public function bp_pm_resources() {
+		
+		add_action('bp_template_content', array( $this, 'rtpm_project_resources_template' ) );
+	}
+	
+	public function rtpm_project_resources_template() {
+		
+		include  RT_PM_BP_PM_PATH.'/templates/pm-resources.php';
+	}
 
 
 }

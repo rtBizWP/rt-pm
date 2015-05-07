@@ -294,7 +294,7 @@
 			rowData = {};
 			j = 0;
 			while (j < tableRow.cells.length) {
-				rowData[headers[j].name] = tableRow.cells[j].textContent.replace(/\r?\n/g, '');
+				rowData[headers[j].name] = tableRow.cells[j]/*.textContent.replace(/\r?\n/g, '')*/;
 				j++;
 			}
 			data.push(rowData);
