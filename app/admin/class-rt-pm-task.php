@@ -1089,15 +1089,33 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'post_project_id'      => $post['parent_project'],
 			);
 
+			$send_data = array();
 			//Check for parent task id is set
 			if ( '0' !== $post['parent_task'] ) {
-				$meta_values['rtpm_parent_task'] = $post['parent_task'];
+
+				$parent_task_id = $post['parent_task'];
+				$meta_values['rtpm_parent_task'] = $parent_task_id;
 			}
 
 			$post_id = $this->rtpm_save_task_data( $args, $meta_values );
 
+			if( '0' !== $post['parent_task'] ) {
+
+				$parent_task_id = $post['parent_task'];
+
+				$parent_task_start_date = get_post_field( 'post_date', $parent_task_id );
+				$parent_task_end_date = get_post_meta( $parent_task_id, 'post_duedate', true );
+
+				$send_data['parent_task_data'] = array(
+					'start_date' => $parent_task_start_date,
+					'end_date' => $parent_task_end_date,
+				);
+			}
+
+			$send_data['task_id'] = $post_id;
+
 			if ( $post_id ) {
-				@wp_send_json_success( array( 'task_id' => $post_id ) );
+				@wp_send_json_success( $send_data );
 			}
 
 		}
@@ -1554,15 +1572,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
 
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
-				return array( 'name' => 'ordinary', 'label' =>'Ordinary Task' );
+				return array( 'name' => 'ordinary', 'label' =>'Ordinary' );
 			} elseif ( $child_task_count > 0 ) {
-				return array( 'name' => 'parent', 'label' => 'Task Group' );
+				return array( 'name' => 'group', 'label' => 'Group' );
 			} elseif( $parent_task_id > 0 ) {
-				return array( 'name' => 'child', 'label' => 'Sub Task' );
+				return array( 'name' => 'sub', 'label' => 'Sub' );
 			}
-
-
-
 		}
 	}
 
