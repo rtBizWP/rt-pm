@@ -806,6 +806,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
 				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
+                $task_group = $rt_pm_task->rtpm_get_task_type( $post->ID );
 			} else {
 				$post_assignee = '';
 			}
@@ -885,7 +886,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
+                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
@@ -937,7 +938,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
+                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">

@@ -72,6 +72,8 @@ if (isset($_REQUEST["{$task_post_type}_id"])) {
     $createdate = $create->format("M d, Y h:i A");
     $modifydate = $modify->format("M d, Y h:i A");
 
+    $task_group = $rt_pm_task->rtpm_get_task_type( $post->ID );
+
 }else{
     $post=null;
 }
@@ -165,7 +167,7 @@ $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
                 <div class="row">
                     <div class="large-6 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                         <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
-                        <?php if( $user_edit ) { ?>
+                        <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                             <input required="required" class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Create Date"
                                    value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                    title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
@@ -212,7 +214,7 @@ $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
                 <div class="row">
                     <div class="large-6 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                         <span  title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
-                        <?php if( $user_edit ) { ?>
+                        <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                             <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                    value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                    title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">

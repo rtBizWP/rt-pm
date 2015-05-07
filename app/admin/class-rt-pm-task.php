@@ -1572,11 +1572,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
 
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
-				return array( 'name' => 'ordinary', 'label' =>'Ordinary' );
+				return array( 'name' => 'ordinary', 'label' =>'Ordinary Task' );
 			} elseif ( $child_task_count > 0 ) {
-				return array( 'name' => 'group', 'label' => 'Group' );
+				return array( 'name' => 'group', 'label' => 'Task Group' );
 			} elseif( $parent_task_id > 0 ) {
-				return array( 'name' => 'sub', 'label' => 'Sub' );
+				return array( 'name' => 'sub', 'label' => 'Sub Task' );
 			}
 		}
 	}
