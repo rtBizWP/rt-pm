@@ -1445,25 +1445,25 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			if( empty( $child_task_count ) )
 				return;
 
-			if( $save ) {
-				$parent_task_start_date =  get_post_field( 'post_date', $parent_task_id  );
-				$parent_task_end_date = get_post_meta( $parent_task_id, 'post_duedate', true );
-
-				$child_task_start_date =   get_post_field( 'post_date', $post_id  );
-				$child_task_end_date = get_post_meta( $post_id, 'post_duedate', true );
-
-				$parent_task_start_date_obj = new DateTime( $parent_task_start_date );
-				$parent_task_end_date_obj = new DateTime( $parent_task_end_date );
-
-				$child_task_start_date_obj = new DateTime( $child_task_start_date );
-				$child_task_end_date_obj = new DateTime( $child_task_end_date );
-
-				if( $parent_task_start_date_obj > $child_task_start_date_obj )
-					$parent_task_start_date = $child_task_start_date;
-
-				if( $parent_task_end_date_obj < $child_task_end_date_obj )
-					$parent_task_end_date = $child_task_end_date;
-			} else {
+//			if( $save ) {
+//				$parent_task_start_date =  get_post_field( 'post_date', $parent_task_id  );
+//				$parent_task_end_date = get_post_meta( $parent_task_id, 'post_duedate', true );
+//
+//				$child_task_start_date =   get_post_field( 'post_date', $post_id  );
+//				$child_task_end_date = get_post_meta( $post_id, 'post_duedate', true );
+//
+//				$parent_task_start_date_obj = new DateTime( $parent_task_start_date );
+//				$parent_task_end_date_obj = new DateTime( $parent_task_end_date );
+//
+//				$child_task_start_date_obj = new DateTime( $child_task_start_date );
+//				$child_task_end_date_obj = new DateTime( $child_task_end_date );
+//
+//				if( $parent_task_start_date_obj > $child_task_start_date_obj )
+//					$parent_task_start_date = $child_task_start_date;
+//
+//				if( $parent_task_end_date_obj < $child_task_end_date_obj )
+//					$parent_task_end_date = $child_task_end_date;
+//			} else {
 
 				$sub_task_ids = $this->rtpm_get_task_subtasks( $parent_task_id );
 
@@ -1476,7 +1476,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$query = "SELECT MAX( STR_TO_DATE( meta_value ,'%Y-%m-%d %H:%i:%s' ) ) FROM {$wpdb->postmeta} WHERE meta_key = 'post_duedate' AND post_id IN ( $ids ) ";
 
 				$parent_task_end_date = $wpdb->get_var( $query );
-			}
+//			}
 
 			$this->rtpm_set_task_group_date( $parent_task_id, $parent_task_start_date, $parent_task_end_date );
 		}
