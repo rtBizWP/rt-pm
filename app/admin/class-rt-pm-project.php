@@ -84,7 +84,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             add_action( 'init', array( $this, 'rtpm_save_project_working_hours' ) );
             add_action( 'init', array( $this, 'rtpm_save_project_working_days' ) );
 
-            add_action( 'rtpm_after_insert_new_project', array( $this, 'rtpm_after_insert_new_project' ) );
+            add_action( "save_post_{$this->post_type}", array( $this, 'rtpm_set_default_working_days_and_hours' ), 10, 3 );
+
+            add_filter( 'rt_pm_project_detail_meta', array( $this, 'rtpm_set_people_on_project_meta'), 10, 1 );
         }
 		
 		function rtpm_get_resources_calender_ajax(){
@@ -126,31 +128,21 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		}
 		
 
-        function project_add_bp_activity( $post_id, $operation_type ) {
+        function project_add_bp_activity( $post_id, $update ) {
 
-            $post_action = 0;
-
-            $query = new WP_Query( array(
+            $args = array(
                 'p' => $post_id,
-                'post_type' => $this->post_type,
-                'no_found_rows' => true,
-            ));
+            );
 
-            $post = $query->posts[0];
+            $post = $this->rtpm_get_project_data( $args );
 
-            if( $operation_type == 'convert' ) {
+            $post = $post[0];
 
-                $action = 'Opportunity to project conversion';
-
-            } else if ( $operation_type == 'insert' ) {
-
+            if ( ! $update ) {
                 $action = 'Project created';
-
-            } else if(  $operation_type == 'update' ) {
-
+            } else {
                 $action = 'Project updated';
             }
-
 
             $activity_users = array();
 
@@ -817,6 +809,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
 				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
+                $task_group = $rt_pm_task->rtpm_get_task_type( $post->ID );
 			} else {
 				$post_assignee = '';
 			}
@@ -896,7 +889,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
+                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
@@ -948,7 +941,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit ) { ?>
+                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                                            title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
@@ -2910,21 +2903,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          */
         public function rtpm_save_project_data( $post_date, $meta_data ) {
 
+            $update = false;
             if( isset( $post_date['ID'] ) ){
 
+                $update = true;
                 $post_id = @wp_update_post( $post_date );
-                $action = 'update';
-
-                do_action('rtpm_after_update_new_project', $post_id );
             }else {
 
                 $post_id = @wp_insert_post( $post_date );
-                $action = 'insert';
-
-                /**
-                 * Action for after insert new project
-                 */
-                do_action('rtpm_after_insert_new_project', $post_id );
             }
 
             $data = apply_filters( 'rt_pm_project_detail_meta', $meta_data );
@@ -2933,24 +2919,34 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 update_post_meta( $post_id, $key, $value );
             }
 
-            $meta_data['rtpm_people_on_project'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
+            do_action('rtpm_after_save_project', $post_id, $update );
+            return $post_id;
+        }
+
+        /**
+         * Set people on project in meta
+         * @param $meta_data
+         *
+         * @return mixed
+         */
+        public function rtpm_set_people_on_project_meta( $meta_data ) {
+
+            $meta_data['rtpm_project_members'] = array( $meta_data['project_manager'], $meta_data['business_manager'] );
 
             $project_client = array();
-             foreach( $meta_data['project_client'] as $client ) {
-                 $project_client[] = rt_biz_get_wp_user_for_person( $client );
-             }
+            foreach( $meta_data['project_client'] as $client ) {
+                $project_client[] = rt_biz_get_wp_user_for_person( $client );
+            }
 
-            $meta_data['rtpm_people_on_project'] = array_merge( $meta_data['rtpm_people_on_project'] , $project_client, $meta_data['project_member'] );
+            $meta_data['rtpm_project_members'] = array_merge( $meta_data['rtpm_project_members'] , $project_client, $meta_data['project_member'] );
 
-            $meta_data['rtpm_people_on_project'] = array_unique( $meta_data['rtpm_people_on_project'] );
+            $meta_data['rtpm_project_members'] = array_unique( $meta_data['rtpm_project_members'] );
 
-            $rtpm_peoples = implode( ' ', array_filter( $meta_data['rtpm_people_on_project'] ) );
+            $rtpm_peoples = implode( ' ', array_filter( $meta_data['rtpm_project_members'] ) );
 
-            update_post_meta( $post_id, 'rtpm_people_on_project',  $rtpm_peoples );
+            $meta_data['rtpm_people_on_project']  = $rtpm_peoples;
 
-            do_action( 'rtpm_after_save_project', $post_id, $action );
-
-            return $post_id;
+            return $meta_data;
         }
 
 
@@ -3086,15 +3082,18 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         /**
          * After project insert action callback
-         * @param $post_id
+
          */
-        public function rtpm_after_insert_new_project( $post_id ) {
+        public function rtpm_set_default_working_days_and_hours( $post_id, $post, $update ) {
+
+            if( $update )
+                return false;
 
             //Set working hours to 7
             update_post_meta( $post_id, 'working_hours', '7' );
 
             //Set saturday, sunday weekend days
-            update_post_meta( $post_id, 'working_days', array( 'days' => array( 0, 6 ) ) );
+            update_post_meta( $post_id, 'working_days', array( 'days' => array( '0', '6' ), 'occasions' => array() ) );
         }
     }
 }

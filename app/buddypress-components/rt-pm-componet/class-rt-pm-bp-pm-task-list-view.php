@@ -79,7 +79,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			$columns = array(
 				//'cb' => '<input type="checkbox" />',
 				'rtpm_title'=> __( 'Title' ),
-				'rtpm_assignee'=> __( 'Assignee' ),
+				'rtpm_task_type'=> __( 'Type' ),
 				'rtpm_create_date'=> __( 'Created' ),
 				'rtpm_update_date'=> __( 'Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
@@ -97,7 +97,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		public function get_sortable_columns() {
 			$sortable = array(
 				'rtpm_title'=> array('post_title', false),
-				'rtpm_assignee'=> array('post_author', false),
+				//'rtpm_assignee'=> array('post_author', false),
 				'rtpm_create_date'=> array('post_date', false),
 				'rtpm_update_date'=> array('post_modified', false),
 				'rtpm_Due_date'=> array('post_duedate', false),
@@ -358,28 +358,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                 $args['orderby'] = $_GET['orderby'];
                 $args['order'] =  $_GET['order'];
         	}
-			
-			$columns = array(
-				//'cb' => '<input type="checkbox" />',
-				'rtpm_title'=> __( 'Title' ),
-				'rtpm_assignee'=> __( 'Assignee' ),
-				'rtpm_create_date'=> __( 'Created' ),
-				'rtpm_update_date'=> __( 'Updated' ),
-				'rtpm_Due_date'=> __( 'Due Date' ),
-				'rtpm_status'=> __( 'Status' ),
-				//'rtpm_created_by'=> __( 'Created By' ),
-				//'rtpm_updated_by'=> __( 'Updated By' ),
-			);
-			$sortable = array(
-				'rtpm_title'=> array('post_title', false),
-				'rtpm_assignee'=> array('post_author', false),
-				'rtpm_create_date'=> array('post_date', false),
-				'rtpm_update_date'=> array('post_modified', false),
-				'rtpm_Due_date'=> array('post_duedate', false),
-				'rtpm_status'=> array('post_status', false),
-				//'rtpm_created_by'=> array('post_author', false),
-				//'rtpm_updated_by'=> array('post_author', false),
-			);
+
 			$columns = array(
 		        array(
 		                'column_label' => __( 'Title', RT_PM_TEXT_DOMAIN ) ,
@@ -388,10 +367,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		                'order' => 'asc'
 		        ),
 		        array(
-		                'column_label' => __( 'Assignee', RT_PM_TEXT_DOMAIN ) ,
-		                'sortable' => true,
-		                'orderby' => 'post_author',
-		                'order' => 'asc'
+		                'column_label' => __( 'Type', RT_PM_TEXT_DOMAIN ) ,
+		                'sortable' => false,
 		        ),
 		        array(
 		                'column_label' => __( 'Created', RT_PM_TEXT_DOMAIN ) ,
@@ -468,7 +445,6 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		 * @access public
 		 */
 		public function display() {
-			$singular = $this->_args['singular'];
 			?>
 			<table class="responsive">
 				<thead>
@@ -491,7 +467,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		 * @return string, echo the markup of the rows */
 		function display_rows() {
 
-            global $wpdb,$rt_pm_project, $rt_pm_bp_pm;
+            global $wpdb,$rt_pm_project, $rt_pm_bp_pm, $rt_pm_task;
 
             $blog_date_format = get_option( 'date_format' );
 			//Get the records registered in the prepare_items method
@@ -547,18 +523,13 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 }
 								//.'< /td>';
 								break;
-                            case "rtpm_assignee":
-								if(!empty($temp['post_assignee'])) { // Need to check replaced url 
-                                   // $user = get_user_by('id', $temp['post_assignee']);
-                                    $url = $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task';
-                                    $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
+                            case "rtpm_task_type":
 
+								$task_type = $rt_pm_task->rtpm_get_task_type( $rec->ID );
 
-                                    if ($this->user_edit){
-                                        echo '<td '.$attributes.'><a target="_blank" href="'.$url.'">'. rt_get_user_displayname( $temp['post_assignee'] ) .'</a>';
-                                    }else{
-                                        echo '<td '.$attributes.'>'.rt_get_user_displayname( $temp['post_assignee'] );
-                                    }
+								if( ! empty( $task_type ) ) {
+
+                                        echo '<td '.$attributes.'><span>'.$task_type['label'].'</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }

@@ -101,7 +101,7 @@ if (isset($post->id)) {
         ?>
         <div class="list-heading">
             <div class="large-8 columns list-title">
-                <h4><?php _e( 'Time Entries', RT_PM_TEXT_DOMAIN ) ?></h4>
+                <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
             <div class="large-4 columns">
                 <button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle, RT_PM_TEXT_DOMAIN ); ?></button>

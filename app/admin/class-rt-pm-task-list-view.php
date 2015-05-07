@@ -76,7 +76,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 			$columns = array(
 				//'cb' => '<input type="checkbox" />',
 				'rtpm_title'=> __( 'Title' ),
-				'rtpm_assignee'=> __( 'Assignee' ),
+				'rtpm_task_type'=> __( 'Type' ),
 				'rtpm_create_date'=> __( 'Created' ),
 				'rtpm_update_date'=> __( 'Last Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
@@ -94,7 +94,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		public function get_sortable_columns() {
 			$sortable = array(
 				'rtpm_title'=> array('post_title', false),
-				'rtpm_assignee'=> array('post_author', false),
+				//'rtpm_assignee'=> array('post_author', false),
 				'rtpm_create_date'=> array('post_date', false),
 				'rtpm_update_date'=> array('post_modified', false),
 				'rtpm_status'=> array('post_status', false),
@@ -226,7 +226,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		 * @return string, echo the markup of the rows */
 		function display_rows() {
 
-            global $wpdb,$rt_pm_project;
+            global $wpdb,$rt_pm_project, $rt_pm_task;
 
 			//Get the records registered in the prepare_items method
 			$records = $this->items;
@@ -281,17 +281,12 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                 }
 								//.'< /td>';
 								break;
-                            case "rtpm_assignee":
-								if(!empty($temp['post_assignee'])) {
+                            case "rtpm_task_type":
+                                $task_type = $rt_pm_task->rtpm_get_task_type( $rec->ID );
 
-                                    $url = admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task");
-                                    $url = add_query_arg( 'assignee', $temp['post_assignee'], $url );
+                                if( ! empty( $task_type ) ) {
 
-                                    if ($this->user_edit){
-                                        echo '<td '.$attributes.'><a href="'.$url.'">'.rt_get_user_displayname( $temp['post_assignee'] ).'</a>';
-                                    }else{
-                                        echo '<td '.$attributes.'>'. rt_get_user_displayname( $temp['post_assignee'] );
-                                    }
+                                    echo '<td '.$attributes.'><span>'.$task_type['label'].'</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }

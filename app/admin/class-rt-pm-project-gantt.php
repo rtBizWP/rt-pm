@@ -82,7 +82,6 @@ class Rt_PM_Project_Gantt {
         $columns = array(
             array( 'name' => 'text', 'label' => 'Task Name', 'tree' => true ),
             array( 'name' => 'add', 'label' => '' ),
-
         );
 
         $lightbox =  array(
@@ -200,7 +199,9 @@ class Rt_PM_Project_Gantt {
                     if( response.success ) {
                         var data = response.data;
 
-                        gantt.changeTaskId(id,  data.task_id);
+                        gantt.changeTaskId( id,  data.task_id );
+
+                        rtpm_set_task_group_date( item.parent, data );
 
                         rtcrm_gantt_notiy( 'Task has been created !' )
                     }else {
@@ -226,10 +227,12 @@ class Rt_PM_Project_Gantt {
 
                 var send_data = { 'action' : 'rtpm_save_project_task', 'post': data };
 
-                $.post( admin_url, send_data, function( response ){
+                $.post( admin_url, send_data, function( response ) {
                     if( response.success ) {
+
+                        rtpm_set_task_group_date( item.parent, response.data );
                         rtcrm_gantt_notiy( 'Task has been updated !' )
-                    }else {
+                    } else {
                         rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
                     }
                 } );
@@ -237,7 +240,6 @@ class Rt_PM_Project_Gantt {
 
             //Delete task
             gantt.attachEvent("onAfterTaskDelete", function( id, item ) {
-
 
                 var data = {
                     'task_id' : id
@@ -376,6 +378,51 @@ class Rt_PM_Project_Gantt {
                 render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
             });
 
+            gantt.attachEvent("onTaskDrag", function(id, mode, task, original){
+                var modes = gantt.config.drag_mode;
+                if(mode == modes.move){
+                    var diff = task.start_date - original.start_date;
+                    gantt.eachTask(function(child){
+                        child.start_date = new Date(+child.start_date + diff);
+                        child.end_date = new Date(+child.end_date + diff);
+                        gantt.refreshTask(child.id, true);
+                    },id );
+                }
+                return true;
+            });
+            //rounds positions of the child items to scale
+            gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
+                var modes = gantt.config.drag_mode;
+                if(mode == modes.move ){
+                    gantt.eachTask(function(child){
+                        gantt.roundTaskDates(child);
+                        gantt.refreshTask(child.id, true);
+
+                        var data = {
+                            task_id : child.id,
+                            start_date :  rtcrm_get_postdata( child.start_date ),
+                            end_date:  rtcrm_get_postdata( child.end_date ),
+                            task_title : child.text,
+                            parent_project : jQuery('#rtpm_project_id').val(),
+                            task_type: child.$rendered_type,
+                            parent_task: id,
+                        };
+
+                        var send_data = { 'action' : 'rtpm_save_project_task', 'post': data };
+
+                        $.post( admin_url, send_data, function( response ){
+                            if( response.success ) {
+
+                               // rtpm_set_task_group_date( id, data );
+                                rtcrm_gantt_notiy( 'Task has been updated !' )
+                            }else {
+                                rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
+                            }
+                        } );
+                    },id );
+                }
+            });
+
             jQuery( document ).ready( function( $ ) {
 
               //  $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
@@ -398,6 +445,19 @@ class Rt_PM_Project_Gantt {
                     killer: true
                 });
 
+            }
+
+            function rtpm_set_task_group_date( parent_task_id, data ) {
+
+
+                if( 'undefined' != typeof data.parent_task_data ) {
+
+                    gantt.getTask(  parent_task_id ).start_date = new Date( data.parent_task_data.start_date );
+                    gantt.getTask(  parent_task_id ).end_date = new Date( data.parent_task_data.end_date );
+                    gantt.updateTask( parent_task_id );
+                    gantt.refreshTask( parent_task_id, true);
+                    gantt.render();
+                }
             }
 
             /**
