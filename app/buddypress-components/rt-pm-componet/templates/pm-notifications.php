@@ -121,7 +121,7 @@ if ( isset( $_POST['rtpm_add_notification_rule'] ) ) {
     ?>
     <div class="list-heading">
         <div class="large-10 columns list-title">
-            <h4><?php _e( 'Notifications', RT_PM_TEXT_DOMAIN ) ?></h4>
+            <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
         </div>
         <div class="large-2 columns">
 

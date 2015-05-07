@@ -91,7 +91,8 @@ if (isset($post->ID)) {
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
 //Disable working days
-$rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
+$projectid = $_GET['rt_project_id'];
+$rt_pm_task->disable_working_days( $projectid );
 ?>
 
 <?php if (isset($post->ID)){?>
@@ -120,7 +121,7 @@ $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
         ?>
         <div class="list-heading">
             <div class="large-9 columns">
-                <h4><?php _e( 'Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
+                <h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
             <div class="large-3 columns">
                 <button class="right mybutton add-task" type="button" ><?php _e( $btntitle ); ?></button>

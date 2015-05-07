@@ -67,7 +67,7 @@ if ( isset( $projectid ) ) {
 $form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action();
 $form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-files";
 ?>
-<h4><?php _e('Attachments'); ?></h4>
+<h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
 <div id="wp-custom-list-table">
     <div id="attachment-error" class="row"></div>
     <h3><b><?php _e('External'); ?></b></h3>

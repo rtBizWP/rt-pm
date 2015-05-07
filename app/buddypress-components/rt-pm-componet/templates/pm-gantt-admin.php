@@ -24,6 +24,13 @@ if( isset( $project_working_days['occasions'] )  )
 <form method="post">
 <?php wp_nonce_field('rt_pm_edit_work_hours', 'rt_pm_edit_work_hours_nonce'); ?>
     <input type="hidden" value="<?php echo $project_id ?>" name="post[project_id]">
+
+<div class="list-heading">
+    <div class="large-12 columns list-title">
+        <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
+    </div>
+</div>
+
 <div class="list-heading">
     <div class="large-12 columns list-title">
         <h4><?php _e( 'Working Hours', RT_PM_TEXT_DOMAIN ) ?></h4>

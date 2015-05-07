@@ -10,10 +10,16 @@ global $rt_pm_project_gantt;
 $project_id = $_REQUEST['rt_project_id'];
 
 ?>
-    <div class="action-bar">
-        <input value="Export to PDF" type="button" onclick='gantt.exportToPDF()'>
-        <input value="Export to PNG" type="button" onclick='gantt.exportToPNG()'>
+    <div class="list-heading">
+        <div class="large-8 columns list-title">
+            <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
+        </div>
+        <div class="large-4 columns action-bar">
+            <input value="Export to PDF" type="button" onclick='gantt.exportToPDF()'>
+            <input value="Export to PNG" type="button" onclick='gantt.exportToPNG()'>
+        </div>
     </div>
+
 
     <br/>
     <input type="hidden" value="<?php echo $project_id; ?>" id="rtpm_project_id" />

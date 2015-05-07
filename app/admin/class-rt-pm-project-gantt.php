@@ -82,7 +82,6 @@ class Rt_PM_Project_Gantt {
         $columns = array(
             array( 'name' => 'text', 'label' => 'Task Name', 'tree' => true ),
             array( 'name' => 'add', 'label' => '' ),
-
         );
 
         $lightbox =  array(
@@ -414,7 +413,7 @@ class Rt_PM_Project_Gantt {
                         $.post( admin_url, send_data, function( response ){
                             if( response.success ) {
 
-                                rtpm_set_task_group_date( id, data );
+                               // rtpm_set_task_group_date( id, data );
                                 rtcrm_gantt_notiy( 'Task has been updated !' )
                             }else {
                                 rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
