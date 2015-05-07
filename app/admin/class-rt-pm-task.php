@@ -1546,6 +1546,24 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			update_post_meta( $post_id, 'post_duedate', $end_date );
 		}
+
+		public function rtpm_get_task_type( $post_id ) {
+
+			$parent_task_id = absint( get_post_meta( $post_id, 'rtpm_parent_task', true ) );
+
+			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
+
+			if( $parent_task_id === 0 && $child_task_count === 0 ) {
+				return array( 'name' => 'ordinary', 'label' =>'Ordinary Task' );
+			} elseif ( $child_task_count > 0 ) {
+				return array( 'name' => 'parent', 'label' => 'Task Group' );
+			} elseif( $parent_task_id > 0 ) {
+				return array( 'name' => 'child', 'label' => 'Sub Task' );
+			}
+
+
+
+		}
 	}
 
 }
