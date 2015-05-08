@@ -1259,7 +1259,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         <?php }
 
         public function get_project_description_tab($labels,$user_edit){
-            global $rt_pm_project,$rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model;
+            global $rt_pm_project,$rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model, $rt_person;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
                 wp_die("Opsss!! You are in restricted area");
@@ -1402,7 +1402,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					foreach ( $connection as $c ) {
 						$org[] = $c->ID;
 					}
-                    $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
+
+                    $display_label = $client->post_title;
+                    if( empty( $display_label ) ) {
+                        $user_id = Rt_Person::get_meta( $client->ID, $rt_person->user_id_key, true );
+                        $display_label = rt_get_user_displayname( $user_id );
+                    }
+                    $arrProjectClient[] = array("id" => $client->ID, "label" => $display_label, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
                 }
             }
 
