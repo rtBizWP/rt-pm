@@ -296,18 +296,9 @@ function rt_create_my_task_calender( $dates ){
  * @return string
  */
 
-function rt_create_resources_calender( $dates ){
+function rt_create_resources_calender( $dates, $project_id ){
 	global $rt_person;
-	$page = max( 1, get_query_var('paged') );
-        $args = array(
-                'post_type' => $rt_person->post_type,
-                'post_status' => 'any',
-                'posts_per_page' => 20,
-                'paged' => $page,
-                      );
-		$wp_query = new WP_Query();
-        $wp_query->query( $args );
-		
+	$page = max( 1, get_query_var('paged') );		
 		// print all dates in head
 		
 		$table_html = '<thead><tr>';
@@ -317,37 +308,43 @@ function rt_create_resources_calender( $dates ){
 		$table_html .= '</tr></thead><tbody>';
 		
 		// travel through all users
-		
-				while ( $wp_query->have_posts() ) : $wp_query->the_post(); 
-                        $people = $wp_query->post;
-		$table_html .= '<tr>';
-				foreach ( $dates as $key => $value ) {
-					$is_weekend = rt_isWeekend( $value);
-					if($is_weekend){
-						$weekend_class = "rt-weekend";
-					}else{
-						$weekend_class = "";
+		$team_member = get_post_meta( $project_id, "project_member", true );
+				if ( $team_member != '' && !empty( $team_member ) ) {
+					?>
+					<?php
+					foreach ( $team_member as $key => $member_id ) {
+						$user = get_userdata( $member_id );
+						$people = rt_biz_get_person_for_wp_user( $member_id );
+						$people = $people[0];
+						$table_html .= '<tr>';
+							foreach ( $dates as $key => $value ) {
+								$is_weekend = rt_isWeekend( $value);
+								if($is_weekend){
+									$weekend_class = "rt-weekend";
+								}else{
+									$weekend_class = "";
+								}
+									$table_html .= '<td class="'.$weekend_class.'">';
+
+									// no data to show on weekend
+
+												if( !$is_weekend ){
+													$tasks_array = rt_get_person_task($people->ID,$value);
+													$table_html .= '<div class="rtpm-show-tooltip">'.count($tasks_array);
+													if(!empty($tasks_array)){
+														$table_html .= '<span class="rtpm-task-info-tooltip"><ul>';
+														foreach ( $tasks_array as $key => $task ) {
+															$table_html .= '<li><a href="?post_type=rt_project&rt_project_id='.$project_id.'&tab=rt_resources-details&rt_task_id='.$task->ID.'">'.$task->post_title.'</a></li>';
+														}
+														$table_html .= '</ul></span></div>';
+													}
+													$table_html .= '</div>';
+												} 
+									$table_html .= '</td>';
+										}
+						$table_html .=	'</tr>';
 					}
-		$table_html .= '<td class="'.$weekend_class.'">';
-		
-		// no data to show on weekend
-		
-					if( !$is_weekend ){
-						$tasks_array = rt_get_person_task($people->ID,$value);
-						$table_html .= '<div class="rtpm-show-tooltip">'.count($tasks_array);
-						if(!empty($tasks_array)){
-							$table_html .= '<span class="rtpm-task-info-tooltip"><ul>';
-							foreach ( $tasks_array as $key => $task ) {
-								$table_html .= '<li><a href="?rt_task_id='.$task->ID.'">'.$task->post_title.'</a></li>';
-							}
-							$table_html .= '</ul></span></div>';
-						}
-						$table_html .= '</div>';
-                    } 
-        $table_html .= '</td>';
-			}
-		$table_html .=	'</tr>';
-			endwhile;
+				}
 		$table_html .=	'</tbody>';
 		return $table_html;
 }

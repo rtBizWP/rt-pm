@@ -174,6 +174,7 @@ jQuery(document).ready(function($) {
 		var date = jQuery(this).data("date");
 		var flag = jQuery(this).data("flag");
 		var calender = jQuery(this).data("calender");
+		var projectid = jQuery(this).data("project");
 		jQuery.ajax({
             type: 'POST',
             dataType: 'json',
@@ -183,6 +184,7 @@ jQuery(document).ready(function($) {
                 'date': date,
                 'flag': flag,
 				'calender' : calender,
+				'project_id' : projectid,
             },
             success: function (data) {
                 if (data.fetched) {

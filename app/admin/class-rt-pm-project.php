@@ -100,6 +100,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			if(isset($_POST['calender'])){
 				$calender = $_POST['calender'];
 			}
+			if(isset($_POST['project_id'])){
+				$project_id = $_POST['project_id'];
+			}
 			if( $flag == "prev" ){
 				// get date before 7 days
 				$date_object = date_create( $date );
@@ -118,7 +121,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			} else if( $calender == 'my-tasks' ){
 				$html = rt_create_my_task_calender( $dates );	
 			} else {
-				$html = rt_create_resources_calender( $dates );	
+				$html = rt_create_resources_calender( $dates , $project_id );	
 			}
 			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
 			die;
