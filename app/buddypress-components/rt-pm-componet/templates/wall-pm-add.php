@@ -6,7 +6,7 @@
  * Time: 8:11 PM
  */
 
-global $rt_pm_project,$rt_pm_bp_pm, $rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model, $bp;
+global $rt_pm_project,$rt_pm_bp_pm, $rt_pm_project_type, $rt_pm_task, $rt_pm_time_entries_model, $bp, $rt_person;
 
 
 $post_id = $_GET["id"];
@@ -124,7 +124,12 @@ if( !empty( $results_client ) ) {
         foreach ( $connection as $c ) {
             $org[] = $c->ID;
         }
-        $arrProjectClient[] = array("id" => $client->ID, "label" => $client->post_title, "imghtml" => get_avatar($email, 32), 'user_edit_link'=>  $client_url, 'organization' => $org);
+        $display_label = $client->post_title;
+        if( empty( $display_label ) ) {
+            $user_id = Rt_Person::get_meta( $client->ID, $rt_person->user_id_key, true );
+            $display_label = rt_get_user_displayname( $user_id );
+        }
+        $arrProjectClient[] = array("id" => $client->ID, "label" => $display_label, "imghtml" => get_avatar($email, 32), 'user_edit_link'=>  $client_url, 'organization' => $org);
     }
 }
 
