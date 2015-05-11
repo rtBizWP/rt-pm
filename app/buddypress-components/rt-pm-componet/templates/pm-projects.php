@@ -240,8 +240,8 @@
 		// $the_query contains all projects
 		if ( $the_query->have_posts() ) { ?>
 			<div class="rt-main-resources-container rt-all-resources-container">
-				<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
-				<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 				<div class="rt-left-container">
 					<table>
 						<thead>
@@ -341,6 +341,8 @@
 				</table>
 				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
 			</div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
 			</div>	
 					<?php
 					wp_reset_postdata();
@@ -354,8 +356,8 @@
 		// lets start with all projects
 		if ( !empty($project_array) ) { ?>
 			<div class="rt-main-resources-container rt-my-tasks-container">
-				<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
-				<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 				<div class="rt-left-container">
 					<table>
 						<thead>
@@ -409,6 +411,8 @@
 				</table>
 				<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="my-tasks"><?php if( wp_is_mobile() ){ echo "next";}else{ echo ">"; } ?></a>
 			</div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
+				<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
 			</div>	<?php
 		}else{?>
 		<div>No tasks to show</div>	

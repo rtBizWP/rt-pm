@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
 		}
 	};
 
-	$('#export-pdf').click(function () {
+	$('.export-pdf').click(function () {
 		var doc = new jsPDF('p', 'pt', 'a4');
 		var element = $('#item-body .rt-main-resources-container').clone();
 		element.find('.rtpm-task-info-tooltip').remove();
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
 
             }
 			
-			jQuery('#export-csv').click(function (event) {
+			jQuery('.export-csv').click(function (event) {
                  
                 exportTableToCSV.apply(this, [$('.rt-left-container table'), $('.rt-right-container table'), 'Resource.csv']);
                 

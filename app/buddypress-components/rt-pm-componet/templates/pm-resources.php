@@ -92,8 +92,8 @@ if ( isset( $_REQUEST['update'] ) ) {
 	</div>
 </div>
 <div class="rt-main-resources-container">
-	<div><a href="#" id="export-csv" class="rt-export-button">Export CSV</a></div>
-	<div><a href="#" id="export-pdf" class="rt-export-button">Export PDF</a></div>
+	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
+	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 	<div class="rt-left-container">
 		<table>
 			<thead>
@@ -209,6 +209,8 @@ if ( isset( $_REQUEST['update'] ) ) {
 			}
 			?></a>
 	</div>
+	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
+	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
 </div>
 <?php
 if ( isset( $_REQUEST['rt_task_id'] ) ) {

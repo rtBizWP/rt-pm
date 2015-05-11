@@ -406,7 +406,7 @@ class Rt_Pm_Project_Overview {
 				'pointSize' => '5',
 			)
 		); ?>
-		<div id="rtpm_task_status_burnup_<?php echo $project_id; ?>"></div>
+			<div id="rtpm_task_status_burnup_<?php echo $project_id; ?>" class="rtpm-gantt-graph-container"></div>
 	<?php
 	}
 
