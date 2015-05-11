@@ -216,7 +216,7 @@
 								<?php if ( ! empty( $rt_project_type_list ) ) echo $rt_project_type_list[0]; ?>
 							</td>
 							<td><?php if ( ! empty( $project_manager_info->user_nicename ) ) echo $project_manager_nicename; ?></td>
-							<td><?php if ( ! empty(  $business_manager_id ) ) echo rt_get_user_displayname( $business_manager_id ); ?></td>
+							<td><?php if ( ! empty(  $business_manager_id ) ) echo rtbiz_get_user_displayname( $business_manager_id ); ?></td>
 							<!--<td><?php echo get_the_date('d-m-Y');?></td>
 							<td><?php if ( ! empty( $project_end_date_value ) ) echo $project_end_date_value;?></td> -->
 						</tr>
