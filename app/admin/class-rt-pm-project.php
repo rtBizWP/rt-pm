@@ -742,7 +742,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
         }
 
-        public function get_project_task_tab($labels,$user_edit){
+        public function get_project_task_tab($labels,$user_edit) {
             global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model;
 
             $post_id = 0;
@@ -891,11 +891,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
+                                <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
-                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
-
+                                           title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date"
+                                           <?php echo isset( $task_group['name'] ) ? 'readonly' : '' ?>
+                                        />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
@@ -943,10 +944,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <span class="prefix" title="Due Date"><label>Due Date</label></span>
                             </div>
                             <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                                <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
+                                <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                                            value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
-                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
+                                           title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date"
+                                           <?php echo isset( $task_group['name'] ) ? 'readonly' : '' ?>
+                                        >
 
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $due_date ?></span>
