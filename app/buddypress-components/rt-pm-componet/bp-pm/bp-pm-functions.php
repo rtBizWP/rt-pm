@@ -228,7 +228,7 @@ function rt_create_my_task_calender( $dates ){
 		
 		$table_html .= '<tr>';
 		foreach ( $dates as $date_key => $date_value ) {
-			$table_html .= '<td style="height: 24px;"></td>';
+			$table_html .= '<td style="height: 32px;"></td>';
 		}
 		$table_html .= '</tr>';
 		
