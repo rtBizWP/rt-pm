@@ -179,8 +179,13 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			//return the total number of affected rows
 
 			//How many to display per page?
-			//$perpage = 25;
-			$perpage = $this->get_items_per_page( rtpm_post_type_name( $this->labels['name'] ).'_per_page', 5 );
+			// set through session variable
+			if( isset($_SESSION['rt_task_per_page']) ){
+				$perpage = $_SESSION['rt_task_per_page'];
+			}else{
+				$perpage = 25;
+			}
+			//$perpage = $this->get_items_per_page( rtpm_post_type_name( $this->labels['name'] ).'_per_page', 25 );
 
 			//Which page is this?
 			$paged = ! empty( $_GET['paged'] ) ?  $_GET['paged'] : '';

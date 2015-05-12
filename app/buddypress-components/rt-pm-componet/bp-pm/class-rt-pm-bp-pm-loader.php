@@ -352,15 +352,19 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		                    'slug'  => 'projects',
 		                ),
 		                array(
-		                    'name' =>  'Archives',
+		                    'name' =>  __( 'Archives' ),
 		                    'slug'  => 'archives',
 		                ),
 						array(
-		                    'name' =>  'Resources',
-		                    'slug'  => 'resources',
+		                    'name' =>  __( 'All Resources' ),
+		                    'slug'  => 'all-resources',
 		                ),
 						array(
-		                    'name' =>  'Overview',
+		                    'name' =>  __( 'My Tasks' ),
+		                    'slug'  => 'my-tasks',
+		                ),
+						array(
+		                    'name' =>  __( 'Overview' ),
 		                    'slug'  => 'overview',
 		                )
 		            );

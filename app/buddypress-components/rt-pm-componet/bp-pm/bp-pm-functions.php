@@ -105,11 +105,23 @@ function rt_get_next_dates( $date ){
 
 function rt_create_all_resources_calender( $dates ){
 	global $rt_pm_project,$rt_pm_task;
+	if( isset($_SESSION['rt_project_post_per_page']) ){
+			$posts_per_page = $_SESSION['rt_project_post_per_page'];
+		}else{
+			$posts_per_page = 25;
+		}
+	$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+	$paged = $page = max( 1, get_query_var('paged') );
+	$offset = ( $paged - 1 ) * $posts_per_page;
+		if ($offset <=0) {
+			$offset = 0;
+		}
 	$post_status = array( 'new', 'active', 'paused','complete', 'closed' );
 	$args = array(
 			'post_type' => $rt_pm_project->post_type,
 			'post_status' => $post_status,
-			'posts_per_page' => 200,
+			'posts_per_page' => $posts_per_page,
+			'offset' => $offset,
 		);
 	
 	// Print dates in head

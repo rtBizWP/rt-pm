@@ -7,7 +7,11 @@
 		$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 		$paged = $page = max( 1, get_query_var('paged') );
 		
-		$posts_per_page = 20;
+		if( isset($_SESSION['rt_project_post_per_page']) ){
+			$posts_per_page = $_SESSION['rt_project_post_per_page'];
+		}else{
+			$posts_per_page = 25;
+		}
 		
 		$order = 'DESC';
 		$attr = 'startdate';
@@ -232,6 +236,26 @@
 				?>
 			</tbody>
 		</table>
+		<div class="rt-post-per-page-container">
+						<select class="rt-post-per-page-select" data-value="project-list">
+							<?php 
+							if( isset($_SESSION['rt_project_post_per_page']) ){
+									$selected_option = $_SESSION['rt_project_post_per_page'];
+								}else{
+									$selected_option = '';
+								}
+							for($opt = 1 ; $opt<5 ; $opt++) { 
+								$opt_value = 5 * $opt;
+								if( $selected_option == $opt_value ){
+									$is_selected = 'selected';
+								}else{
+									$is_selected = '';
+								}
+								?>
+							<option value="<?php echo $opt_value; ?>" <?php echo $is_selected;?>><?php echo $opt_value; ?></option>
+							<?php } ?>
+						</select>
+		</div>
 	<?php }else if( bp_is_current_action('all-resources') ) {
 		$current_date = date("Y-m-d");
 		$dates = rt_get_next_dates( $current_date );
