@@ -135,6 +135,26 @@ $rt_pm_task->disable_working_days( $projectid );
     $rtpm_task_list->display();
     ?>
 </div>
+	<div class="rt-post-per-page-container">
+		<select class="rt-post-per-page-select" data-value="task-list">
+			<?php 
+			if( isset($_SESSION['rt_task_per_page']) ){
+					$selected_option = $_SESSION['rt_task_per_page'];
+				}else{
+					$selected_option = '';
+				}
+			for($opt = 1 ; $opt<5 ; $opt++) { 
+				$opt_value = 5 * $opt;
+				if( $selected_option == $opt_value ){
+					$is_selected = 'selected';
+				}else{
+					$is_selected = '';
+				}
+				?>
+			<option value="<?php echo $opt_value; ?>" <?php echo $is_selected;?>><?php echo $opt_value; ?></option>
+			<?php } ?>
+		</select>
+	</div>
 <!--reveal-modal-add-task -->
 <div id="div-add-task" class="reveal-modal">
 
