@@ -280,7 +280,7 @@ $rt_pm_task->disable_working_days( $projectid );
                             ?>
                             <div class="row rt-row">
                                 <div class="small-4 medium-4 columns">
-                                    <input type="text" class="search-contact" value="<?php echo rt_get_user_displayname( $resource->user_id ) ?>"/>
+                                    <input type="text" class="search-contact" value="<?php echo rtbiz_get_user_displayname( $resource->user_id ) ?>"/>
                                     <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
                                 </div>
 

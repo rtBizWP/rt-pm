@@ -70,11 +70,11 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                                 <div><strong><?php _e('Project Manager : '); ?></strong><?php
                                     $pm_wp_user_id = get_post_meta(get_the_ID(), 'project_manager', true);
                                     //echo isset($pm->display_name)?$pm->display_name:"";
-                                    echo rt_get_user_displayname( $pm_wp_user_id );
+                                    echo rtbiz_get_user_displayname( $pm_wp_user_id );
                                     ?></div>
                                 <div><strong><?php _e('Business Manager : '); ?></strong><?php
                                     $bm_wp_user_id =  get_post_meta(get_the_ID(), 'business_manager', true);
-                                    echo !empty( $bm_wp_user_id ) ? rt_get_user_displayname( $bm_wp_user_id ) : "";
+                                    echo !empty( $bm_wp_user_id ) ? rtbiz_get_user_displayname( $bm_wp_user_id ) : "";
                                     ?></div>
                                 <br />
                                 <div><strong><?php _e('Created on : '); ?></strong><?php

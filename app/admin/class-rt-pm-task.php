@@ -56,6 +56,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 		function task_add_bp_activity( $post_id, $update ) {
 
+			if( ! function_exists( 'bp_is_active') )
+				return false;
+
 			$args = array(
 				'p' => $post_id,
 			);
@@ -393,7 +396,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		/**
-		 *    Post where clues filter for task due date
+		 *   Post where clues filter for task due date
 		 *
 		 * @param $where
 		 * @param $wp_query
@@ -405,7 +408,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
 
-			if ( current_user_can( $author_cap ) && bp_is_current_component( $bp->profile->slug ) && bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) && false !== strpos( $where, 'rt_task' ) && false !== strpos( $where, 'post_duedate' ) ) {
+			if ( function_exists( 'bp_is_active' ) &&
+				 current_user_can( $author_cap ) &&
+			     bp_is_current_component( $bp->profile->slug ) &&
+			     bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) &&
+			     false !== strpos( $where, 'rt_task' ) && false !== strpos( $where, 'post_duedate' ) ) {
 
 				$period = isset( $_REQUEST['period'] ) ? $_REQUEST['period'] : 'today';
 
@@ -905,7 +912,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$send_data = array();
 
-			$send_data['assignee_name'] = rt_get_user_displayname( $author_id );
+			$send_data['assignee_name'] = rtbiz_get_user_displayname( $author_id );
 
 			$send_data['tasks'] = array();
 

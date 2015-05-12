@@ -122,9 +122,9 @@ if ( isset( $_REQUEST['update'] ) ) {
 									//printf( __('<a href="%s">'.$people->post_title.'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) ); 
 								} else {
 									$person_wp_user_id = rt_biz_get_wp_user_for_person( $people->ID );
-									$employee_name = rt_get_user_displayname( $person_wp_user_id );
+									$employee_name = rtbiz_get_user_displayname( $person_wp_user_id );
 									//   if( !empty( $person_wp_user_id ) ){
-									//	printf( __('<a href="%s">'.rt_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) );
+									//	printf( __('<a href="%s">'.rtbiz_get_user_displayname( $person_wp_user_id ).'</a>'), esc_url( add_query_arg( array( 'user_id'=> $people->ID, 'action'=>'edit' ) ) ) );
 									// }
 								}
 								?>

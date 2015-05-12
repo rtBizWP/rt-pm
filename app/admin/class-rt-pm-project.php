@@ -130,6 +130,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         function project_add_bp_activity( $post_id, $update ) {
 
+            if( ! function_exists( 'bp_is_active') )
+                return false;
             $args = array(
                 'p' => $post_id,
             );
@@ -991,7 +993,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     ?>
                                     <div class="row parent-row">
                                         <div class="small-3 medium-3 columns">
-                                            <input type="text" class="search-contact" value="<?php echo rt_get_user_displayname( $resource->user_id ) ?>"/>
+                                            <input type="text" class="search-contact" value="<?php echo rtbiz_get_user_displayname( $resource->user_id ) ?>"/>
                                             <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
                                         </div>
 
@@ -1377,7 +1379,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 foreach ( $results_member as $author ) {
                     if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
                         $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID
-                            . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.rt_get_user_displayname( $author->ID ) .'</a>'
+                            . "' class='contact-list'>" . get_avatar($author->user_email, 24) . '<a target="_blank" class="heading" title="'.$author->display_name.'" href="'.get_edit_user_link($author->ID).'">'.rtbiz_get_user_displayname( $author->ID ) .'</a>'
                             . "<a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                                         <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /></li>";
                     }
@@ -1409,7 +1411,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $display_label = $client->post_title;
                     if( empty( $display_label ) ) {
                         $user_id = Rt_Person::get_meta( $client->ID, $rt_person->user_id_key, true );
-                        $display_label = rt_get_user_displayname( $user_id );
+                        $display_label = rtbiz_get_user_displayname( $user_id );
                     }
                     $arrProjectClient[] = array("id" => $client->ID, "label" => $display_label, "imghtml" => get_avatar($email, 24), 'user_edit_link'=>  get_edit_user_link($client->ID), 'organization' => $org);
                 }
@@ -2747,7 +2749,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		function pm_project_list_orderby( $orderby, $wp_query ) {
 			global $wpdb;
 
-			if ( isset( $wp_query->query['orderby'] ) && bp_is_current_component( BP_PM_SLUG )) {
+
+			if (
+                 function_exists( 'bp_is_active' ) &&
+                 isset( $wp_query->query['orderby'] ) &&
+                 bp_is_current_component( BP_PM_SLUG )) {
 
                 $orderby = $wp_query->query['orderby'];
 
@@ -3020,12 +3026,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                 case 'project_manager':
                     $project_manager_wp_user_id = get_post_meta( $post_id, 'project_manager', true );
-                    echo rt_get_user_displayname( $project_manager_wp_user_id );
+                    echo rtbiz_get_user_displayname( $project_manager_wp_user_id );
                     break;
 
                 case 'business_manager':
                     $business_manager_wp_user_id =  get_post_meta( $post_id, 'business_maanger', true );
-                    echo rt_get_user_displayname( $business_manager_wp_user_id );
+                    echo rtbiz_get_user_displayname( $business_manager_wp_user_id );
                     break;
 
             }

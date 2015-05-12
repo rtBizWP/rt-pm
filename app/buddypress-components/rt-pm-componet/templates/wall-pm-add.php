@@ -87,7 +87,7 @@ if( !empty( $results_member ) ) {
             <div class='column small-2'>"
                 . get_avatar($author->user_email, 32) . ' </div>
              <div  class="columns small-9 vertical-center">
-             	<a target="_blank" class="" title="'.$author->display_name.'" href="'.bp_core_get_userlink($author->ID, false, true).'">'.rt_get_user_displayname( $author->ID ).'</a>
+             	<a target="_blank" class="" title="'.$author->display_name.'" href="'.bp_core_get_userlink($author->ID, false, true).'">'.rtbiz_get_user_displayname( $author->ID ).'</a>
              </div>'
                 . "<div class='columns small-1 vertical-center'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
                             <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /> </div>
@@ -127,7 +127,7 @@ if( !empty( $results_client ) ) {
         $display_label = $client->post_title;
         if( empty( $display_label ) ) {
             $user_id = Rt_Person::get_meta( $client->ID, $rt_person->user_id_key, true );
-            $display_label = rt_get_user_displayname( $user_id );
+            $display_label = rtbiz_get_user_displayname( $user_id );
         }
         $arrProjectClient[] = array("id" => $client->ID, "label" => $display_label, "imghtml" => get_avatar($email, 32), 'user_edit_link'=>  $client_url, 'organization' => $org);
     }
