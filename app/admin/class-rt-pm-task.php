@@ -669,6 +669,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
+					'rtpm_parent_task'     => $newTask['parent_task']
 				);
 				$post_id    = $this->rtpm_save_task_data( $post, $data );
 
@@ -679,7 +680,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
 					'user_created_by'      => get_current_user_id(),
-					'rtpm_parent_task'     => '0'
+					'rtpm_parent_task'     => $newTask['parent_task']
 				);
 				$post_id = $this->rtpm_save_task_data( $post, $data );
 
@@ -1617,6 +1618,41 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			return $task_label;
 		}
+
+		public function rtpm_render_parent_tasks_dropdown( $post_id = '' ) {
+
+			$args = array(
+				'fields' => 'ids',
+				'nopaging' => true,
+				'no_found_rows' => true,
+				'meta_query' => array(
+					array(
+						'key' => 'rtpm_task_type',
+						'value' => 'group',
+					),
+					array(
+						'key' => 'rtpm_task_type',
+						'value' => 'main_task',
+					),
+					'relation' => 'OR'
+				),
+			);
+
+			$data = $this->rtpm_get_task_data( $args );
+
+			$parent_task_id = '0';
+
+			if( ! empty( $post_id ) )
+				$parent_task_id = get_post_meta( $post_id, 'rtpm_parent_task', true );
+			?>
+			<select name="post[parent_task]">
+				<option value="0">Select Parent Task</option>
+				<?php foreach( $data as $task_id) : ?>
+					<option <?php selected( $task_id, $parent_task_id ); ?> value="<?php echo $task_id ?>"><?php echo get_post_field( 'post_title', $task_id ) ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php }
+
 	}
 
 }

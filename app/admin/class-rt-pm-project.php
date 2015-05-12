@@ -756,26 +756,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $task_labels=$rt_pm_task->labels;
 
             //Check Post object is init or not
-
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
-            ///alert Notification
-            if ( isset( $action_complete ) && $action_complete){
-                if (isset($_REQUEST["new"])) {
-                    ?>
-                    <div class="alert-box success">
-                        <?php _e('New '.  ucfirst($task_labels['name']).' Inserted Sucessfully.'); ?>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                <?php
-                }
-                if(isset($updateFlag) && $updateFlag){ ?>
-                    <div class="alert-box success">
-                        <?php _e(ucfirst($task_labels['name'])." Updated Sucessfully."); ?>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                <?php }
-            }
-            if (isset($_REQUEST["{$task_post_type}_id"])) {
+
+            if(isset($_REQUEST["{$task_post_type}_id"])) {
+
+                $post_id = $_REQUEST["{$task_post_type}_id"];
                 $form_ulr .= "&{$task_post_type}_id=" . $_REQUEST["{$task_post_type}_id"];
                 $post = get_post($_REQUEST["{$task_post_type}_id"]);
                 if (!$post) {
@@ -806,6 +791,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $post=null;
             }
 
+            $task_type = get_post_meta( $post_id, 'rtpm_parent_task', true );
+
             // get project meta
             if (isset($post->ID)) {
                 $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
@@ -826,6 +813,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             <?php if (isset($post->ID)){?>
                 <script>
+                    var task_type = '<?php echo $task_type ?>';
                     jQuery(document).ready(function($) {
                         setTimeout(function() {
                             $("#div-add-task").reveal({
@@ -840,15 +828,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             <div id="wp-custom-list-table">
 			<?php
 				if( $user_edit ) {
-					if (isset($_REQUEST["{$task_post_type}_id"])) {
+				?>
+                    <button class="right mybutton add-task" type="button" ><?php _e('Add Task'); ?></button>
+                    <button class="right mybutton add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
+                    <button class="right mybutton add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
+                <?php }
 
-                        $post_id = $_REQUEST["{$task_post_type}_id"];
-						$btntitle = 'Update Task';
-					}else{
-						$btntitle = 'Add Task';
-					}
-				?><button class="right mybutton add-task" type="button" ><?php _e($btntitle); ?></button><?php
-				}
 				$rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
 				$rtpm_task_list->prepare_items();
 				$rtpm_task_list->display();
@@ -865,6 +850,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
                         <?php } ?>
+                        <div class="row collapse show-for-subtask" style="display: none;">
+                            <div class="large-12 columns">
+                                <?php if( $user_edit ) {
+                                    $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+                                } else { ?>
+                                    <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
+                                <?php } ?>
+                            </div>
+                        </div>
                         <div class="row collapse postbox">
                             <div class="large-12 columns">
                                 <?php if( $user_edit ) { ?>
@@ -886,10 +880,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                         </div>
                         <div class="row collapse">
-                            <div class="large-2 small-4 columns">
+                            <div class="large-2 small-4 columns hide-for-milestone">
                                 <span class="prefix" title="Create Date"><label>Create Date</label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns hide-for-milestone <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
@@ -899,13 +893,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                                 <?php } ?>
                             </div>
-                            <div class="large-1 mobile-large-1 columns">
+                            <div class="large-1 mobile-large-1 columns hide-for-milestone">
                                 <span class="postfix datepicker-toggle" data-datepicker="closing-date"><label class="foundicon-calendar"></label></span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns">
+                            <div class="large-3 mobile-large-1 columns hide-for-milestone">
                                 <span class="prefix" title="Status">Status</span>
                             </div>
-                            <div class="large-3 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                            <div class="large-3 mobile-large-1 columns hide-for-milestone <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php
                                 if (isset($post->ID))
                                     $pstatus = $post->post_status;
@@ -958,7 +952,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             </div>
                         </div>
 
-                        <div class="row collaspse postbox">
+                        <div class="row collaspse postbox hide-for-milestone">
                             <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>
                             <div class="inside resources-list">
 
@@ -1025,7 +1019,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             ));
                         }
                         ?>
-                        <div class="row collapse postbox">
+                        <div class="row collapse postbox hide-for-milestone">
                             <div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br /></div>
                             <h6 class="hndle"><span><i class="foundicon-paper-clip"></i> <?php _e('Attachments'); ?></span></h6>
                             <div class="inside">

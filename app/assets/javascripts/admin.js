@@ -507,7 +507,7 @@ jQuery(document).ready(function($) {
 
 
     //open model
-    $(document).on("click",".add-task",function(e){
+    $(document).on("click","button.add-task",function(e){
         $("#div-add-task").reveal({
             opened: function(){
                 /*$("input[name='post[post_title]']").val("");
@@ -516,6 +516,28 @@ jQuery(document).ready(function($) {
                 $("input[name='post[post_duedate]']").val("");
                 $("select[name='post[post_author]']").val(0);
                 $("select[name='post[post_status]']").val();*/
+            }
+        });
+    });
+    //open model
+    $(document).on("click","button.add-sub-task",function(e){
+        $("#div-add-task").reveal({
+            opened: function(){
+                $('.show-for-subtask').show();
+            },
+            closed: function() {
+                $('.show-for-subtask').hide();
+            }
+        });
+    });
+    //open model
+    $(document).on("click","button.add-milestone",function(e){
+        $("#div-add-task").reveal({
+            opened: function(){
+                $('.hide-for-milestone').hide();
+            },
+            closed: function() {
+                $('.hide-for-milestone').show();
             }
         });
     });
