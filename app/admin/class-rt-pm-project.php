@@ -811,7 +811,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
 				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
-                $task_group = $rt_pm_task->rtpm_get_task_type( $post->ID );
 			} else {
 				$post_assignee = '';
 			}
@@ -895,7 +894,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     <input class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                                            value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                            title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date"
-                                           <?php echo isset( $task_group['name'] ) ? 'readonly' : '' ?>
                                         />
                                 <?php } else { ?>
                                     <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>

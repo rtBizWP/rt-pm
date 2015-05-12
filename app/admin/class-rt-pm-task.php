@@ -1519,6 +1519,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 */
 		public function rtpm_after_save_task( $post_id, $update ) {
 				$this->rtpm_set_task_group( $post_id, true );
+
+				$this->rtpm_set_task_type( $post_id );
 		}
 
 		/**
@@ -1572,19 +1574,48 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			update_post_meta( $post_id, 'post_duedate', $end_date );
 		}
 
-		public function rtpm_get_task_type( $post_id ) {
+		/**
+		 * Set the type of a task (Task group, Orindary Task and Sun Task)
+		 * @param $post_id
+		 */
+		public function rtpm_set_task_type( $post_id ) {
 
 			$parent_task_id = absint( get_post_meta( $post_id, 'rtpm_parent_task', true ) );
 
 			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
 
+			$task_type = '';
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
-				return array( 'name' => 'ordinary', 'label' =>'Ordinary Task' );
+				$task_type = 'main_task';
 			} elseif ( $child_task_count > 0 ) {
-				return array( 'name' => 'group', 'label' => 'Task Group' );
+				$task_type = 'group';
 			} elseif( $parent_task_id > 0 ) {
-				return array( 'name' => 'sub', 'label' => 'Sub Task' );
+				$task_type = 'sub_task';
 			}
+
+			update_post_meta( $post_id, 'rtpm_task_type', $task_type );
+		}
+
+		public function rtpm_get_task_type_label( $post_id ) {
+
+			$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+			$task_label = '';
+
+			switch( $task_type ) {
+				case 'group':
+					$task_label = 'Task Group';
+					break;
+
+				case 'main_task':
+					$task_label = 'Normal Task';
+					break;
+
+				case 'sub_task':
+					$task_label = 'Sub Task';
+					break;
+			}
+
+			return $task_label;
 		}
 	}
 

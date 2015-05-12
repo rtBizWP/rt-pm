@@ -30,7 +30,7 @@ if( isset( $_GET["id"] ) ) {
         $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
         $createdate = $create->format("M d, Y h:i A");
         $modifydate = $modify->format("M d, Y h:i A");
-        $task_group = $rt_pm_task->rtpm_get_task_type( $post->ID );
+
     } else {
         $post_assignee = $post_id;
     }
@@ -150,7 +150,7 @@ $task_labels=$rt_pm_task->labels;
         </div>
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 
-            <?php if( $user_edit && $task_group['name'] != 'group' ) { ?>
+            <?php if( $user_edit ) { ?>
                 <input required="required" class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
@@ -166,7 +166,7 @@ $task_labels=$rt_pm_task->labels;
             <span class="due-date-hidden" title="Due Date"><label>Due Date<small class="required"> * </small></label></span>
         </div>
         <div class="small-8 columns">
-            <?php if( $user_edit && $task_group['name'] != 'group') { ?>
+            <?php if( $user_edit ) { ?>
                 <input class="datetimepicker moment-from-now" type="text" name="post[post_duedate]" placeholder="Select Due Date"
                        value="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>"
                        title="<?php echo ( isset($due_date) ) ? $due_date : ''; ?>" id="due_<?php echo $task_post_type ?>_date">
