@@ -48,7 +48,7 @@ class Rt_PM_Project_Gantt {
         wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
         wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
 
-        wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
+        wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
     }
 
     /**
