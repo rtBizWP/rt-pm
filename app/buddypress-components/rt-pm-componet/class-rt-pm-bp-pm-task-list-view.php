@@ -530,11 +530,11 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 								break;
                             case "rtpm_task_type":
 
-								$task_type = $rt_pm_task->rtpm_get_task_type( $rec->ID );
+								$task_type = $rt_pm_task->rtpm_get_task_type_label( $rec->ID );
 
 								if( ! empty( $task_type ) ) {
 
-                                        echo '<td '.$attributes.'><span>'.$task_type['label'].'</span>';
+                                        echo '<td '.$attributes.'><span>'.$task_type.'</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }

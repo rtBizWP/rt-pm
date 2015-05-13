@@ -669,6 +669,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
+					'rtpm_parent_task'     => $newTask['parent_task']
 				);
 				$post_id    = $this->rtpm_save_task_data( $post, $data );
 
@@ -679,7 +680,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
 					'user_created_by'      => get_current_user_id(),
-					'rtpm_parent_task'     => '0'
+					'rtpm_parent_task'     => $newTask['parent_task']
 				);
 				$post_id = $this->rtpm_save_task_data( $post, $data );
 
@@ -1519,6 +1520,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 */
 		public function rtpm_after_save_task( $post_id, $update ) {
 				$this->rtpm_set_task_group( $post_id, true );
+
+				$this->rtpm_set_task_type( $post_id );
 		}
 
 		/**
@@ -1572,20 +1575,84 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			update_post_meta( $post_id, 'post_duedate', $end_date );
 		}
 
-		public function rtpm_get_task_type( $post_id ) {
+		/**
+		 * Set the type of a task (Task group, Orindary Task and Sun Task)
+		 * @param $post_id
+		 */
+		public function rtpm_set_task_type( $post_id ) {
 
 			$parent_task_id = absint( get_post_meta( $post_id, 'rtpm_parent_task', true ) );
 
 			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
 
+			$task_type = '';
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
-				return array( 'name' => 'ordinary', 'label' =>'Ordinary Task' );
+				$task_type = 'main_task';
 			} elseif ( $child_task_count > 0 ) {
-				return array( 'name' => 'group', 'label' => 'Task Group' );
+				$task_type = 'group';
 			} elseif( $parent_task_id > 0 ) {
-				return array( 'name' => 'sub', 'label' => 'Sub Task' );
+				$task_type = 'sub_task';
 			}
+
+			update_post_meta( $post_id, 'rtpm_task_type', $task_type );
 		}
+
+		public function rtpm_get_task_type_label( $post_id ) {
+
+			$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+			$task_label = '';
+
+			switch( $task_type ) {
+				case 'group':
+					$task_label = 'Task Group';
+					break;
+
+				case 'main_task':
+					$task_label = 'Normal Task';
+					break;
+
+				case 'sub_task':
+					$task_label = 'Sub Task';
+					break;
+			}
+
+			return $task_label;
+		}
+
+		public function rtpm_render_parent_tasks_dropdown( $post_id = '' ) {
+
+			$args = array(
+				'fields' => 'ids',
+				'nopaging' => true,
+				'no_found_rows' => true,
+				'meta_query' => array(
+					array(
+						'key' => 'rtpm_task_type',
+						'value' => 'group',
+					),
+					array(
+						'key' => 'rtpm_task_type',
+						'value' => 'main_task',
+					),
+					'relation' => 'OR'
+				),
+			);
+
+			$data = $this->rtpm_get_task_data( $args );
+
+			$parent_task_id = '0';
+
+			if( ! empty( $post_id ) )
+				$parent_task_id = get_post_meta( $post_id, 'rtpm_parent_task', true );
+			?>
+			<select name="post[parent_task]">
+				<option value="0">Select Parent Task</option>
+				<?php foreach( $data as $task_id) : ?>
+					<option <?php selected( $task_id, $parent_task_id ); ?> value="<?php echo $task_id ?>"><?php echo get_post_field( 'post_title', $task_id ) ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php }
+
 	}
 
 }
