@@ -510,34 +510,35 @@ jQuery(document).ready(function($) {
     $(document).on("click","button.add-task",function(e){
         $("#div-add-task").reveal({
             opened: function(){
-                /*$("input[name='post[post_title]']").val("");
-                $("textarea[name='post[post_content]']").text("");
-                $("input[name='post[post_date]']").val("");
-                $("input[name='post[post_duedate]']").val("");
-                $("select[name='post[post_author]']").val(0);
-                $("select[name='post[post_status]']").val();*/
+                rtpm_reset_task_form();
             }
         });
     });
     //open model
     $(document).on("click","button.add-sub-task",function(e){
         $("#div-add-task").reveal({
-            opened: function(){
-                $('.show-for-subtask').show();
+            opened: function() {
+                rtpm_reset_task_form();
+                $('.parent-task-dropdown').show();
             },
             closed: function() {
-                $('.show-for-subtask').hide();
+                $('.parent-task-dropdown').hide();
             }
         });
     });
     //open model
     $(document).on("click","button.add-milestone",function(e){
         $("#div-add-task").reveal({
-            opened: function(){
+            opened: function() {
+                rtpm_reset_task_form();
                 $('.hide-for-milestone').hide();
+                $('input[name="post[task_type]"]').val('milestone');
+                $('.parent-task-dropdown').show();
             },
             closed: function() {
+                $('input[name="post[task_type]"]').val('');
                 $('.hide-for-milestone').show();
+                $('.parent-task-dropdown').hide();
             }
         });
     });
@@ -559,5 +560,18 @@ jQuery(document).ready(function($) {
 
 
 });
+
+function rtpm_reset_task_form() {
+    jQuery('input[name="post[task_type]"]').val('');
+    jQuery("input[name='post[post_title]']").val("");
+    tinyMCE.activeEditor.setContent('');
+    jQuery("input[name='post[post_date]']").val("");
+    jQuery("input[name='post[post_duedate]']").val("");
+    jQuery("select[name='post[post_author]']").val(0);
+    jQuery("select[name='post[post_status]']").val();
+    jQuery("select[name='post[parent_task]']").val(0);
+    jQuery("#attachment-container .scroll-height").html('');
+    jQuery('div.resources-list>div.parent-row:gt(0)').remove();
+}
 
 

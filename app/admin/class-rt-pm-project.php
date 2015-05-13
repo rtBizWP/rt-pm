@@ -791,7 +791,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $post=null;
             }
 
-            $task_type = get_post_meta( $post_id, 'rtpm_parent_task', true );
+            $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
             // get project meta
             if (isset($post->ID)) {
@@ -818,6 +818,28 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         setTimeout(function() {
                             $("#div-add-task").reveal({
                                 opened: function(){
+                                    if( 'milestone' === task_type ) {
+                                        $('.hide-for-milestone').hide();
+                                        $('input[name="post[task_type]"]').val('milestone');
+                                        $('.parent-task-dropdown').show();
+                                    }
+
+                                    if( 'sub_task' === task_type ) {
+                                        $('.parent-task-dropdown').show();
+                                    }
+                                },
+                                closed: function() {
+
+                                    if( 'milestone' === task_type ) {
+                                        $('.hide-for-milestone').show();
+                                        $('input[name="post[task_type]"]').val('');
+                                        $('.parent-task-dropdown').hide();
+                                    }
+
+                                    if( 'sub_task' === task_type ) {
+                                        $('.parent-task-dropdown').hide();
+                                    }
+
                                 }
                             });
                         },10);
@@ -846,11 +868,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
                     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
                         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+                        <input type="hidden" name="post[task_type]" value="" />
                         <?php wp_nonce_field( 'rtpm_save_task', 'rtpm_save_task_nonce' ); ?>
                         <?php if (isset($post->ID) && $user_edit ) { ?>
                             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
                         <?php } ?>
-                        <div class="row collapse show-for-subtask" style="display: none;">
+                        <div class="row collapse parent-task-dropdown" style="display: none;">
                             <div class="large-12 columns">
                                 <?php if( $user_edit ) {
                                     $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
