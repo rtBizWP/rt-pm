@@ -178,6 +178,22 @@ class Rtbp_Pm_Screens {
 		
 		include  RT_PM_BP_PM_PATH.'/templates/pm-resources.php';
 	}
+	
+	public function bp_pm_all_resources(){
+		add_action('bp_template_content', array( $this, 'rtpm_all_resources_template' ) );
+	}
+	
+	public function rtpm_all_resources_template(){
+		include  RT_PM_BP_PM_PATH.'/templates/pm-all-resources.php';
+	}
+	
+	public function bp_pm_my_tasks(){
+		add_action('bp_template_content', array( $this, 'rtpm_my_tasks_template' ) );
+	}
+	
+	public function rtpm_my_tasks_template(){
+		include  RT_PM_BP_PM_PATH.'/templates/pm-my-tasks.php';
+	}
 
 
 }
