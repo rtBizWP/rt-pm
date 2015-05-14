@@ -180,7 +180,7 @@ $task_labels=$rt_pm_task->labels;
     <div class="row">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
         <div class="rt-parent-row">
-            <div class="row rt-row">
+            <div class="row rt-row rt-resources-row">
                 <div class="small-4 medium-4 column">
                     <input type="text" class="search-contact" placeholder="Assignee"/>
                     <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
@@ -196,7 +196,7 @@ $task_labels=$rt_pm_task->labels;
                 </div>
 
                 <div class="small-1 columns">
-                    <a class="add-multiple button"><i class="fa fa-plus"></i></a>
+                    <a class="add-multiple add-button button"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <?php
