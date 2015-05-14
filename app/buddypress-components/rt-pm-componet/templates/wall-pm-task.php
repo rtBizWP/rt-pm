@@ -48,7 +48,22 @@ $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
 $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
+$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 ?>
+<script>
+    var task_type = '<?php echo $task_type ?>';
+    jQuery(document).ready(function($) {
+        if( 'milestone' === task_type ) {
+            $('.hide-for-milestone').hide();
+            $('input[name="post[task_type]"]').val('milestone');
+            $('.parent-task-dropdown').show();
+        }
+
+        if( 'sub_task' === task_type ) {
+            $('.parent-task-dropdown').show();
+        }
+    });
+</script>
 <form method="post"   action="">
     <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
@@ -58,6 +73,7 @@ $task_labels=$rt_pm_task->labels;
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <?php } ?>
 
+    <input type="hidden" name="post[task_type]" value="" />
     <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
@@ -75,7 +91,17 @@ $task_labels=$rt_pm_task->labels;
         </div>
     </div>
 
-    <div class="row column-title">
+    <div class="row column-title parent-task-dropdown" style="display: none;">
+        <div class="small-12 columns">
+            <?php if( $user_edit ) {
+                $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+            } else { ?>
+                <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="row ">
         <!-- Post title START -->
         <div class="small-12 columns">
             <?php if( $user_edit ) { ?>
@@ -144,7 +170,7 @@ $task_labels=$rt_pm_task->labels;
         </div>
     </div>
 
-    <div class="row">
+    <div class="row hide-for-milestone">
         <div  class="small-4 columns">
             <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
         </div>
@@ -177,7 +203,7 @@ $task_labels=$rt_pm_task->labels;
         </div>
    </div>
 
-    <div class="row">
+    <div class="row hide-for-milestone">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
         <div class="rt-parent-row">
             <div class="row rt-row rt-resources-row">
@@ -237,7 +263,7 @@ $task_labels=$rt_pm_task->labels;
 
     <?php   
 	
-	if( isset( $post_id ) ){ ?>
+	if( isset( $post_id ) && 'milestone' !== $task_type){ ?>
     <h3><?php _e('Attachments'); ?></h3>
     <hr/>
     <?php render_rt_bp_wall_documents_section( $post_id, $blog_id );

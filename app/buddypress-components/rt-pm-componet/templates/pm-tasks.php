@@ -88,17 +88,42 @@ if (isset($post->ID)) {
 //assign to
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
+$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+
 //Disable working days
 $projectid = $_GET['rt_project_id'];
 $rt_pm_task->disable_working_days( $projectid );
 ?>
 
-<?php if (isset($post->ID)){?>
+<?php if (isset($post->ID)) { ?>
     <script>
+        var task_type = '<?php echo $task_type ?>';
         jQuery(document).ready(function($) {
             setTimeout(function() {
                 $("#div-add-task").reveal({
                     opened: function(){
+                        if( 'milestone' === task_type ) {
+                            $('.hide-for-milestone').hide();
+                            $('input[name="post[task_type]"]').val('milestone');
+                            $('.parent-task-dropdown').show();
+                        }
+
+                        if( 'sub_task' === task_type ) {
+                            $('.parent-task-dropdown').show();
+                        }
+                    },
+                    closed: function() {
+
+                        if( 'milestone' === task_type ) {
+                            $('.hide-for-milestone').show();
+                            $('input[name="post[task_type]"]').val('');
+                            $('.parent-task-dropdown').hide();
+                        }
+
+                        if( 'sub_task' === task_type ) {
+                            $('.parent-task-dropdown').hide();
+                        }
+
                     }
                 });
             },10);
@@ -109,20 +134,16 @@ $rt_pm_task->disable_working_days( $projectid );
 <div id="wp-custom-list-table">
     <?php
     if( $user_edit ) {
-        if (isset($_REQUEST["{$task_post_type}_id"])) {
 
-            $post_id = $_REQUEST["{$task_post_type}_id"];
-            $btntitle = 'Update Task';
-        }else{
-            $btntitle = 'Add Task';
-        }
         ?>
         <div class="list-heading">
-            <div class="large-9 columns">
+            <div class="large-6 columns">
                 <h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
-            <div class="large-3 columns">
-                <button class="right mybutton add-task" type="button" ><?php _e( $btntitle ); ?></button>
+            <div class="large-6 columns">
+                <button class="right mybutton add-task" type="button" ><?php _e( 'Add Task' ); ?></button>
+                <button class="right mybutton add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
+                <button class="right mybutton add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
             </div>
 
         </div>
@@ -159,12 +180,24 @@ $rt_pm_task->disable_working_days( $projectid );
     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
         <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
         <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+        <input type="hidden" name="post[task_type]" value="" />
         <?php if (isset($post->ID) && $user_edit ) { ?>
             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
         <?php } ?>
         <h4> <?php  _e( 'Add New Task', RT_PM_TEXT_DOMAIN ) ; ?></h4>
         <div class="row">
             <div class="large-6 columns">
+
+                <div class="row parent-task-dropdown" style="display: none;">
+                    <div class="large-12 mobile-large-1 columns">
+                        <?php if( $user_edit ) {
+                            $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+                        } else { ?>
+                            <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
+                        <?php } ?>
+                    </div>
+                </div>
+
                 <label><?php _e(ucfirst($task_labels['name'])." Name"); ?><small class="required"> * </small></label>
                 <?php if( $user_edit ) { ?>
                     <input required="required" name="post[post_title]" id="new_<?php echo $task_post_type ?>_title" type="text" placeholder="<?php _e(ucfirst($task_labels['name'])." Name"); ?>" value="<?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?>" />
@@ -183,7 +216,7 @@ $rt_pm_task->disable_working_days( $projectid );
                 }
                 ?>
 
-                <div class="row">
+                <div class="row hide-for-milestone">
                     <div class="large-6 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                         <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
                         <?php if( $user_edit ) { ?>
@@ -195,7 +228,7 @@ $rt_pm_task->disable_working_days( $projectid );
                             <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
                         <?php } ?>
                     </div>
-                    <div class="large-6 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
+                    <div class="large-6 columns hide-for-milestone <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                         <span title="Status"><label>Status<small class="required"> * </small></label></span>
                         <?php
                         if (isset($post->ID))
@@ -243,7 +276,7 @@ $rt_pm_task->disable_working_days( $projectid );
                         <?php } ?>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row hide-for-milestone">
                     <span title="Estimated time"><label><?php _e('Resources') ?></label></span>
                     <div class="rt-parent-row">
                         <div class="row rt-row">
@@ -301,7 +334,7 @@ $rt_pm_task->disable_working_days( $projectid );
                 </div>
             </div>
 
-            <div class="large-6 column">
+            <div class="large-6 column hide-for-milestone">
                 <?php $attachments = array();
                 if ( isset( $post->ID ) ) {
                     $attachments = get_posts( array(

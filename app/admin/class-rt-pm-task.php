@@ -617,24 +617,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				switch_to_blog( $newTask['rt_voxxi_blog_id'] );
 			}
 
-			$creationdate = $newTask['post_date'];
-			if ( isset( $creationdate ) && $creationdate != '' ) {
-				try {
-					$dr  = date_create_from_format( 'M d, Y H:i A', $creationdate );
-					$UTC = new DateTimeZone( 'UTC' );
-					$dr->setTimezone( $UTC );
-					$timeStamp                = $dr->getTimestamp();
-					$newTask['post_date']     = gmdate( 'Y-m-d H:i:s', intval( $timeStamp ) );
-					$newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate( 'Y-m-d H:i:s', ( intval( $timeStamp ) ) ) );
-				} catch ( Exception $e ) {
-					$newTask['post_date']     = current_time( 'mysql' );
-					$newTask['post_date_gmt'] = gmdate( 'Y-m-d H:i:s' );
-				}
-			} else {
-				$newTask['post_date']     = current_time( 'mysql' );
-				$newTask['post_date_gmt'] = gmdate( 'Y-m-d H:i:s' );
-			}
-
 			$duedate = $newTask['post_duedate'];
 			if ( isset( $duedate ) && $duedate != '' ) {
 				try {
@@ -646,6 +628,29 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				} catch ( Exception $e ) {
 					$newTask['post_duedate'] = current_time( 'mysql' );
 				}
+			}
+
+			if( 'milestone' !== $newTask['task_type'] ) {
+				$creationdate = $newTask['post_date'];
+				if ( isset( $creationdate ) && $creationdate != '' ) {
+					try {
+						$dr  = date_create_from_format( 'M d, Y H:i A', $creationdate );
+						$UTC = new DateTimeZone( 'UTC' );
+						$dr->setTimezone( $UTC );
+						$timeStamp                = $dr->getTimestamp();
+						$newTask['post_date']     = gmdate( 'Y-m-d H:i:s', intval( $timeStamp ) );
+						$newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate( 'Y-m-d H:i:s', ( intval( $timeStamp ) ) ) );
+					} catch ( Exception $e ) {
+						$newTask['post_date']     = current_time( 'mysql' );
+						$newTask['post_date_gmt'] = gmdate( 'Y-m-d H:i:s' );
+					}
+				} else {
+					$newTask['post_date']     = current_time( 'mysql' );
+					$newTask['post_date_gmt'] = gmdate( 'Y-m-d H:i:s' );
+				}
+			} else {
+				$newTask['post_date']     = $newTask['post_duedate'];
+				$newTask['post_date_gmt'] = $newTask['post_duedate'];
 			}
 
 			// Post Data to be saved.
@@ -669,7 +674,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update'          => current_time( 'mysql' ),
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
-					'rtpm_parent_task'     => $newTask['parent_task']
+					'rtpm_parent_task'     => $newTask['parent_task'],
+					'rtpm_task_type'       => $newTask['task_type'],
 				);
 				$post_id    = $this->rtpm_save_task_data( $post, $data );
 
@@ -680,7 +686,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'date_update_gmt'      => gmdate( 'Y-m-d H:i:s' ),
 					'user_updated_by'      => get_current_user_id(),
 					'user_created_by'      => get_current_user_id(),
-					'rtpm_parent_task'     => $newTask['parent_task']
+					'rtpm_parent_task'     => $newTask['parent_task'],
+					'rtpm_task_type'       => $newTask['task_type'],
 				);
 				$post_id = $this->rtpm_save_task_data( $post, $data );
 
@@ -701,14 +708,18 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 
 			// Attachments
-			$old_attachments = get_posts( array(
+			$args =  array(
 				'post_parent'    => $newTask['post_id'],
 				'post_type'      => 'attachment',
 				'fields'         => 'ids',
 				'posts_per_page' => - 1,
-			) );
+			);
+
+			$query = new WP_Query( $args );
+			$old_attachments = $query->posts;
+
 			$new_attachments = array();
-			if ( ! isset( $_POST['front_end'] ) ) {
+			if ( is_admin() ) {
 				if ( isset( $_POST['attachment'] ) ) {
 					$new_attachments = $_POST['attachment'];
 					foreach ( $new_attachments as $attachment ) {
@@ -1066,7 +1077,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 
 		/**
-		 *  Save project task from gantt chart (ajax)
+		 *  Save project task from ganttchart (ajax)
 		 */
 		public function rtpm_save_project_task() {
 			global $rt_pm_task;
@@ -1578,6 +1589,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		/**
 		 * Set the type of a task (Task group, Orindary Task and Sun Task)
 		 * @param $post_id
+		 * @return int|bool Meta ID if the key didn't exist, true on successful update,
+		 *                  false on failure.
 		 */
 		public function rtpm_set_task_type( $post_id ) {
 
@@ -1585,16 +1598,20 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$child_task_count = absint( get_post_meta( $post_id, 'rtpm_child_task_count', true ) );
 
-			$task_type = '';
+			$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+
+			if( ! empty( $task_type ) && 'milestone' === $task_type )
+				return update_post_meta( $post_id, 'rtpm_task_type', $task_type );
+
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
 				$task_type = 'main_task';
 			} elseif ( $child_task_count > 0 ) {
-				$task_type = 'group';
+				$task_type = 'task_group';
 			} elseif( $parent_task_id > 0 ) {
 				$task_type = 'sub_task';
 			}
 
-			update_post_meta( $post_id, 'rtpm_task_type', $task_type );
+			return update_post_meta( $post_id, 'rtpm_task_type', $task_type );
 		}
 
 		public function rtpm_get_task_type_label( $post_id ) {
@@ -1603,7 +1620,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$task_label = '';
 
 			switch( $task_type ) {
-				case 'group':
+				case 'task_group':
 					$task_label = 'Task Group';
 					break;
 
@@ -1613,6 +1630,10 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				case 'sub_task':
 					$task_label = 'Sub Task';
+					break;
+
+				case 'milestone':
+					$task_label = 'Milestone';
 					break;
 			}
 
@@ -1628,7 +1649,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'meta_query' => array(
 					array(
 						'key' => 'rtpm_task_type',
-						'value' => 'group',
+						'value' => 'task_group',
 					),
 					array(
 						'key' => 'rtpm_task_type',
