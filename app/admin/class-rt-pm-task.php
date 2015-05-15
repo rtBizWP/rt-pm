@@ -137,6 +137,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'menu_position'      => $menu_position,
 				'supports'           => array( 'title', 'editor', 'comments', 'custom-fields' ),
 				'capability_type'    => $this->post_type,
+				'map_meta_cap' => true,
 			);
 			register_post_type( $this->post_type, $args );
 		}
