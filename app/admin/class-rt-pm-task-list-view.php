@@ -34,6 +34,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		var $labels;
         static $project_id_key = 'post_project_id';
         var $user_edit;
+        var $is_trash;
 
 		public function __construct( $user_edit ) {
 
@@ -118,7 +119,89 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 			return $actions;
 		}
 
-		/**
+        /**
+         * Display the list of views available on this table.
+         * @return array
+         */
+        protected function get_views() {
+            global $locked_post_status, $rt_pm_task;
+
+            $post_type = $rt_pm_task->post_type;
+
+            if ( !empty($locked_post_status) )
+                return array();
+
+            $status_links = array();
+            $project_id = $_REQUEST['rt_project_id'];
+            $num_posts = $this->rtpm_count_posts( $project_id, 'readable' );
+
+            $class = '';
+            $allposts = '';
+
+            $current_user_id = get_current_user_id();
+
+
+            if ( $this->user_posts_count ) {
+                if ( isset( $_GET['author'] ) && ( $_GET['author'] == $current_user_id ) )
+                    $class = ' class="current"';
+                $status_links['mine'] = "<a href='edit.php?post_type=$post_type&author=$current_user_id'$class>" . sprintf( _nx( 'Mine <span class="count">(%s)</span>', 'Mine <span class="count">(%s)</span>', $this->user_posts_count, 'posts' ), number_format_i18n( $this->user_posts_count ) ) . '</a>';
+                $allposts = '&all_posts=1';
+                $class = '';
+            }
+
+            $total_posts = array_sum( (array) $num_posts );
+
+            // Subtract post types that are not included in the admin all list.
+            foreach ( get_post_stati( array('show_in_admin_all_list' => false) ) as $state )
+                $total_posts -= $num_posts->$state;
+
+            if ( empty( $class ) && ! isset( $_REQUEST['post_status'] ) && ! $this->user_posts_count ) {
+                $class =  ' class="current"';
+            }
+
+            $all_inner_html = sprintf(
+                _nx(
+                    'All <span class="count">(%s)</span>',
+                    'All <span class="count">(%s)</span>',
+                    $total_posts,
+                    'posts'
+                ),
+                number_format_i18n( $total_posts )
+            );
+
+            $url = remove_query_arg( 'post_status' );
+            $status_links['all'] = "<a href='$url'$class>" . $all_inner_html . '</a>';
+
+            foreach ( get_post_stati(array('show_in_admin_status_list' => true), 'objects') as $status ) {
+                $class = '';
+
+                $status_name = $status->name;
+
+                if ( empty( $num_posts->$status_name ) )
+                    continue;
+
+                if ( isset($_REQUEST['post_status']) && $status_name == $_REQUEST['post_status'] )
+                    $class = ' class="current"';
+
+                $url = add_query_arg( array( 'post_status' => $status_name ) );
+                $status_links[$status_name] = "<a href='$url'$class>" . sprintf( translate_nooped_plural( $status->label_count, $num_posts->$status_name ), number_format_i18n( $num_posts->$status_name ) ) . '</a>';
+            }
+
+            if ( ! empty( $this->sticky_posts_count ) ) {
+                $class = ! empty( $_REQUEST['show_sticky'] ) ? ' class="current"' : '';
+
+                $sticky_link = array( 'sticky' => "<a href='edit.php?post_type=$post_type&amp;show_sticky=1'$class>" . sprintf( _nx( 'Sticky <span class="count">(%s)</span>', 'Sticky <span class="count">(%s)</span>', $this->sticky_posts_count, 'posts' ), number_format_i18n( $this->sticky_posts_count ) ) . '</a>' );
+
+                // Sticky comes after Publish, or if not listed, after All.
+                $split = 1 + array_search( ( isset( $status_links['publish'] ) ? 'publish' : 'all' ), array_keys( $status_links ) );
+                $status_links = array_merge( array_slice( $status_links, 0, $split ), $sticky_link, array_slice( $status_links, $split ) );
+            }
+
+            return $status_links;
+        }
+
+
+        /**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
 		function prepare_items() {
 			global $wpdb;
@@ -143,8 +226,11 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                 $query .= ') ';
             }
 
+           // $this->is_trash = isset( $_REQUEST['post_status'] ) && $_REQUEST['post_status'] == 'trash';
             if ( isset( $_GET['post_status'] ) ) {
                 $query .= " AND $wpdb->posts.post_status = '".$_REQUEST['post_status']."'";
+            } else {
+                $query .= " AND $wpdb->posts.post_status != 'trash'";
             }
 
             if ( isset( $_GET['assignee'] ) ) {
@@ -384,5 +470,52 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             }
             echo '</select>';
         }
-	}
+
+        /**
+         * Task count
+         * @param $project_id
+         * @param string $perm
+         *
+         * @return mixed|void
+         */
+        function rtpm_count_posts( $project_id, $perm = '' ) {
+            global $wpdb, $rt_pm_task;
+
+            $type = $rt_pm_task->post_type;
+
+
+            $cache_key = _count_posts_cache_key( $type, $perm );
+
+            $counts = wp_cache_get( $cache_key, 'counts' );
+            if ( false !== $counts ) {
+                /** This filter is documented in wp-includes/post.php */
+                return apply_filters( 'wp_count_posts', $counts, $type, $perm );
+            }
+
+            $query = "SELECT post_status, COUNT( * ) AS num_posts FROM {$wpdb->posts} WHERE post_type = %s AND post_parent = %d  ";
+            if ( 'readable' == $perm && is_user_logged_in() ) {
+                $post_type_object = get_post_type_object($type);
+                if ( ! current_user_can( $post_type_object->cap->read_private_posts ) ) {
+                    $query .= $wpdb->prepare( " AND (post_status != 'private' OR ( post_author = %d AND post_status = 'private' ))",
+                        get_current_user_id()
+                    );
+                }
+            }
+            $query .= ' GROUP BY post_status';
+
+            $results = (array) $wpdb->get_results( $wpdb->prepare( $query, $type, $project_id ), ARRAY_A );
+            $counts = array_fill_keys( get_post_stati(), 0 );
+
+            foreach ( $results as $row ) {
+                $counts[ $row['post_status'] ] = $row['num_posts'];
+            }
+
+            $counts = (object) $counts;
+            wp_cache_set( $cache_key, $counts, 'counts' );
+
+
+            return apply_filters( 'wp_count_posts', $counts, $type, $perm );
+        }
+
+    }
 }

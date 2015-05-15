@@ -858,6 +858,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
 				$rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
 				$rtpm_task_list->prepare_items();
+                $rtpm_task_list->views();
 				$rtpm_task_list->display();
 			?>
             </div>
