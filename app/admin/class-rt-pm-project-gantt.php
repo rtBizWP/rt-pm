@@ -77,18 +77,66 @@ class Rt_PM_Project_Gantt {
      * @param $dom_element
      */
     public function rtpm_prepare_ganttchart( $project_id = 0, $dom_element ) {
-        global $rtcrm_ganttchart, $rt_pm_task, $rt_pm_task_links_model;
+        global $rtcrm_ganttchart, $rt_pm_task, $rt_pm_task_links_model, $rt_pm_task_resources_model;
 
         $columns = array(
-            array( 'name' => 'text', 'label' => 'Task Name', 'tree' => true ),
-            array( 'name' => 'add', 'label' => '' ),
+            array(
+                'name' => 'text',
+                'label' => 'Task Name',
+                'tree' => true,
+                'resize' => true,
+                'min_width' => 500,
+            ),
+            array(
+                'name' => 'start_date',
+                'label' => 'Start Date',
+                'resize' => true
+            ),
+            array(
+                'name' => 'end_date',
+                'label' => 'End Date',
+                'resize' => true
+            ),
+            array(
+                'name'  => 'estimated_hours',
+                'label' =>  'Estimated Hours',
+                'resize' => true,
+            ),
+            array(
+                'name' => 'resources',
+                'label' => 'Resources',
+                'resize' => true
+            ),
+            array(
+                'name' => 'add',
+                'label' => '',
+                'width' => '30'
+            ),
         );
 
         $lightbox =  array(
-            array( 'name' => 'description', 'height' => 70, 'map_to' => 'text', 'type' => 'textarea' ),
-            array( 'name' => 'type', 'type' => 'typeselect', 'map_to' => 'type' ),
-            array( 'name' => 'estimated_hours', 'type' => 'number', 'map_to' => 'estimated_hours' ),
-            array( 'name' => 'time', 'height' => 72, 'type' => 'duration', 'map_to' => 'auto' ),
+            array(
+                'name' => 'description',
+                'height' => 70,
+                'map_to' => 'text',
+                'type' => 'textarea'
+            ),
+            array(
+                'name' => 'type',
+                'type' => 'typeselect',
+                'map_to' => 'type'
+            ),
+            array(
+                'name' => 'estimated_hours',
+                'type' => 'number',
+                'map_to' => 'estimated_hours'
+            ),
+            array(
+                'name' => 'time',
+                'height' => 72,
+                'type' => 'duration',
+                'map_to' => 'auto'
+            )
         );
 
         $args = array(
@@ -103,7 +151,7 @@ class Rt_PM_Project_Gantt {
 
         $links = array();
 
-        $tentative_tasks = $rt_pm_task->rtpm_get_unassigned_task( $project_id );
+        $tentative_tasks = array();
 
         $non_working_days = $rt_pm_task->rtpm_get_non_working_days( $project_id );
 
@@ -114,7 +162,7 @@ class Rt_PM_Project_Gantt {
                 $start_date = rt_convert_strdate_to_usertimestamp( $task->post_date );
                 $end_date = rt_convert_strdate_to_usertimestamp( get_post_meta( $task->ID, 'post_duedate', true ) );
                 $task_type = get_post_meta( $task->ID, 'rtpm_task_type', true );
-                $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
+                $estimated_hours = $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task->ID );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
                 //Set task color
@@ -125,7 +173,31 @@ class Rt_PM_Project_Gantt {
 
                 $progress_percentage = $rt_pm_task->rtpm_get_task_progress_percentage( $task->ID ) / 100;
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $task_color, 'progress' => $progress_percentage  );
+                $resources_wp_user = $rt_pm_task_resources_model->rtpm_get_task_resources( $task->ID );
+
+                $resources_user_displayname = array();
+
+                if( ! empty( $resources_wp_user ) ) {
+                    foreach ( $resources_wp_user as $resource_wp_user_id ) {
+                        $resources_user_displayname[] = rtbiz_get_user_displayname( $resource_wp_user_id );
+                    }
+                } else {
+                    $tentative_tasks[] = $task->ID;
+                }
+
+                $data[] = array(
+                    'id' => $task->ID,
+                    'text' => $task->post_title,
+                    'start_date' => $start_date->format( "d-m-Y" ),
+                    'end_date' => $end_date->format('d-m-Y'),
+                    'type' => $task_type,
+                    'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
+                    'open' => true,
+                    'parent' => $parent_task,
+                    'color' => $task_color,
+                    'progress' => $progress_percentage,
+                    'resources' =>  implode( ', ', $resources_user_displayname ),
+                );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -142,7 +214,7 @@ class Rt_PM_Project_Gantt {
             }
         }
 
-        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks', 'non_working_days' );
+        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks', 'non_working_days', 'config' );
 
         ?>
 

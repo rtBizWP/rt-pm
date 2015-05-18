@@ -1194,42 +1194,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			}
 		}
 
-		/**
-		 * Get all unassigned task ids
-		 *
-		 * @param $project_id
-		 *
-		 * @return array
-		 */
-		public function rtpm_get_unassigned_task( $project_id ) {
-
-			$tasks_ids = $this->rtpm_get_projects_task_ids( $project_id );
-
-			$args = array(
-				'post__in'      => $tasks_ids,
-				'meta_query'    => array(
-					array(
-						'relation' => 'OR',
-						array(
-							'key'   => 'post_assignee',
-							'value' => '',
-						),
-						array(
-							'key'     => 'post_assignee',
-							'value'   => 'test',
-							'compare' => 'NOT EXISTS',
-						)
-					)
-				),
-				'fields'        => 'ids',
-				'nopaging'      => true,
-				'no_found_rows' => true,
-			);
-
-			$result = $this->rtpm_get_task_data( $args );
-
-			return $result;
-		}
 
 		/**
 		 * Render task detail in context box
