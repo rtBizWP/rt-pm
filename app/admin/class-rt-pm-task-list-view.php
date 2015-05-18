@@ -45,9 +45,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 			$this->user_edit = $user_edit;
 			$args = array(
 				'singular'=> $this->labels['singular_name'], //Singular label
-				'plural' => $this->labels['all_items'], //plural label, also this well be one of the table css class
+				'plural' => 'posts', //plural label, also this well be one of the table css class
 				'ajax'	=> true, //We won't support Ajax for this table
-				'screen' => get_current_screen(),
 			);
 			parent::__construct( $args );
 		}
@@ -75,7 +74,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		public function get_columns() {
 
 			$columns = array(
-				//'cb' => '<input type="checkbox" />',
+				'cb' => '<input type="checkbox" />',
 				'rtpm_title'=> __( 'Title' ),
 				'rtpm_task_type'=> __( 'Type' ),
 				'rtpm_create_date'=> __( 'Created' ),
@@ -113,9 +112,24 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
 		 * @return array
 		 */
 		function get_bulk_actions() {
-			$actions = array(
-				'delete' => __( 'Trash' ),
-			);
+            global $rt_pm_task;
+            $post_type_obj = get_post_type_object( $rt_pm_task->post_type );
+
+            $actions = array();
+
+            if ( $this->is_trash ) {
+                $actions['untrash'] = __( 'Restore' );
+            }
+
+            if ( current_user_can( $post_type_obj->cap->delete_posts ) ) {
+                if ( $this->is_trash || ! EMPTY_TRASH_DAYS ) {
+                    $actions['delete'] = __( 'Delete Permanently' );
+                } else {
+                    $actions['trash'] = __( 'Move to Trash' );
+                }
+            }
+
+
 			return $actions;
 		}
 
@@ -212,6 +226,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             }
             $project_id = $_REQUEST["{$_REQUEST['post_type']}_id"];
            // $this->user_edit = $user_edit;
+
+            $this->is_trash = isset( $_REQUEST['post_status'] ) && $_REQUEST['post_status'] == 'trash';
 
             $s = @$_POST['s'];
 
@@ -354,12 +370,12 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                                     $actions = array(
                                         'edit'      => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}").'">Edit</a>',
                                         'timeentry'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-timeentry&{$this->post_type}_id={$rec->ID}").'&action=timeentry">Time Entry</a>',
-                                        'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=trash").'">Trash</a>',
+                                        'trash'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=trash").'">Trash</a>',
                                     );
                                 }else{
                                     $actions = array(
                                         'restore'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=restore").'">Restore</a>',
-                                        'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=delete").'">Delete</a>',
+                                        'delete'    => '<a href="'.admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id={$_REQUEST["{$rt_pm_project->post_type}_id"]}&tab={$rt_pm_project->post_type}-task&{$this->post_type}_id={$rec->ID}&action=delete").'">Delete Permanently</a>',
                                     );
                                 }
                                 if ($this->user_edit){

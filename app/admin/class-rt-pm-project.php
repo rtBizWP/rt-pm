@@ -745,6 +745,72 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         public function get_project_task_tab($labels,$user_edit) {
             global $rt_pm_project,$rt_pm_task, $rt_pm_time_entries_model;
 
+            $rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
+
+            $doaction = $rtpm_task_list->current_action();
+
+            if ( $doaction ) {
+                check_admin_referer('bulk-posts');
+
+                if ( isset( $_REQUEST[$rt_pm_task->post_type] ) ) {
+                    $post_ids = $_REQUEST[ $rt_pm_task->post_type ];
+                }
+
+                switch ( $doaction ) {
+                    case 'trash':
+                        $trashed = $locked = 0;
+
+                        foreach( (array) $post_ids as $post_id ) {
+                            if ( !current_user_can( 'delete_post', $post_id) )
+                                wp_die( __('You are not allowed to move this item to the Trash.') );
+
+                            if ( wp_check_post_lock( $post_id ) ) {
+                                $locked++;
+                                continue;
+                            }
+
+                            if ( !wp_trash_post($post_id) )
+                                wp_die( __('Error in moving to Trash.') );
+
+                            $trashed++;
+                        }
+
+                        break;
+                    case 'untrash':
+                        $untrashed = 0;
+                        foreach( (array) $post_ids as $post_id ) {
+                            if ( !current_user_can( 'delete_post', $post_id) )
+                                wp_die( __('You are not allowed to restore this item from the Trash.') );
+
+                            if ( !wp_untrash_post($post_id) )
+                                wp_die( __('Error in restoring from Trash.') );
+
+                            $untrashed++;
+                        }
+
+                        break;
+                    case 'delete':
+                        $deleted = 0;
+                        foreach( (array) $post_ids as $post_id ) {
+                            $post_del = get_post($post_id);
+
+                            if ( !current_user_can( 'delete_post', $post_id ) )
+                                wp_die( __('You are not allowed to delete this item.') );
+
+                            if ( $post_del->post_type == 'attachment' ) {
+                                if ( ! wp_delete_attachment($post_id) )
+                                    wp_die( __('Error in deleting.') );
+                            } else {
+                                if ( !wp_delete_post($post_id) )
+                                    wp_die( __('Error in deleting.') );
+                            }
+                            $deleted++;
+                        }
+
+                        break;
+                }
+            }
+
             $post_id = 0;
 
             if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_project->post_type ) {
@@ -847,22 +913,28 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 </script>
             <?php } ?>
 
+              <form method="post" id="posts-filter">
             <div id="wp-custom-list-table">
-			<?php
-				if( $user_edit ) {
-				?>
-                    <button class="right mybutton add-task" type="button" ><?php _e('Add Task'); ?></button>
-                    <button class="right mybutton add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
-                    <button class="right mybutton add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
-                <?php }
 
-				$rtpm_task_list= new Rt_PM_Task_List_View( $user_edit );
-				$rtpm_task_list->prepare_items();
-                $rtpm_task_list->views();
-				$rtpm_task_list->display();
-			?>
+                    <?php
+                        if( $user_edit ) {
+                        ?>
+                            <button class="right button button-primary button-large add-task" type="button" ><?php _e('Add Task'); ?></button>
+                            <button class="right button button-primary button-large add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
+                            <button class="right button button-primary button-large add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
+                        <?php }
+
+
+                    $doaction = $rtpm_task_list->current_action();
+
+                        $rtpm_task_list->prepare_items();
+                        $rtpm_task_list->views();
+                        $rtpm_task_list->display();
+
+                    ?>
+
             </div>
-
+              </form>
 			<!--reveal-modal-add-task -->
             <div id="div-add-task" class="reveal-modal">
                 <fieldset>
@@ -1069,7 +1141,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 </div>
                             </div>
                         </div>
-                        <button class="mybutton right" type="submit" id="save-task">Save task</button>
+                        <button class="button button-primary button-large right" type="submit" id="save-task">Save task</button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>
@@ -1155,6 +1227,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 </script>
             <?php } ?>
 
+            <form id="bulk-action-form">
             <div id="wp-custom-list-table">
 			<?php
 				if( $user_edit ) {
@@ -1163,7 +1236,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 					}else{
 						$btntitle = 'Add Time Entry';
 					}
-					?><div class="row"><button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle); ?></button></div><?php
+					?><div class="row"><button class="right button button-primary button-large add-time-entry" type="button" ><?php _e($btntitle); ?></button></div><?php
 				}
 
 				$project_current_budget_cost = 0;
@@ -1208,7 +1281,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				$rtpm_time_entry_list->display();
 				?>
 			</div>
-
+            </form>
             <!--reveal-modal-add-task -->
             <div id="div-add-time-entry" class="reveal-modal large">
                 <fieldset>
@@ -1274,7 +1347,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 <?php } ?>
                             </div>
                         </div>
-                        <button class="mybutton right" type="submit" id="save-task">Save TimeEntry</button>
+                        <button class="button button-primary button-large right" type="submit" id="save-task">Save TimeEntry</button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>
@@ -1822,8 +1895,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 				<div id="attachment-error" class="row"></div>
 				<div class="row">
 				<?php if( $user_edit ) { ?>
-					<button class="right mybutton add-external-link" type="button" ><?php _e("Add External link"); ?></button>
-					<button class="right mybutton add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
+					<button class="right button button-primary button-large add-external-link" type="button" ><?php _e("Add External link"); ?></button>
+					<button class="right button button-primary button-large add-project-file" data-projectid="<?php echo $projectid; ?>" id="add_project_attachment" type="button" ><?php _e('Add File'); ?></button>
 				<?php } ?>
 				</div>
 
@@ -1932,7 +2005,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <div class="row collapse">
 
                         </div>
-                        <button class="mybutton right" type="submit" id="save-external-link">Save</button>
+                        <button class="button button-primary button-large right" type="submit" id="save-external-link">Save</button>
                     </form>
                 </fieldset>
                 <a class="close-reveal-modal">×</a>

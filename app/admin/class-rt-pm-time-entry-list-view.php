@@ -70,7 +70,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
 		public function get_columns() {
 
 			$columns = array(
-				//'cb' => '<input type="checkbox" />',
+				'cb' => '<input type="checkbox" />',
 				'rtpm_message'=> __( 'Time Entry Message' ),
                 'rtpm_task_id'=> __( 'Task' ),
 				'rtpm_time_entry_type' => __( 'Type' ),

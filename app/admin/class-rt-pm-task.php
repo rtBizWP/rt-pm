@@ -137,6 +137,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'menu_position'      => $menu_position,
 				'supports'           => array( 'title', 'editor', 'comments', 'custom-fields' ),
 				'capability_type'    => $this->post_type,
+				'map_meta_cap' => true,
 			);
 			register_post_type( $this->post_type, $args );
 		}
@@ -891,36 +892,16 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $result;
 		}
 
-
-		public function rtpm_get_task_by_user( $assignee_id ) {
-
-			$args = array(
-				'nopaging'      => true,
-				'post_type'     => $this->post_type,
-				'meta_key'      => 'post_project_id',
-				'meta_key'      => 'post_assignee',
-				'meta_value'    => $assignee_id,
-				'no_found_rows' => true,
-			);
-
-			$query = new WP_Query( $args );
-
-			if ( $query->have_posts() ) {
-				return $query->posts;
-			} else {
-				return null;
-			}
-		}
-
 		public function rtpm_get_user_tasks() {
-			global $rt_pm_bp_pm, $rt_pm_project;
+			global $rt_pm_bp_pm, $rt_pm_project, $rt_pm_task_resources_model;
 
 			$project_post_type = $rt_pm_project->post_type;
 			$data              = $_REQUEST['post'];
 
 			$author_id = $data['author_id'];
+			$project_id = $data['project_id'];
 
-			$tasks_data = $this->rtpm_get_task_by_user( $author_id );
+			$tasks_data = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( $author_id, $project_id );
 
 			$send_data = array();
 
@@ -932,17 +913,17 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				foreach ( $tasks_data as $task ) {
 
-					$task_project_id = $this->rtpm_get_task_project_id( $task->ID );
+					$task_project_id = $this->rtpm_get_task_project_id( $task );
 
 					$task_edit_url        = add_query_arg( array(
 						'post_type'               => $project_post_type,
 						"{$project_post_type}_id" => $task_project_id,
 						'tab'                     => "{$project_post_type}-task",
-						"{$this->post_type}_id"   => $task->ID
+						"{$this->post_type}_id"   => $task
 					), $rt_pm_bp_pm->get_component_root_url() . 'tasks' );
 					$send_data['tasks'][] = array(
 						'task_edit_url' => $task_edit_url,
-						'post_title'    => $task->post_title,
+						'post_title'    => get_post_field( 'post_title', $task ),
 					);
 				}
 			}

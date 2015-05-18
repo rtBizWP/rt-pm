@@ -70,10 +70,13 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		return $wpdb->get_var( $query );
 	}
 
-	public function rtpm_get_all_task_id_by_user( $user_id ) {
+	public function rtpm_get_all_task_id_by_user( $user_id, $project_id = '' ) {
 		global $wpdb;
 
 		$query = "SELECT task_id  FROM {$this->table_name} WHERE user_id = {$user_id}";
+
+		if( ! empty( $project_id ) )
+			$query .= " AND project_id = {$project_id}";
 
 		return $wpdb->get_col( $query );
 	}
