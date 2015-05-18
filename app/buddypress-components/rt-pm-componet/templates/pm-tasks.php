@@ -137,13 +137,13 @@ $rt_pm_task->disable_working_days( $projectid );
 
         ?>
         <div class="list-heading">
-            <div class="large-6 columns">
+            <div class="large-8 columns">
                 <h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
-            <div class="large-6 columns">
-                <button class="right mybutton add-task" type="button" ><?php _e( 'Add Task' ); ?></button>
-                <button class="right mybutton add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
-                <button class="right mybutton add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
+            <div class="large-4 columns">
+                <button class="mybutton add-task" type="button" ><?php _e( 'Add Task' ); ?></button>
+                <button class="mybutton add-sub-task" type="button" ><?php _e('Add Sub Task'); ?></button>
+                <button class="mybutton add-milestone" type="button" ><?php _e('Add Milestone'); ?></button>
             </div>
 
         </div>
@@ -156,15 +156,18 @@ $rt_pm_task->disable_working_days( $projectid );
 </div>
 	<div class="rt-post-per-page-container">
 		<select class="rt-post-per-page-select" data-value="task-list">
-			<?php 
+			<?php
+			$option_array = array( 10,25,50 );
 			if( isset($_SESSION['rt_task_per_page']) ){
 					$selected_option = $_SESSION['rt_task_per_page'];
 				}else{
 					$selected_option = '';
 				}
-			for($opt = 1 ; $opt<5 ; $opt++) { 
-				$opt_value = 5 * $opt;
-				if( $selected_option == $opt_value ){
+			for($opt = 0 ; $opt < count( $option_array ) ; $opt++) { 
+				$opt_value = $option_array[$opt];
+				if( (int)$selected_option == $opt_value ){
+					$is_selected = 'selected';
+				}else if( $selected_option == '' && $opt_value == 25 ){
 					$is_selected = 'selected';
 				}else{
 					$is_selected = '';

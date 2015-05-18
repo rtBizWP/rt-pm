@@ -137,10 +137,22 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
            // $this->user_edit = $user_edit;
 
             $s = @$_POST['s'];
+			
+			/* -- Ordering parameters -- */
+			//Parameters that are going to be used to order the result
 
+            $orderby = (! empty( $_GET["orderby"] ))? filter_var($_GET["orderby"], FILTER_SANITIZE_STRING):'ASC';
+			$order = ! empty( $_GET["order"] ) ? filter_var($_GET["order"], FILTER_SANITIZE_STRING): '';
+			
 			/* -- Preparing your query -- */
 			$project_id_key = self::$project_id_key;
-            $query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$project_id_key' AND pm.meta_value='$project_id'";
+			
+			if( $orderby == 'post_duedate' ){
+				$query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='post_duedate' AND pm.post_id IN ( SELECT post_id from $wpdb->postmeta WHERE meta_key = 'post_project_id' AND meta_value = '$project_id' ) ";
+			}else{
+				$query = "SELECT * FROM $wpdb->posts INNER JOIN $wpdb->postmeta pm ON $wpdb->posts.ID = pm.post_id WHERE $wpdb->posts.post_type = '$this->post_type' AND pm.meta_key='$project_id_key' AND pm.meta_value='$project_id'";
+			}
+			
 
             if ( $s ) {
                 $query .= " AND ( ";
@@ -163,16 +175,13 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                 $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
 
-			/* -- Ordering parameters -- */
-			//Parameters that are going to be used to order the result
-
-            $orderby = (! empty( $_GET["orderby"] ))? filter_var($_GET["orderby"], FILTER_SANITIZE_STRING):'ASC';
-			$order = ! empty( $_GET["order"] ) ? filter_var($_GET["order"], FILTER_SANITIZE_STRING): '';
-
             if ( ! empty( $orderby ) & ! empty( $order ) ) {
-				$query.=' ORDER BY '.$orderby.' '.$order;
+				if( $orderby == 'post_duedate' ){
+					$query.=' ORDER BY meta_value '.$order;
+				}else{
+					$query.=' ORDER BY '.$orderby.' '.$order;
+				}
 			}
-
 			/* -- Pagination parameters -- */
 			//Number of elements in your table?
 			$totalitems = $wpdb->query( $query );
@@ -514,7 +523,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
                                         'edit'      => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
-                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&'.$this->post_type.'_id='.$rec->ID.'&action=timeentry">Time</a>',
+                                        'timeentry'    => '<a href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&action=timeentry">Time</a>',
                                         'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
                                     );
                                 }else{
