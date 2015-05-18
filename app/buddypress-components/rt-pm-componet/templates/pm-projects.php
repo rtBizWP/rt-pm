@@ -223,19 +223,22 @@
 		</table>
 		<div class="rt-post-per-page-container">
 						<select class="rt-post-per-page-select" data-value="project-list">
-							<?php 
-							if( isset($_SESSION['rt_project_post_per_page']) ){
-									$selected_option = $_SESSION['rt_project_post_per_page'];
-								}else{
-									$selected_option = '';
-								}
-							for($opt = 1 ; $opt<5 ; $opt++) { 
-								$opt_value = 5 * $opt;
-								if( $selected_option == $opt_value ){
-									$is_selected = 'selected';
-								}else{
-									$is_selected = '';
-								}
+							<?php
+								$option_array = array( 10,25,50 );
+								if( isset($_SESSION['rt_project_post_per_page']) ){
+										$selected_option = $_SESSION['rt_project_post_per_page'];
+									}else{
+										$selected_option = '';
+									}
+								for($opt = 0 ; $opt < count( $option_array ) ; $opt++) { 
+									$opt_value = $option_array[$opt];
+									if( (int)$selected_option == $opt_value ){
+										$is_selected = 'selected';
+									}else if( $selected_option == '' && $opt_value == 25 ){
+										$is_selected = 'selected';
+									}else{
+										$is_selected = '';
+									}
 								?>
 							<option value="<?php echo $opt_value; ?>" <?php echo $is_selected;?>><?php echo $opt_value; ?></option>
 							<?php } ?>

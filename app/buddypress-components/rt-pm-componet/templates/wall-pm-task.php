@@ -272,7 +272,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
 
     <div class="row">
-        <div class="small-12 columns right">
+        <div class="small-12 columns right action-bar">
             <input class="right" type="submit" value="Save" >
         </div>
     </div>
