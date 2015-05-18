@@ -194,7 +194,7 @@ class Rt_PM_Project_Gantt {
                     'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
                     'open' => true,
                     'parent' => $parent_task,
-                    'color' => $task_color,
+                    'color' => ( 'milestone' !== $task_type ) ? $task_color : '',
                     'progress' => $progress_percentage,
                     'resources' =>  implode( ', ', $resources_user_displayname ),
                 );
@@ -259,10 +259,12 @@ class Rt_PM_Project_Gantt {
                 };
 
                 //Set task color after adding
-                if( 0 === item.parent ) {
-                    gantt.getTask(id).color = '<?php echo $this->parent_task_color ?>';
-                }else {
-                    gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
+                if( 'milestone' !== item.$rendered_type ) {
+                    if( 0 === item.parent ) {
+                        gantt.getTask(id).color = '<?php echo $this->parent_task_color ?>';
+                    }else {
+                        gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
+                    }
                 }
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
@@ -450,7 +452,7 @@ class Rt_PM_Project_Gantt {
                 render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
             });
 
-            gantt.attachEvent("onTaskDrag", function(id, mode, task, original){
+            gantt.attachEvent("onTaskDrag", function(id, mode, task, original) {
                 var modes = gantt.config.drag_mode;
                 if(mode == modes.move){
                     var diff = task.start_date - original.start_date;
@@ -463,7 +465,7 @@ class Rt_PM_Project_Gantt {
                 return true;
             });
             //rounds positions of the child items to scale
-            gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
+            gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
                 var modes = gantt.config.drag_mode;
                 if(mode == modes.move ){
                     gantt.eachTask(function(child){
