@@ -371,7 +371,7 @@ class Rt_PM_Project_Gantt {
                 });
             });
 
-//
+
 //            //Estimated hours field template
 //            gantt.locale.labels.section_estimated_hours = "Estimated hours";
 //            gantt.form_blocks["number"] = {
@@ -393,38 +393,15 @@ class Rt_PM_Project_Gantt {
 //                }
 //            };
 
-//            //Show task detail on hover
-//            var request;
-//            gantt.attachEvent("onMouseMove", function(id,item) {
-//
-//                if ('undefined' != typeof request)
-//                    request.abort();
-//
-//                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-//
-//                if (null === id)
-//                    return;
-//
-//
-//                var data = {task_id: id};
-//
-//                var senddata = {
-//                    action: 'rtpm_get_task_data_for_ganttchart',
-//                    post: data
-//                };
-//
-//                if ( 'undefined' != typeof request ) {
-//                    request.abort();
-//                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
-//                }
-//
-//                request = $.post( admin_url, senddata, function( response ){
-//                    if( response.success ){
-//                        $('div.rtcontext-box').html( template( response.data ) );
-//                    }
-//                } );
-//
-//            });
+            //Show task detail on hover
+            var request;
+            gantt.attachEvent("onMouseMove", function(id,item) {
+
+                if ('undefined' != typeof request)
+                    request.abort();
+
+                setTimeout( rtpm_show_task_detail_hovercart( id ), 3000 );
+            });
 
             //Close side panel before open lightbox
             gantt.attachEvent("onTaskCreated", function(task) {
@@ -499,7 +476,7 @@ class Rt_PM_Project_Gantt {
 
             jQuery( document ).ready( function( $ ) {
 
-              //  $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
 
             });
 
@@ -533,6 +510,35 @@ class Rt_PM_Project_Gantt {
                     gantt.render();
                 }
             }
+
+
+            function rtpm_show_task_detail_hovercart( id ) {
+
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+
+                if (null === id)
+                    return;
+
+
+                var data = {task_id: id};
+
+                var senddata = {
+                    action: 'rtpm_get_task_data_for_ganttchart',
+                    post: data
+                };
+
+                if ( 'undefined' != typeof request ) {
+                    request.abort();
+                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
+                }
+
+                request = $.post( admin_url, senddata, function( response ){
+                    if( response.success ){
+                        $('div.rtcontext-box').html( template( response.data ) );
+                    }
+                } );
+            }
+
 
             /**
              * Convert date into wp default date format(yyyy-mm-dd hh:mm:ss)
