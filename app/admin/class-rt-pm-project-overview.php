@@ -112,6 +112,7 @@ class Rt_Pm_Project_Overview {
 						var post = {};
 						var data = {};
 						post.author_id = elm.data('team-member-id');
+						post.project_id = elm.parents('li').data('project-id');
 						data.action = 'rtpm_get_user_tasks'
 						data.post = post;
 
@@ -205,7 +206,7 @@ class Rt_Pm_Project_Overview {
 		foreach ( $project_data as $project ):
 			$project_edit_link = rtpm_bp_get_project_details_url( $project->ID );
 			?>
-			<li class="activity-item">
+			<li class="activity-item" data-project-id="<?php echo $project->ID ?>">
 				<div class="activity-content">
 					<div class="row activity-inner rt-biz-activity">
 						<div class="rt-voxxi-content-box">
