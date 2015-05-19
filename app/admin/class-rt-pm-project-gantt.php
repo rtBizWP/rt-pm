@@ -394,10 +394,16 @@ class Rt_PM_Project_Gantt {
 //            };
 
             //Show task detail on hover
-            var request, timeout;
-            gantt.attachEvent("onMouseMove", function(id,item) {
+            var request, timeout, old_task_id;
+            gantt.attachEvent("onMouseMove", function( id, e ) {
 
-                rtpm_show_task_detail_hovercart( id );
+                if( old_task_id === null || old_task_id !== id ) {
+                    old_task_id = id;
+                    var target = e.target;
+                    if(gantt.$task_data.contains(target)) {
+                        rtpm_show_task_detail_hovercart( id );
+                    }
+                }
             });
 
             //Close side panel before open lightbox
@@ -500,7 +506,7 @@ class Rt_PM_Project_Gantt {
 
             jQuery( document ).ready( function( $ ) {
 
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
 
             });
 
@@ -556,11 +562,11 @@ class Rt_PM_Project_Gantt {
                 request = $.post( admin_url, senddata, function( response ){
                     if( response.success ){
                         $('div.rtcontext-box').html( template( response.data ) );
-                        $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                       // $('div.gantt_task_content').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
                     }
                 } );
 
-               // $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+               $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
             }
 
 
