@@ -394,13 +394,10 @@ class Rt_PM_Project_Gantt {
 //            };
 
             //Show task detail on hover
-            var request;
+            var request, timeout;
             gantt.attachEvent("onMouseMove", function(id,item) {
 
-                if ('undefined' != typeof request)
-                    request.abort();
-
-                setTimeout( rtpm_show_task_detail_hovercart( id ), 3000 );
+                rtpm_show_task_detail_hovercart( id );
             });
 
             //Close side panel before open lightbox
@@ -414,8 +411,22 @@ class Rt_PM_Project_Gantt {
             });
 
 
+            //Delete task
+            gantt.attachEvent("onTaskDblClick", function( id, e ) {
+                console.log("Hi I'm db click");
+                var opts = { text: '' };
+                opts.title = "";
+                opts.callback = function(result) {
+                    if (result)
+                        gantt.deleteTask(id);
+                };
+                dhtmlx.confirm(opts);
+            });
+
+
             //Open task edit side panel
-            gantt.attachEvent("onTaskSelected", function( id, item ) {
+            gantt.attachEvent("onTaskClick", function( id, item ) {
+                console.log("Hi I'm single click");
 
                 var task = gantt.getTask(id);
 
@@ -427,6 +438,18 @@ class Rt_PM_Project_Gantt {
                 block_ui();
 
                 render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
+            });
+
+
+            //Delete task link
+            gantt.attachEvent("onLinkClick", function( id ) {
+                var opts = { text: gantt.locale.labels.link + " " +this.templates.link_description(this.getLink(id)) + " " + gantt.locale.labels.confirm_link_deleting };
+                opts.title = "";
+                opts.callback = function(result) {
+                    if (result)
+                        gantt.deleteLink(id);
+                };
+                dhtmlx.confirm(opts);
             });
 
             gantt.attachEvent("onTaskDrag", function(id, mode, task, original) {
@@ -441,6 +464,7 @@ class Rt_PM_Project_Gantt {
                 }
                 return true;
             });
+
             //rounds positions of the child items to scale
             gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
                 var modes = gantt.config.drag_mode;
@@ -514,11 +538,8 @@ class Rt_PM_Project_Gantt {
 
             function rtpm_show_task_detail_hovercart( id ) {
 
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-
                 if (null === id)
                     return;
-
 
                 var data = {task_id: id};
 
@@ -535,8 +556,11 @@ class Rt_PM_Project_Gantt {
                 request = $.post( admin_url, senddata, function( response ){
                     if( response.success ){
                         $('div.rtcontext-box').html( template( response.data ) );
+                        $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
                     }
                 } );
+
+               // $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
             }
 
 
