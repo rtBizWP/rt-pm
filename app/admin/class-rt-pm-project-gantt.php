@@ -77,18 +77,66 @@ class Rt_PM_Project_Gantt {
      * @param $dom_element
      */
     public function rtpm_prepare_ganttchart( $project_id = 0, $dom_element ) {
-        global $rtcrm_ganttchart, $rt_pm_task, $rt_pm_task_links_model;
+        global $rtcrm_ganttchart, $rt_pm_task, $rt_pm_task_links_model, $rt_pm_task_resources_model;
 
         $columns = array(
-            array( 'name' => 'text', 'label' => 'Task Name', 'tree' => true ),
-            array( 'name' => 'add', 'label' => '' ),
+            array(
+                'name' => 'text',
+                'label' => 'Task Name',
+                'tree' => true,
+                'resize' => true,
+                'min_width' => 500,
+            ),
+            array(
+                'name' => 'start_date',
+                'label' => 'Start Date',
+                'resize' => true
+            ),
+            array(
+                'name' => 'end_date',
+                'label' => 'End Date',
+                'resize' => true
+            ),
+            array(
+                'name'  => 'estimated_hours',
+                'label' =>  'Estimated Hours',
+                'resize' => true,
+            ),
+            array(
+                'name' => 'resources',
+                'label' => 'Resources',
+                'resize' => true
+            ),
+            array(
+                'name' => 'add',
+                'label' => '',
+                'width' => '30'
+            ),
         );
 
         $lightbox =  array(
-            array( 'name' => 'description', 'height' => 70, 'map_to' => 'text', 'type' => 'textarea' ),
-            array( 'name' => 'type', 'type' => 'typeselect', 'map_to' => 'type' ),
-            array( 'name' => 'estimated_hours', 'type' => 'number', 'map_to' => 'estimated_hours' ),
-            array( 'name' => 'time', 'height' => 72, 'type' => 'duration', 'map_to' => 'auto' ),
+            array(
+                'name' => 'description',
+                'height' => 70,
+                'map_to' => 'text',
+                'type' => 'textarea'
+            ),
+            array(
+                'name' => 'type',
+                'type' => 'typeselect',
+                'map_to' => 'type'
+            ),
+            array(
+                'name' => 'estimated_hours',
+                'type' => 'number',
+                'map_to' => 'estimated_hours'
+            ),
+            array(
+                'name' => 'time',
+                'height' => 72,
+                'type' => 'duration',
+                'map_to' => 'auto'
+            )
         );
 
         $args = array(
@@ -103,7 +151,7 @@ class Rt_PM_Project_Gantt {
 
         $links = array();
 
-        $tentative_tasks = $rt_pm_task->rtpm_get_unassigned_task( $project_id );
+        $tentative_tasks = array();
 
         $non_working_days = $rt_pm_task->rtpm_get_non_working_days( $project_id );
 
@@ -114,7 +162,7 @@ class Rt_PM_Project_Gantt {
                 $start_date = rt_convert_strdate_to_usertimestamp( $task->post_date );
                 $end_date = rt_convert_strdate_to_usertimestamp( get_post_meta( $task->ID, 'post_duedate', true ) );
                 $task_type = get_post_meta( $task->ID, 'rtpm_task_type', true );
-                $estimated_hours = get_post_meta( $task->ID, 'post_estimated_hours', true );
+                $estimated_hours = $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task->ID );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
 
                 //Set task color
@@ -125,7 +173,31 @@ class Rt_PM_Project_Gantt {
 
                 $progress_percentage = $rt_pm_task->rtpm_get_task_progress_percentage( $task->ID ) / 100;
 
-                $data[] = array( 'id' => $task->ID, 'text' => $task->post_title, 'start_date' => $start_date->format( "d-m-Y" ), 'end_date' => $end_date->format('d-m-Y'), 'type' => $task_type, 'estimated_hours' => $estimated_hours, 'open' => true, 'parent' => $parent_task, 'color' => $task_color, 'progress' => $progress_percentage  );
+                $resources_wp_user = $rt_pm_task_resources_model->rtpm_get_task_resources( $task->ID );
+
+                $resources_user_displayname = array();
+
+                if( ! empty( $resources_wp_user ) ) {
+                    foreach ( $resources_wp_user as $resource_wp_user_id ) {
+                        $resources_user_displayname[] = rtbiz_get_user_displayname( $resource_wp_user_id );
+                    }
+                } else {
+                    $tentative_tasks[] = $task->ID;
+                }
+
+                $data[] = array(
+                    'id' => $task->ID,
+                    'text' => $task->post_title,
+                    'start_date' => $start_date->format( "d-m-Y" ),
+                    'end_date' => $end_date->format('d-m-Y'),
+                    'type' => $task_type,
+                    'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
+                    'open' => true,
+                    'parent' => $parent_task,
+                    'color' => ( 'milestone' !== $task_type ) ? $task_color : '',
+                    'progress' => $progress_percentage,
+                    'resources' =>  implode( ', ', $resources_user_displayname ),
+                );
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -142,7 +214,7 @@ class Rt_PM_Project_Gantt {
             }
         }
 
-        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks', 'non_working_days' );
+        $rtcrm_chart = compact( 'dom_element', 'data', 'columns', 'links', 'lightbox', 'tentative_tasks', 'non_working_days', 'config' );
 
         ?>
 
@@ -187,10 +259,12 @@ class Rt_PM_Project_Gantt {
                 };
 
                 //Set task color after adding
-                if( 0 === item.parent ) {
-                    gantt.getTask(id).color = '<?php echo $this->parent_task_color ?>';
-                }else {
-                    gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
+                if( 'milestone' !== item.$rendered_type ) {
+                    if( 0 === item.parent ) {
+                        gantt.getTask(id).color = '<?php echo $this->parent_task_color ?>';
+                    }else {
+                        gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
+                    }
                 }
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
@@ -286,7 +360,7 @@ class Rt_PM_Project_Gantt {
                     link_id : id
                 };
 
-                var send_data = { 'action' : 'rtpm_delete_lead_task_link', 'post' : data };
+                var send_data = { 'action' : 'rtpm_delete_project_task_link', 'post' : data };
 
                 $.post( admin_url, send_data, function( response ) {
                     if( response.success ) {
@@ -297,7 +371,7 @@ class Rt_PM_Project_Gantt {
                 });
             });
 
-//
+
 //            //Estimated hours field template
 //            gantt.locale.labels.section_estimated_hours = "Estimated hours";
 //            gantt.form_blocks["number"] = {
@@ -319,38 +393,12 @@ class Rt_PM_Project_Gantt {
 //                }
 //            };
 
-//            //Show task detail on hover
-//            var request;
-//            gantt.attachEvent("onMouseMove", function(id,item) {
-//
-//                if ('undefined' != typeof request)
-//                    request.abort();
-//
-//                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-//
-//                if (null === id)
-//                    return;
-//
-//
-//                var data = {task_id: id};
-//
-//                var senddata = {
-//                    action: 'rtpm_get_task_data_for_ganttchart',
-//                    post: data
-//                };
-//
-//                if ( 'undefined' != typeof request ) {
-//                    request.abort();
-//                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
-//                }
-//
-//                request = $.post( admin_url, senddata, function( response ){
-//                    if( response.success ){
-//                        $('div.rtcontext-box').html( template( response.data ) );
-//                    }
-//                } );
-//
-//            });
+            //Show task detail on hover
+            var request, timeout;
+            gantt.attachEvent("onMouseMove", function(id,item) {
+
+                rtpm_show_task_detail_hovercart( id );
+            });
 
             //Close side panel before open lightbox
             gantt.attachEvent("onTaskCreated", function(task) {
@@ -363,8 +411,22 @@ class Rt_PM_Project_Gantt {
             });
 
 
+            //Delete task
+            gantt.attachEvent("onTaskDblClick", function( id, e ) {
+                console.log("Hi I'm db click");
+                var opts = { text: '' };
+                opts.title = "";
+                opts.callback = function(result) {
+                    if (result)
+                        gantt.deleteTask(id);
+                };
+                dhtmlx.confirm(opts);
+            });
+
+
             //Open task edit side panel
-            gantt.attachEvent("onTaskSelected", function( id, item ) {
+            gantt.attachEvent("onTaskClick", function( id, item ) {
+                console.log("Hi I'm single click");
 
                 var task = gantt.getTask(id);
 
@@ -378,7 +440,19 @@ class Rt_PM_Project_Gantt {
                 render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
             });
 
-            gantt.attachEvent("onTaskDrag", function(id, mode, task, original){
+
+            //Delete task link
+            gantt.attachEvent("onLinkClick", function( id ) {
+                var opts = { text: gantt.locale.labels.link + " " +this.templates.link_description(this.getLink(id)) + " " + gantt.locale.labels.confirm_link_deleting };
+                opts.title = "";
+                opts.callback = function(result) {
+                    if (result)
+                        gantt.deleteLink(id);
+                };
+                dhtmlx.confirm(opts);
+            });
+
+            gantt.attachEvent("onTaskDrag", function(id, mode, task, original) {
                 var modes = gantt.config.drag_mode;
                 if(mode == modes.move){
                     var diff = task.start_date - original.start_date;
@@ -390,8 +464,9 @@ class Rt_PM_Project_Gantt {
                 }
                 return true;
             });
+
             //rounds positions of the child items to scale
-            gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
+            gantt.attachEvent("onAfterTaskDrag", function(id, mode, e) {
                 var modes = gantt.config.drag_mode;
                 if(mode == modes.move ){
                     gantt.eachTask(function(child){
@@ -425,7 +500,7 @@ class Rt_PM_Project_Gantt {
 
             jQuery( document ).ready( function( $ ) {
 
-              //  $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
 
             });
 
@@ -459,6 +534,35 @@ class Rt_PM_Project_Gantt {
                     gantt.render();
                 }
             }
+
+
+            function rtpm_show_task_detail_hovercart( id ) {
+
+                if (null === id)
+                    return;
+
+                var data = {task_id: id};
+
+                var senddata = {
+                    action: 'rtpm_get_task_data_for_ganttchart',
+                    post: data
+                };
+
+                if ( 'undefined' != typeof request ) {
+                    request.abort();
+                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
+                }
+
+                request = $.post( admin_url, senddata, function( response ){
+                    if( response.success ){
+                        $('div.rtcontext-box').html( template( response.data ) );
+                        $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                    }
+                } );
+
+               // $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+            }
+
 
             /**
              * Convert date into wp default date format(yyyy-mm-dd hh:mm:ss)

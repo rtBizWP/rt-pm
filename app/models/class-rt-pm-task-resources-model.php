@@ -41,18 +41,37 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		return $instance;
 	}
 
+	/**
+	 * Add new resource on task
+	 * @param $data
+	 */
 	public function rtpm_add_task_resources( $data ) {
 		parent::insert( $data );
 	}
 
+	/**
+	 * Update resources from task
+	 * @param $data
+	 * @param $where
+	 */
 	public function rtpm_update_task_resources( $data, $where ) {
 		parent::update( $data, $where );
 	}
 
+	/**
+	 * Delete resources from task
+	 * @param $where
+	 */
 	public function rtpm_delete_task_resources( $where ) {
 		parent::delete( $where );
 	}
 
+	/**
+	 * Get task estimated hours base on hours assigned to all resources
+	 * @param $task_ids
+	 *
+	 * @return bool
+	 */
 	public function rtpm_get_tasks_estimated_hours( $task_ids ) {
 		global $wpdb;
 
@@ -70,6 +89,13 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		return $wpdb->get_var( $query );
 	}
 
+	/**
+	 * Get all task id assigned to user
+	 * @param $user_id
+	 * @param string $project_id
+	 *
+	 * @return mixed
+	 */
 	public function rtpm_get_all_task_id_by_user( $user_id, $project_id = '' ) {
 		global $wpdb;
 
@@ -77,6 +103,20 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 
 		if( ! empty( $project_id ) )
 			$query .= " AND project_id = {$project_id}";
+
+		return $wpdb->get_col( $query );
+	}
+
+	/**
+	 * Get all resources wp_user id assigned to task
+	 * @param $task_id
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_get_task_resources( $task_id ) {
+		global $wpdb;
+
+		$query = "SELECT user_id  FROM {$this->table_name} WHERE task_id = {$task_id}";
 
 		return $wpdb->get_col( $query );
 	}
