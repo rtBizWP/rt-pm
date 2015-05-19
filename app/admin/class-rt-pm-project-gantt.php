@@ -417,38 +417,65 @@ class Rt_PM_Project_Gantt {
             });
 
 
-            //Delete task
-            gantt.attachEvent("onTaskDblClick", function( id, e ) {
-                console.log("Hi I'm db click");
-                var opts = { text: '' };
-                opts.title = "";
-                opts.callback = function(result) {
-                    if (result)
-                        gantt.deleteTask(id);
-                };
-                dhtmlx.confirm(opts);
-            });
+           //  Add Click Events
+            (function(){
+                var dbl_click_length = 500,
+                    double_clicked = false,
+                    click_start,
+                    click_timer;
 
+                gantt.attachEvent("onTaskDblClick", function( id, e ) {
+                    var target = e.target;
+                    if( ! gantt.$grid_data.contains(target)) {
+                        if (click_start && (new Date()) - click_start < dbl_click_length) {
+                            double_clicked = true;
+                            clearTimeout(click_timer)
+                            click_timer = null;
 
-            //Open task edit side panel
-            gantt.attachEvent("onTaskClick", function( id, item ) {
-                console.log("Hi I'm single click");
+                            var opts = {text: 'Are you sure you want to delete this task ?'};
+                            opts.title = "";
+                            opts.callback = function (result) {
+                                if (result)
+                                    gantt.deleteTask(id);
+                            };
+                            dhtmlx.confirm(opts);
+                            //Double Click Code
+                        }
+                    } else {
+                        return true;
+                    }
+                });
 
-                var task = gantt.getTask(id);
+                gantt.attachEvent("onTaskClick", function( id, e ) {
+                    var target = e.target;
+                    if( ! gantt.$grid_data.contains(target) ) {
+                        if (!click_timer) {
+                            click_start = new Date();
+                            double_clicked = false;
 
-                if ( task.$new )
-                    return false;
+                            click_timer = setTimeout(function () {
+                                if (!double_clicked) {
+                                    gantt.hideLightbox();
 
-                gantt.hideLightbox();
+                                    block_ui();
 
-                block_ui();
+                                    render_project_slide_panel('open', id, <?php echo get_current_blog_id(); ?>, '', 'task');
+                                    //Single Click Code
+                                }
 
-                render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
-            });
-
+                                click_timer = null;
+                            }, dbl_click_length);
+                        }
+                    } else {
+                        return true;
+                    }
+                });
+            })();
 
             //Delete task link
-            gantt.attachEvent("onLinkClick", function( id ) {
+            gantt.attachEvent("onLinkDblClick", function( id ) {
+
+                console.log('Hi ther');
                 var opts = { text: gantt.locale.labels.link + " " +this.templates.link_description(this.getLink(id)) + " " + gantt.locale.labels.confirm_link_deleting };
                 opts.title = "";
                 opts.callback = function(result) {
