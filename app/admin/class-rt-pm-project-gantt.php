@@ -360,7 +360,7 @@ class Rt_PM_Project_Gantt {
                     link_id : id
                 };
 
-                var send_data = { 'action' : 'rtpm_delete_lead_task_link', 'post' : data };
+                var send_data = { 'action' : 'rtpm_delete_project_task_link', 'post' : data };
 
                 $.post( admin_url, send_data, function( response ) {
                     if( response.success ) {
