@@ -158,8 +158,10 @@ $rt_pm_task->disable_working_days( $projectid );
 		<select class="rt-post-per-page-select" data-value="task-list">
 			<?php
 			$option_array = array( 10,25,50 );
-			if( isset($_SESSION['rt_task_per_page']) ){
-					$selected_option = $_SESSION['rt_task_per_page'];
+			$user_id = get_current_user_id();
+			$user_post_per_page = get_user_meta($user_id,'rt_task_per_page',true);
+			if( isset($user_post_per_page) ){
+					$selected_option = $user_post_per_page;
 				}else{
 					$selected_option = '';
 				}

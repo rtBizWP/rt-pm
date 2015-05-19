@@ -6,9 +6,10 @@
 	} else {
 		$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 		$paged = $page = max( 1, get_query_var('paged') );
-		
-		if( isset($_SESSION['rt_project_post_per_page']) ){
-			$posts_per_page = $_SESSION['rt_project_post_per_page'];
+		$user_id = get_current_user_id();
+		$user_post_per_page = get_user_meta($user_id,'rt_project_post_per_page',true);
+		if( isset($user_post_per_page) ){
+			$posts_per_page = $user_post_per_page;
 		}else{
 			$posts_per_page = 25;
 		}
@@ -225,8 +226,8 @@
 						<select class="rt-post-per-page-select" data-value="project-list">
 							<?php
 								$option_array = array( 10,25,50 );
-								if( isset($_SESSION['rt_project_post_per_page']) ){
-										$selected_option = $_SESSION['rt_project_post_per_page'];
+								if( isset($user_post_per_page) ){
+										$selected_option = $user_post_per_page;
 									}else{
 										$selected_option = '';
 									}

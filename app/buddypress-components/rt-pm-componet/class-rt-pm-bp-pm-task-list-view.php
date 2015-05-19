@@ -189,8 +189,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 
 			//How many to display per page?
 			// set through session variable
-			if( isset($_SESSION['rt_task_per_page']) ){
-				$perpage = $_SESSION['rt_task_per_page'];
+			$user_id = get_current_user_id();
+			$user_post_per_page = get_user_meta($user_id,'rt_task_per_page',true);
+			if( isset($user_post_per_page) ){
+				$perpage = $user_post_per_page;
 			}else{
 				$perpage = 25;
 			}
