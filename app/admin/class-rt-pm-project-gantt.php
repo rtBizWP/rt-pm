@@ -418,21 +418,23 @@ class Rt_PM_Project_Gantt {
 
 
            //  Add Click Events
-            (function(){
+            (function() {
                 var dbl_click_length = 500,
                     double_clicked = false,
                     click_start,
                     click_timer;
 
                 gantt.attachEvent("onTaskDblClick", function( id, e ) {
+
                     var target = e.target;
-                    if( ! gantt.$grid_data.contains(target)) {
+                    if( ! gantt.$grid_data.contains(target) &&
+                        ! gantt.$task_links.contains(target) ) {
                         if (click_start && (new Date()) - click_start < dbl_click_length) {
                             double_clicked = true;
                             clearTimeout(click_timer)
                             click_timer = null;
 
-                            var opts = {text: 'Are you sure you want to delete this task ?'};
+                            var opts = { text: gantt.locale.labels.confirm_deleting };
                             opts.title = "";
                             opts.callback = function (result) {
                                 if (result)
@@ -475,7 +477,6 @@ class Rt_PM_Project_Gantt {
             //Delete task link
             gantt.attachEvent("onLinkDblClick", function( id ) {
 
-                console.log('Hi ther');
                 var opts = { text: gantt.locale.labels.link + " " +this.templates.link_description(this.getLink(id)) + " " + gantt.locale.labels.confirm_link_deleting };
                 opts.title = "";
                 opts.callback = function(result) {
