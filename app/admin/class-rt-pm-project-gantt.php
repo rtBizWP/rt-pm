@@ -85,32 +85,36 @@ class Rt_PM_Project_Gantt {
                 'label' => 'Task Name',
                 'tree' => true,
                 'resize' => true,
-                'min_width' => 500,
+                'min_width' => 300,
+                'width' =>  300,
             ),
             array(
                 'name' => 'start_date',
                 'label' => 'Start Date',
-                'resize' => true
+                'hide'  =>  true,
+                'width' =>  100,
             ),
             array(
                 'name' => 'end_date',
                 'label' => 'End Date',
-                'resize' => true
+                'hide'  =>  true,
             ),
             array(
                 'name'  => 'estimated_hours',
                 'label' =>  'Estimated Hours',
-                'resize' => true,
+                'hide'  =>  true,
             ),
             array(
                 'name' => 'resources',
                 'label' => 'Resources',
-                'resize' => true
+                'resize' => true,
+                'hide'  =>  true,
             ),
             array(
                 'name' => 'add',
                 'label' => '',
-                'width' => '30'
+                'resize' => false,
+                'width' => 30
             ),
         );
 
@@ -530,6 +534,50 @@ class Rt_PM_Project_Gantt {
                         } );
                     },id );
                 }
+            });
+
+            gantt.attachEvent("onGridResizeEnd", function(old_width, new_width) {
+
+                if( old_width < new_width ) {
+
+                    if( new_width > 400 ) {
+                        gantt.getGridColumn("start_date").hide = false;
+                    }
+
+                    if( new_width > 500 ) {
+                        gantt.getGridColumn("end_date").hide = false;
+                    }
+
+                    if( new_width > 600 ) {
+                        gantt.getGridColumn("estimated_hours").hide = false;
+                    }
+
+                    if( new_width > 700 ) {
+                        gantt.getGridColumn("resources").hide = false;
+                    }
+                }
+
+                if ( old_width > new_width ) {
+
+                    if( new_width < 400 ) {
+
+                        gantt.getGridColumn("start_date").hide = true;
+                    }
+
+                    if( new_width < 500 ) {
+                        gantt.getGridColumn("end_date").hide = true;
+                    }
+
+                    if( new_width < 600 ) {
+                        gantt.getGridColumn("estimated_hours").hide = true;
+                    }
+
+                    if( new_width < 700 ) {
+                        gantt.getGridColumn("resources").hide = true;
+                    }
+                }
+
+                return true;
             });
 
             jQuery( document ).ready( function( $ ) {
