@@ -51,10 +51,16 @@ class Rtbp_Pm_Actions {
             wp_enqueue_script('moment-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/moment.js',array("jquery"), RT_PM_VERSION, true);
 			
 			// include all files in js pdf lib
-			$files = scandir(RT_PM_PATH . 'app/lib/rt-js-pdf/');
-			foreach($files as $file) {
-				if( strlen( $file) > 2 )
-					wp_enqueue_script($file, RT_PM_URL . 'app/lib/rt-js-pdf/'.$file ,array("jquery"), RT_PM_VERSION, true);
+			// load only on required pages
+			$load_page_array = array(
+				'all-resources','resources','my-tasks'
+			);
+			if(  in_array( bp_current_action(), $load_page_array )){
+				$files = scandir(RT_PM_PATH . 'app/lib/rt-js-pdf/');
+				foreach($files as $file) {
+					if( strlen( $file) > 2 )
+						wp_enqueue_script($file, RT_PM_URL . 'app/lib/rt-js-pdf/'.$file ,array("jquery"), RT_PM_VERSION, true);
+				}
 			}
 
             if( !wp_script_is('jquery-ui-accordion') ) {
