@@ -222,7 +222,7 @@ class Rt_PM_Project_Gantt {
 
         ?>
 
-        <div id="<?php echo $dom_element; ?>" style='width:1000px; height:400px;'></div>
+        <div id="<?php echo $dom_element; ?>" style='height:600px;'></div>
     <?php
         $rtcrm_ganttchart->rtgantt_render_chart( $rtcrm_chart );
     }
