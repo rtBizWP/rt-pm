@@ -85,32 +85,36 @@ class Rt_PM_Project_Gantt {
                 'label' => 'Task Name',
                 'tree' => true,
                 'resize' => true,
-                'min_width' => 500,
+                'min_width' => 300,
+                'width' =>  300,
             ),
             array(
                 'name' => 'start_date',
                 'label' => 'Start Date',
-                'resize' => true
+                'hide'  =>  true,
+                'width' =>  100,
             ),
             array(
                 'name' => 'end_date',
                 'label' => 'End Date',
-                'resize' => true
+                'hide'  =>  true,
             ),
             array(
                 'name'  => 'estimated_hours',
                 'label' =>  'Estimated Hours',
-                'resize' => true,
+                'hide'  =>  true,
             ),
             array(
                 'name' => 'resources',
                 'label' => 'Resources',
-                'resize' => true
+                'resize' => true,
+                'hide'  =>  true,
             ),
             array(
                 'name' => 'add',
                 'label' => '',
-                'width' => '30'
+                'resize' => false,
+                'width' => 30
             ),
         );
 
@@ -218,7 +222,7 @@ class Rt_PM_Project_Gantt {
 
         ?>
 
-        <div id="<?php echo $dom_element; ?>" style='width:1000px; height:400px;'></div>
+        <div id="<?php echo $dom_element; ?>" style='height:600px;'></div>
     <?php
         $rtcrm_ganttchart->rtgantt_render_chart( $rtcrm_chart );
     }
@@ -394,10 +398,16 @@ class Rt_PM_Project_Gantt {
 //            };
 
             //Show task detail on hover
-            var request, timeout;
-            gantt.attachEvent("onMouseMove", function(id,item) {
+            var request, timeout, old_task_id;
+            gantt.attachEvent("onMouseMove", function( id, e ) {
 
-                rtpm_show_task_detail_hovercart( id );
+                if( old_task_id === null || old_task_id !== id ) {
+                    old_task_id = id;
+                    var target = e.target;
+                    if(gantt.$task_data.contains(target)) {
+                        rtpm_show_task_detail_hovercart( id );
+                    }
+                }
             });
 
             //Close side panel before open lightbox
@@ -411,38 +421,66 @@ class Rt_PM_Project_Gantt {
             });
 
 
-            //Delete task
-            gantt.attachEvent("onTaskDblClick", function( id, e ) {
-                console.log("Hi I'm db click");
-                var opts = { text: '' };
-                opts.title = "";
-                opts.callback = function(result) {
-                    if (result)
-                        gantt.deleteTask(id);
-                };
-                dhtmlx.confirm(opts);
-            });
+           //  Add Click Events
+            (function() {
+                var dbl_click_length = 500,
+                    double_clicked = false,
+                    click_start,
+                    click_timer;
 
+                gantt.attachEvent("onTaskDblClick", function( id, e ) {
 
-            //Open task edit side panel
-            gantt.attachEvent("onTaskClick", function( id, item ) {
-                console.log("Hi I'm single click");
+                    var target = e.target;
+                    if( ! gantt.$grid_data.contains(target) &&
+                        ! gantt.$task_links.contains(target) ) {
+                        if (click_start && (new Date()) - click_start < dbl_click_length) {
+                            double_clicked = true;
+                            clearTimeout(click_timer)
+                            click_timer = null;
 
-                var task = gantt.getTask(id);
+                            var opts = { text: gantt.locale.labels.confirm_deleting };
+                            opts.title = "";
+                            opts.callback = function (result) {
+                                if (result)
+                                    gantt.deleteTask(id);
+                            };
+                            dhtmlx.confirm(opts);
+                            //Double Click Code
+                        }
+                    } else {
+                        return true;
+                    }
+                });
 
-                if ( task.$new )
-                    return false;
+                gantt.attachEvent("onTaskClick", function( id, e ) {
+                    var target = e.target;
+                    if( ! gantt.$grid_data.contains(target) ) {
+                        if (!click_timer) {
+                            click_start = new Date();
+                            double_clicked = false;
 
-                gantt.hideLightbox();
+                            click_timer = setTimeout(function () {
+                                if (!double_clicked) {
+                                    gantt.hideLightbox();
 
-                block_ui();
+                                    block_ui();
 
-                render_project_slide_panel( 'open', id, <?php echo get_current_blog_id(); ?>, '', 'task' );
-            });
+                                    render_project_slide_panel('open', id, <?php echo get_current_blog_id(); ?>, '', 'task');
+                                    //Single Click Code
+                                }
 
+                                click_timer = null;
+                            }, dbl_click_length);
+                        }
+                    } else {
+                        return true;
+                    }
+                });
+            })();
 
             //Delete task link
-            gantt.attachEvent("onLinkClick", function( id ) {
+            gantt.attachEvent("onLinkDblClick", function( id ) {
+
                 var opts = { text: gantt.locale.labels.link + " " +this.templates.link_description(this.getLink(id)) + " " + gantt.locale.labels.confirm_link_deleting };
                 opts.title = "";
                 opts.callback = function(result) {
@@ -498,9 +536,53 @@ class Rt_PM_Project_Gantt {
                 }
             });
 
+            gantt.attachEvent("onGridResizeEnd", function(old_width, new_width) {
+
+                if( old_width < new_width ) {
+
+                    if( new_width > 400 ) {
+                        gantt.getGridColumn("start_date").hide = false;
+                    }
+
+                    if( new_width > 500 ) {
+                        gantt.getGridColumn("end_date").hide = false;
+                    }
+
+                    if( new_width > 600 ) {
+                        gantt.getGridColumn("estimated_hours").hide = false;
+                    }
+
+                    if( new_width > 700 ) {
+                        gantt.getGridColumn("resources").hide = false;
+                    }
+                }
+
+                if ( old_width > new_width ) {
+
+                    if( new_width < 400 ) {
+
+                        gantt.getGridColumn("start_date").hide = true;
+                    }
+
+                    if( new_width < 500 ) {
+                        gantt.getGridColumn("end_date").hide = true;
+                    }
+
+                    if( new_width < 600 ) {
+                        gantt.getGridColumn("estimated_hours").hide = true;
+                    }
+
+                    if( new_width < 700 ) {
+                        gantt.getGridColumn("resources").hide = true;
+                    }
+                }
+
+                return true;
+            });
+
             jQuery( document ).ready( function( $ ) {
 
-                $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
 
             });
 
@@ -556,11 +638,11 @@ class Rt_PM_Project_Gantt {
                 request = $.post( admin_url, senddata, function( response ){
                     if( response.success ){
                         $('div.rtcontext-box').html( template( response.data ) );
-                        $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+                       // $('div.gantt_task_content').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
                     }
                 } );
 
-               // $('div.gantt_task_content, div.gantt_cell').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+               $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
             }
 
 

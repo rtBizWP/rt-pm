@@ -466,7 +466,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			);
 
 
-            if( is_main_site() )
+            if( is_multisite() && is_main_site() )
                 $args['show_ui'] = false;
 
 			register_post_type( $this->post_type, $args );

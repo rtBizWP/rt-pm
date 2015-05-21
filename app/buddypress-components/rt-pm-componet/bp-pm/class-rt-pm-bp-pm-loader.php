@@ -105,7 +105,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rtbp_pm_screen;
 
-            if( is_main_site() )
+            if( is_multisite() && is_main_site() )
                 return;
             
             $nav_name = __( 'PM', 'buddypress' );
@@ -338,7 +338,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 		public function setup_admin_bar( $wp_admin_nav = array() ) {
 
-            if( is_main_site() )
+            if( is_multisite() && is_main_site() )
                 return;
 
 				// The instance
