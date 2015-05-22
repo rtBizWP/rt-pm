@@ -151,6 +151,10 @@ class Rtbp_Pm_Screens {
         $rtpm_ganttchart->rtgantt_enqueue_script_style();
         $rt_pm_project_gantt = Rt_PM_Project_Gantt ::factory();
 
+        //Attachment section script
+        wp_enqueue_media();
+        wp_enqueue_script( 'rtbiz-attachment-script', RT_BP_PEOPLE_URL . 'assets/js/rtbiz-attachment-section.js', array( 'jquery' ), RT_BIZ_VERSION, false );
+
         wp_enqueue_script( 'rtbiz-notify-script', RT_BP_PEOPLE_URL.'/assets/js/jquery.noty.packaged.min.js', array('jquery') );
 
         wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri().'/assets/js/contextMenu.min.js', array() );
