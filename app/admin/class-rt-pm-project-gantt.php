@@ -580,6 +580,17 @@ class Rt_PM_Project_Gantt {
                 return true;
             });
 
+            //Set start date to parent task end date
+            gantt.attachEvent("onTaskCreated", function(task){
+                var parent = task.parent;
+                if(parent != gantt.config.root_id && gantt.isTaskExists(parent)) {
+                    parent = gantt.getTask(parent);
+                    task.start_date = parent.end_date;
+                }
+                return true;
+            });
+
+
             jQuery( document ).ready( function( $ ) {
 
                 $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
