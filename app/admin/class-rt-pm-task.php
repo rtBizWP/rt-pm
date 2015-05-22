@@ -1361,6 +1361,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_save_task_resources( $task_id, $project_id, $post_data ) {
 			global $rt_pm_task_resources_model;
 
+			if( ! isset( $post_data['resource_wp_user_id'] ) )
+				return;
+
 			$where = array(
 				'task_id' => $task_id,
 				'project_id' => $project_id,
