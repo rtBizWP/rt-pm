@@ -100,12 +100,12 @@ class Rt_Pm_Project_Overview {
 
 						$('a.rtcontext-taskbox').contextMenu('div.rtcontext-box');
 
-						$('a.rtcontext-taskbox').click( function(){
-							return project_overview.fill_tasks_list( $(this) );
+						$('a.rtcontext-taskbox').click( function(e) {
+							return project_overview.fill_tasks_list( $(this), e );
 						});
 					},
 
-					fill_tasks_list: function( elm ) {
+					fill_tasks_list: function( elm, event ) {
 
 						$('div.rtcontext-box').html('<strong>Loading...</strong>');
 						event.stopPropagation();
