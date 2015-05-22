@@ -202,7 +202,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
             <?php } ?>
         </div>
    </div>
-
+    <?php if ( ! bp_is_current_component( BP_CRM_SLUG ) ): ?>
     <div class="row hide-for-milestone">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
         <div class="rt-parent-row">
@@ -259,7 +259,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
             ?>
         </div>
     </div>
-
+    <?php endif; ?>
 
     <?php   
 	
