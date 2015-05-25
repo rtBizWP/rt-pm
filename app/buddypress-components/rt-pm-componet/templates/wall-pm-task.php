@@ -132,6 +132,17 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
         </div>
     </div>
 
+    <div class="row">
+        <div class="small-4 columns">
+            <label><?php _e( 'Task Type', RT_PM_TEXT_DOMAIN ) ?></label>
+        </div>
+        <div class="small-8 columns">
+            <select name="post[task_type]">
+                <option <?php selected( $task_type, 'task' ) ?> value="task">Task</option>
+                <option <?php selected( $task_type, 'milestone' ) ?> value="milestone">Milestone</option>
+            </select>
+        </div>
+    </div>
 
     <div class="row">
         <div class="small-4 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
