@@ -69,14 +69,10 @@ if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
     $createdate = $create->format("M d, Y h:i A");
 }
 
-// get project meta
-if (isset($post->id)) {
-    $_REQUEST["{$post_type}_id"]=$post->project_id;
-    $task_id=$post->task_id;
-} else {
-    if ( isset ( $_REQUEST["{$task_post_type}_id"] ) ) {
-        $task_id= $_REQUEST["{$task_post_type}_id"];
-    }
+//Selected task for time entry
+$selected_task_id = '';
+if ( isset ( $_REQUEST["task_id"] ) ) {
+    $selected_task_id= $_REQUEST["task_id"];
 }
 ?>
 
@@ -170,7 +166,7 @@ if (isset($post->id)) {
                 </div>
                 <div class="large-10 mobile-large-6 columns">
                     <?php
-                        $rt_pm_task->rtpm_tasks_dropdown( $project_id );
+                        $rt_pm_task->rtpm_tasks_dropdown( $project_id, $selected_task_id );
                     ?>
                 </div>
             </div>

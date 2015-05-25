@@ -43,6 +43,9 @@ if( isset( $_GET["id"] ) ) {
 }
 
 
+//Reecord time and expenses url
+$timeentries_url = add_query_arg( array( 'post_type' => $rt_pm_project->post_type,  $rt_pm_project->post_type.'_id' => $post_project_id, 'tab' => $rt_pm_project->post_type .'-timeentry', 'action' => 'timeentry', 'task_id' => $post_id ) ,  $rt_pm_bp_pm->get_component_root_url() .'time-entries' );
+
 //assign to
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
@@ -50,20 +53,7 @@ $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 ?>
-<script>
-    var task_type = '<?php echo $task_type ?>';
-    jQuery(document).ready(function($) {
-        if( 'milestone' === task_type ) {
-            $('.hide-for-milestone').hide();
-            $('input[name="post[task_type]"]').val('milestone');
-            $('.parent-task-dropdown').show();
-        }
-
-        if( 'sub_task' === task_type ) {
-            $('.parent-task-dropdown').show();
-        }
-    });
-</script>
+<script></script>
 <form method="post"   action="">
     <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
@@ -75,7 +65,20 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
     <input type="hidden" name="post[task_type]" value="" />
     <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
-    <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
+    <input type="hidden" name="p
+    var task_type = '<?php echo $task_type ?>';
+    jQuery(document).ready(function($) {
+        if( 'milestone' === task_type ) {
+            $('.hide-for-milestone').hide();
+            $('input[name="post[task_type]"]').val('milestone');
+    $('.parent-task-dropdown').show();
+    }
+
+    if( 'sub_task' === task_type ) {
+    $('.parent-task-dropdown').show();
+    }
+    });
+    ost[post_type]" value="<?php echo $task_post_type; ?>" />
 
 	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
 	                    <?php if (isset($post->ID) && $user_edit ) { ?>
@@ -283,8 +286,9 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
 
     <div class="row">
-        <div class="small-12 columns right action-bar">
-            <input class="right" type="submit" value="Save" >
+        <div class="small-12 columns action-bar">
+            <a class="button" target="_blank" href='<?php echo $timeentries_url; ?>'>Time and Expenses</a>
+            <input type="submit" value="Save" >
         </div>
     </div>
 

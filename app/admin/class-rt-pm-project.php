@@ -1207,14 +1207,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             // get project meta
-            if (isset($post->id)) {
-                $_REQUEST["{$post_type}_id"]=$post->project_id;
-                $task_id=$post->task_id;
-            } else {
-                if ( isset ( $_REQUEST["{$task_post_type}_id"] ) ) {
-                    $task_id= $_REQUEST["{$task_post_type}_id"];
-                }
+            $selected_task_id = '';
+            if ( isset ( $_REQUEST["task_id"] ) ) {
+                $selected_task_id= $_REQUEST["task_id"];
             }
+
             ?>
 
             <?php if (isset($post->id) || ( isset( $_REQUEST["action"] ) && $_REQUEST["action"]=="timeentry")){?>
@@ -1294,7 +1291,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <?php } ?>
                         <div class="row collapse">
                             <?php
-                                $rt_pm_task->rtpm_tasks_dropdown( $_REQUEST["{$post_type}_id"] );
+                                $rt_pm_task->rtpm_tasks_dropdown( $_REQUEST["{$post_type}_id"], $selected_task_id );
                             ?>
                         </div>
                         <div class="row collapse">

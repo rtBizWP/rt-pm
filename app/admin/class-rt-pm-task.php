@@ -1285,21 +1285,18 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $results;
 		}
 
-		public function rtpm_tasks_dropdown( $project_id ) {
+		public function rtpm_tasks_dropdown( $project_id, $task_id = '' ) {
 
-			$tasks = $this->rtpm_get_timeentries_tasks( $project_id );
+			$tasks = $this->rtpm_get_timeentries_tasks( $project_id ); ?>
 
-			$output = "<select required='required' name='post[post_task_id]' id='task_id'>";
+			<select required='required' name='post[post_task_id]' id='task_id'>;
+			<?php foreach ( $tasks as $task ):
+				$task_title = get_post_field( 'post_title', $task );?>
+				<option <?php selected( $task_id, $task ) ?> value='$task'><?php echo $task_title ?></option>
+			<?php endforeach; ?>
+			<select>
 
-			foreach ( $tasks as $task ) {
-
-				$task_title = get_post_field( 'post_title', $task );
-				$output .= "<option value='$task'>$task_title</option>";
-			}
-
-			$output .= "<select>";
-
-			echo $output;
+			<?php
 		}
 
 		/**
