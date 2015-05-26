@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person;
+global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model;
 $page = max( 1, get_query_var( 'paged' ) );
 $project_id = $_GET['rt_project_id'];
 $current_date = date( "Y-m-d" );
@@ -105,7 +105,7 @@ if ( isset( $_REQUEST['update'] ) ) {
 			</thead>
 			<tbody>
 				<?php
-				$team_member = get_post_meta( $project_id, "project_member", true );
+				$team_member = $rt_pm_task_resources_model->rtpm_get_project_resources( $project_id );
 				if ( $team_member != '' && !empty( $team_member ) ) {
 					?>
 					<?php

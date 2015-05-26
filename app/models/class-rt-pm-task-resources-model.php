@@ -120,4 +120,53 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 
 		return $wpdb->get_col( $query );
 	}
+
+	/**
+	 * Get all resources involved in projects
+	 * @param $project_id
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_get_project_resources( $project_id ) {
+		global $wpdb;
+
+		$query = "SELECT DISTINCT user_id  FROM {$this->table_name} WHERE project_id = {$project_id}";
+
+		return $wpdb->get_col( $query );
+	}
+
+
+	public function rtpm_get_estimated_hours( $args ) {
+		global $wpdb;
+
+		$select_statement = "SELECT COALESCE( SUM( time_duration ), 0 ) FROM {$this->table_name}";
+		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$query = $select_statement.$where_clause;
+
+		//var_dump( $query );
+		return $wpdb->get_var( $query );
+	}
+
+	public function rtpm_prepare_query_where_clause( $args ) {
+
+		$where_clause = ' WHERE ';
+
+		if( ! is_array( $args ) )
+			return $where_clause;
+
+		if( isset( $args['user_id'] ) )
+			$where_clause .= " user_id = {$args['user_id']} ";
+
+		if( isset( $args['task_id'] ) )
+			$where_clause .= " AND task_id = {$args['task_id']} ";
+
+		if( isset( $args['project_id'] ) )
+			$where_clause .= " AND project_id = {$args['project_id']} ";
+
+		if( isset( $args['timestamp'] ) )
+			$where_clause .= " AND DATE(timestamp) = '{$args['timestamp']}'";
+
+		return $where_clause;
+	}
 }
