@@ -51,7 +51,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'rtpm_before_untrash_task', array( $this, 'rtpm_before_untrash_task' ), 10, 1 );
 			add_action( 'rtpm_after_untrash_task', array( $this, 'rtpm_after_untrash_task' ) );
 
-
+			add_action( 'wp_ajax_rtpm_import_task_json', array( $this, 'rtpm_import_task_json' ) );
 		}
 
 		function task_add_bp_activity( $post_id, $update ) {
@@ -1619,6 +1619,90 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			</select>
 		<?php }
 
+		/**+
+		 * Ajax import task in json format
+		 *
+		 */
+		public function rtpm_import_task_json() {
+			global $rt_pm_task_links_model;
+
+			check_ajax_referer( 'rtpm-import-task-json', 'security' );
+
+			$post = $_REQUEST['post'];
+
+			$attachment_id = $post['attachment_id'];
+			$project_id = $post['post_id'];
+
+			$file_url = wp_get_attachment_url( $attachment_id );
+
+			$str_task_data = file_get_contents( $file_url );
+
+			$json_task_data = json_decode( $str_task_data );
+
+			//Throw an error if file is not json
+			if( ! $json_task_data ) {
+				wp_delete_attachment( $attachment_id );
+				wp_send_json_error();
+			}
+
+			//Task object
+			$task_data = $json_task_data->data->data;
+
+			//Link object
+			$link_data = $json_task_data->data->links;
+
+			//Map of old_task_id => new_task_id
+			$former_task_ids = array(
+				0 =>  0
+			);
+
+			//Loop over task data
+			foreach( $task_data as $task ) {
+
+				$start_date = date_create_from_format( 'd-m-Y H:i', $task->start_date );
+				$end_date = date_create_from_format( 'd-m-Y H:i', $task->end_date );
+
+				$args = array(
+					'post_title'  => $task->text,
+					'post_date'   => $start_date->format('Y-m-d H:i:s'),
+					'post_date_gmt' => $start_date->format('Y-m-d H:i:s'),
+					'post_parent' => $project_id,
+					'post_status' => 'new',
+				);
+
+				$meta_values = array(
+					'post_duedate'         => $end_date->format( 'Y-m-d H:i:s'),
+					'rtpm_task_type'       => $task->type,
+					'post_project_id'      => $project_id,
+					'rtpm_parent_task'     => $former_task_ids[$task->parent],
+				);
+
+				//Create task
+				$post_id = $this->rtpm_save_task_data( $args, $meta_values );
+
+				//Map new_task_id with old_task_id
+				$former_task_ids[ $task->id ] = $post_id;
+
+			}
+
+			//Loop over link data
+			foreach ( $link_data  as $link ) {
+				$data = array(
+					'project_id'     => $project_id,
+					'source_task_id' => $former_task_ids[ $link->source ],
+					'target_task_id' => $former_task_ids [ $link->target ],
+					'type'           => $link->type,
+				);
+
+				//Create new link between task
+				$link_id = $rt_pm_task_links_model->rtpm_create_task_link( $data );
+			}
+
+			//Delete attachment after proceed
+			wp_delete_attachment( $attachment_id );
+
+			wp_send_json_success();
+		}
 	}
 
 }

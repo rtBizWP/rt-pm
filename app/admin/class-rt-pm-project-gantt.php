@@ -656,7 +656,6 @@ class Rt_PM_Project_Gantt {
                $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
             }
 
-
             /**
              * Convert date into wp default date format(yyyy-mm-dd hh:mm:ss)
              * @param post_date
@@ -667,6 +666,73 @@ class Rt_PM_Project_Gantt {
                 var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
                 return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' 00:00:00';
             }
+
+            /**
+             * Upload task json file for import
+             */
+            var rttask_ganttchart, task_import_uploader;
+            (function($) {
+
+                rttask_ganttchart = {
+                    init: function() {
+                        $( document ).on( 'click', '#upload_task_json',  rttask_ganttchart.open_attachments_chooser );
+                    },
+
+                    open_attachments_chooser: function( e ) {
+                        e.preventDefault();
+
+                        //If the uploader object has already been created, reopen the dialog
+                        if (task_import_uploader) {
+                            task_import_uploader.open();
+                            return;
+                        }
+
+                        //Extend the wp.media object
+                        task_import_uploader = wp.media.frames.file_frame = wp.media({
+                            title: 'Choose File',
+                            button: {
+                                text: 'Proceed It'
+                            },
+                            multiple: false,
+                        });
+
+                        //Set blog id for cross site attachment upload
+                        window.wp.Uploader.defaults.multipart_params.rt_voxxi_blog_id =  $('#attachment-document').data('blog-id');
+
+                        //When a file is selected, grab the URL and set it as the text field's value
+                        task_import_uploader.on( 'select', rttask_ganttchart.import_task_json );
+
+                        //Open the uploader dialog
+                        task_import_uploader.open();
+                    },
+
+                    import_task_json : function() {
+                        var attachments = task_import_uploader.state().get('selection').toJSON();
+
+                        var post_data = {
+                            attachment_id:   attachments[0].id,
+                            post_id:    $('#rtpm_project_id').val(),
+                        }
+                        var send_data = {
+                            action: 'rtpm_import_task_json',
+                            post:   post_data,
+                            security:   '<?php echo wp_create_nonce( "rtpm-import-task-json" ) ?>',
+                        };
+
+                        block_ui();
+                        $.post( admin_url, send_data, function( response ) {
+                            if( response.success ) {
+                                location.reload();
+                            } else {
+                                rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
+                            }
+                        } );
+                    }
+
+                };
+
+                $( document).ready( function() { rttask_ganttchart.init() } );
+            })(jQuery);
         </script>
 
 

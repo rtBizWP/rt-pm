@@ -11,14 +11,15 @@ $project_id = $_REQUEST['rt_project_id'];
 
 ?>
     <div class="list-heading">
-        <div class="large-6 columns list-title">
+        <div class="large-4 columns list-title">
             <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
         </div>
-        <div class="large-6 columns action-bar">
+        <div class="large-8 columns action-bar">
             <input value="Export to Excel" type="button" onclick='gantt.exportToExcel()'>
             <input value="Export to iCal" type="button" onclick='gantt.exportToICal()'>
             <input value="Export to PDF" type="button" onclick='gantt.exportToPDF()'>
-            <input value="Export to PNG" type="button" onclick='gantt.exportToPNG()'>
+            <input value="Export to JSON" type="button" onclick='gantt.exportToJSON()'>
+            <input  id="upload_task_json" type="button" value="Import JSON" />
         </div>
     </div>
 
