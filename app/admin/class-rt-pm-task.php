@@ -1633,7 +1633,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$attachment_id = $post['attachment_id'];
 			$project_id = $post['post_id'];
 
-			$file_url = wp_get_attachment_url( $attachment_id );
+			$file_url = get_attached_file( $attachment_id );
 
 			$str_task_data = file_get_contents( $file_url );
 
