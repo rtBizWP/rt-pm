@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model;?>
+global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model, $rt_pm_project_resources;?>
 <div class="list-heading">
 	<div class="large-10 columns list-title">
 		<h4><?php _e( 'All Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
@@ -67,7 +67,7 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 				}
 				?></a>
 			<table id="rtpm-resources-calender">
-				<?php echo rt_create_all_resources_calender( $dates ); ?>
+				<?php echo $rt_pm_project_resources->rt_create_all_resources_calender( $dates ); ?>
 			</table>
 			<a id="rtpm-get-next-calender" class="rtpm-get-calender" data-flag="next"
 			   data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php

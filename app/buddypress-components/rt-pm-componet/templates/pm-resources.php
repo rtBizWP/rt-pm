@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model;
+global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model, $rt_pm_project_resources;
 $page = max( 1, get_query_var( 'paged' ) );
 $project_id = $_GET['rt_project_id'];
 $current_date = date( "Y-m-d" );
@@ -64,7 +64,7 @@ $dates = rt_get_next_dates( $current_date );
 			}
 			?></a>
 		<table id="rtpm-resources-calender">
-			<?php echo rt_create_resources_calender( $dates, $project_id ); ?>
+			<?php echo $rt_pm_project_resources->rt_create_resources_calender( $dates, $project_id ); ?>
 		</table>
 		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
 			if ( wp_is_mobile() ) {

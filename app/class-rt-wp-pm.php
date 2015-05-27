@@ -151,7 +151,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
                    $rt_pm_time_entries_model, $rt_pm_task_links_model ,$rtpm_custom_media_fields,
                    $rt_pm_project_type,$rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entry_type,$rt_pm_acl,
                    $rt_pm_settings, $rt_pm_notification, $rt_pm_user_reports, $rt_pm_help, $rt_pm_project_overview,
-                   $rt_pm_reports, $rtpm_ganttchart, $rt_pm_task_resources_model;
+                   $rt_pm_reports, $rtpm_ganttchart, $rt_pm_task_resources_model, $rt_pm_project_resources;
 
             $rtpm_form = new Rt_Form();
 
@@ -177,6 +177,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             $rt_pm_project_overview = Rt_Pm_Project_Overview::factory();
 
+			$rt_pm_project_resources = Rt_PM_Project_Resources::factory();
 
             $page_slugs = array(
                 'rtpm-'.$rt_pm_project->post_type.'-dashboard',

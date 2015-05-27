@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-global $rt_pm_task, $rt_pm_task_resources_model;
+global $rt_pm_task, $rt_pm_task_resources_model, $rt_pm_project_resources;
 
 $current_date = date( "Y-m-d" );
 $dates        = rt_get_next_dates( $current_date );
@@ -79,7 +79,7 @@ if ( ! empty( $project_ids ) ) { ?>
 				}
 				?></a>
 			<table id="rtpm-resources-calender">
-				<?php echo rt_create_my_task_calender( $dates ); ?>
+				<?php echo $rt_pm_project_resources->rt_create_my_task_calender( $dates ); ?>
 			</table>
 			<a id="rtpm-get-next-calender" class="rtpm-get-calender" data-flag="next"
 			   data-date="<?php echo $last_date; ?>" data-calender="my-tasks"><?php

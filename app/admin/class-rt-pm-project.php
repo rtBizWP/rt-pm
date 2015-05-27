@@ -90,7 +90,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         }
 		
 		function rtpm_get_resources_calender_ajax(){
-			
+            global $rt_pm_project_resources;
+
 			if(isset($_POST['date'])){
 				$date = $_POST['date'];
 			}
@@ -116,12 +117,13 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$dates = rt_get_next_dates( $date );
 			$first_date = $dates[0];
 			$last_date = $dates[count($dates)-1];
+
 			if( $calender == 'all-resources' ){
-				$html = rt_create_all_resources_calender( $dates );
+				$html = $rt_pm_project_resources->rt_create_all_resources_calender( $dates );
 			} else if( $calender == 'my-tasks' ){
-				$html = rt_create_my_task_calender( $dates );	
+				$html = $rt_pm_project_resources->rt_create_my_task_calender( $dates );
 			} else {
-				$html = rt_create_resources_calender( $dates , $project_id );	
+				$html = $rt_pm_project_resources->rt_create_resources_calender( $dates , $project_id );
 			}
 			echo json_encode( array( 'fetched' => true,'html' => $html, 'prevdate' => $first_date, 'nextdate' => $last_date ) );
 			die;
