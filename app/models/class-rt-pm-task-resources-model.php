@@ -138,6 +138,66 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		return $wpdb->get_col( $query );
 	}
 
+	/**
+	 * Return task_ids
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_get_resources_tasks( $args = array() ) {
+		global $wpdb;
+
+		$select_statment = "SELECT DISTINCT task_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
+		ON posts.ID = resources.task_id";
+
+		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$where_clause .= " post_status <> 'trash'";
+
+		$query = $select_statment.$where_clause;
+
+		return $wpdb->get_col( $query );
+	}
+
+	/**
+	 * Return project_ids
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_get_resources_projects( $args = array() ) {
+		global $wpdb;
+
+		$select_statment = "SELECT DISTINCT project_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
+		ON posts.ID = resources.project_id";
+
+		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$where_clause .= " post_status <> 'trash'";
+
+		$query = $select_statment.$where_clause;
+
+		return $wpdb->get_col( $query );
+	}
+
+	/**
+	 * Return user_ids
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_get_resources_users( $args = array()) {
+		global $wpdb;
+
+		$select_statment = "SELECT DISTINCT user_id  FROM {$this->table_name}";
+
+		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$query = $select_statment.$where_clause;
+
+		return $wpdb->get_col( $query );
+	}
+
 	public function rtpm_get_users_projects( $user_id ) {
 		global $wpdb;
 
@@ -159,27 +219,43 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		return $wpdb->get_var( $query );
 	}
 
+	/**
+	 * Prepare where clause for resources query
+	 * @param $args
+	 *
+	 * @return string
+	 */
 	public function rtpm_prepare_query_where_clause( $args ) {
 
 		$where_clause = ' WHERE ';
+
+		$where_columns = array();
 
 		if( ! is_array( $args ) )
 			return $where_clause;
 
 		if( isset( $args['user_id'] ) )
-			$where_clause .= " user_id = {$args['user_id']} ";
+			$where_columns[] = " user_id = {$args['user_id']} ";
 
 		if( isset( $args['task_id'] ) )
-			$where_clause .= " AND task_id = {$args['task_id']} ";
+			$where_columns[] = " task_id = {$args['task_id']} ";
 
 		if( isset( $args['project_id'] ) )
-			$where_clause .= " AND project_id = {$args['project_id']} ";
+			$where_columns[] = " project_id = {$args['project_id']} ";
 
 		if( isset( $args['timestamp'] ) )
-			$where_clause .= " AND DATE(timestamp) = '{$args['timestamp']}'";
+			$where_columns[] = " DATE(timestamp) = '{$args['timestamp']}'";
 
 		if( isset( $args['task__in'] )  && is_array( $args['task__in'] ) )
-			$where_clause .=  ' AND task_id IN( '.implode(', ', $args['task__in'] ) .') ';
+			$where_columns[] =  ' task_id IN( '.implode(', ', $args['task__in'] ) .') ';
+
+		if( isset( $args['project__in'] )  && is_array( $args['project__in'] ) )
+			$where_columns[] =  ' project_id IN( '.implode(', ', $args['project__in'] ) .') ';
+
+		if( isset( $args['user__in'] )  && is_array( $args['user__in'] ) )
+			$where_columns[] =  ' user_id IN( '.implode(', ', $args['user__in'] ) .') ';
+
+		$where_clause .= implode( ' AND ', $where_columns );
 
 		return $where_clause;
 	}
