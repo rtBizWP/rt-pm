@@ -38,7 +38,11 @@ if ( ! empty( $project_ids ) ) { ?>
 				<?php foreach ( $project_ids as $key => $project_id ) { ?>
 					<?php $task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
 
-					$task_list = $rt_pm_task->rtpm_get_task_data( array( 'post__in' => $task_ids, 'post_status' => 'any' ) );
+					if( empty( $task_ids ) )
+						continue;
+
+					$task_list = $rt_pm_task->rtpm_get_task_data( array( 'post__in' => $task_ids, 'nopaging' => true, 'no_found_rows' => true ) );
+
 					?>
 					<tr>
 						<td class="rt_project_resources_title"><?php echo mb_strimwidth( get_post_field( 'post_title', $project_id ), 0, 25, '..' ); ?></td>

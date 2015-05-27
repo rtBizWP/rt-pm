@@ -138,6 +138,10 @@ class Rt_PM_Project_Resources {
 		$old_project_id = '0';
 		foreach ( $project_ids as $project_id ) {
 
+			$task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
+
+			if( empty( $task_ids ) )
+				continue;
 
 			if ( $old_project_id !== $project_id ) {
 
@@ -145,9 +149,8 @@ class Rt_PM_Project_Resources {
 				$table_html .= '<tr><td colspan="10">' . get_post_field( 'post_title', $project_id ) . '</td></tr>';
 			}
 
-			$task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
-
 			$all_task_ids = array_merge( $all_task_ids, $task_ids );
+
 			foreach ( $task_ids as $task_id ) {
 				$table_html .= '<tr>';
 				// for each task travel through each date
