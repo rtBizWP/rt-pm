@@ -219,6 +219,11 @@ class Rt_PM_Project_Resources {
 				// no data to show on weekend
 				if ( ! $is_weekend ) {
 
+					$args = array(
+					'project_id' => $project_id,
+					'user_id'    => $user_id,
+					'timestamp'  => $value
+					);
 
 					$table_html .= '<div class="rtpm-show-tooltip">' . $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 					if ( ! empty( $tasks_array ) ) {
