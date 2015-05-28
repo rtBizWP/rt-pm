@@ -23,7 +23,7 @@ $dates = rt_get_next_dates( $current_date );
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 	<div class="rt-left-container">
-		<table>
+		<table data-project-id="<?php echo $project_id ?>">
 			<thead>
 				<tr>
 					<td>
@@ -77,3 +77,50 @@ $dates = rt_get_next_dates( $current_date );
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
 </div>
+<!-- Inline javascript -->
+<script type="text/javascript">
+
+	var rtpm_project_resources;
+	(function() {
+
+		rtpm_project_resources = {
+			init: function() {
+
+				$( document).on( 'click', 'a.rtpm_user_task_estimated_hours', rtpm_project_resources.rtpm_show_user_task );
+				$('a.rtpm_user_task_estimated_hours').contextMenu('div.rtcontext-box');
+				$( document ).ajaxComplete( rtpm_project_resources.rtpm_refresh_user_task_link );
+			},
+
+			rtpm_show_user_task: function( e ) {
+				e.preventDefault();
+
+				var post = {};
+
+				var elm = $(this);
+
+				post.timestamp = elm.data('timestamp');
+				post.user_id = elm.parents('tr').data('user-id');
+				post.project_id = elm.parents('table').data('project-id');
+
+				rtpm_show_user_task_hovercart( post );
+			},
+
+			rtpm_refresh_user_task_link: function( event,request, settings ) {
+
+				var action = get_parameter_by_name('?' + settings.data, 'action');
+
+				var allowed_actions = ['rtpm_get_resources_calender'];
+
+				if ($.inArray(action, allowed_actions) > -1) {
+					// $('a.rtpm_user_task_estimated_hours').contextMenu('refresh');
+					$('a.rtpm_user_task_estimated_hours').contextMenu('div.rtcontext-box');
+				}
+			}
+		};
+
+		$( document).ready( function() { rtpm_project_resources.init() });
+	})(jQuery);
+
+</script>
+
+<?php rtpm_user_tasks_hover_cart() ?>

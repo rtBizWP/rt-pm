@@ -66,20 +66,8 @@ class Rt_Pm_Project_Overview {
 
 		</ul>
 
-		<script id="task-list-template" type="text/x-handlebars-template">
-			<h2>{{assignee_name}}'s Tasks</h2>
-			<ul style="list-style-type: none; margin: 0;">
-				{{#each tasks}}
-				<li style="margin: 0;"><a target="_blank" href="{{task_edit_url}}">{{post_title}}</a></li>
-				{{/each}}
-			</ul>
-		</script>
-
 		<script type="text/javascript">
 			var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
-
-			var source = $('#task-list-template').html();
-			var template = Handlebars.compile(source);
 
 			var project_overview;
 
@@ -106,22 +94,14 @@ class Rt_Pm_Project_Overview {
 					},
 
 					fill_tasks_list: function( elm, event ) {
-
-						$('div.rtcontext-box').html('<strong>Loading...</strong>');
 						event.stopPropagation();
+
 						var post = {};
-						var data = {};
-						post.author_id = elm.data('team-member-id');
+
+						post.user_id = elm.data('team-member-id');
 						post.project_id = elm.parents('li').data('project-id');
-						data.action = 'rtpm_get_user_tasks'
-						data.post = post;
 
-						$.post(ajax_adminurl, data, function (res) {
-
-							if (res.success) {
-								$('div.rtcontext-box').html(template(res.data));
-							}
-						});
+						rtpm_show_user_task_hovercart( post );
 					},
 
 					load_more_projects: function( elm ) {
@@ -167,10 +147,9 @@ class Rt_Pm_Project_Overview {
 			}(jQuery));
 		</script>
 
-		<div class="rtcontext-box" style="display: none;">
-			<strong>Loading...</strong>
-		</div>
-	<?php }
+	<?php
+		rtpm_user_tasks_hover_cart();
+	}
 
 	public function rtpm_project_block_list( $page ) {
 		global $rt_pm_project, $rt_pm_task;

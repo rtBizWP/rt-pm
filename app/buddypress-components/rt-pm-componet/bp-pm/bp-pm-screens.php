@@ -179,6 +179,12 @@ class Rtbp_Pm_Screens {
 
 	public function bp_pm_resources() {
 
+		wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri().'/assets/js/contextMenu.min.js', array('jquery') );
+		wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri().'/assets/css/contextMenu.css');
+
+		wp_enqueue_script( 'rtpm-handlebar-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true );
+
+
 		add_action( 'bp_template_content', array( $this, 'rtpm_project_resources_template' ) );
 	}
 

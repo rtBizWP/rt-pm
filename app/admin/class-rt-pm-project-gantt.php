@@ -671,7 +671,7 @@ class Rt_PM_Project_Gantt {
             })(jQuery);
         </script>
     <?php
-        rtpm_task_hover_cart();
+        rtpm_task_detail_hover_cart();
     }
 
 }

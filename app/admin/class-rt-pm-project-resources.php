@@ -155,7 +155,6 @@ class Rt_PM_Project_Resources {
 				$table_html .= '<tr>';
 				// for each task travel through each date
 
-				//$table_html .= '<td>'.get_post_field( 'post_title', $task_id ).'</td>';
 				foreach ( $dates as $date_key => $date_value ) {
 					// if weekend no data to show
 
@@ -212,12 +211,11 @@ class Rt_PM_Project_Resources {
 
 		foreach ( $user_ids as $user_id ) {
 
-			$table_html .= '<tr>';
+			$table_html .= "<tr data-user-id='{$user_id}'>";
 			foreach ( $dates as $key => $value ) {
 
 				$is_weekend = $this->rt_isWeekend( $value );
 				$table_html .= sprintf('<td class="%s">', $this->rtpm_highlight_weekend_cells( $value) );
-
 
 				// no data to show on weekend
 				if ( ! $is_weekend ) {
@@ -228,15 +226,8 @@ class Rt_PM_Project_Resources {
 					'timestamp'  => $value
 					);
 
-					$table_html .= '<div class="rtpm-show-tooltip">' . $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
-					if ( ! empty( $tasks_array ) ) {
-						$table_html .= '<span class="rtpm-task-info-tooltip"><ul>';
-						foreach ( $tasks_array as $key => $task ) {
-							$table_html .= '<li><a href="?post_type=rt_project&rt_project_id=' . $project_id . '&tab=rt_resources-details&rt_task_id=' . $task->ID . '">' . $task->post_title . '</a></li>';
-						}
-						$table_html .= '</ul></span></div>';
-					}
-					$table_html .= '</div>';
+					$table_html .= "<a data-timestamp='{$value}' class='rtpm_user_task_estimated_hours'>" . $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
+					$table_html .= '</a>';
 				}
 				$table_html .= '</td>';
 			}

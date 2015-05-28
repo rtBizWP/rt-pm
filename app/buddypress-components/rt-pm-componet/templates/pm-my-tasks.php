@@ -117,7 +117,7 @@ if ( ! empty( $project_ids ) ) { ?>
 		</script>
 
 	</div>    <?php
-	rtpm_task_hover_cart();
+	rtpm_task_detail_hover_cart();
 } else {
 	?>
 	<div>No tasks to show</div>

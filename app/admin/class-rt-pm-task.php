@@ -896,21 +896,16 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			global $rt_pm_bp_pm, $rt_pm_project, $rt_pm_task_resources_model;
 
 			$project_post_type = $rt_pm_project->post_type;
-			$data              = $_REQUEST['post'];
+			if( ! isset( $_REQUEST['post'] ) )
+				wp_send_json_error();
 
-			$author_id = $data['author_id'];
-			$project_id = $data['project_id'];
+			$data  = $_REQUEST['post'];
 
-			$args = array(
-				'user_id'  =>  $author_id,
-				'project_id'  =>  $project_id
-			);
-
-			$tasks_data = $rt_pm_task_resources_model->rtpm_get_resources_tasks( $args );
+			$tasks_data = $rt_pm_task_resources_model->rtpm_get_resources_tasks( $data );
 
 			$send_data = array();
 
-			$send_data['assignee_name'] = rtbiz_get_user_displayname( $author_id );
+			$send_data['assignee_name'] = rtbiz_get_user_displayname( $data['user_id'] );
 
 			$send_data['tasks'] = array();
 

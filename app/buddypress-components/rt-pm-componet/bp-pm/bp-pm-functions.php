@@ -221,7 +221,7 @@ function rtpm_bp_get_project_details_url( $project_id ) {
 /**
  * Task detail hover cart
  */
-function rtpm_task_hover_cart() { ?>
+function rtpm_task_detail_hover_cart() { ?>
 
 	<script id="task-detail-template" type="text/x-handlebars-template">
 		<ul style="list-style-type: none; margin: 0;">
@@ -270,4 +270,48 @@ function rtpm_task_hover_cart() { ?>
 	<div class="rtcontext-box iw-contextMenu" style="display: none;">
 		<strong>Loading...</strong>
 	</div>
+<?php }
+
+/**
+ * Show all task assigned to user
+ */
+function rtpm_user_tasks_hover_cart() { ?>
+
+	<script id="task-list-template" type="text/x-handlebars-template">
+		<h2>{{assignee_name}}'s Tasks</h2>
+		<ul style="list-style-type: none; margin: 0;">
+			{{#each tasks}}
+			<li style="margin: 0;"><a target="_blank" href="{{task_edit_url}}">{{post_title}}</a></li>
+			{{/each}}
+		</ul>
+	</script>
+
+	<script type="text/javascript">
+		var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
+
+		var source = $('#task-list-template').html();
+		var template = Handlebars.compile(source);
+
+		function rtpm_show_user_task_hovercart( filter ) {
+
+			$('div.rtcontext-box').html('<strong>Loading...</strong>');
+
+			var data = {};
+
+			data.action = 'rtpm_get_user_tasks'
+			data.post = filter;
+
+			$.post(ajax_adminurl, data, function (res) {
+
+				if (res.success) {
+					$('div.rtcontext-box').html(template(res.data));
+				}
+			});
+		}
+
+	</script>
+	<div class="rtcontext-box iw-contextMenu" style="display: none;">
+		<strong>Loading...</strong>
+	</div>
+
 <?php }
