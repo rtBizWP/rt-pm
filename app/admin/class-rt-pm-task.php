@@ -901,7 +901,12 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$author_id = $data['author_id'];
 			$project_id = $data['project_id'];
 
-			$tasks_data = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( $author_id, $project_id );
+			$args = array(
+				'user_id'  =>  $author_id,
+				'project_id'  =>  $project_id
+			);
+
+			$tasks_data = $rt_pm_task_resources_model->rtpm_get_resources_tasks( $args );
 
 			$send_data = array();
 

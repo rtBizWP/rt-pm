@@ -248,16 +248,12 @@ class Rt_PM_Project_Resources {
 
 		$args = array(
 			'project_id' => $project_id,
-			'user_id'    => $user_id,
+			'user__in'    => $user_ids,
 		);
 
 		$table_html .= $this->rtpm_prepare_calender_footer( $dates, $args );
 
 		return $table_html;
-	}
-
-	public function rtpm_prepare_resources_calender( $dates ) {
-
 	}
 
 	/**

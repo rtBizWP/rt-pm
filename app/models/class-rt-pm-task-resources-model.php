@@ -150,9 +150,11 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		$select_statment = "SELECT DISTINCT task_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
 		ON posts.ID = resources.task_id";
 
-		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
 
-		$where_clause .= " post_status <> 'trash'";
+		$where_columns[] = " post_status <> 'trash'";
+
+		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
 		$query = $select_statment.$where_clause;
 
@@ -171,9 +173,11 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		$select_statment = "SELECT DISTINCT project_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
 		ON posts.ID = resources.project_id";
 
-		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
 
-		$where_clause .= " post_status <> 'trash'";
+		$where_columns[] = " post_status <> 'trash' ";
+
+		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
 		$query = $select_statment.$where_clause;
 
@@ -191,7 +195,9 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 
 		$select_statment = "SELECT DISTINCT user_id  FROM {$this->table_name}";
 
-		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
 		$query = $select_statment.$where_clause;
 
@@ -211,7 +217,10 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		global $wpdb;
 
 		$select_statement = "SELECT COALESCE( SUM( time_duration ), 0 ) FROM {$this->table_name}";
-		$where_clause   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
+
+		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
 		$query = $select_statement.$where_clause;
 
@@ -227,12 +236,10 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	 */
 	public function rtpm_prepare_query_where_clause( $args ) {
 
-		$where_clause = ' WHERE ';
+		if( ! is_array( $args ) )
+			return false;
 
 		$where_columns = array();
-
-		if( ! is_array( $args ) )
-			return $where_clause;
 
 		if( isset( $args['user_id'] ) )
 			$where_columns[] = " user_id = {$args['user_id']} ";
@@ -255,8 +262,22 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		if( isset( $args['user__in'] )  && is_array( $args['user__in'] ) )
 			$where_columns[] =  ' user_id IN( '.implode(', ', $args['user__in'] ) .') ';
 
-		$where_clause .= implode( ' AND ', $where_columns );
+		return $where_columns;
+	}
 
+	/**
+	 * Join all where clause column with am AND
+	 * @param $where_columns
+	 *
+	 * @return string
+	 */
+	public function rtpm_generate_where_clause_string( $where_columns ) {
+
+		if( empty( $where_columns ) )
+			return '';
+
+		$where_clause = ' WHERE ';
+		$where_clause .= implode( ' AND ', $where_columns );
 		return $where_clause;
 	}
 }

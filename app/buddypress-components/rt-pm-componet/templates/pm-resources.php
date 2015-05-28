@@ -56,7 +56,7 @@ $dates = rt_get_next_dates( $current_date );
 		$first_date = $dates[0];
 		$last_date = $dates[count( $dates ) - 1];
 		?>
-		<a id="rtpm-get-prev-calender" class="rtpm-get-calender" href="#" data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
+		<a id="rtpm-get-prev-calender" class="rtpm-get-calender"  data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
 			if ( wp_is_mobile() ) {
 				echo "prev";
 			} else {
@@ -66,7 +66,7 @@ $dates = rt_get_next_dates( $current_date );
 		<table id="rtpm-resources-calender">
 			<?php echo $rt_pm_project_resources->rt_create_resources_calender( $dates, $project_id ); ?>
 		</table>
-		<a id="rtpm-get-next-calender" class="rtpm-get-calender" href="#" data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
+		<a id="rtpm-get-next-calender" class="rtpm-get-calender"  data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
 			if ( wp_is_mobile() ) {
 				echo "next";
 			} else {
