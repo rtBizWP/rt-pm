@@ -23,7 +23,7 @@ $dates = rt_get_next_dates( $current_date );
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 	<div class="rt-left-container">
-		<table data-project-id="<?php echo $project_id ?>">
+		<table>
 			<thead>
 				<tr>
 					<td>
@@ -63,7 +63,7 @@ $dates = rt_get_next_dates( $current_date );
 				echo "<";
 			}
 			?></a>
-		<table id="rtpm-resources-calender">
+		<table id="rtpm-resources-calender" data-project-id="<?php echo $project_id ?>">
 			<?php echo $rt_pm_project_resources->rt_create_resources_calender( $dates, $project_id ); ?>
 		</table>
 		<a id="rtpm-get-next-calender" class="rtpm-get-calender"  data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php

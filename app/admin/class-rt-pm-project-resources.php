@@ -70,7 +70,7 @@ class Rt_PM_Project_Resources {
 
 			foreach ( $user_ids as $user_id ) {
 
-				$table_html .= '<tr>';
+				$table_html .= "<tr data-project-id='{$project_id}' data-user-id='{$user_id}'>";
 
 				// get the data for each date
 
@@ -92,10 +92,9 @@ class Rt_PM_Project_Resources {
 						$estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 
 						// get task list for user by project id on this date
-						$table_html .= '<div class="rtpm-show-tooltip">' . $estimated_hours;
-						$table_html .= '</div></div>';
+						$table_html .= "<a data-timestamp='{$value}' class='rtpm_user_task_estimated_hours'>" . $estimated_hours;
+						$table_html .= '</a>';
 					}
-					$table_html .= '</div>';
 				}
 
 				$table_html .= '</td>';
