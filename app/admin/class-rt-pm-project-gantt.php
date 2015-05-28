@@ -232,21 +232,7 @@ class Rt_PM_Project_Gantt {
      * Print script for ganttchart Tasks ajax
      */
     public function rtpm_print_ganttchart_script() { ?>
-        <script id="task-detail-template" type="text/x-handlebars-template">
-            <ul style="list-style-type: none; margin: 0;">
-                <li style="margin: 0;"><strong>Task Title: </strong><span>{{task_title}}</span></li>
-                <li style="margin: 0;"><strong>Status: </strong><span>{{task_status}}</span></li>
-                <li style="margin: 0;"><strong>Progress: </strong><span>{{task_progress}}%</span></li>
-                <li style="margin: 0;"><strong>Start Date: </strong><span>{{start_date}}</span></li>
-                <li style="margin: 0;"><strong>End Date: </strong><span>{{end_date}}</span></li>
-            </ul>
-        </script>
-
         <script type="text/javascript">
-
-            var source   = $('#task-detail-template').html();
-            var template = Handlebars.compile(source);
-
 
             var admin_url = '<?php echo admin_url('admin-ajax.php');  ?>';
 
@@ -288,7 +274,6 @@ class Rt_PM_Project_Gantt {
                 } );
 
             });
-
 
             //Update task
             gantt.attachEvent("onAfterTaskUpdate", function( id,item ) {
@@ -375,28 +360,6 @@ class Rt_PM_Project_Gantt {
                 });
             });
 
-
-//            //Estimated hours field template
-//            gantt.locale.labels.section_estimated_hours = "Estimated hours";
-//            gantt.form_blocks["number"] = {
-//                render:function( sns ) { //sns - the section's configuration object
-//
-//                    return "<div class='gantt_cal_ltext'><input type='number' step='0.25' min='0' value='' /></div>";
-//                },
-//                set_value:function( node,value,task,section ) {
-//                    var input = node.getElementsByTagName("input")[0];
-//                    input.value = value || 0;
-//                },
-//                get_value:function( node,task,section ) {
-//                    var input = node.getElementsByTagName("input")[0];
-//                    return input.value*1;
-//                },
-//                focus:function( node ) {
-//                    var input = node.getElementsByTagName("input")[0];
-//                    input.focus();
-//                }
-//            };
-
             //Show task detail on hover
             var request, timeout, old_task_id;
             gantt.attachEvent("onMouseMove", function( id, e ) {
@@ -406,6 +369,7 @@ class Rt_PM_Project_Gantt {
                     var target = e.target;
                     if(gantt.$task_data.contains(target)) {
                         rtpm_show_task_detail_hovercart( id );
+                        $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
                     }
                 }
             });
@@ -628,34 +592,6 @@ class Rt_PM_Project_Gantt {
                 }
             }
 
-
-            function rtpm_show_task_detail_hovercart( id ) {
-
-                if (null === id)
-                    return;
-
-                var data = {task_id: id};
-
-                var senddata = {
-                    action: 'rtpm_get_task_data_for_ganttchart',
-                    post: data
-                };
-
-                if ( 'undefined' != typeof request ) {
-                    request.abort();
-                    $('div.rtcontext-box').html('<strong>Loading...</strong>');
-                }
-
-                request = $.post( admin_url, senddata, function( response ){
-                    if( response.success ){
-                        $('div.rtcontext-box').html( template( response.data ) );
-                       // $('div.gantt_task_content').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
-                    }
-                } );
-
-               $('div.gantt_task_line').contextMenu('div.rtcontext-box', {triggerOn: 'hover', displayAround : 'cursor' });
-            }
-
             /**
              * Convert date into wp default date format(yyyy-mm-dd hh:mm:ss)
              * @param post_date
@@ -734,11 +670,8 @@ class Rt_PM_Project_Gantt {
                 $( document).ready( function() { rttask_ganttchart.init() } );
             })(jQuery);
         </script>
-
-
-        <div class="rtcontext-box iw-contextMenu" style="display: none;">
-            <strong>Loading...</strong>
-        </div>
-    <?php }
+    <?php
+        rtpm_task_hover_cart();
+    }
 
 }

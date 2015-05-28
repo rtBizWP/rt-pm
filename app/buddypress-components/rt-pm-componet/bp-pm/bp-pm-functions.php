@@ -218,3 +218,56 @@ function rtpm_bp_get_project_details_url( $project_id ) {
     return $project_edit_link;
 }
 
+/**
+ * Task detail hover cart
+ */
+function rtpm_task_hover_cart() { ?>
+
+	<script id="task-detail-template" type="text/x-handlebars-template">
+		<ul style="list-style-type: none; margin: 0;">
+			<li style="margin: 0;"><strong>Task Title: </strong><span>{{task_title}}</span></li>
+			<li style="margin: 0;"><strong>Status: </strong><span>{{task_status}}</span></li>
+			<li style="margin: 0;"><strong>Progress: </strong><span>{{task_progress}}%</span></li>
+			<li style="margin: 0;"><strong>Start Date: </strong><span>{{start_date}}</span></li>
+			<li style="margin: 0;"><strong>End Date: </strong><span>{{end_date}}</span></li>
+		</ul>
+	</script>
+
+	<script type="text/javascript">
+		var source   = $('#task-detail-template').html();
+		var template = Handlebars.compile(source);
+
+
+		var admin_url = '<?php echo admin_url('admin-ajax.php');  ?>';
+
+		function rtpm_show_task_detail_hovercart( id ) {
+
+			if (null === id)
+				return;
+
+			var data = {task_id: id};
+
+			var senddata = {
+				action: 'rtpm_get_task_data_for_ganttchart',
+				post: data
+			};
+
+			if ( 'undefined' != typeof request ) {
+				request.abort();
+				$('div.rtcontext-box').html('<strong>Loading...</strong>');
+			}
+
+			request = $.post( admin_url, senddata, function( response ){
+				if( response.success ){
+					$('div.rtcontext-box').html( template( response.data ) );
+					// $('div.gantt_task_content').contextMenu('div.rtcontext-box', {triggerOn: 'hover'});
+				}
+			} );
+
+		}
+	</script>
+
+	<div class="rtcontext-box iw-contextMenu" style="display: none;">
+		<strong>Loading...</strong>
+	</div>
+<?php }
