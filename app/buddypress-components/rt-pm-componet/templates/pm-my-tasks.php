@@ -36,7 +36,7 @@ if ( ! empty( $project_ids ) ) { ?>
 				</thead>
 				<tbody>
 				<?php foreach ( $project_ids as $key => $project_id ):  ?>
-					<?php $task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
+					<?php $task_ids = $rt_pm_task_resources_model->rtpm_get_resources_tasks( array( 'user_id' => bp_displayed_user_id(), 'project_id' => $project_id ) );
 
 					if( empty( $task_ids ) )
 						continue;

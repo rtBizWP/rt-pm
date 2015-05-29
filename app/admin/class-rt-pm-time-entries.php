@@ -60,34 +60,10 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
         }
 
         /**
-         * Return total billed hours
-         * @param $task_ids
-         * @param int $author_id
-         * @return mixed
-         */
-        public function rtpm_get_tasks_total_billed_hours( $task_ids, $author_id = 0 ) {
-            global $wpdb, $rt_pm_time_entries_model;
-
-            if( ! is_array( $task_ids ) )
-                return false;
-
-            $tasks = implode( ', ', $task_ids );
-
-            $query = "SELECT COALESCE( SUM(time_duration), 0 ) FROM {$rt_pm_time_entries_model->table_name} WHERE task_id IN ( $tasks )";
-
-            if( 0 !== $author_id )
-                $query .= " AND author = {$author_id}";
-
-            $time_billed = $wpdb->get_var( $query );
-
-            return $time_billed;
-        }
-
-        /**
          * Save time entries
          */
         public function rtpm_save_timeentry() {
-            global $rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model;
+            global $rt_pm_time_entries_model;
 
             if ( ! isset( $_POST['rtpm_save_timeentry_nonce'] ) || ! wp_verify_nonce( $_POST['rtpm_save_timeentry_nonce'], 'rtpm_save_timeentry' ) )
                 return;

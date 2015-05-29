@@ -137,7 +137,7 @@ class Rt_PM_Project_Resources {
 		$old_project_id = '0';
 		foreach ( $project_ids as $project_id ) {
 
-			$task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
+			$task_ids = $rt_pm_task_resources_model->rtpm_get_resources_tasks( array( 'user_id' => bp_displayed_user_id(), 'project_id' => $project_id ) );
 
 			if( empty( $task_ids ) )
 				continue;

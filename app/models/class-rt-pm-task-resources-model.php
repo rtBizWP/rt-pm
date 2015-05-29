@@ -84,7 +84,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 			$tasks =  $task_ids ;
 		}
 
-		$query = "SELECT SUM( time_duration)  AS estimated_hours FROM {$this->table_name} WHERE task_id IN ( $tasks )";
+		$query = "SELECT SUM( time_duration)  AS estimated_hours FROM {$this->table_name} WHERE task_id IN ( $tasks ) AND post_status <> 'trash'";
 
 		return $wpdb->get_var( $query );
 	}
@@ -99,12 +99,10 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_all_task_id_by_user( $user_id, $project_id = '' ) {
 		global $wpdb;
 
-		$query = "SELECT DISTINCT task_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts ON
-					posts.ID = resources.task_id WHERE resources.user_id = {$user_id} AND posts.post_status <> 'trash'";
-
+		$query = "SELECT DISTINCT task_id  FROM {$this->table_name}  WHERE user_id = {$user_id} AND post_status <> 'trash'";
 
 		if( ! empty( $project_id ) )
-			$query .= " AND resources.project_id = {$project_id}";
+			$query .= " AND project_id = {$project_id}";
 
 		//var_dump( $query );
 		return $wpdb->get_col( $query );
@@ -119,7 +117,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_task_resources( $task_id ) {
 		global $wpdb;
 
-		$query = "SELECT DISTINCT user_id  FROM {$this->table_name} WHERE task_id = {$task_id}";
+		$query = "SELECT DISTINCT user_id  FROM {$this->table_name} WHERE task_id = {$task_id} AND post_status <> 'trash'";
 
 		return $wpdb->get_col( $query );
 	}
@@ -133,7 +131,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_project_resources( $project_id ) {
 		global $wpdb;
 
-		$query = "SELECT DISTINCT user_id  FROM {$this->table_name} WHERE project_id = {$project_id}";
+		$query = "SELECT DISTINCT user_id  FROM {$this->table_name} WHERE project_id = {$project_id} AND post_status <> 'trash'";
 
 		return $wpdb->get_col( $query );
 	}
@@ -147,12 +145,11 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_resources_tasks( $args = array() ) {
 		global $wpdb;
 
-		$select_statment = "SELECT DISTINCT task_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
-		ON posts.ID = resources.task_id";
+		$select_statment = "SELECT DISTINCT task_id  FROM {$this->table_name}";
 
 		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
 
-		$where_columns[] = " post_status <> 'trash'";
+		$where_columns[] = " post_status <> 'trash' ";
 
 		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
@@ -170,8 +167,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_resources_projects( $args = array() ) {
 		global $wpdb;
 
-		$select_statment = "SELECT DISTINCT project_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
-		ON posts.ID = resources.project_id";
+		$select_statment = "SELECT DISTINCT project_id  FROM {$this->table_name}";
 
 		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
 
@@ -207,12 +203,17 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	public function rtpm_get_users_projects( $user_id ) {
 		global $wpdb;
 
-		$query = "SELECT DISTINCT project_id  FROM {$this->table_name} AS resources INNER JOIN {$wpdb->posts} AS posts
-		ON posts.ID = resources.project_id WHERE resources.user_id = {$user_id} AND posts.post_status <> 'trash' ORDER BY project_id DESC";
+		$query = "SELECT DISTINCT project_id  FROM {$this->table_name} WHERE user_id = {$user_id} AND post_status <> 'trash' ORDER BY project_id DESC";
 
 		return $wpdb->get_col( $query );
 	}
 
+	/**
+	 * Return sum of estimated hours
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
 	public function rtpm_get_estimated_hours( $args ) {
 		global $wpdb;
 
