@@ -29,8 +29,35 @@ class Rt_PM_Project_Resources {
 	 * Placeholder method
 	 */
 	public function __construct() {
-		//$this->setup();
+		$this->setup();
 	}
+
+	public function setup() {
+		add_action('wp_enqueue_scripts', array( $this, 'rtpm_resources_load_style_script' ) );
+		add_action('buddyboss_after_header', array( $this, 'buddyboss_after_header_rt_wrapper' ) );
+	}
+
+	public function rtpm_resources_load_style_script() {
+		wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri().'/css/jquery.sidr.light.css',  array() );
+		wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri().'/assets/js/jquery.sidr.min.js', array('jquery') );
+
+		wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+		wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+
+		wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
+
+		wp_enqueue_script( 'rtbiz-attachment-script', RT_BP_PEOPLE_URL . 'assets/js/rtbiz-attachment-section.js', array( 'jquery' ), RT_BIZ_VERSION, false );
+		wp_enqueue_media();
+
+		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
+	}
+
+	/**
+	 * Add div for sidr side panel
+	 */
+	public function buddyboss_after_header_rt_wrapper() { ?>
+		<div id="rt-action-panel" class="sidr right"></div>
+	<?php }
 
 	/**
 	 *  Creates All Resources calender
@@ -137,7 +164,7 @@ class Rt_PM_Project_Resources {
 		$old_project_id = '0';
 		foreach ( $project_ids as $project_id ) {
 
-			$task_ids = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( bp_displayed_user_id(), $project_id );
+			$task_ids = $rt_pm_task_resources_model->rtpm_get_resources_tasks( array( 'user_id' => bp_displayed_user_id(), 'project_id' => $project_id ) );
 
 			if( empty( $task_ids ) )
 				continue;

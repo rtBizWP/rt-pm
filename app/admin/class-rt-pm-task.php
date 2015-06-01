@@ -48,8 +48,10 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'rtpm_after_save_task', array( $this, 'rtpm_after_save_task' ), 10, 2 );
 
 			add_action( 'rtpm_before_trash_task', array( $this, 'rtpm_before_trash_task' ), 10, 1 );
+			add_action( 'rtpm_after_trash_task', array( $this, 'rtpm_after_trash_task' ), 10, 1 );
 			add_action( 'rtpm_before_untrash_task', array( $this, 'rtpm_before_untrash_task' ), 10, 1 );
-			add_action( 'rtpm_after_untrash_task', array( $this, 'rtpm_after_untrash_task' ) );
+			add_action( 'rtpm_after_untrash_task', array( $this, 'rtpm_after_untrash_task' ), 10, 1 );
+			add_action( 'rtpm_after_delete_task', array( $this, 'rtpm_after_delete_task' ), 10, 1 );
 
 			add_action( 'wp_ajax_rtpm_import_task_json', array( $this, 'rtpm_import_task_json' ) );
 		}
@@ -1011,10 +1013,13 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @return array|bool|WP_Post
 		 */
 		public function rtpm_delete_task( $task_id ) {
-			global $rt_pm_project;
+
+			do_action( 'rtpm_before_delete_task', $task_id );
 
 			$result = wp_delete_post( $task_id );
-			$rt_pm_project->remove_connect_post_to_entity( $this->post_type, $task_id );
+
+			if( $result )
+				do_action( 'rtpm_after_delete_task' , $task_id );
 
 			return $result;
 		}
@@ -1027,13 +1032,13 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @return array|bool
 		 */
 		public function rtpm_trash_task( $task_id ) {
-			global $rt_pm_time_entries_model;
 
 			do_action( 'rtpm_before_trash_task', $task_id );
 
 			$result = wp_trash_post( $task_id );
 
-			$rt_pm_time_entries_model->delete_timeentry( array( 'task_id' => $task_id ) );
+			if( $result )
+				do_action( 'rtpm_after_trash_task', $task_id );
 
 			return $result;
 		}
@@ -1051,7 +1056,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$result = wp_untrash_post( $task_id );
 
-			do_action( 'rtpm_after_untrash_task', $task_id );
+			if( $result )
+				do_action( 'rtpm_after_untrash_task', $task_id );
 
 			return $result;
 		}
@@ -1236,7 +1242,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @return float|int
 		 */
 		public function rtpm_get_task_progress_percentage( $task_id ) {
-			global $rt_pm_time_entries, $rt_pm_task_resources_model;
+			global $rt_pm_task_resources_model, $rt_pm_time_entries_model;
 
 			$tasks = $this->rtpm_get_task_subtasks( $task_id );
 
@@ -1245,7 +1251,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$tasks = array( $task_id );
 			}
 
-			$total_billed_hours = (float) $rt_pm_time_entries->rtpm_get_tasks_total_billed_hours( $tasks );
+			$total_billed_hours = (float) $rt_pm_time_entries_model->rtpm_get_billed_hours( array( 'task__in' => $tasks ) );
 			$estimated_hours = (float) $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $tasks );
 
 			if ( 0 < $estimated_hours ) {
@@ -1292,7 +1298,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			<select required='required' name='post[post_task_id]' id='task_id'>;
 			<?php foreach ( $tasks as $task ):
 				$task_title = get_post_field( 'post_title', $task );?>
-				<option <?php selected( $task_id, $task ) ?> value='$task'><?php echo $task_title ?></option>
+				<option  <?php selected( $task_id, $task ) ?> value="<?php echo $task ?>"><?php echo $task_title ?></option>
 			<?php endforeach; ?>
 			<select>
 
@@ -1485,10 +1491,31 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $post_id
 		 */
 		public function rtpm_after_untrash_task( $post_id ) {
+			global $rt_pm_time_entries_model, $rt_pm_task_resources_model;
+
 			$this->rtpm_set_task_group( $post_id, false );
+
+			$data = array( 'post_status' => 'new' );
+			$where = array( 'task_id' => $post_id );
+
+			$rt_pm_time_entries_model->update( $data, $where );
+			$rt_pm_task_resources_model->update( $data, $where );
 		}
 
 
+		/**
+		 * After trash task call back
+		 * @param $post_id
+		 */
+		public function rtpm_after_trash_task( $post_id ) {
+			global $rt_pm_time_entries_model, $rt_pm_task_resources_model;
+
+			$data = array( 'post_status' => 'trash' );
+			$where = array( 'task_id' => $post_id );
+
+			$rt_pm_time_entries_model->update( $data, $where );
+			$rt_pm_task_resources_model->update( $data, $where );
+		}
 
 		/**
 		 * Action before trashing task
@@ -1506,6 +1533,22 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_before_untrash_task( $post_id ) {
 
 			$this->rtpm_update_child_task_count( $post_id, 'restore' );
+		}
+
+		/**
+		 * After delete task call back
+		 * @param $post_id
+		 */
+		public function rtpm_after_delete_task( $post_id ) {
+			global $rt_pm_time_entries_model, $rt_pm_task_resources_model, $rt_pm_project;
+
+			$where = array( 'task_id' => $post_id );
+
+			//Delete time entries and resources
+			$rt_pm_task_resources_model->delete( $where );
+		 	$rt_pm_time_entries_model->delete( $where );
+
+			$rt_pm_project->remove_connect_post_to_entity( $this->post_type, $post_id );
 		}
 
 		/**
@@ -1703,6 +1746,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			wp_send_json_success();
 		}
+
 	}
 
 }

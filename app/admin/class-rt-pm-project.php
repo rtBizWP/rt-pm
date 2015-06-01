@@ -771,7 +771,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 continue;
                             }
 
-                            if ( !wp_trash_post($post_id) )
+                            if ( !$rt_pm_task->rtpm_trash_task($post_id) )
                                 wp_die( __('Error in moving to Trash.') );
 
                             $trashed++;
@@ -784,7 +784,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                             if ( !current_user_can( 'delete_post', $post_id) )
                                 wp_die( __('You are not allowed to restore this item from the Trash.') );
 
-                            if ( !wp_untrash_post($post_id) )
+                            if ( !$rt_pm_task->rtpm_untrash_task($post_id) )
                                 wp_die( __('Error in restoring from Trash.') );
 
                             $untrashed++;
@@ -803,7 +803,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                 if ( ! wp_delete_attachment($post_id) )
                                     wp_die( __('Error in deleting.') );
                             } else {
-                                if ( !wp_delete_post($post_id) )
+                                if ( !$rt_pm_task->rtpm_delete_task($post_id) )
                                     wp_die( __('Error in deleting.') );
                             }
                             $deleted++;
