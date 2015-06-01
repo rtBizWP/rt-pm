@@ -281,7 +281,7 @@ function rtpm_user_tasks_hover_cart() { ?>
 		<h2>{{assignee_name}}'s Tasks</h2>
 		<ul style="list-style-type: none; margin: 0;">
 			{{#each tasks}}
-			<li style="margin: 0;"><a target="_blank" href="{{task_edit_url}}">{{post_title}}</a></li>
+			<li style="margin: 0;"><a class="user_tasks" href="{{task_edit_url}}">{{post_title}}</a></li>
 			{{/each}}
 		</ul>
 	</script>
@@ -305,8 +305,21 @@ function rtpm_user_tasks_hover_cart() { ?>
 
 				if (res.success) {
 					$('div.rtcontext-box').html(template(res.data));
+					jQuery( 'div.rtcontext-box' ).on( 'click', 'a.user_tasks', rtpm_open_task_side_panel);
 				}
 			});
+		}
+
+
+
+		function rtpm_open_task_side_panel( e ) {
+			e.preventDefault();
+
+			var task_id = get_parameter_by_name('?' + $(this).attr('href'), 'rt_task_id');
+
+			block_ui();
+
+			render_project_slide_panel('open', task_id, <?php echo get_current_blog_id(); ?>, '', 'task');
 		}
 
 	</script>
