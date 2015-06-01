@@ -237,7 +237,7 @@ jQuery(document).ready(function($) {
 	
     //autocomplete project organization
     try {
-        if (arr_project_organization != undefined) {
+        if (typeof arr_project_organization !== 'undefined' ) {
             jQuery("#project_org_search_account").autocomplete({
                 source: function (request, response) {
                     var term = $.ui.autocomplete.escapeRegex(request.term)
@@ -280,7 +280,7 @@ jQuery(document).ready(function($) {
     }
     //autocomplete project client
     try {
-        if (arr_project_client_user != undefined) {
+        if ( typeof arr_project_client_user !== 'undefined' ) {
             jQuery("#project_client_user_ac").autocomplete({
                 source: function (request, response) {
                     var term = $.ui.autocomplete.escapeRegex(request.term)
