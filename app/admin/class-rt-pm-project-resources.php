@@ -172,7 +172,12 @@ class Rt_PM_Project_Resources {
 			if ( $old_project_id !== $project_id ) {
 
 				$old_project_id = $project_id;
-				$table_html .= '<tr><td colspan="10">' . get_post_field( 'post_title', $project_id ) . '</td></tr>';
+				$table_html .= '<tr>';
+				foreach ( $dates as $date_key => $date_value ) {
+					$table_html .= '<td>&nbsp</td>';
+				}
+				$table_html .= '</tr>';
+				//$table_html .= '<tr><td colspan="10">' . get_post_field( 'post_title', $project_id ) . '</td></tr>';
 			}
 
 			$all_task_ids = array_merge( $all_task_ids, $task_ids );
@@ -340,8 +345,8 @@ class Rt_PM_Project_Resources {
 
 				$args['timestamp'] =  $value;
 
-				$table_html .= '<div>' . $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
-				$table_html .= '</div>';
+				$table_html .= $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
+				//$table_html .= '</div>';
 			}
 			$table_html .= '</td>';
 		}

@@ -55,8 +55,9 @@ jQuery(document).ready(function($) {
 	});
 
 	function mergetwotables(left_table,right_table){
-		var thead = right_table.find('thead td');
+		var thead = right_table.find('thead th');
 		var tbody = right_table.find('tbody tr');
+		var tfoot = right_table.find('tfoot tr');
 		var left_table_head = left_table.find('thead tr');
 		for(var i=0;i<thead.length;i++){
 			left_table_head.append(thead[i]);
@@ -65,6 +66,11 @@ jQuery(document).ready(function($) {
 			var tr_element = tbody[i];
 			var td_element = tr_element.innerHTML;
 			left_table.find('tbody tr:nth-child('+ (i+1) +')').append(td_element);
+		}
+		for(var i=0;i<tfoot.length;i++){
+			var tfoot_element = tfoot[i];
+			var tfoot_text = tfoot_element.innerHTML;
+			left_table.find('tfoot tr').append(tfoot_text);
 		}
 		return left_table;
 	}
@@ -95,6 +101,23 @@ jQuery(document).ready(function($) {
 				var text_1 = td_1[0].innerText;
 				var csv = csv + text_1 + '","';
 				var td_2 = rows_2[i].getElementsByTagName('td');
+				for( var j=0; j<td_2.length;j++ ){
+				var text_2 = td_2[j].innerText;
+				var csv = csv + text_2 + '","';
+
+					}
+				var csv = csv + '"\r\n"';
+			}
+			
+			var footer_1 = $table_1.find('tfoot tr');
+			var footer_2 = $table_2.find('tfoot tr');
+
+			for( var i=0; i<footer_1.length;i++ ){
+
+				var td_1 = footer_1[i].getElementsByTagName('th');
+				var text_1 = td_1[0].innerText;
+				var csv = csv + text_1 + '","';
+				var td_2 = footer_2[i].getElementsByTagName('td');
 				for( var j=0; j<td_2.length;j++ ){
 				var text_2 = td_2[j].innerText;
 				var csv = csv + text_2 + '","';

@@ -47,10 +47,12 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 					}
 				}
 				?>
+				</tbody>
+				<tfoot>
 				<tr>
 					<th><?php _e( 'TOTAL HOURS', RT_PM_TEXT_DOMAIN ); ?></th>
 				</tr>
-				</tbody>
+				</tfoot>
 			</table>
 		</div>
 		<div class="rt-right-container">
