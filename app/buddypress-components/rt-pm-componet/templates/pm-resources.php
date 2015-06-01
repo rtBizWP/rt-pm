@@ -10,6 +10,7 @@ $page = max( 1, get_query_var( 'paged' ) );
 $project_id = $_GET['rt_project_id'];
 $current_date = date( "Y-m-d" );
 $dates = rt_get_next_dates( $current_date );
+$user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'project_id' => $project_id ) );
 ?>
 <div class="list-heading">
 	<div class="large-10 columns list-title">
@@ -20,6 +21,7 @@ $dates = rt_get_next_dates( $current_date );
 	</div>
 </div>
 <div class="rt-main-resources-container">
+	<?php  if(!empty($user_ids)) { ?>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 	<div class="rt-left-container">
@@ -33,7 +35,6 @@ $dates = rt_get_next_dates( $current_date );
 			</thead>
 			<tbody>
 				<?php
-				$user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'project_id' => $project_id ) );
 					foreach ( $user_ids as  $user_id ): ?>
 						<tr>
 							<td>
@@ -76,6 +77,9 @@ $dates = rt_get_next_dates( $current_date );
 	</div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
 	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
+	<?php } else { ?>
+	<div><?php _e( 'No Resources to show', RT_PM_TEXT_DOMAIN ) ?></div>
+	<?php } ?>
 </div>
 <!-- Inline javascript -->
 <script type="text/javascript">
