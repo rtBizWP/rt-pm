@@ -406,4 +406,4 @@ $rt_pm_task->disable_working_days( $projectid );
 
     <a class="close-reveal-modal">×</a>
 </div>
-
+<?php rtpm_validate_user_assigned_hours_script(); ?>

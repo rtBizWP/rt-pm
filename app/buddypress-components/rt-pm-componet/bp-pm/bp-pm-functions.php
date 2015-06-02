@@ -328,3 +328,75 @@ function rtpm_user_tasks_hover_cart() { ?>
 	</div>
 
 <?php }
+
+/**
+ *
+ */
+function rtpm_validate_user_assigned_hours_script() { ?>
+	<script type="text/javascript">
+
+		var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
+		var rtpm_task_assignee;
+
+		(function($){
+			rtpm_task_assignee = {
+				init: function() {
+					$('div.rt-parent-row').on( 'autocompletechange', 'input.search-contact', rtpm_task_assignee.rtpm_validate_user_assigned_hours  );
+					$('div.rt-parent-row').on( 'change', 'input[name="post[time_duration][]"]', rtpm_task_assignee.rtpm_validate_user_assigned_hours  );
+					$('div.rt-parent-row').on( 'focusout', 'input[name="post[timestamp][]"]', rtpm_task_assignee.rtpm_validate_user_assigned_hours  );
+				},
+
+				rtpm_validate_user_assigned_hours: function() {
+					$main_div =  $(this).parents('div.rt-row');
+
+					$input = $main_div.find('input');
+
+					var $emptyFields = $input.filter(function() {
+						// remove the $.trim if whitespace is counted as filled
+						return $.trim(this.value) === "";
+					});
+
+					if ( $emptyFields.length )
+						return false;
+
+					$time_duration_input = $input.eq(2);
+					var user_id = $input.eq(1).val();
+					var time_duration = $input.eq(2).val();
+					var timestamp = $input.eq(3).datepicker('getDate');
+
+					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-validate-hours" ); ?>';
+
+					var todayUTC = new Date(Date.UTC(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()));
+					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
+
+					var post = {
+						user_id: user_id,
+						time_duration: time_duration,
+						timestamp: timestamp,
+						project_id: $('input[name="post[post_project_id]"]').val(),
+					};
+
+					var data = {
+						action: 'rtpm_validate_user_assigned_hours',
+						post:   post,
+						security: ajax_nonce,
+					};
+
+					$.post( ajax_adminurl, data, rtpm_task_assignee.rtpm_set_hours_limit );
+
+				},
+
+				rtpm_set_hours_limit: function( response ) {
+					var data = response.data;
+					if( response.success ) {
+						$time_duration_input.attr( 'max', data.max_hours );
+					}
+
+				}
+
+			};
+
+			$( document).ready( function() { rtpm_task_assignee.init() } );
+		})(jQuery);
+	</script>
+<?php }
