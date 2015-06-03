@@ -1774,20 +1774,21 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			if( $estimated_hours < $project_working_hours ) {
 
 				$new_estimated_hours =  $estimated_hours + $time_duration;
-
+				$max_hours = $project_working_hours - $estimated_hours;
 				if( $new_estimated_hours > $project_working_hours ) {
 
-					$user_remain_hours = $project_working_hours - $estimated_hours;
+					$user_remain_hours = $max_hours;
 					$message = 'You can not assign more than ' . $user_remain_hours;
-				} else {
+					} else {
 					$user_remain_hours = $project_working_hours - $new_estimated_hours;
 				}
 			} else {
+				$max_hours = $project_working_hours;
 				$user_remain_hours = 0;
 				$message  = 'Project working hours limit has been exceeded';
 			}
 
-			wp_send_json_success( array( 'message' => $message, 'max_hours' => $user_remain_hours ) );
+			wp_send_json_success( array( 'message' => $message, 'user_remain_hours' => $user_remain_hours, 'max_hours' => $max_hours ) );
 		}
 
 	}
