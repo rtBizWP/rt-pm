@@ -1052,9 +1052,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                         <div class="row collaspse postbox hide-for-milestone">
                             <h6 class="hndle"><span><i class="foundicon-address-book"></i> <?php _e('Resources'); ?></span></h6>
-                            <div class="inside resources-list">
+                            <div class="inside resources-list rt-resources-parent-row" >
 
-                                <div class="row parent-row">
+                                <div class="row parent-row rt-resources-row" data-resource-id="0">
                                     <div class="small-3 medium-3 columns">
                                         <input type="text" class="search-contact" />
                                         <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
@@ -1070,7 +1070,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                     </div>
 
                                     <div class="small-2 columns left">
-                                        <a class="add-multiple button"><i class="fa fa-plus"></i></a>
+                                        <a class="resources-add-multiple button"><i class="fa fa-plus"></i></a>
                                     </div>
                                 </div>
                                 <?php
@@ -1084,7 +1084,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
                                     $dr = rt_convert_strdate_to_usertimestamp( $resource->timestamp )
                                     ?>
-                                    <div class="row parent-row">
+                                    <div class="row parent-row rt-resources-row" data-resource-id="<?php echo $resource->id ?>">
                                         <div class="small-3 medium-3 columns">
                                             <input type="text" class="search-contact" value="<?php echo rtbiz_get_user_displayname( $resource->user_id ) ?>"/>
                                             <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
@@ -1100,7 +1100,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                                         </div>
 
                                         <div class="small-2 columns left">
-                                            <a class="delete-multiple button"><i class="fa fa-times"></i></a>
+                                            <a class="resources-delete-multiple button"><i class="fa fa-times"></i></a>
                                         </div>
                                     </div>
                                 <?php }
@@ -1149,7 +1149,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 <a class="close-reveal-modal">×</a>
             </div>
 
-        <?php }
+        <?php
+            rtpm_validate_user_assigned_hours_script();
+        }
 
         public function get_project_timeentry_tab($labels,$user_edit){
             global $rt_pm_project,$rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model;

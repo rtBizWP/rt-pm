@@ -338,17 +338,14 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 		var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
 		var rtpm_task_assignee, request, id_index = 0;
 
-		(function($){
+		(function( $ ) {
 			rtpm_task_assignee = {
 				init: function() {
 					$('div.rt-resources-parent-row').on( 'autocompletechange', 'input.search-contact', rtpm_task_assignee.validate_user_assigned_hours  );
 					$('div.rt-resources-parent-row').on( 'change', 'input[name="post[time_duration][]"]', rtpm_task_assignee.validate_user_assigned_hours  );
 					$('div.rt-resources-parent-row').on( 'change', 'input[name="post[timestamp][]"]', rtpm_task_assignee.validate_user_assigned_hours  );
-					$( document ).on('click', 'a.resources-add-multiple', rtpm_task_assignee.save_resources );
-					$( document ).on('click', 'a.resources-delete-multiple', rtpm_task_assignee.remove_resources );
-					//$( document).on( 'click', '#save-task', rtpm_task_assignee.validate_duplicate_assigne )
-					//$( 'inpu[name="post[timestamp][]"]' ).datetimepicker({ onSelect: rtpm_task_assignee.validate_user_assigned_hours });
-
+					$('div.rt-resources-parent-row').on('click', 'a.resources-add-multiple', rtpm_task_assignee.append_task_resources_markup );
+					$('div.rt-resources-parent-row').on('click', 'a.resources-delete-multiple', rtpm_task_assignee.remove_task_resources_markup );
 				},
 
 				validate_user_assigned_hours: function() {
@@ -357,9 +354,6 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 					$input = $main_div.find('input');
 
 					var $emptyFields = $input.filter(function() {
-
-						$(this).data( "old-val", $(this).data("new-val") || "" );
-						$(this).data( "new-val", $(this).val() );
 
 						// remove the $.trim if whitespace is counted as filled
 						return $.trim(this.value) === "";
@@ -374,20 +368,18 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 					var time_duration = $input.eq(2).val();
 					var timestamp = $input.eq(3).datepicker('getDate');
 
-					var old_user_id = $input.eq(1).data('old-val');
-					var old_time_duration = $input.eq(2).data('old-val');
-					var old_timestamp = $input.eq(3).data('old-val');
-
 					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-validate-hours" ); ?>';
 
 					var todayUTC = new Date(Date.UTC(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()));
 					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
+
 
 					var post = {
 						user_id: user_id,
 						time_duration: time_duration,
 						timestamp: timestamp,
 						project_id: $('input[name="post[post_project_id]"]').val(),
+						resource_id: $main_div.data('resource-id'),
 					};
 
 					var data = {
@@ -396,19 +388,17 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 						security: ajax_nonce,
 					};
 
-					block_ui();
+					//block_ui();
 
 					if( 'undefined' == typeof request ) {
 						request = $.post( ajax_adminurl, data, rtpm_task_assignee.set_hours_limit );
 					}
-
-
 				},
 
 				set_hours_limit: function( response ) {
 					var data = response.data;
 					if( response.success ) {
-						$time_duration_input.attr( 'max', data.max_hours );
+						//$time_duration_input.attr( 'max', data.max_hours );
 
 						if( data.message ) {
 
@@ -425,43 +415,93 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 					request = undefined;
 				},
 
-				save_resources: function() {
+				remove_task_resources_markup: function() {
+					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-remove-resources" ); ?>';
 
+					$elm = $(this).parents('div.rt-resources-row');
+
+					var post = {
+						resource_id: $elm.data('resource-id')
+					};
+
+					var data = {
+						action: 'rtpm_remove_resources',
+						security: ajax_nonce,
+						post: post,
+					};
+
+					$.post( ajax_adminurl, data, function( response ) {
+
+						if( response.success ) {
+							$elm.remove();
+						}
+					});
+				},
+
+				append_task_resources_markup: function() {
 					$main_div =  $(this).parents('div.rt-resources-row');
 
 					$input = $main_div.find('input');
 
-					// console.log( $(this).parents('div.collapse').html() );
 					var $emptyFields = $input.filter(function() {
-						// remove the $.trim if whitespace is counted as filled
 						return $.trim(this.value) === "";
 					});
 
 					if ( $emptyFields.length )
 						return false;
 
-
 					$element = $main_div.clone();
 
 					$new_input = $element.find('input');
 					$new_input.eq(3).removeClass('hasDatepicker');
 					$new_input.eq(3).attr( 'id', $input.eq(3).attr('id') + id_index );
-					$element.find('a').removeClass('resources-add-multiple').addClass('delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
+					$element.find('a').removeClass('resources-add-multiple').addClass('resources-delete-multiple').find('i').removeClass('fa fa-plus').addClass('fa fa-times');
 
-					$parent = $(this).parents('div.rt-resources-parent-row').append( $element );
+					var timestamp = $input.eq(3).datepicker('getDate');
+					var todayUTC = new Date(Date.UTC(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()));
+					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' 00:00:00';
 
-					rtpm_task_assignee.init;
-					$input.val('');
+					var user_id = $input.eq(1).val();
+					var time_duration = $input.eq(2).val();
 
-					id_index++;
+					var task_id = $('input[name="post[post_id]"]').val();
+					var project_id = $('input[name="post[post_project_id]"]').val();
+
+					var post = {
+						user_id: user_id,
+						time_duration: time_duration,
+						timestamp: timestamp,
+						task_id: task_id,
+						project_id: project_id
+					};
+
+					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-save-resources" ); ?>';
+
+					var data = {
+						action: 'rtpm_save_resources',
+						security: ajax_nonce,
+						post: post
+					};
+
+					$parent_div = $(this).parents('div.rt-resources-parent-row');
+
+					$.post( ajax_adminurl, data, function( response ) {
+
+						if( response.success ) {
+
+							var data = response.data;
+
+							$element.data( 'resource-id', data.resource_id );
+							$parent_div.append( $element )
+							$input.val('');
+							id_index++;
+
+						}
+					});
 				},
-
-				remove_resources: function() {
-					$(this).parents('div.rt-resources-row').remove();
-				}
 			};
 
-			$( document).ready( function() { rtpm_task_assignee.init() } );
+			$( document ).ready( function() { rtpm_task_assignee.init() } );
 		})(jQuery);
 	</script>
 <?php }

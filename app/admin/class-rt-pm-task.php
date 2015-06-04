@@ -54,8 +54,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			add_action( 'rtpm_after_delete_task', array( $this, 'rtpm_after_delete_task' ), 10, 1 );
 
 			add_action( 'wp_ajax_rtpm_import_task_json', array( $this, 'rtpm_import_task_json' ) );
-
-			add_action( 'wp_ajax_rtpm_validate_user_assigned_hours', array( $this, 'rtpm_validate_user_assigned_hours'), 10 );
 		}
 
 		function task_add_bp_activity( $post_id, $update ) {
@@ -774,7 +772,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				}
 			}
 
-			$this->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 
 			//Add success message
 			if ( ! is_admin() ) {
@@ -1358,49 +1355,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		/**
-		 * Save resource data
-		 * @param $task_id
-		 * @param $project_id
-		 * @param $post_data
-		 */
-		public function rtpm_save_task_resources( $task_id, $project_id, $post_data ) {
-			global $rt_pm_task_resources_model;
-
-			if( ! isset( $post_data['resource_wp_user_id'] ) )
-				return;
-
-			$where = array(
-				'task_id' => $task_id,
-				'project_id' => $project_id,
-			);
-
-			$rt_pm_task_resources_model->rtpm_delete_task_resources( $where );
-
-
-			foreach( $post_data['resource_wp_user_id'] as $key => $value ) {
-
-				if( empty( $post_data['resource_wp_user_id'] ) ||
-				    empty( $post_data['resource_wp_user_id'][$key] ) ||
-				    empty( $post_data['time_duration'][$key] )
-				)
-					continue;
-
-				$dr = date_create_from_format( 'M d, Y H:i A', $post_data['timestamp'][$key] );
-
-				$insert_rows = array(
-					'project_id' => $project_id,
-					'task_id' => $task_id,
-					'user_id' => $post_data['resource_wp_user_id'][$key],
-					'time_duration' => $post_data['time_duration'][$key],
-					'timestamp' => $dr->format('Y-m-d H:i:s'),
-				);
-
-				$rt_pm_task_resources_model->rtpm_add_task_resources( $insert_rows );
-			}
-		}
-
-
-		/**
 		 * Get all resources in task
 		 * @param $task_is
 		 * @param $project_id
@@ -1748,49 +1702,6 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			wp_send_json_success();
 		}
-
-		public function rtpm_validate_user_assigned_hours() {
-			global $rt_pm_task_resources_model;
-
-			check_ajax_referer( 'rtpm-validate-hours', 'security' );
-
-			$post = $_REQUEST['post'];
-
-			$project_id = $post['project_id'];
-
-			$project_working_hours = (float)get_post_meta( $project_id, 'working_hours' , true );
-
-			$time_duration = (float)$post['time_duration'];
-
-			$args = array(
-				'user_id'   =>  $post['user_id'],
-				'project_id'   =>  $post['project_id'],
-				'timestamp' =>  $post['timestamp'],
-			);
-
-			$estimated_hours = (float)$rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
-
-			$message = '';
-			if( $estimated_hours < $project_working_hours ) {
-
-				$new_estimated_hours =  $estimated_hours + $time_duration;
-				$max_hours = $project_working_hours - $estimated_hours;
-				if( $new_estimated_hours > $project_working_hours ) {
-
-					$user_remain_hours = $max_hours;
-					$message = 'You can not assign more than ' . $user_remain_hours;
-					} else {
-					$user_remain_hours = $project_working_hours - $new_estimated_hours;
-				}
-			} else {
-				$max_hours = $project_working_hours;
-				$user_remain_hours = 0;
-				$message  = 'Project working hours limit has been exceeded';
-			}
-
-			wp_send_json_success( array( 'message' => $message, 'user_remain_hours' => $user_remain_hours, 'max_hours' => $max_hours ) );
-		}
-
 	}
 
 }

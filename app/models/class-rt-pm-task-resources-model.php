@@ -44,9 +44,10 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	/**
 	 * Add new resource on task
 	 * @param $data
+	 * @return newly inserted resource id
 	 */
 	public function rtpm_add_task_resources( $data ) {
-		parent::insert( $data );
+		return parent::insert( $data );
 	}
 
 	/**
@@ -55,15 +56,16 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	 * @param $where
 	 */
 	public function rtpm_update_task_resources( $data, $where ) {
-		parent::update( $data, $where );
+		return parent::update( $data, $where );
 	}
 
 	/**
 	 * Delete resources from task
 	 * @param $where
+	 * @return id
 	 */
 	public function rtpm_delete_task_resources( $where ) {
-		parent::delete( $where );
+		return parent::delete( $where );
 	}
 
 	/**
@@ -262,6 +264,9 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 
 		if( isset( $args['user__in'] )  && is_array( $args['user__in'] ) )
 			$where_columns[] =  ' user_id IN( '.implode(', ', $args['user__in'] ) .') ';
+
+		if( ! isset( $args['post_status'] ) )
+			$where_columns[] = " post_status <> 'trash' ";
 
 		return $where_columns;
 	}

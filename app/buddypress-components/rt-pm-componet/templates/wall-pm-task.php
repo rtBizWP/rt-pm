@@ -219,8 +219,8 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     <?php if ( ! bp_is_current_component( BP_CRM_SLUG ) ): ?>
     <div class="row hide-for-milestone">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
-        <div class="rt-parent-row">
-            <div class="row rt-row rt-resources-row">
+        <div class="rt-resources-parent-row">
+            <div class="row rt-row rt-resources-row" data-resource-id="0">
                 <div class="small-4 medium-4 column">
                     <input type="text" class="search-contact" placeholder="Assignee"/>
                     <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
@@ -236,7 +236,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
                 </div>
 
                 <div class="small-1 columns">
-                    <a class="add-multiple add-button button"><i class="fa fa-plus"></i></a>
+                    <a class="resources-add-multiple add-button button"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <?php
@@ -250,7 +250,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
                 $dr = rt_convert_strdate_to_usertimestamp( $resource->timestamp )
                 ?>
-                <div class="row rt-row rt-resources-row">
+                <div class="row rt-row rt-resources-row" data-resource-id="<?php echo $resource->id ?>">
                     <div class="small-4 medium-4 column">
                         <input type="text" class="search-contact"  value="<?php echo rtbiz_get_user_displayname( $resource->user_id ) ?>"/>
                         <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" value="<?php echo $resource->user_id ?>" />
@@ -266,7 +266,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
                     </div>
 
                     <div class="small-1 columns">
-                        <a class="delete-multiple button"><i class="fa fa-times"></i></a>
+                        <a class="resources-delete-multiple button"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
             <?php }
@@ -293,3 +293,4 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     </div>
 
 </form>
+<?php rtpm_validate_user_assigned_hours_script(); ?>

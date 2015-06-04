@@ -171,31 +171,11 @@ jQuery(document).ready(function($) {
 
     //datetime picker
     if( $(".datetimepicker").length > 0 ) {
-        $(".datetimepicker").datetimepicker({
-            dateFormat: "M d, yy",
-            timeFormat: "hh:mm TT",
-            //onClose: function(newDate,inst) {
-            //
-            //    if( $(this).hasClass("moment-from-now") ) {
-            //        var oldDate = $(this).attr("title");
-            //
-            //        if( newDate != "" && moment(newDate).isValid() ) {
-            //            $(this).val(moment(new Date(newDate)).fromNow());
-            //            $(this).attr("title",newDate);
-            //
-            //            if( $(this).next().length > 0 ) {
-            //                $(this).next().val(newDate);
-            //            }
-            //        } else if( oldDate != "" ) {
-            //            $(this).val(moment(new Date(oldDate)).fromNow());
-            //            $(this).attr("title",oldDate);
-            //
-            //            if( $(this).next().length > 0 ) {
-            //                $(this).next().val(newDate);
-            //            }
-            //        }
-            //    }
-            //}
+        $( document ).on( 'focus', ".datetimepicker", function() {
+            $(".datetimepicker").datetimepicker({
+                dateFormat: "M d, yy",
+                timeFormat: "hh:mm TT",
+            });
         });
     }
 
@@ -233,41 +213,42 @@ jQuery(document).ready(function($) {
 
     try {
         if ('undefined' != typeof jQuery('input.search-contact')) {
+            jQuery( document ).on( 'keydown.autocomplete', function() {
+                jQuery("input.search-contact").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: ajaxurl,
+                            dataType: "json",
+                            type: 'post',
+                            data: {
+                                action: "rtbiz_search_person",
+                                query: request.term,
+                            },
+                            success: function (response_data) {
+                                if (response_data.success) {
 
-            jQuery("input.search-contact").autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: ajaxurl,
-                        dataType: "json",
-                        type: 'post',
-                        data: {
-                            action: "rtbiz_search_person",
-                            query: request.term,
-                        },
-                        success: function (response_data) {
-                            if( response_data.success ) {
+                                    response($.map(response_data.data, function (item) {
+                                        return {
+                                            id: item.contact_wp_user_id,
+                                            label: item.contact_display_name,
+                                            imghtml: item.contact_imghtml,
+                                        }
+                                    }));
+                                }
 
-                                response($.map(response_data.data, function (item) {
-                                    return {
-                                        id: item.contact_wp_user_id,
-                                        label: item.contact_display_name,
-                                        imghtml: item.contact_imghtml,
-                                    }
-                                }));
                             }
+                        });
+                    }, minLength: 2,
+                    select: function (event, ui) {
+                        jQuery(this).val(ui.item.label);
+                        jQuery(this).siblings('input.contact-wp-user-id').val(ui.item.id);
+                        return false;
 
-                        }
-                    });
-                }, minLength: 2,
-                select: function (event, ui) {
-                    jQuery( this ).val( ui.item.label );
-                    jQuery( this ).siblings('input.contact-wp-user-id').val( ui.item.id );
-                    return false;
-
-                }
-            }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-subscribe-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
-            };
+                    }
+                }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li></li>").data("ui-autocomplete-item", item).append("<a class='ac-subscribe-selected'>" + item.imghtml + "&nbsp;" + item.label + "</a>").appendTo(ul);
+                };
+            });
         }
     } catch(e) {
 

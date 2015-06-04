@@ -284,7 +284,7 @@ $rt_pm_task->disable_working_days( $projectid );
                 <div class="row hide-for-milestone">
                     <span title="Estimated time"><label><?php _e('Resources') ?></label></span>
                     <div class="rt-resources-parent-row">
-                        <div class="row rt-resources-row">
+                        <div class="row rt-resources-row" data-resource-id="0">
                             <div class="small-4 medium-4 columns">
                                 <input type="text" class="search-contact" placeholder="Assignee"  />
                                 <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" />
@@ -317,16 +317,16 @@ $rt_pm_task->disable_working_days( $projectid );
                             <div class="row rt-resources-row" data-resource-id="<?php echo $resource->id ?>">
                                 <div class="small-4 medium-4 columns">
                                     <input type="text" class="search-contact" value="<?php echo rtbiz_get_user_displayname( $resource->user_id ) ?>"/>
-                                    <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]" data-new-val="<?php echo $resource->user_id ?>" value="<?php echo $resource->user_id ?>" />
+                                    <input type="hidden" class="contact-wp-user-id" name="post[resource_wp_user_id][]"  value="<?php echo $resource->user_id ?>" />
                                 </div>
 
                                 <div class="small-3 medium-3 large-2 columns">
-                                    <input type="number" step=".25" min="0" name="post[time_duration][]" data-new-val="<?php echo $resource->time_duration ?>" value="<?php echo $resource->time_duration ?>" />
+                                    <input type="number" step=".25" min="0" name="post[time_duration][]" value="<?php echo $resource->time_duration ?>" />
                                 </div>
 
                                 <div class="small-4 medium-4 large-5 columns">
 
-                                    <input type="text" class="datetimepicker" name="post[timestamp][]" data-new-val="<?php echo $dr->format('M d, Y h:i A'); ?>" value="<?php echo $dr->format('M d, Y h:i A'); ?>">
+                                    <input type="text" class="datetimepicker" name="post[timestamp][]" value="<?php echo $dr->format('M d, Y h:i A'); ?>">
                                 </div>
 
                                 <div class="small-1 columns left">
