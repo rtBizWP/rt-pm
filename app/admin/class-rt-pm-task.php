@@ -603,15 +603,13 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * Save or Add new Task
 		 */
 		public function rtpm_save_task() {
-			global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
+			global $rt_pm_project, $rt_pm_task, $rt_pm_project_resources;
 
 			if ( ! isset( $_POST['rtpm_save_task_nonce'] ) || ! wp_verify_nonce( $_POST['rtpm_save_task_nonce'], 'rtpm_save_task' ) ) {
 				return;
 			}
 
-			$post_type      = $rt_pm_project->post_type;
 			$task_post_type = $rt_pm_task->post_type;
-			$task_labels    = $rt_pm_task->labels;
 
 			$newTask = $_POST['post'];
 
@@ -696,6 +694,9 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				$_REQUEST["new"]    = true;
 				$newTask['post_id'] = $post_id;
+
+				//Save task resources
+				$rt_pm_project_resources->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 			}
 
 			$rt_pm_project->connect_post_to_entity( $task_post_type, $newTask['post_project_id'], $post_id );

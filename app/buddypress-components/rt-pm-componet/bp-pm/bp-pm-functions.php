@@ -464,16 +464,18 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 					var user_id = $input.eq(1).val();
 					var time_duration = $input.eq(2).val();
 
-					var task_id = $('input[name="post[post_id]"]').val();
-					var project_id = $('input[name="post[post_project_id]"]').val();
 
 					var post = {
 						user_id: user_id,
 						time_duration: time_duration,
 						timestamp: timestamp,
-						task_id: task_id,
-						project_id: project_id
 					};
+
+					if( 'undefined' != typeof $('input[name="post[post_id]"]') )
+						post.task_id = $('input[name="post[post_id]"]').val();
+
+					if( 'undefined' != typeof $('input[name="post[post_project_id]"]') )
+						post.project_id = $('input[name="post[post_project_id]"]').val();
 
 					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-save-resources" ); ?>';
 
@@ -489,9 +491,11 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 
 						if( response.success ) {
 
-							var data = response.data;
+							if( 'undefined' != typeof data ) {
+								var data = response.data;
+								$element.data( 'resource-id', data.resource_id );
+							}
 
-							$element.data( 'resource-id', data.resource_id );
 							$parent_div.append( $element )
 							$input.val('');
 							id_index++;

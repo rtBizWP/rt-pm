@@ -370,6 +370,10 @@ class Rt_PM_Project_Resources {
 
 		$post = $_REQUEST['post'];
 
+		//Send json success while adding new task
+		if( ! isset( $post['task_id'] ) )
+			wp_send_json_success();
+
 		$user_id = $post['user_id'];
 		$project_id =  $post['project_id'];
 		$task_id = $post['task_id'];
@@ -482,7 +486,7 @@ class Rt_PM_Project_Resources {
 		global $rt_pm_task_resources_model;
 		check_ajax_referer( 'rtpm-validate-hours', 'security' );
 
-		$post = $_REQUEST['post'];
+		$post = $_REQUEST['post'];;
 
 		$where = array(
 			'id' => $post['resource_id']
@@ -511,6 +515,43 @@ class Rt_PM_Project_Resources {
 		}
 		wp_send_json_success( $data );
 	}
+
+
+	/**
+	 * Save resource data
+	 * @param $task_id
+	 * @param $project_id
+	 * @param $post_data
+	 */
+	public function rtpm_save_task_resources( $task_id, $project_id, $post_data ) {
+		global $rt_pm_task_resources_model;
+
+		if( ! isset( $post_data['resource_wp_user_id'] ) )
+			return;
+
+
+		foreach( $post_data['resource_wp_user_id'] as $key => $value ) {
+
+			if( empty( $post_data['resource_wp_user_id'] ) ||
+			    empty( $post_data['resource_wp_user_id'][$key] ) ||
+			    empty( $post_data['time_duration'][$key] )
+			)
+				continue;
+
+			$dr = date_create_from_format( 'M d, Y H:i A', $post_data['timestamp'][$key] );
+
+			$insert_rows = array(
+				'project_id' => $project_id,
+				'task_id' => $task_id,
+				'user_id' => $post_data['resource_wp_user_id'][$key],
+				'time_duration' => $post_data['time_duration'][$key],
+				'timestamp' => $dr->format('Y-m-d H:i:s'),
+			);
+
+			$rt_pm_task_resources_model->rtpm_add_task_resources( $insert_rows );
+		}
+	}
+
 
 
 
