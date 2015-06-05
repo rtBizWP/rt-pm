@@ -432,11 +432,25 @@ class Rt_PM_Project_Resources {
 	 * @return array
 	 */
 	public function rtpm_validate_assigned_hours( $post ) {
-		global $rt_pm_task_resources_model;
+		global $rt_pm_task_resources_model, $rt_hrm_leave;
 
 		$success = false;
 
 		$project_id = $post['project_id'];
+
+
+		/**
+		 * Check user is not on leave before
+		 */
+		$data = $rt_hrm_leave->rthrm_check_user_on_leave( $post['user_id'], $post['timestamp'] );
+		if( ! empty( $data ) ) {
+			$validate_data = array(
+				'message' => 'Employee on leave',
+				'success'   => false,
+			);
+			return $validate_data;
+		}
+
 
 		$project_working_hours = (float)get_post_meta( $project_id, 'working_hours' , true );
 
@@ -451,8 +465,12 @@ class Rt_PM_Project_Resources {
 		$estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 
 		$message = '';
+		/**
+		 * Check project working hours is not exceeding
+		 */
 		if( $estimated_hours <= $project_working_hours ) {
 
+			//New assigned hours after adding new value to old assigned value
 			$new_estimated_hours =  $estimated_hours + $time_duration;
 
 			$person = rt_biz_get_person_for_wp_user( $post['user_id'] );
@@ -477,7 +495,6 @@ class Rt_PM_Project_Resources {
 
 		$validate_data = array(
 			'message' => $message,
-			//'user_remain_hours' => $user_remain_hours,
 			'success'   => $success
 		);
 
