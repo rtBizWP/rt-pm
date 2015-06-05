@@ -63,7 +63,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
          * Save time entries
          */
         public function rtpm_save_timeentry() {
-            global $rt_pm_time_entries_model;
+            global $rt_pm_time_entries_model, $rt_pm_task_resources_model;
 
             if ( ! isset( $_POST['rtpm_save_timeentry_nonce'] ) || ! wp_verify_nonce( $_POST['rtpm_save_timeentry_nonce'], 'rtpm_save_timeentry' ) )
                 return;
@@ -76,8 +76,26 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 
             $creationdate = $newTimeEntry['post_date'];
             if ( isset( $creationdate ) && $creationdate != '' ) {
+                $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
+
+                $estimated_hours = (float)$rt_pm_task_resources_model->rtpm_get_estimated_hours( array(
+                    'user_id' => get_current_user_id(),
+                    'task_id' => $newTimeEntry['post_task_id'],
+                    'timestamp' => $dr->format('Y-m-d'),
+                    'project_id' => $newTimeEntry['post_project_id'],
+                ) );
+
+                if( empty( $estimated_hours) ||
+                    $estimated_hours < (float)$newTimeEntry['post_duration'] ) {
+                    if( !is_admin() ) {
+                        bp_core_add_message( 'Assign hours has been exceeded', 'error' );
+                    }
+                    return false;
+                }
+
+
                 try {
-                    $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
+                   // $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
                     //  $UTC = new DateTimeZone('UTC');
                     //  $dr->setTimezone($UTC);
                     $timeStamp = $dr->getTimestamp();
@@ -88,6 +106,9 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             } else {
                 $newTimeEntry['post_date'] = current_time( 'mysql' );
             }
+
+
+           if( ! empty( $estimated_hours ) )
 
             // Post Data to be saved.
             $post = array(
