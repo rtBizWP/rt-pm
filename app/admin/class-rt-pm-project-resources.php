@@ -448,31 +448,36 @@ class Rt_PM_Project_Resources {
 			'timestamp' =>  $post['timestamp'],
 		);
 
-		$estimated_hours = (float)$rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
+		$estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 
 		$message = '';
 		if( $estimated_hours <= $project_working_hours ) {
 
 			$new_estimated_hours =  $estimated_hours + $time_duration;
-			$max_hours = $project_working_hours - $estimated_hours;
+
+			$person = rt_biz_get_person_for_wp_user( $post['user_id'] );
+
+			$person_working_hours = (float)Rt_Person::get_meta( $person[0]->ID, 'contact_working_hours', true );
 
 			if( $new_estimated_hours > $project_working_hours ) {
-				$user_remain_hours = $max_hours;
+				$user_remain_hours = $project_working_hours - $estimated_hours;
+				$message = 'You can not assign more than ' . $user_remain_hours;
+			} else if(  ! empty( $person_working_hours ) &&
+			            $new_estimated_hours > $person_working_hours ) {
+				$user_remain_hours = $person_working_hours - $estimated_hours;
 				$message = 'You can not assign more than ' . $user_remain_hours;
 			} else {
 				$success = true;
-				$user_remain_hours = $project_working_hours - $new_estimated_hours;
+				//$user_remain_hours = $project_working_hours - $new_estimated_hours;
 			}
 		} else {
-			$max_hours = $project_working_hours;
 			$user_remain_hours = 0;
 			$message  = 'Project working hours limit has been exceeded';
 		}
 
 		$validate_data = array(
 			'message' => $message,
-			'user_remain_hours' => $user_remain_hours,
-			'max_hours' => $max_hours,
+			//'user_remain_hours' => $user_remain_hours,
 			'success'   => $success
 		);
 
