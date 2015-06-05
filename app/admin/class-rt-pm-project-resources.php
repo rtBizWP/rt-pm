@@ -540,15 +540,29 @@ class Rt_PM_Project_Resources {
 
 			$dr = date_create_from_format( 'M d, Y H:i A', $post_data['timestamp'][$key] );
 
-			$insert_rows = array(
-				'project_id' => $project_id,
-				'task_id' => $task_id,
-				'user_id' => $post_data['resource_wp_user_id'][$key],
+			$args = array(
+				'user_id'   =>  $post_data['resource_wp_user_id'][$key],
+				'project_id' =>  $post_data['post_project_id'],
 				'time_duration' => $post_data['time_duration'][$key],
 				'timestamp' => $dr->format('Y-m-d H:i:s'),
 			);
 
-			$rt_pm_task_resources_model->rtpm_add_task_resources( $insert_rows );
+
+			$data = $this->rtpm_validate_assigned_hours( $args );
+
+			if( $data['success'] ) {
+
+				$insert_rows = array(
+					'project_id' => $project_id,
+					'task_id' => $task_id,
+					'user_id' => $post_data['resource_wp_user_id'][$key],
+					'time_duration' => $post_data['time_duration'][$key],
+					'timestamp' => $dr->format('Y-m-d H:i:s'),
+				);
+
+				$rt_pm_task_resources_model->rtpm_add_task_resources( $insert_rows );
+			}
+
 		}
 	}
 
