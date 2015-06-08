@@ -30,6 +30,8 @@ class Rtbp_Pm_Screens {
 	public function setup() {
 
 		add_action( 'bp_screens', array( $this, 'bp_pm_screen' ) );
+
+		add_action( 'bp_init', array( $this, 'rtpm_init_resources' ) );
 	}
 
 	/**
@@ -221,6 +223,19 @@ class Rtbp_Pm_Screens {
 		include RT_PM_BP_PM_PATH . '/templates/pm-my-tasks.php';
 	}
 
+	public function rtpm_init_resources() {
+
+		$white_action_lists = array(
+			'all-resources',
+			'my-task',
+			'resources'
+		);
+
+		if( in_array( bp_current_action(), $white_action_lists) ) {
+			global $rt_pm_project_resources;
+			$rt_pm_project_resources = Rt_PM_Project_Resources::factory();
+		}
+	}
 
 }
 

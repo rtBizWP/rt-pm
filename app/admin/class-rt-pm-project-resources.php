@@ -48,6 +48,7 @@ class Rt_PM_Project_Resources {
 		wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
 		wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
 
+		//Sidebar css
 		wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
 
 		wp_enqueue_script( 'rtbiz-attachment-script', RT_BP_PEOPLE_URL . 'assets/js/rtbiz-attachment-section.js', array( 'jquery' ), RT_BIZ_VERSION, false );
