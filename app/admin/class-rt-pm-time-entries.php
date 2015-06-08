@@ -76,6 +76,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 
             $creationdate = $newTimeEntry['post_date'];
             if ( isset( $creationdate ) && $creationdate != '' ) {
+
                 $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
 
                 $estimated_hours = (float)$rt_pm_task_resources_model->rtpm_get_estimated_hours( array(
@@ -85,21 +86,38 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                     'project_id' => $newTimeEntry['post_project_id'],
                 ) );
 
+                $args = array(
+                    'user_id'   =>  get_current_user_id(),
+                    'task_id'   =>  $newTimeEntry['post_task_id'],
+                    'timestamp' =>  $dr->format('Y-m-d'),
+                );
+
+                $billed_hours = (float)$rt_pm_time_entries_model->rtpm_get_billed_hours( $args );
+
+                $new_billed_hours = (float)$newTimeEntry['post_duration'] + $billed_hours;
+
                 if( empty( $estimated_hours) ||
-                    $estimated_hours < (float)$newTimeEntry['post_duration'] ) {
+                    $estimated_hours < $new_billed_hours ) {
                     if( !is_admin() ) {
-                        bp_core_add_message( 'Assign hours has been exceeded', 'error' );
+
+                        $remain_billable_hours = $estimated_hours - $billed_hours;
+                        $message = 'Assign hours limit has been exceeded';
+
+                        if( $remain_billable_hours > 0 ) {
+                            $message = sprintf( _n( 'Max remain allowed hour %s ', 'Max remain allowed hours %s', $remain_billable_hours, RT_PM_TEXT_DOMAIN ), $remain_billable_hours );
+                        }
+                        bp_core_add_message( $message, 'error' );
                     }
                     return false;
                 }
 
 
                 try {
-                   // $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
-                    //  $UTC = new DateTimeZone('UTC');
-                    //  $dr->setTimezone($UTC);
-                    $timeStamp = $dr->getTimestamp();
-                    $newTimeEntry['post_date'] = rt_set_date_to_utc( gmdate('Y-m-d H:i:s', intval($timeStamp) ) );
+//                   // $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
+//                    //  $UTC = new DateTimeZone('UTC');
+//                    //  $dr->setTimezone($UTC);
+//                    $timeStamp = $dr->getTimestamp();
+                    $newTimeEntry['post_date'] = $dr->format( 'Y-m-d H:i:s' );
                 } catch ( Exception $e ) {
                     $newTimeEntry['post_date'] = current_time( 'mysql' );
                 }

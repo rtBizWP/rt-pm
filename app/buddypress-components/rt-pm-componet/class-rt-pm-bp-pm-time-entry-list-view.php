@@ -603,13 +603,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 								}
 								break;
                             case "rtpm_create_date":
-                                $date = date_parse($rec->timestamp);
-                                if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->timestamp);
-                                    echo '<td '.$attributes.'><span title="'.$rec->timestamp.'">' .  $dtObj->format( $blog_date_format ) . '</span>';
-                                } else {
-                                    echo '<td '.$attributes.'>-';
-                                }
+                                $date = date_create_from_format( 'Y-m-d H:i:s', $rec->timestamp );
+	                            echo '<td '.$attributes.'><span title="'.$rec->timestamp.'">' .  $date->format( $blog_date_format ) . '</span>';
+
                                 //.'< /td>';
                                 break;
                             case "rtpm_Duration":

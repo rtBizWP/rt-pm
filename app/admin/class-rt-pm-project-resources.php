@@ -479,11 +479,12 @@ class Rt_PM_Project_Resources {
 
 			if( $new_estimated_hours > $project_working_hours ) {
 				$user_remain_hours = $project_working_hours - $estimated_hours;
-				$message = 'You can not assign more than ' . $user_remain_hours;
+				$message = sprintf( _n( 'You can not assign more than %s hour', 'You can not assign more than %s hours', $user_remain_hours, RT_PM_TEXT_DOMAIN ), $user_remain_hours );
 			} else if(  ! empty( $person_working_hours ) &&
 			            $new_estimated_hours > $person_working_hours ) {
 				$user_remain_hours = $person_working_hours - $estimated_hours;
-				$message = 'You can not assign more than ' . $user_remain_hours;
+				$message = sprintf( _n( 'You can not assign more than %s hour', 'You can not assign more than %s hours', $user_remain_hours, RT_PM_TEXT_DOMAIN ), $user_remain_hours );
+				//$message = 'You can not assign more than ' . $user_remain_hours;
 			} else {
 				$success = true;
 				//$user_remain_hours = $project_working_hours - $new_estimated_hours;
