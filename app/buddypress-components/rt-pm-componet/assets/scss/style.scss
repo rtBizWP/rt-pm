@@ -1,7 +1,8 @@
 @charset "UTF-8";
-#item-body, .reveal-modal{
-  @import "rtp-foundation";
-  @import "pm-custom";
+
+
+#item-body, .reveal-modal {
+ // @import "pm-custom";
   @import "pm-add";
 }
 @import "rtp-reveal";

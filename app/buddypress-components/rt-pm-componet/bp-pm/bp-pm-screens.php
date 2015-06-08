@@ -227,7 +227,7 @@ class Rtbp_Pm_Screens {
 
 		$white_action_lists = array(
 			'all-resources',
-			'my-task',
+			'my-tasks',
 			'resources'
 		);
 
