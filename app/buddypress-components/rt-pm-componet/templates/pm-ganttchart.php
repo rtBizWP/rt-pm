@@ -29,5 +29,5 @@ $project_id = $_REQUEST['rt_project_id'];
 <?php
 $rt_pm_project_gantt->rtpm_prepare_ganttchart( $project_id, 'rtpm_project_ganttchart' );
 
-$rt_pm_project_gantt->rtpm_print_ganttchart_script();
+$rt_pm_project_gantt->rtpm_print_ganttchart_script( $project_id );
 ?>

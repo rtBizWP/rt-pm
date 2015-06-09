@@ -237,7 +237,7 @@ class Rt_PM_Project_Gantt {
     /**
      * Print script for ganttchart Tasks ajax
      */
-    public function rtpm_print_ganttchart_script() { ?>
+    public function rtpm_print_ganttchart_script( $project_id ) { ?>
         <script type="text/javascript">
 
             var admin_url = '<?php echo admin_url('admin-ajax.php');  ?>';
@@ -422,6 +422,7 @@ class Rt_PM_Project_Gantt {
                     }
                 });
 
+                //Open task for edit in slide panel
                 gantt.attachEvent("onTaskClick", function( id, e ) {
                     var target = e.target;
                     if( ! gantt.$grid_data.contains(target) ) {
@@ -460,6 +461,7 @@ class Rt_PM_Project_Gantt {
                 dhtmlx.confirm(opts);
             });
 
+            //Change task srat date and end date by dragging
             gantt.attachEvent("onTaskDrag", function(id, mode, task, original) {
                 var modes = gantt.config.drag_mode;
                 if(mode == modes.move){
@@ -506,6 +508,7 @@ class Rt_PM_Project_Gantt {
                 }
             });
 
+            //Show and hide column when grid is resized
             gantt.attachEvent("onGridResizeEnd", function(old_width, new_width) {
 
 
@@ -561,11 +564,15 @@ class Rt_PM_Project_Gantt {
             });
 
             //Set start date to parent task end date
+
             gantt.attachEvent("onTaskCreated", function(task){
                 var parent = task.parent;
                 if(parent != gantt.config.root_id && gantt.isTaskExists(parent)) {
                     parent = gantt.getTask(parent);
                     task.start_date = parent.end_date;
+                } else {
+                    var start_date = new Date('<?php echo get_post_field( 'post_date', $project_id ) ?>');
+                    task.start_date = start_date;
                 }
                 return true;
             });
