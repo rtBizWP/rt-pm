@@ -85,35 +85,41 @@ class Rt_PM_Project_Gantt {
                 'label' => 'Task Name',
                 'tree' => true,
                 'resize' => true,
-                'min_width' => 300,
-                'width' =>  300,
+                'width' =>  200,
             ),
             array(
                 'name' => 'start_date',
                 'label' => 'Start Date',
                 'hide'  =>  true,
+                'resize' => true,
                 'width' =>  100,
             ),
             array(
                 'name' => 'end_date',
                 'label' => 'End Date',
                 'hide'  =>  true,
+                'resize' => true,
+                'width' =>  100,
             ),
             array(
                 'name'  => 'estimated_hours',
                 'label' =>  'Estimated Hours',
                 'hide'  =>  true,
+                'resize' => true,
+                'width' =>  100,
             ),
             array(
                 'name' => 'resources',
                 'label' => 'Resources',
                 'resize' => true,
                 'hide'  =>  true,
+                'width' =>  100,
             ),
             array(
                 'name' => 'add',
                 'label' => '',
                 'resize' => false,
+                'max_width' => 30,
                 'width' => 30
             ),
         );
@@ -502,41 +508,50 @@ class Rt_PM_Project_Gantt {
 
             gantt.attachEvent("onGridResizeEnd", function(old_width, new_width) {
 
+
+                //Set column width
+                gantt.getGridColumn("text").width = 200;
+                gantt.getGridColumn("start_date").width = 100;
+                gantt.getGridColumn("end_date").width = 100;
+                gantt.getGridColumn("estimated_hours").width = 100;
+                gantt.getGridColumn("resources").width = 100;
+                gantt.getGridColumn("add").width = 30;
+
                 if( old_width < new_width ) {
 
-                    if( new_width > 400 ) {
+                    if( new_width > 230 ) {
                         gantt.getGridColumn("start_date").hide = false;
                     }
 
-                    if( new_width > 500 ) {
+                    if( new_width > 330 ) {
                         gantt.getGridColumn("end_date").hide = false;
                     }
 
-                    if( new_width > 600 ) {
+                    if( new_width > 430 ) {
                         gantt.getGridColumn("estimated_hours").hide = false;
                     }
 
-                    if( new_width > 700 ) {
+                    if( new_width > 530 ) {
                         gantt.getGridColumn("resources").hide = false;
                     }
                 }
 
                 if ( old_width > new_width ) {
 
-                    if( new_width < 400 ) {
+                    if( new_width < 230 ) {
 
                         gantt.getGridColumn("start_date").hide = true;
                     }
 
-                    if( new_width < 500 ) {
+                    if( new_width < 330 ) {
                         gantt.getGridColumn("end_date").hide = true;
                     }
 
-                    if( new_width < 600 ) {
+                    if( new_width < 430 ) {
                         gantt.getGridColumn("estimated_hours").hide = true;
                     }
 
-                    if( new_width < 700 ) {
+                    if( new_width < 530 ) {
                         gantt.getGridColumn("resources").hide = true;
                     }
                 }
