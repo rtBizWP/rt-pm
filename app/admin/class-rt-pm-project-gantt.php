@@ -510,6 +510,7 @@ class Rt_PM_Project_Gantt {
 
 
                 //Set column width
+                gantt.getGridColumn("number").width = 20;
                 gantt.getGridColumn("text").width = 200;
                 gantt.getGridColumn("start_date").width = 100;
                 gantt.getGridColumn("end_date").width = 100;
@@ -519,39 +520,39 @@ class Rt_PM_Project_Gantt {
 
                 if( old_width < new_width ) {
 
-                    if( new_width > 230 ) {
+                    if( new_width > 250 ) {
                         gantt.getGridColumn("start_date").hide = false;
                     }
 
-                    if( new_width > 330 ) {
+                    if( new_width > 350 ) {
                         gantt.getGridColumn("end_date").hide = false;
                     }
 
-                    if( new_width > 430 ) {
+                    if( new_width > 450 ) {
                         gantt.getGridColumn("estimated_hours").hide = false;
                     }
 
-                    if( new_width > 530 ) {
+                    if( new_width > 550 ) {
                         gantt.getGridColumn("resources").hide = false;
                     }
                 }
 
                 if ( old_width > new_width ) {
 
-                    if( new_width < 230 ) {
+                    if( new_width < 250 ) {
 
                         gantt.getGridColumn("start_date").hide = true;
                     }
 
-                    if( new_width < 330 ) {
+                    if( new_width < 350 ) {
                         gantt.getGridColumn("end_date").hide = true;
                     }
 
-                    if( new_width < 430 ) {
+                    if( new_width < 450 ) {
                         gantt.getGridColumn("estimated_hours").hide = true;
                     }
 
-                    if( new_width < 530 ) {
+                    if( new_width < 550 ) {
                         gantt.getGridColumn("resources").hide = true;
                     }
                 }
