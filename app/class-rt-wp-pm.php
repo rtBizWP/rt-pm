@@ -176,7 +176,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			$rt_pm_help = new RT_PM_Help();
 
             $rt_pm_project_overview = Rt_Pm_Project_Overview::factory();
-
+			$rt_pm_project_resources = Rt_PM_Project_Resources::factory();
 
 
             $page_slugs = array(

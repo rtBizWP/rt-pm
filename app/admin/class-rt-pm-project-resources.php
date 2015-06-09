@@ -42,19 +42,28 @@ class Rt_PM_Project_Resources {
 	}
 
 	public function rtpm_resources_load_style_script() {
-		wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri().'/css/jquery.sidr.light.css',  array() );
-		wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri().'/assets/js/jquery.sidr.min.js', array('jquery') );
+		$white_action_lists = array(
+			'all-resources',
+			'my-tasks',
+			'resources'
+		);
 
-		wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
-		wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri().'/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+		if ( in_array( bp_current_action(), $white_action_lists ) ) {
 
-		//Sidebar css
-		wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
+			wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri() . '/css/jquery.sidr.light.css', array() );
+			wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri() . '/assets/js/jquery.sidr.min.js', array( 'jquery' ) );
 
-		wp_enqueue_script( 'rtbiz-attachment-script', RT_BP_PEOPLE_URL . 'assets/js/rtbiz-attachment-section.js', array( 'jquery' ), RT_BIZ_VERSION, false );
-		wp_enqueue_media();
+			wp_enqueue_script( 'rtbiz-common-script', get_stylesheet_directory_uri() . '/assets/js/rtbiz-common.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
+			wp_enqueue_script( 'rtbiz-side-panel-script', get_stylesheet_directory_uri() . '/assets/js/rtbiz-fetch-side-panel.js', array(), BUDDYBOSS_CHILD_THEME_VERS );
 
-		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
+			//Sidebar css
+			wp_enqueue_style( 'rt-bp-hrm-calender-css', RT_HRM_BP_HRM_URL . 'assets/css/calender.css', false );
+
+			wp_enqueue_script( 'rtbiz-attachment-script', RT_BP_PEOPLE_URL . 'assets/js/rtbiz-attachment-section.js', array( 'jquery' ), RT_BIZ_VERSION, false );
+			wp_enqueue_media();
+
+			wp_localize_script( 'rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
+		}
 	}
 
 	/**
