@@ -472,27 +472,30 @@ class Rt_PM_Project_Resources {
 			'timestamp' =>  $post['timestamp'],
 		);
 
-		$estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
+		$estimated_hours_in_project = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 
 		$message = '';
 		/**
 		 * Check project working hours is not exceeding
 		 */
-		if( $estimated_hours <= $project_working_hours ) {
+		if( $estimated_hours_in_project <= $project_working_hours ) {
 
 			//New assigned hours after adding new value to old assigned value
-			$new_estimated_hours =  $estimated_hours + $time_duration;
+			$new_estimated_hours_in_project =  $estimated_hours_in_project + $time_duration;
 
 			$person = rt_biz_get_person_for_wp_user( $post['user_id'] );
-
 			$person_working_hours = (float)Rt_Person::get_meta( $person[0]->ID, 'contact_working_hours', true );
 
-			if( $new_estimated_hours > $project_working_hours ) {
-				$user_remain_hours = $project_working_hours - $estimated_hours;
+			unset( $args['project_id'] );
+			$estimated_hours_in_all_projects = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
+			$new_estimated_hours_in_all_projects =  $estimated_hours_in_all_projects + $time_duration;
+
+			if( $new_estimated_hours_in_project > $project_working_hours ) {
+				$user_remain_hours = $project_working_hours - $estimated_hours_in_project;
 				$message = sprintf( _n( 'You can not assign more than %s hour', 'You can not assign more than %s hours', $user_remain_hours, RT_PM_TEXT_DOMAIN ), $user_remain_hours );
 			} else if(  ! empty( $person_working_hours ) &&
-			            $new_estimated_hours > $person_working_hours ) {
-				$user_remain_hours = $person_working_hours - $estimated_hours;
+			            $new_estimated_hours_in_all_projects > $person_working_hours ) {
+				$user_remain_hours = $person_working_hours - $estimated_hours_in_all_projects;
 				$message = sprintf( _n( 'You can not assign more than %s hour', 'You can not assign more than %s hours', $user_remain_hours, RT_PM_TEXT_DOMAIN ), $user_remain_hours );
 				//$message = 'You can not assign more than ' . $user_remain_hours;
 			} else {
