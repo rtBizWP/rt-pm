@@ -715,13 +715,16 @@ jQuery(document).ready(function($) {
 			$('#rtpm_closing_reason_wrapper').hide();
 		}
 	});
-	
-	$('span.rtpm_readmore').readmore({
-	  speed: 75,
-	  maxHeight: 20,
-	  sectionCSS: 'display: inline-block;'
-	});
-	
+
+    if( typeof readmore == 'function') {
+
+        $('span.rtpm_readmore').readmore({
+            speed: 75,
+            maxHeight: 20,
+            sectionCSS: 'display: inline-block;'
+        });
+    }
+
 	$("#top-button-trash").click(function(){
 		var r = confirm("Are you sure you want to move this project to trash?");
 		if (r != true) {

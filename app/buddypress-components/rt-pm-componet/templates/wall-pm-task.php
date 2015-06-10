@@ -56,7 +56,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 <script>
     var task_type = '<?php echo $task_type ?>';
     jQuery(document).ready(function($) {
-        console.log( task_type );
+
         if( 'milestone' === task_type ) {
             $('.hide-for-milestone').hide();
             $('input[name="post[task_type]"]').val('milestone');
