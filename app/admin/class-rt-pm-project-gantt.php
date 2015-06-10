@@ -17,6 +17,7 @@ class Rt_PM_Project_Gantt {
      *
      */
 
+    private $milestone_color = '#C0C0C0';
     private $child_task_color = '#32CD32';
     private $parent_task_color = '#C0C0C0';
 
@@ -204,7 +205,7 @@ class Rt_PM_Project_Gantt {
                     'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
                     'open' => true,
                     'parent' => $parent_task,
-                    'color' => ( 'milestone' !== $task_type ) ? $task_color : '',
+                    'color' => ( 'milestone' !== $task_type ) ? $task_color : $this->milestone_color,
                     'progress' => $progress_percentage,
                     'resources' =>  implode( ', ', $resources_user_displayname ),
                 );
@@ -261,6 +262,8 @@ class Rt_PM_Project_Gantt {
                     }else {
                         gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
                     }
+                } else {
+                    gantt.getTask(id).color = '<?php echo $this->milestone_color ?>';
                 }
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
