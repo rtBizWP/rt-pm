@@ -542,20 +542,20 @@ class Rt_PM_Project_Gantt {
 
                 if ( old_width > new_width ) {
 
-                    if( new_width < 250 ) {
+                    if( new_width < 350 ) {
 
                         gantt.getGridColumn("start_date").hide = true;
                     }
 
-                    if( new_width < 350 ) {
+                    if( new_width < 450 ) {
                         gantt.getGridColumn("end_date").hide = true;
                     }
 
-                    if( new_width < 450 ) {
+                    if( new_width < 550 ) {
                         gantt.getGridColumn("estimated_hours").hide = true;
                     }
 
-                    if( new_width < 550 ) {
+                    if( new_width < 650 ) {
                         gantt.getGridColumn("resources").hide = true;
                     }
                 }
