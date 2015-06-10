@@ -55,23 +55,6 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		}
 
 		/**
-		* Add extra markup in the toolbars before or after the list
-		* @param string $which, helps you decide if you add the markupafter (bottom) or before (top) the list */
-		function extra_tablenav( $which ) {
-			$search = @$_POST['s'] ? esc_attr( $_POST['s'] ) : '';
-			if ( $which == 'top' ) {
-				//The code that goes before the table is here
-//				echo"Before the table";
-				//$this->search_box( 'Search', 'search_id' );
-			}
-			if ( $which == 'bottom' ) {
-				//The code that goes after the table is there
-//				echo"After the table";
-			}
-		}
-
-
-		/**
 		* Define the columns that are going to be used in the table
 		* @return array $columns, the array of columns to use with the table */
 		public function get_columns() {
@@ -84,8 +67,6 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_update_date'=> __( 'Updated' ),
 				'rtpm_Due_date'=> __( 'Due Date' ),
 				'rtpm_status'=> __( 'Status' ),
-				//'rtpm_created_by'=> __( 'Created By' ),
-				//'rtpm_updated_by'=> __( 'Updated By' ),
 			);
 
 			return $columns;
@@ -102,27 +83,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				'rtpm_update_date'=> array('post_modified', false),
 				'rtpm_Due_date'=> array('post_duedate', false),
 				'rtpm_status'=> array('post_status', false),
-				//'rtpm_created_by'=> array('post_author', false),
-				//'rtpm_updated_by'=> array('post_author', false),
 			);
 			return $sortable;
 		}
 
-		/**
-		 * Get an associative array ( option_name => option_title ) with the list
-		 * of bulk actions available on this table.
-		 *
-		 * @since 3.1.0
-		 * @access protected
-		 *
-		 * @return array
-		 */
-		function get_bulk_actions() {
-			$actions = array(
-				// 'delete' => __( 'Trash' ),
-			);
-			return $actions;
-		}
 
 		/**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
@@ -242,7 +206,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			}
 			return false;
 		}
-		
+
 		/**
 		 * Display the pagination.
 		 *
@@ -253,24 +217,24 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			if ( empty( $this->_pagination_args ) ) {
 				return;
 			}
-	
+
 			$total_items = $this->_pagination_args['total_items'];
 			$total_pages = $this->_pagination_args['total_pages'];
 			$infinite_scroll = false;
 			if ( isset( $this->_pagination_args['infinite_scroll'] ) ) {
 				$infinite_scroll = $this->_pagination_args['infinite_scroll'];
 			}
-	
+
 			$output = '';
-	
+
 			$current = $this->get_pagenum();
-	
+
 			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-	
+
 			$current_url = remove_query_arg( array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url );
-	
+
 			$page_links = array();
-	
+
 			$disable_first = $disable_last = '';
 			if ( $current == 1 ) {
 				$disable_first = ' disabled';
@@ -284,7 +248,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				esc_url( remove_query_arg( 'paged', $current_url ) ),
 				'&laquo;'
 			);*/
-	
+
 			if ( $current != 1  ){
 				$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 					'prev prev-page' . $disable_first,
@@ -293,7 +257,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 					'&lsaquo; Previous'
 				);
 			}
-	
+
 			if ( 'bottom' == $which ) {
 				$html_current_page = $current;
 			} else {
@@ -305,8 +269,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 				);
 			}
 			$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-			
-			
+
+
 			$total_pages_count = $total_pages;
 			$pages_count =1;
 			while ( $pages_count <= $total_pages && $pages_count > 0) {
@@ -320,10 +284,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 						$pages_count
 					);
 				}
-				
+
 				$pages_count++;
 			}
-	
+
 			if ( $total_pages != $current ){
 				$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 					'page-numbers' . $disable_last,
@@ -332,33 +296,33 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 					'Next &rsaquo;'
 				);
 			}
-	
+
 			/*$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 				'next page-numbers' . $disable_last,
 				esc_attr__( 'Go to the last page' ),
 				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
 				'&raquo;'
 			);*/
-	
+
 			$pagination_links_class = 'pagination-links';
 			if ( ! empty( $infinite_scroll ) ) {
 				$pagination_links_class = ' hide-if-js';
 			}
 			$output .= "\n" . join( "\n", $page_links );
-	
+
 			if ( $total_pages ) {
 				$page_class = $total_pages < 2 ? ' one-page' : '';
 			} else {
 				$page_class = ' no-pages';
 			}
 			$this->_pagination = "<div class='projects-lists pagination role='menubar' aria-label='Pagination'><span class='current'>Page $current of $total_pages</span>$output</div>";
-	
+
 			if ( $total_pages > 1 ){
 				echo $this->_pagination;
 			}
-	   
+
 		}
-			
+
 		
 		
 		/**
@@ -524,8 +488,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 }
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
-                                        'edit'      => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
-                                        'timeentry'    => '<a target="_blank" href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&task_id='.$rec->ID.'&action=timeentry">Time</a>',
+                                        'edit'      => '<a class="rtpm_task_edit" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
+                                        'timeentry'    => '<a class="rtpm_task_timeentries" href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&task_id='.$rec->ID.'&action=timeentry">Time</a>',
                                         'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
                                     );
                                 }else{

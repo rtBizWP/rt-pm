@@ -84,55 +84,53 @@ if (isset($_REQUEST["{$task_post_type}_id"])) {
 if (isset($post->ID)) {
     $due =rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
     $due_date = $due->format("M d, Y h:i A");
-    $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
-} else {
-    $post_assignee = '';
 }
 
-//assign to
-$results_member = Rt_PM_Utils::get_pm_rtcamp_user();
-
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+
 //Disable working days
-$projectid = $_GET['rt_project_id'];
-$rt_pm_task->disable_working_days( $projectid );
+$rt_pm_task->disable_working_days( $project_id );
 ?>
 
-<?php if (isset($post->ID)) { ?>
-    <script>
-        var task_type = '<?php echo $task_type ?>';
-        jQuery(document).ready(function($) {
-            setTimeout(function() {
-                $("#div-add-task").reveal({
-                    opened: function(){
-                        if( 'milestone' === task_type ) {
-                            $('.hide-for-milestone').hide();
-                            $('input[name="post[task_type]"]').val('milestone');
-                            $('.parent-task-dropdown').show();
-                        }
+<script>
+    var rtpm_task_edit;
 
-                        if( 'sub_task' === task_type ) {
-                            $('.parent-task-dropdown').show();
-                        }
-                    },
-                    closed: function() {
+    (function($){
 
-                        if( 'milestone' === task_type ) {
-                            $('.hide-for-milestone').show();
-                            $('input[name="post[task_type]"]').val('');
-                            $('.parent-task-dropdown').hide();
-                        }
+        rtpm_task_edit = {
+            init: function() {
+                $( document).on( 'click', 'a.rtpm_task_edit', rtpm_task_edit.open_task_edit_side_panel );
+                $( document).on( 'click', 'a.rtpm_task_timeentries', rtpm_task_edit.open_timeentries_side_panel );
+            },
 
-                        if( 'sub_task' === task_type ) {
-                            $('.parent-task-dropdown').hide();
-                        }
+            open_task_edit_side_panel: function( e ) {
 
-                    }
-                });
-            },10);
-        });
-    </script>
-<?php } ?>
+                e.preventDefault();
+
+                block_ui();
+                $element = $( this );
+                $url = $element.attr('href');
+
+                var task_id = get_parameter_by_name( $url, 'rt_task_id' );
+                render_project_slide_panel('open', task_id, <?php echo get_current_blog_id(); ?>, '', 'task');
+            },
+
+            open_timeentries_side_panel: function( e ) {
+                e.preventDefault();
+
+                block_ui();
+                $element = $( this );
+                $url = $element.attr('href');
+
+                var task_id = get_parameter_by_name( $url, 'task_id' );
+                render_project_slide_panel( 'add_time_entry', task_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+            }
+        };
+
+        $( document).ready( function() { rtpm_task_edit.init(); } );
+
+    })(jQuery);
+</script>
 
 <div id="wp-custom-list-table">
     <?php
@@ -141,7 +139,7 @@ $rt_pm_task->disable_working_days( $projectid );
         ?>
         <div class="list-heading">
             <div class="large-8 columns">
-                <h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
+                <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
             <div class="large-4 columns">
                 <button class="mybutton add-task" type="button" ><?php _e( 'Add Task' ); ?></button>
