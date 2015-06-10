@@ -288,10 +288,36 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
     <div class="row">
         <div class="small-12 columns action-bar">
-            <a class="button" target="_blank" href='<?php echo $timeentries_url; ?>'>Time and Expenses</a>
+            <a class="button rtpm_task_timeentries"  href='<?php echo $timeentries_url; ?>'>Time and Expenses</a>
             <input type="submit" value="Save" >
         </div>
     </div>
 
 </form>
 <?php rtpm_validate_user_assigned_hours_script(); ?>
+
+<!-- Open time entries in side panel -->
+<script type="text/javascript">
+    var rtpm_task_timentries;
+
+    (function( $ ) {
+        rtpm_task_timentries = {
+          init: function() {
+              $( document).on( 'click', 'a.rtpm_task_timeentries', rtpm_task_timentries.open_timeentries_side_panel );
+          },
+
+          open_timeentries_side_panel: function( e ) {
+              e.preventDefault();
+
+              block_ui();
+              $element = $( this );
+              $url = $element.attr('href');
+
+              var task_id = get_parameter_by_name( $url, 'task_id' );
+              render_project_slide_panel( 'add_time_entry', task_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+          }
+        };
+
+        $( document).ready( function() { rtpm_task_timentries.init() } );
+    })(jQuery);
+</script>

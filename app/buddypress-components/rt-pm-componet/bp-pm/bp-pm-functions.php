@@ -344,8 +344,8 @@ function rtpm_validate_user_assigned_hours_script() { ?>
 					$('div.rt-resources-parent-row').on( 'autocompletechange', 'input.search-contact', rtpm_task_assignee.validate_user_assigned_hours  );
 					$('div.rt-resources-parent-row').on( 'change', 'input[name="post[time_duration][]"]', rtpm_task_assignee.validate_user_assigned_hours  );
 					$('div.rt-resources-parent-row').on( 'change', 'input[name="post[timestamp][]"]', rtpm_task_assignee.validate_user_assigned_hours  );
-					$('div.rt-resources-parent-row').on('click', 'a.resources-add-multiple', rtpm_task_assignee.append_task_resources_markup );
-					$('div.rt-resources-parent-row').on('click', 'a.resources-delete-multiple', rtpm_task_assignee.remove_task_resources_markup );
+					$('div.rt-resources-parent-row').on( 'click', 'a.resources-add-multiple', rtpm_task_assignee.append_task_resources_markup );
+					$('div.rt-resources-parent-row').on( 'click', 'a.resources-delete-multiple', rtpm_task_assignee.remove_task_resources_markup );
 				},
 
 				validate_user_assigned_hours: function() {

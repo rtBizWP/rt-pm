@@ -95,12 +95,12 @@ $rt_pm_task->disable_working_days( $project_id );
 <script>
     var rtpm_task_edit;
 
-    (function($){
+    (function($) {
 
         rtpm_task_edit = {
             init: function() {
-                $( document).on( 'click', 'a.rtpm_task_edit', rtpm_task_edit.open_task_edit_side_panel );
-                $( document).on( 'click', 'a.rtpm_task_timeentries', rtpm_task_edit.open_timeentries_side_panel );
+                $( document).on( 'click', 'a.rtpm_task_edit_link', rtpm_task_edit.open_task_edit_side_panel );
+                $( document).on( 'click', 'a.rtpm_task_timeentries_link', rtpm_task_edit.open_timeentries_side_panel );
             },
 
             open_task_edit_side_panel: function( e ) {
