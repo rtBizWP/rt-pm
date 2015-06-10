@@ -53,7 +53,21 @@ $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 ?>
-<script></script>
+<script>
+    var task_type = '<?php echo $task_type ?>';
+    jQuery(document).ready(function($) {
+        console.log( task_type );
+        if( 'milestone' === task_type ) {
+            $('.hide-for-milestone').hide();
+            $('input[name="post[task_type]"]').val('milestone');
+            $('.parent-task-dropdown').show();
+        }
+
+        if( 'sub_task' === task_type ) {
+            $('.parent-task-dropdown').show();
+        }
+    });
+</script>
 <form method="post"   action="">
     <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
@@ -65,25 +79,12 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
     <input type="hidden" name="post[task_type]" value="" />
     <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
-    <input type="hidden" name="p
-    var task_type = '<?php echo $task_type ?>';
-    jQuery(document).ready(function($) {
-        if( 'milestone' === task_type ) {
-            $('.hide-for-milestone').hide();
-            $('input[name="post[task_type]"]').val('milestone');
-    $('.parent-task-dropdown').show();
-    }
+    <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
-    if( 'sub_task' === task_type ) {
-    $('.parent-task-dropdown').show();
-    }
-    });
-    ost[post_type]" value="<?php echo $task_post_type; ?>" />
-
-	                    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
-	                    <?php if (isset($post->ID) && $user_edit ) { ?>
+    <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $post_project_id; ?>" />
+    <?php if (isset($post->ID) && $user_edit ): ?>
     <input type="hidden" name="post[post_id]" id='rt_pm_post_id' value="<?php echo $post->ID; ?>" />
-<?php } ?>
+    <?php endif; ?>
 
     <div class="row">
         <div class="small-10 columns">
@@ -97,7 +98,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     <div class="row column-title parent-task-dropdown" style="display: none;">
         <div class="small-12 columns">
             <?php if( $user_edit ) {
-                $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+                $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_project_id, $post_id );
             } else { ?>
                 <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
             <?php } ?>
@@ -154,9 +155,9 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
             <?php
             if (isset($post->ID))
-                $pstatus = $post->post_status;
+                {$pstatus = $post->post_status;}
             else
-                $pstatus = "";
+                {$pstatus = "";}
             $post_status = $rt_pm_task->get_custom_statuses();
             $custom_status_flag = true;
             ?>

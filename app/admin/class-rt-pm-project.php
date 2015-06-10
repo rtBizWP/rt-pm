@@ -823,6 +823,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $task_post_type=$rt_pm_task->post_type;
             $task_labels=$rt_pm_task->labels;
 
+            if( isset( $_REQUEST["{$post_type}_id"] ) )
+                $project_id = $_REQUEST["{$post_type}_id"];
             //Check Post object is init or not
             $form_ulr = admin_url("edit.php?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task");
 
@@ -851,9 +853,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 }
 
                 $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
-                $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
+               // $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
                 $createdate = $create->format("M d, Y h:i A");
-                $modifydate = $modify->format("M d, Y h:i A");
+               // $modifydate = $modify->format("M d, Y h:i A");
 
             }else{
                 $post=null;
@@ -865,22 +867,15 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             if (isset($post->ID)) {
                 $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
                 $due_date = $due->format("M d, Y h:i A");
-				$post_assignee = get_post_meta($post->ID, 'post_assignee', true);
-			} else {
-				$post_assignee = '';
 			}
 
-            //assign to
-            $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
-
             //Disable working days
-
             $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
             ?>
 
 
             <?php if (isset($post->ID)){?>
-                <script>
+                <script type="text/javascript">
                     var task_type = '<?php echo $task_type ?>';
                     jQuery(document).ready(function($) {
                         setTimeout(function() {
@@ -942,7 +937,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 <fieldset>
                     <legend><h4><i class="foundicon-address-book"></i> Add New Task</h4></legend>
                     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
-                        <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+                        <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $project_id; ?>" />
                         <input type="hidden" name="post[task_type]" value="" />
                         <?php wp_nonce_field( 'rtpm_save_task', 'rtpm_save_task_nonce' ); ?>
                         <?php if (isset($post->ID) && $user_edit ) { ?>
@@ -951,7 +946,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         <div class="row collapse parent-task-dropdown" style="display: none;">
                             <div class="large-12 columns">
                                 <?php if( $user_edit ) {
-                                    $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+                                    $rt_pm_task->rtpm_render_parent_tasks_dropdown( $project_id, $post_id );
                                 } else { ?>
                                     <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
                                 <?php } ?>

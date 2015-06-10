@@ -27,6 +27,9 @@ $post_type=$_REQUEST['post_type'];
 $task_post_type=$rt_pm_task->post_type;
 $task_labels=$rt_pm_task->labels;
 
+if( isset( $_REQUEST["{$post_type}_id"] ) )
+    $project_id = $_REQUEST["{$post_type}_id"];
+
 $form_ulr = $rt_pm_bp_pm->get_component_root_url().bp_current_action() . "?post_type={$post_type}&{$post_type}_id={$_REQUEST["{$post_type}_id"]}&tab={$post_type}-task";
 ///alert Notification
 if ( isset( $action_complete ) && $action_complete){
@@ -47,6 +50,7 @@ if ( isset( $action_complete ) && $action_complete){
 }
 if (isset($_REQUEST["{$task_post_type}_id"])) {
     $form_ulr .= "&{$task_post_type}_id=" . $_REQUEST["{$task_post_type}_id"];
+    $post_id = $_REQUEST["{$task_post_type}_id"];
     $post = get_post($_REQUEST["{$task_post_type}_id"]);
     if (!$post) {
         ?>
@@ -89,7 +93,6 @@ if (isset($post->ID)) {
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
-
 //Disable working days
 $projectid = $_GET['rt_project_id'];
 $rt_pm_task->disable_working_days( $projectid );
@@ -184,7 +187,7 @@ $rt_pm_task->disable_working_days( $projectid );
 
     <form method="post" id="form-add-post" data-posttype="<?php echo $task_post_type; ?>" action="<?php echo $form_ulr; ?>">
         <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
-        <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $_REQUEST["{$post_type}_id"]; ?>" />
+        <input type="hidden" name="post[post_project_id]" id='project_id' value="<?php echo $project_id; ?>" />
         <input type="hidden" name="post[task_type]" value="" />
         <?php if (isset($post->ID) && $user_edit ) { ?>
             <input type="hidden" name="post[post_id]" id='task_id' value="<?php echo $post->ID; ?>" />
@@ -196,7 +199,7 @@ $rt_pm_task->disable_working_days( $projectid );
                 <div class="row parent-task-dropdown" style="display: none;">
                     <div class="large-12 mobile-large-1 columns">
                         <?php if( $user_edit ) {
-                            $rt_pm_task->rtpm_render_parent_tasks_dropdown( $post_id );
+                            $rt_pm_task->rtpm_render_parent_tasks_dropdown( $project_id, $post_id );
                         } else { ?>
                             <span><?php echo ( isset($post->ID) ) ? $post->post_title : ""; ?></span><br /><br />
                         <?php } ?>

@@ -1546,7 +1546,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
 			if( ! empty( $task_type ) && 'milestone' === $task_type )
-				return update_post_meta( $post_id, 'rtpm_task_type', $task_type );
+				return true;
 
 			if( $parent_task_id === 0 && $child_task_count === 0 ) {
 				$task_type = 'main_task';
@@ -1585,12 +1585,13 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			return $task_label;
 		}
 
-		public function rtpm_render_parent_tasks_dropdown( $post_id = '' ) {
+		public function rtpm_render_parent_tasks_dropdown( $project_id, $post_id = '' ) {
 
 			$args = array(
 				'fields' => 'ids',
 				'nopaging' => true,
 				'no_found_rows' => true,
+				'post_parent'  =>  $project_id,
 				'meta_query' => array(
 					array(
 						'key' => 'rtpm_task_type',
