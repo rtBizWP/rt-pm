@@ -308,6 +308,8 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 				},
 
 				validate_user_assigned_hours: function() {
+
+
 					$main_div =  $(this).parents('div.rt-resources-row');
 
 					$input = $main_div.find('input');
@@ -320,6 +322,10 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 
 					if ( $emptyFields.length )
 						return false;
+
+					if( ! rtpm_task_assignee.check_task_dates( $main_div, $input ) )
+						return false;
+
 
 					$time_duration_input = $input.eq(2);
 
@@ -409,6 +415,9 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 					if ( $emptyFields.length )
 						return false;
 
+					if( ! rtpm_task_assignee.check_task_dates( $main_div, $input ) )
+						return false;
+
 					$element = $main_div.clone();
 
 					$new_input = $element.find('input');
@@ -462,6 +471,32 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 						}
 					});
 				},
+
+				check_task_dates: function( $main_div, $input ) {
+					var start_date_val = $("input[name='post[post_date]']").val();
+					var end_date_val = $("input[name='post[post_duedate]']").val();
+
+					if( ! start_date_val || ! end_date_val ) {
+						$error_div = $main_div.find('small.error');
+						$error_div.remove();
+						$('<small class="error" style="display: inline-block; width: 100%;">Task Start date or Due date is not selected</small>').appendTo($main_div).hide().show('slow');
+						return false;
+					}
+
+					var timestamp = $input.eq(3).datepicker('getDate');
+					var start_date = new Date( start_date_val );
+					var end_date = new Date( end_date_val );
+
+					if( timestamp <= start_date || timestamp >= end_date ) {
+						$error_div = $main_div.find('small.error');
+						$error_div.remove();
+						$('<small class="error" style="display: inline-block; width: 100%;">Date must be between Task Start date and Due date</small>').appendTo($main_div).hide().show('slow');
+						return false;
+					}
+
+					return true;
+
+				}
 			};
 
 			$( document ).ready( function() { rtpm_task_assignee.init() } );
