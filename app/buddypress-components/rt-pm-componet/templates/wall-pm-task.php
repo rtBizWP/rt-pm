@@ -294,6 +294,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     </div>
 
 </form>
+<!-- Validate user assigned hours -->
 <?php rtpm_validate_user_assigned_hours_script(); ?>
 
 <!-- Open time entries in side panel -->
