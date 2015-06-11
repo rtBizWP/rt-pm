@@ -267,7 +267,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
                     </div>
 
                     <div class="small-1 columns">
-                        <a class="resources-delete-multiple button"><i class="fa fa-times"></i></a>
+                        <a class="resources-delete-multiple add-button button"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
             <?php }
