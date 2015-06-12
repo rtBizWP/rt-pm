@@ -97,7 +97,6 @@ class Rtbp_Pm_Actions {
 
 
         }
-        wp_enqueue_script('rtpm-wp-menu-patch-js', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/wp-menu-patch.js',array("jquery"), RT_PM_VERSION, true);
         $this->localize_scripts();
     }
 

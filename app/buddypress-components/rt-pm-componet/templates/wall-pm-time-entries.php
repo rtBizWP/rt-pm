@@ -6,7 +6,7 @@
  * Time: 10:43 PM
  */
 
-global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model, $rtpm_task_list;
+global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model, $rtpm_task_list, $rt_pm_task_resources_model;
 
 $task_id = $_REQUEST["id"];
 $user_edit = true;
@@ -137,8 +137,8 @@ global $wpdb;
         <tr>
             <td><?php echo '$ '.$project_current_budget_cost ?></td>
             <td><?php echo '$ '.floatval( get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ) ?></td>
-            <td><?php echo '$ '.$project_current_time_cost.__(' hours') ?></td>
-            <td><?php echo '$ '.floatval( get_post_meta( $post_project_id, 'project_estimated_time', true ) ).__(' hours') ?></td>
+            <td><?php echo $project_current_time_cost.__(' hours') ?></td>
+            <td><?php echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ).__(' hours') ?></td>
         </tr>
         </tbody>
     </table>

@@ -164,6 +164,47 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 
         }
 
+        public function rtpm_project_summary_markup( $project_id ) {
+            global $rt_pm_time_entries_model, $rt_pm_task_resources_model;
+
+            $project_current_budget_cost = 0;
+            $project_current_time_cost = 0;
+            $time_entries = $rt_pm_time_entries_model->get_by_project_id( $project_id );
+            if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
+                foreach ( $time_entries['result'] as $time_entry ) {
+                    $type = $time_entry['type'];
+                    $term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+
+                    if( $term !=NULL )
+                        $project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
+
+                    $project_current_time_cost += $time_entry['time_duration'];
+                }
+            }
+
+            $estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $project_id ) );
+
+            ?>
+
+            <div class="large-3 columns">
+                <strong><?php _e( 'Project Cost:'); ?></strong>
+                <span><?php echo '$ '.$project_current_budget_cost; ?></span>
+            </div>
+            <div class="large-3 columns">
+                <strong><?php _e( 'Budget:'); ?></strong>
+                <span><?php echo '$ '.floatval( get_post_meta( $project_id, '_rtpm_project_budget', true ) ); ?></span>
+            </div>
+            <div class="large-3 columns">
+                <strong><?php _e( 'Time spent:'); ?></strong>
+                <span><?php echo $project_current_time_cost.__(' hours'); ?></span>
+            </div>
+            <div class="large-3 columns">
+                <strong><?php _e( 'Estimated Time:'); ?></strong>
+                <span><?php echo floatval( $estimated_hours ).__(' hours'); ?></span>
+            </div>
+        <?php
+        }
+
 
 	}
 

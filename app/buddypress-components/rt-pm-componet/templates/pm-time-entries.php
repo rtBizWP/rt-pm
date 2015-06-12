@@ -107,39 +107,11 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
     <?php
     }
 
-    $project_current_budget_cost = 0;
-    $project_current_time_cost = 0;
-    $time_entries = $rt_pm_time_entries_model->get_by_project_id( $_REQUEST["{$post_type}_id"] );
-    if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
-        foreach ( $time_entries['result'] as $time_entry ) {
-            $type = $time_entry['type'];
-            $term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
 
-            if( $term !=NULL )
-                $project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
-
-            $project_current_time_cost += $time_entry['time_duration'];
-        }
-    }
     ?>
 
     <div id="rtpm_project_cost_report" class="row">
-        <div class="large-3 columns">
-            <strong><?php _e( 'Project Cost:'); ?></strong>
-            <span><?php echo '$ '.$project_current_budget_cost; ?></span>
-        </div>
-        <div class="large-3 columns">
-            <strong><?php _e( 'Budget:'); ?></strong>
-            <span><?php echo '$ '.floatval( get_post_meta( $_REQUEST["{$post_type}_id"], '_rtpm_project_budget', true ) ); ?></span>
-        </div>
-        <div class="large-3 columns">
-            <strong><?php _e( 'Time spent:'); ?></strong>
-            <span><?php echo $project_current_time_cost.__(' hours'); ?></span>
-        </div>
-        <div class="large-3 columns">
-            <strong><?php _e( 'Estimated Time:'); ?></strong>
-            <span><?php echo floatval( get_post_meta( $_REQUEST["{$post_type}_id"], 'project_estimated_time', true ) ).__(' hours'); ?></span>
-        </div>
+        <?php $rt_pm_time_entries->rtpm_project_summary_markup( $project_id ) ?>
     </div>
 
     <?php
