@@ -53,20 +53,53 @@ $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 ?>
-<script>
+<script type="text/javascript">
+    /**
+     * Show and Hide div along task type
+     * @type {string}
+     */
     var task_type = '<?php echo $task_type ?>';
-    jQuery(document).ready(function($) {
 
-        if( 'milestone' === task_type ) {
-            $('.hide-for-milestone').hide();
-            $('input[name="post[task_type]"]').val('milestone');
-            $('.parent-task-dropdown').show();
-        }
+    var rtpm_task_type;
 
-        if( 'sub_task' === task_type ) {
-            $('.parent-task-dropdown').show();
-        }
-    });
+    ( function( $ ) {
+        rtpm_task_type = {
+            init: function() {
+
+                if( 'milestone' === task_type )
+                    rtpm_task_type.show_milestone_elememts();
+
+
+                if( 'sub_task' === task_type )
+                    rtpm_task_type.show_sub_task_elemets();
+;
+                $( document).on( 'click', 'a.close-sidepanel', rtpm_task_type.reset_elements );
+
+                $(document).keyup(function(e) {
+                    if (e.keyCode == 27) { // esc keycode
+                       // jQuery.sidr('close', 'rt-action-panel');
+                        rtpm_task_type.reset_elements();
+                    }
+                });
+            },
+
+            show_milestone_elememts: function() {
+                $('.hide-for-milestone').hide();
+                $('input[name="post[task_type]"]').val('milestone');
+                $('.parent-task-dropdown').show();
+            },
+
+            show_sub_task_elemets: function() {
+                $('.parent-task-dropdown').show();
+            },
+
+            reset_elements: function() {
+                $('.parent-task-dropdown').hide();
+                $('.hide-for-milestone').show();
+            }
+        };
+        $( document ).ready( function(){ rtpm_task_type.init(); });
+    })(jQuery);
 </script>
 <form method="post"   action="">
     <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>

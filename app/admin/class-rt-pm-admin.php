@@ -74,7 +74,10 @@ if ( ! class_exists( 'Rt_PM_Admin' ) ) {
                 wp_enqueue_script( 'postbox' );
 
             }
-			wp_enqueue_script('rtpm-wp-menu-patch-js', RT_PM_URL . 'app/assets/javascripts/wp-menu-patch.js',array("jquery"), RT_PM_VERSION, true);
+
+            if( is_admin() )
+                wp_enqueue_script('rtpm-wp-menu-patch-js', RT_PM_URL . 'app/assets/javascripts/wp-menu-patch.js',array("jquery"), RT_PM_VERSION, true);
+
             $this->localize_scripts();
 		}
 
