@@ -404,8 +404,11 @@ class Rt_PM_Project_Gantt {
                 gantt.attachEvent("onTaskDblClick", function( id, e ) {
 
                     var target = e.target;
-                    if( ! gantt.$grid_data.contains(target) &&
-                        ! gantt.$task_links.contains(target) ) {
+
+                    if( gantt.$grid_data.contains(target) )
+                        return false;
+
+                    if( ! gantt.$task_links.contains(target) ) {
                         if (click_start && (new Date()) - click_start < dbl_click_length) {
                             double_clicked = true;
                             clearTimeout(click_timer)
