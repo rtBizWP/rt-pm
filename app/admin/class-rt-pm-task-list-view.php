@@ -36,13 +36,18 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
         var $user_edit;
         var $is_trash;
 
-		public function __construct( $user_edit ) {
+        private $date_format;
+
+        public function __construct( $user_edit ) {
 
 			global $rt_pm_task;
 			$this->labels = $rt_pm_task->labels;
 			$this->post_type = $rt_pm_task->post_type;
 			$this->post_statuses = $rt_pm_task->get_custom_statuses();
 			$this->user_edit = $user_edit;
+
+            $this->date_format = get_option('date_format');
+
 			$args = array(
 				'singular'=> $this->labels['singular_name'], //Singular label
 				'plural' => 'posts', //plural label, also this well be one of the table css class
@@ -397,8 +402,9 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                             case "rtpm_create_date":
                                 $date = date_parse($rec->post_date_gmt);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj = rt_convert_strdate_to_usertimestamp($rec->post_date_gmt);
-                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s') .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s') . '</span>';
+                                    $dtObj = date_create_from_format( 'Y-m-d H:i:s', $rec->post_date_gmt );
+
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format( $this->date_format ) .'" class="moment-from-now">' . $dtObj->format( $this->date_format ) . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -407,8 +413,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                             case "rtpm_update_date":
                                 $date = date_parse($rec->post_modified_gmt);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj =rt_convert_strdate_to_usertimestamp($rec->post_modified_gmt);
-                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s') .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s') . '</span>';
+                                    $dtObj = date_create_from_format( 'Y-m-d H:i:s', $rec->post_date_gmt );
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format( $this->date_format ) .'" class="moment-from-now">' . $dtObj->format( $this->date_format ) . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
@@ -417,8 +423,8 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                             case "rtpm_Due_date":
                                 $date = date_parse($temp['post_duedate']);
                                 if(checkdate($date['month'], $date['day'], $date['year'])) {
-                                    $dtObj =rt_convert_strdate_to_usertimestamp($temp['post_duedate']);
-                                    echo '<td '.$attributes.'><span title="'. $dtObj->format('Y-m-d H:i:s')  .'" class="moment-from-now">' . $dtObj->format('Y-m-d H:i:s')  . '</span>';
+                                    $dtObj = date_create_from_format( 'Y-m-d H:i:s', $temp['post_duedate'] );
+                                    echo '<td '.$attributes.'><span title="'. $dtObj->format( $this->date_format )  .'" class="moment-from-now">' . $dtObj->format( $this->date_format )  . '</span>';
                                 } else {
                                     echo '<td '.$attributes.'>-';
                                 }
