@@ -56,8 +56,13 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
                             'actions',
 						);
 
-                       
-                        parent::includes( $includes );
+
+	                //Inject dependencies
+	                if( ! function_exists('rtbiz_get_user_domain') ) {
+		                require_once( RT_BIZ_PATH."app/buddypress-components/rt-people-component/bp-people/bp-people-functions.php" );
+	                }
+
+	                parent::includes( $includes );
                 }
                 
                 /**
