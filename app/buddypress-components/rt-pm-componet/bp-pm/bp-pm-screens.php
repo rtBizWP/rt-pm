@@ -156,8 +156,9 @@ class Rtbp_Pm_Screens {
 
 		add_action( 'bp_template_content', array( $this, 'rtpm_project_overview_template' ) );
 
-		global $rt_bp_reports;
+		global $rt_bp_reports, $rt_pm_project_overview;
 
+		$rt_pm_project_overview = Rt_Pm_Project_Overview::factory();
 		$rt_bp_reports = Rt_Bp_Reports_Loader::factory();
 	}
 

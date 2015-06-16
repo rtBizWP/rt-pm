@@ -38,14 +38,13 @@ class Rt_Pm_Project_Overview {
 
 		add_action( 'wp_head', array( $this, 'rtpm_print_style' ) );
 		add_action( 'wp_ajax_rtpm_get_older_projects', array( $this, 'rtpm_get_older_projects' ) );
-
 		add_action( 'wp_enqueue_scripts', array( $this, 'rtpm_load_style_script' ) );
 	}
 
 	public function rtpm_load_style_script() {
 
 		//Enqueue sidr scripts
-		rt_enqueue_sidr();
+		rt_enqueue_sidr( true );
 
 		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
 
