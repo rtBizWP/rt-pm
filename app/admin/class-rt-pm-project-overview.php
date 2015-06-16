@@ -44,6 +44,11 @@ class Rt_Pm_Project_Overview {
 
 	public function rtpm_load_style_script() {
 
+		//Enqueue sidr scripts
+		rt_enqueue_sidr();
+
+		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.js' );
+
 		wp_enqueue_style( 'rtpm-grid-style', get_stylesheet_directory_uri() . '/css/style.css' );
 	}
 
@@ -71,7 +76,8 @@ class Rt_Pm_Project_Overview {
 
 			var project_overview;
 
-			$(function ($) {
+			var current_blog_id = '<?php echo get_current_blog_id() ?>';
+			(function ($) {
 
 				project_overview = {
 					init: function () {
@@ -80,6 +86,8 @@ class Rt_Pm_Project_Overview {
 							e.preventDefault();
 							return project_overview.load_more_projects( $(this) );
 						});
+
+						$( document ).on( 'click', 'a.project_edit_link', project_overview.open_project_side_panel );
 
 						project_overview.init_contextmenu();
 					},
@@ -139,6 +147,17 @@ class Rt_Pm_Project_Overview {
 								bol_masonry_reload();
 							}
 						});
+					},
+
+					open_project_side_panel: function( e ) {
+						e.preventDefault();
+
+						block_ui();
+						$element = $( this );
+						$url = $element.attr('href');
+
+						var project_id = get_parameter_by_name( $url, 'rt_project_id' );
+						render_project_slide_panel('open', project_id, current_blog_id, '', 'project');
 					}
 				};
 				$(document).ready(function () {
@@ -189,8 +208,7 @@ class Rt_Pm_Project_Overview {
 				<div class="activity-content">
 					<div class="row activity-inner rt-biz-activity">
 						<div class="rt-voxxi-content-box">
-							<p><strong>Project Name: </strong><a href="<?php echo $project_edit_link ?>"
-							                                     target="_blank"><?php echo $project->post_title; ?></a>
+							<p><strong>Project Name: </strong><a class="project_edit_link" href="<?php echo $project_edit_link ?>"><?php echo $project->post_title; ?></a>
 							</p>
 
 							<p><strong>Create date: </strong><?php echo mysql2date( 'd M Y', $project->post_date ) ?>
