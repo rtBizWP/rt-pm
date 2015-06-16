@@ -95,7 +95,10 @@ class Rtbp_Pm_Screens {
 	}
 
 	public function bp_pm_time_entries() {
-		add_action( 'bp_template_content', array( $this, 'load_projects_time_entries_template' ) );
+
+		//Enqueue sidr scripts
+		rt_enqueue_sidr();
+		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );		add_action( 'bp_template_content', array( $this, 'load_projects_time_entries_template' ) );
 	}
 
 	public function load_projects_time_entries_template() {

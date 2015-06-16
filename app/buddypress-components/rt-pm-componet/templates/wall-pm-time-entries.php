@@ -8,23 +8,59 @@
 
 global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task,$rt_pm_time_entries,$rt_pm_time_entries_model, $rtpm_task_list, $rt_pm_task_resources_model;
 
-$task_id = $_REQUEST["id"];
+//Default value while adding new
+$selected_time_entry_type = '';
+$prefilled_time_duration = '0';
+$prefilled_timestamp = '';
+$prefilled_end_date = '';
+$prefilled_message = '';
+$task_id = '';
+
+switch( $_REQUEST['template'] ) {
+    case 'new_time_entry':
+        $post_project_id = $_REQUEST["id"];
+        break;
+    case 'add_time_entry':
+        $task_id = $_REQUEST["id"];
+        $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
+        break;
+    case 'edit_time_entry':
+        $timeentry_id = $_REQUEST["id"];
+        $time_entry = current( $rt_pm_time_entries_model->get( array( 'id' => $timeentry_id ) ) );
+        $post_project_id  = $time_entry->project_id;
+        $task_id = $time_entry->task_id;
+        $selected_time_entry_type = $time_entry->type;
+        $prefilled_time_duration = $time_entry->time_duration;
+        $timestamp = $time_entry->timestamp;
+        $timestamp_date_obj = date_create_from_format( 'Y-m-d H:i:s', $timestamp );
+        $prefilled_timestamp = $timestamp_date_obj->format('M d, Y H:i A');
+        $prefilled_message = $time_entry->message;
+        break;
+}
+
 $user_edit = true;
 $task_post_type=$rt_pm_task->post_type;
 $timeentry_labels = $rt_pm_time_entries->labels;
 $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
-
-$post_project_id = get_post_meta( $task_id, 'post_project_id', true);
 ?>
 <form method="post"  action="">
     <?php wp_nonce_field('rtpm_save_timeentry','rtpm_save_timeentry_nonce') ?>
+
+    <?php if( 'add_time_entry' === $_REQUEST['template'] ): ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
-    <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
+    <?php endif; ?>
+
+    <?php if( in_array( $_REQUEST['template'], array( 'add_time_entry', 'edit_time_entry' ) ) ): ?>
     <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
     <input type="hidden" name="post[post_task_id]" value="<?php echo $task_id; ?>" />
+    <?php endif;?>
 
+    <?php if( 'edit_time_entry' === $_REQUEST['template'] ): ?>
+    <input type="hidden" name="post[post_id]"  value="<?php echo $timeentry_id; ?>" />
+    <?php endif; ?>
+    <input type="hidden" name="post[rt_voxxi_blog_id]" value="<?php echo $_GET['rt_voxxi_blog_id'] ?>" />
     <div class="row">
         <div class="small-10 columns">
             <h2><?php _e('Time entry', RT_PM_TEXT_DOMAIN) ?></h2>
@@ -39,22 +75,28 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
             <label for="Task">Task<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns">
+            <?php if( 'add_time_entry' === $_REQUEST['template'] ): ?>
             <label for="Task"><?php echo get_post_field( 'post_title', $task_id ) ?></label>
+            <?php elseif(  in_array( $_REQUEST['template'], array( 'edit_time_entry', 'new_time_entry' ) ) ):
+
+                $rt_pm_task->rtpm_tasks_dropdown( $post_project_id, $task_id );
+             endif;?>
         </div>
     </div>
+
     <div class="row rtpm-post-author-wrapper">
         <div class="small-4 columns">
             <label for="post[post_timeentry_type]">Type<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns">
             <?php $terms = get_terms( Rt_PM_Time_Entry_Type::$time_entry_type_tax, array( 'hide_empty' => false, 'order' => 'asc' ) ); ?>
-            <?php if( $user_edit ) { ?>
+            <?php if( $user_edit ): ?>
                 <select required="required" name="post[post_timeentry_type]" >
-                    <?php foreach ( $terms as $term ) { ?>
-                        <option value="<?php echo $term->slug; ?>" ><?php echo $term->name; ?></option>
-                    <?php } ?>
+                    <?php foreach ( $terms as $term ): ?>
+                        <option value="<?php echo $term->slug; ?>"<?php selected( $selected_time_entry_type, $term->slug ) ?> ><?php echo $term->name; ?></option>
+                    <?php endforeach; ?>
                 </select>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row ">
@@ -63,7 +105,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
         </div>
         <div class="small-8 columns">
             <?php if( $user_edit ) { ?>
-                <input required="required" type="number" name="post[post_duration]" step="0.25" min="0"  />
+                <input required="required" type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo $prefilled_time_duration; ?>"  />
             <?php } ?>
         </div>
         </div>
@@ -74,15 +116,11 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
             <label>Date Created<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-            <?php if( $user_edit && empty( $_REQUEST['rt_time_entry_id'] ) ){ ?>
-                <input required="required" class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
 
-                       title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
-
-            <?php } else if ( $user_edit ) { ?>
-                <input disabled="disabled" name="post[post_date]" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
-
-                       title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
+            <?php  if ( $user_edit ) { ?>
+                <input name="post[post_date]" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                        value="<?php echo $prefilled_timestamp; ?>"
+                       title="<?php echo ( isset($prefilled_timestamp) ) ? $prefilled_timestamp : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
 
             <?php } else { ?>
                 <span class="rtpm_view_mode moment-from-now"><?php echo $createdate ?></span>
@@ -93,7 +131,7 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
         <div class="smlla-12 columns">
 
             <?php if( $user_edit ) { ?>
-                <textarea required="required"  name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo ( isset($post->id) ) ? $post->message : ""; ?> </textarea>
+                <textarea required="required"  name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo $prefilled_message; ?> </textarea>
             <?php } else { ?>
                 <span><?php echo ( isset($post->id) ) ? trim($post->message) : ""; ?></span><br /><br />
             <?php } ?>
@@ -107,75 +145,75 @@ $post_project_id = get_post_meta( $task_id, 'post_project_id', true);
     </div>
 
  <?php
-global $wpdb;
- $table_name = rtpm_get_time_entry_table_name();
- $result = $wpdb->get_results("SELECT * FROM {$table_name} WHERE task_id = {$task_id} ORDER By id DESC LIMIT 10");
 
- $project_current_budget_cost = 0;
- $project_current_time_cost = 0;
- $time_entries = $rt_pm_time_entries_model->get_by_project_id( $post_project_id );
- if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
-     foreach ( $time_entries['result'] as $time_entry ) {
-         $type = $time_entry['type'];
-         $term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
-         $project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
-         $project_current_time_cost += $time_entry['time_duration'];
-     }
- } ?>
+ if( 'add_time_entry' ===  $_REQUEST['template'] ):
+     global $wpdb;
+     $table_name = rtpm_get_time_entry_table_name();
+     $result     = $wpdb->get_results( "SELECT * FROM {$table_name} WHERE task_id = {$task_id} ORDER By id DESC LIMIT 10" );
 
-    <table>
-        <thead>
-        <tr>
-            <th><?php _e( 'Project Cost') ?></th>
-            <th><?php _e( 'Budget') ?></th>
-            <th><?php _e( 'Time spent') ?></th>
-            <th><?php _e( 'Estimated Time') ?></th>
-        </tr>
-        </thead>
+     $project_current_budget_cost = 0;
+     $project_current_time_cost   = 0;
+     $time_entries                = $rt_pm_time_entries_model->get_by_project_id( $post_project_id );
+     if ( $time_entries['total'] && ! empty( $time_entries['result'] ) ) {
+         foreach ( $time_entries['result'] as $time_entry ) {
+             $type = $time_entry['type'];
+             $term = get_term_by( 'slug', $type, Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+             $project_current_budget_cost += floatval( $time_entry['time_duration'] ) * Rt_PM_Time_Entry_Type::get_charge_rate_meta_field( $term->term_id );
+             $project_current_time_cost += $time_entry['time_duration'];
+         }
+     } ?>
 
-        <tbody>
-        <tr>
-            <td><?php echo '$ '.$project_current_budget_cost ?></td>
-            <td><?php echo '$ '.floatval( get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ) ?></td>
-            <td><?php echo $project_current_time_cost.__(' hours') ?></td>
-            <td><?php echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ).__(' hours') ?></td>
-        </tr>
-        </tbody>
-    </table>
+     <table>
+         <thead>
+         <tr>
+             <th><?php _e( 'Project Cost' ) ?></th>
+             <th><?php _e( 'Budget' ) ?></th>
+             <th><?php _e( 'Time spent' ) ?></th>
+             <th><?php _e( 'Estimated Time' ) ?></th>
+         </tr>
+         </thead>
 
-    <hr/>
+         <tbody>
+         <tr>
+             <td><?php echo '$ ' . $project_current_budget_cost ?></td>
+             <td><?php echo '$ ' . floatval( get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ) ?></td>
+             <td><?php echo $project_current_time_cost . __( ' hours' ) ?></td>
+             <td><?php echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ) . __( ' hours' ) ?></td>
+         </tr>
+         </tbody>
+     </table>
 
-    <?php
+     <hr/>
 
+     <?php
+     foreach ( $result as $time_entry ) : ?>
 
-
- foreach( $result as $time_entry ){ ?>
-
-     <div class="row">
-         <div class="small-3 columns">
-            <label class="rt-voxxi-label"><?php _e('Type', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php echo $time_entry->type ?></label>
+         <div class="row">
+             <div class="small-3 columns">
+                 <label class="rt-voxxi-label"><?php _e( 'Type', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label><?php echo $time_entry->type ?></label>
+             </div>
+             <div class="small-3 columns">
+                 <label class="rt-voxxi-label"><?php _e( 'Date', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label><?php
+                     $userdate = rt_convert_strdate_to_usertimestamp( $time_entry->timestamp );
+                     echo $userdate->format( 'd-M-Y' );
+                     ?></label>
+             </div>
+             <div class="small-3 columns">
+                 <label class="rt-voxxi-label"><?php _e( 'Duration', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label><?php echo $time_entry->time_duration ?> hours</label>
+             </div>
+             <div class="small-3 columns">
+                 <label class="rt-voxxi-label"><?php _e( 'Logged by', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label><?php echo bp_core_get_user_displayname( $time_entry->author ) ?></label>
+             </div>
+             <div class="small-12 columns">
+                 <label class="rt-voxxi-label"><?php _e( 'Comment', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label><?php echo $time_entry->message ?></label>
+             </div>
          </div>
-         <div class="small-3 columns">
-             <label class="rt-voxxi-label"><?php _e('Date', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php
-                 $userdate = rt_convert_strdate_to_usertimestamp( $time_entry->timestamp );
-                 echo  $userdate->format('d-M-Y');
-                 ?></label>
-         </div>
-         <div class="small-3 columns">
-             <label class="rt-voxxi-label"><?php _e('Duration', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php echo $time_entry->time_duration ?> hours</label>
-         </div>
-         <div class="small-3 columns">
-             <label class="rt-voxxi-label"><?php _e('Logged by', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php echo  bp_core_get_user_displayname(  $time_entry->author ) ?></label>
-         </div>
-         <div class="small-12 columns">
-             <label class="rt-voxxi-label"><?php _e('Comment', RT_PM_TEXT_DOMAIN ) ?></label>
-             <label><?php echo $time_entry->message ?></label>
-         </div>
-     </div>
-    <hr/>
- <?php } ?>
+         <hr/>
+     <?php endforeach;
+ endif;?>
 </form>

@@ -89,18 +89,13 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
 <div id="wp-custom-list-table">
     <?php
     if( $user_edit ) {
-        if (isset($_REQUEST["{$timeentry_post_type}_id"])) {
-            $btntitle = 'Update Time Entry';
-        }else{
-            $btntitle = 'Add Time Entry';
-        }
         ?>
         <div class="list-heading">
             <div class="large-8 columns list-title">
                 <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
             <div class="large-4 columns">
-                <button class="right mybutton add-time-entry" type="button" ><?php _e($btntitle, RT_PM_TEXT_DOMAIN ); ?></button>
+                <a class="right button rtpm_new_time_entry"><?php _e( 'Time and Expenses', RT_PM_TEXT_DOMAIN ); ?></a>
             </div>
 
         </div>
@@ -120,6 +115,43 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
     $rtpm_bp_pm_time_entry_list->display();
     ?>
 </div>
+
+<!-- Open task in sidr panel -->
+<script type="text/javascript">
+    var rtpm_timentries;
+
+    (function( $ ) {
+        rtpm_timentries = {
+            init: function() {
+                $( document).on( 'click', 'a.rtpm_timeentry_edit', rtpm_timentries.edit_timeentries_side_panel );
+                $( document).on( 'click', 'a.rtpm_new_time_entry', rtpm_timentries.new_timeentries_side_panel );
+            },
+
+            edit_timeentries_side_panel: function( e ) {
+                e.preventDefault();
+
+                block_ui();
+                $element = $( this );
+                $url = $element.attr('href');
+
+                var timeentry_id = get_parameter_by_name( $url, 'rt_time_entry_id' );
+                render_project_slide_panel( 'edit_time_entry', timeentry_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+            },
+
+            new_timeentries_side_panel: function( e ) {
+                e.preventDefault();
+
+                block_ui();
+                $element = $( this );
+                $url = $element.attr('href');
+
+                render_project_slide_panel( 'new_time_entry', <?php echo $project_id ?>, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+            }
+        };
+
+        $( document).ready( function() { rtpm_timentries.init() } );
+    })(jQuery);
+</script>
 
 <!--reveal-modal-add-task -->
 <div id="div-add-time-entry" class="reveal-modal medium" data-reveal>
