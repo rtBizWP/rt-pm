@@ -46,6 +46,11 @@ class Rt_Pm_Project_Overview {
 		//Enqueue sidr scripts
 		rt_enqueue_sidr( true );
 
+		wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri() . '/assets/js/contextMenu.min.js', array( 'jquery' ), BUDDYBOSS_CHILD_THEME_VERS );
+		wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri() . '/assets/css/contextMenu.css' );
+
+		wp_enqueue_script( 'rtpm-handlebar-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true );
+
 		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
 
 		wp_enqueue_style( 'rtpm-grid-style', get_stylesheet_directory_uri() . '/css/style.css' );
