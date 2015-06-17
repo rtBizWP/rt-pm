@@ -319,12 +319,14 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     ?>
 
 
+    <?php if( ! bp_is_current_component( BP_CRM_SLUG ) ): ?>
     <div class="row">
         <div class="small-12 columns action-bar">
             <a class="button rtpm_task_timeentries"  href='<?php echo $timeentries_url; ?>'>Time and Expenses</a>
             <input type="submit" value="Save" >
         </div>
     </div>
+    <?php endif; ?>
 
 </form>
 <!-- Validate user assigned hours -->
