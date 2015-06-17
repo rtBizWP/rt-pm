@@ -79,6 +79,15 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 
                 $dr = date_create_from_format( 'M d, Y H:i A', $creationdate );
 
+                //Set post_status to trash while editing time entry
+                if( isset( $newTimeEntry['post_id'] ) ) {
+                    $where = array( 'id' => $newTimeEntry['post_id'] );
+                    $rt_pm_time_entries_model->update_timeentry( array( 'post_status' => 'trash' ), $where );
+                }
+
+                /**
+                 * Validate assigned hours
+                 */
                 $estimated_hours = (float)$rt_pm_task_resources_model->rtpm_get_estimated_hours( array(
                     'user_id' => get_current_user_id(),
                     'task_id' => $newTimeEntry['post_task_id'],
@@ -98,7 +107,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 
                 if( empty( $estimated_hours) ||
                     $estimated_hours < $new_billed_hours ) {
-                    if( !is_admin() ) {
+
 
                         $remain_billable_hours = $estimated_hours - $billed_hours;
                         $message = 'Assign hours limit has been exceeded';
@@ -106,8 +115,13 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                         if( $remain_billable_hours > 0 ) {
                             $message = sprintf( _n( 'Max remain allowed hour %s ', 'Max remain allowed hours %s', $remain_billable_hours, RT_PM_TEXT_DOMAIN ), $remain_billable_hours );
                         }
+
+                    if( ! is_admin() ) {
                         bp_core_add_message( $message, 'error' );
+                    } else {
+                        add_notice( $message, 'error' );
                     }
+
                     return false;
                 }
 
@@ -137,15 +151,16 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                 'time_duration' => $newTimeEntry['post_duration'],
                 'timestamp' => $newTimeEntry['post_date'],
                 'author' => get_current_user_id(),
+                'post_status' => 'new'
             );
-            $updateFlag = false;
-            //check post request is for Update or insert
+
+
             if ( isset($newTimeEntry['post_id'] ) ) {
-                $updateFlag = true;
+
                 $where = array( 'id' => $newTimeEntry['post_id'] );
-                $post_id = $rt_pm_time_entries_model->update_timeentry($post,$where);
+                $rt_pm_time_entries_model->update_timeentry($post,$where);
             }else{
-                $post_id = $rt_pm_time_entries_model->add_timeentry($post);
+                $rt_pm_time_entries_model->add_timeentry($post);
                 $_REQUEST["new"]=true;
             }
 
@@ -153,13 +168,16 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
 
 
-            if( !is_admin() ) {
+            $message = __( 'Time recorded successfully', RT_PM_TEXT_DOMAIN );
+            if( ! is_admin() ) {
 
-                bp_core_add_message( 'Time entry saved successfully', 'success' );
+                bp_core_add_message( $message , 'success' );
                 if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) ){
                     restore_current_blog();
                     add_action ( 'wp_head', 'rt_voxxi_js_variables' );
                 }
+            } else {
+                add_notice( $message );
             }
 
         }

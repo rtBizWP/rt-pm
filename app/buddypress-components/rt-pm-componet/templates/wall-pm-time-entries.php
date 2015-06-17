@@ -46,6 +46,8 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 <form method="post"  action="">
     <?php wp_nonce_field('rtpm_save_timeentry','rtpm_save_timeentry_nonce') ?>
 
+    <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
+
     <?php if( 'add_time_entry' === $_REQUEST['template'] ): ?>
     <input type="hidden" name="post[action]" value="<?php echo $_GET['action'] ?>" />
     <input type="hidden" name="post[template]" value="<?php echo $_GET['template'] ?>" />
@@ -53,7 +55,6 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
     <?php endif; ?>
 
     <?php if( in_array( $_REQUEST['template'], array( 'add_time_entry', 'edit_time_entry' ) ) ): ?>
-    <input type="hidden" name="post[post_project_id]" value="<?php echo $post_project_id; ?>" />
     <input type="hidden" name="post[post_task_id]" value="<?php echo $task_id; ?>" />
     <?php endif;?>
 
