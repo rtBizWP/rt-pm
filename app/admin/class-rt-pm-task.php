@@ -1282,7 +1282,11 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 						'key'     => 'rtpm_child_task_count',
 						'value'   => '0',
 						'compare' => '='
-					)
+					),
+					array(
+						'key'   => 'rtpm_task_type',
+						'value' =>  array( 'main_task', 'sub_task' ),
+					),
 				),
 			);
 

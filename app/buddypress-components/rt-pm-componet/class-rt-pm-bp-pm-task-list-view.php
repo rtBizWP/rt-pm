@@ -489,9 +489,16 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                 if ( $rec->post_status !='trash'){
                                     $actions = array(
                                         'edit'      => '<a class="rtpm_task_edit_link" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID.'"'.'">Edit</a>',
-                                        'timeentry'    => '<a class="rtpm_task_timeentries_link" href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&task_id='.$rec->ID.'&action=timeentry">Time</a>',
                                         'delete'    => '<a class="deletepostlink" href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=trash'.'">Delete</a>',
                                     );
+
+
+	                                //Show time entry link for normal task and sub task
+	                                if( in_array( $temp['rtpm_task_type'], array( 'main_task', 'sub_task'  ) ) ) {
+
+										$actions['timeentry'] = '<a class="rtpm_task_timeentries_link" href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&task_id='.$rec->ID.'&action=timeentry">Time</a>';
+	                                }
+
                                 }else{
                                     $actions = array(
                                         'restore'    => '<a href="'. $rt_pm_bp_pm->get_component_root_url().bp_current_action() .'?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"] .'&tab='.$rt_pm_project->post_type .'-task&'.$this->post_type.'_id='.$rec->ID .'&action=restore'.'">Restore</a>',
