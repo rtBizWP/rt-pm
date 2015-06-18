@@ -441,7 +441,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_overdue_task_count( $project_id ) {
 			global $wpdb;
 
-			$task_ids = $this->rtpm_get_projects_task_ids( $project_id );
+			$task_ids = $this->rtpm_get_timeentries_tasks( $project_id );
 
 			if ( empty( $task_ids ) ) {
 				return 0;
@@ -467,16 +467,20 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 			$statues_slug = array_column( $this->statuses, 'slug', 'slug' );
 
+			$task_ids = $this->rtpm_get_timeentries_tasks( $project_id );
+
+			if ( empty( $task_ids ) ) {
+				return 0;
+			}
+
 			unset( $statues_slug['completed'] );
 
 			$args = array(
-				'nopaging'      => true,
-				'post_type'     => $this->post_type,
-				'fields'        => 'ids',
-				'no_found_rows' => true,
-				'meta_key'      => 'post_project_id',
-				'meta_value'    => $project_id,
+				'post__in' => $task_ids,
 				'post_status'   => $statues_slug,
+				'nopaging' =>   true,
+				'fields' => 'ids',
+				'no_found_rows' => true,
 			);
 
 
@@ -484,7 +488,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$args['date_query'] = $date_query;
 			}
 
-			$query = new WP_Query( $args );
+			$query = $this->rtpm_prepare_task_wp_query( $args );
 
 			return $query->post_count;
 		}
@@ -499,21 +503,28 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 */
 		public function rtpm_completed_task_count( $project_id, $date_query = null ) {
 
+			$task_ids = $this->rtpm_get_timeentries_tasks( $project_id );
+
+			if ( empty( $task_ids ) ) {
+				return 0;
+			}
+
 			$args = array(
-				'nopaging'      => true,
-				'post_type'     => $this->post_type,
-				'fields'        => 'ids',
+				'post__in'  => $task_ids,
+				'fields'   => 'ids',
+				'post_status'   => 'completed',
+				'nopaging' => true,
 				'no_found_rows' => true,
-				'meta_key'      => 'post_project_id',
-				'meta_value'    => $project_id,
-				'post_status'   => 'completed'
 			);
 
 			if ( null !== $date_query ) {
 				$args['date_query'] = $date_query;
 			}
 
-			$query = new WP_Query( $args );
+			$query = $this->rtpm_prepare_task_wp_query( $args );
+
+			//echo $query->request;
+			//die();
 
 			return $query->post_count;
 		}
@@ -548,7 +559,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtpm_get_all_task_duedate( $project_id ) {
 			global $wpdb;
 
-			$tasks = $this->rtpm_get_projects_task_ids( $project_id );
+			$tasks = $this->rtpm_get_timeentries_tasks( $project_id );
 
 			if ( empty( $tasks ) ) {
 				return;
@@ -572,7 +583,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 */
 		public function rtpm_get_completed_task_per( $project_id ) {
 
-			$all_task_count = count( $this->rtpm_get_projects_task_ids( $project_id ) );
+			$all_task_count = count( $this->rtpm_get_timeentries_tasks( $project_id ) );
 
 			if ( $all_task_count <= 0 ) {
 				return 0;

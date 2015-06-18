@@ -262,8 +262,7 @@ class Rt_Pm_Project_Overview {
 								<div class="number-circle">
 									<div class="height_fix"></div>
 									<div
-										class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) ?>
-										%
+										class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ).'%' ?>
 									</div>
 								</div>
 							</div>
