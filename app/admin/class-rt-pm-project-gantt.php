@@ -17,7 +17,7 @@ class Rt_PM_Project_Gantt {
      *
      */
 
-    private $milestone_color = '#C0C0C0';
+    private $milestone_color = '#999';
     private $child_task_color = '#32CD32';
     private $parent_task_color = '#C0C0C0';
 
