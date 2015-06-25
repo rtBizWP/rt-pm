@@ -23,7 +23,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries_Model' ) ) {
 	class Rt_PM_Time_Entries_Model extends RT_DB_Model {
 
 		public function __construct() {
-			parent::__construct( 'wp_pm_time_entries' );
+			parent::__construct( 'pm_time_entries' );
 		}
 
         function add_timeentry( $data ) {

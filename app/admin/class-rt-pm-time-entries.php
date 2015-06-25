@@ -122,6 +122,14 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                         add_notice( $message, 'error' );
                     }
 
+                    /**
+                     * Restore blog if time entry is fail
+                     */
+                    if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) ) {
+                        restore_current_blog();
+                        add_action ( 'wp_head', 'rt_voxxi_js_variables' );
+                    }
+
                     return false;
                 }
 
@@ -168,6 +176,9 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             do_action( 'rt_pm_time_entry_saved', $newTimeEntry, $author = get_current_user_id(), $this );
 
 
+            /**
+             * Update message and blog restore
+             */
             $message = __( 'Time recorded successfully', RT_PM_TEXT_DOMAIN );
             if( ! is_admin() ) {
 
