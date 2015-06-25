@@ -15,7 +15,7 @@ class Rt_PM_Task_Links_Model extends RT_DB_Model {
      *
      */
     public function __construct() {
-        parent::__construct( 'wp_pm_task_links' );
+        parent::__construct( 'pm_task_links' );
     }
 
     /**

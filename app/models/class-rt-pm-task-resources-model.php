@@ -17,7 +17,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 	 *
 	 */
 	public function __construct() {
-		parent::__construct( 'wp_pm_task_resources' );
+		parent::__construct( 'pm_task_resources' );
 	}
 
 	/**
