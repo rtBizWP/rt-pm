@@ -291,10 +291,16 @@ function rtpm_user_tasks_hover_cart() { ?>
 /**
  *
  */
-function rtpm_validate_user_assigned_hours_script( ) { ?>
+function rtpm_validate_user_assigned_hours_script( ) {
+
+	if( isset( $_REQUEST['rt_voxxi_blog_id'] ) )
+		restore_current_blog();
+
+	?>
 	<script type="text/javascript">
 
 		var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
+
 		var rtpm_task_assignee, request, id_index = 0;
 
 		(function( $ ) {
@@ -347,12 +353,16 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 						resource_id: $main_div.data('resource-id'),
 					};
 
+
 					var data = {
 						action: 'rtpm_validate_user_assigned_hours',
 						post:   post,
 						security: ajax_nonce,
 					};
 
+					if( 'undefined' != typeof $("input[name='post[rt_voxxi_blog_id]']") ) {
+						data.rt_voxxi_blog_id = $("input[name='post[rt_voxxi_blog_id]']").val();
+					}
 					//block_ui();
 
 					if( 'undefined' == typeof request ) {
@@ -394,6 +404,10 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 						security: ajax_nonce,
 						post: post,
 					};
+
+					if( 'undefined' != typeof $("input[name='post[rt_voxxi_blog_id]']") ) {
+						data.rt_voxxi_blog_id = $("input[name='post[rt_voxxi_blog_id]']").val();
+					}
 
 					$.post( ajax_adminurl, data, function( response ) {
 
@@ -439,6 +453,7 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 						timestamp: timestamp,
 					};
 
+
 					if( 'undefined' != typeof $('input[name="post[post_id]"]') )
 						post.task_id = $('input[name="post[post_id]"]').val();
 
@@ -452,6 +467,10 @@ function rtpm_validate_user_assigned_hours_script( ) { ?>
 						security: ajax_nonce,
 						post: post
 					};
+
+					if( 'undefined' != typeof $("input[name='post[rt_voxxi_blog_id]']") ) {
+						data.rt_voxxi_blog_id = $("input[name='post[rt_voxxi_blog_id]']").val();
+					}
 
 					$parent_div = $(this).parents('div.rt-resources-parent-row');
 

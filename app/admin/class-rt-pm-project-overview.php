@@ -66,7 +66,20 @@ class Rt_Pm_Project_Overview {
 		?>
 		<ul id="activity-stream" class="activity-list item-list">
 			<?php
-			$max_num_pages = $this->rtpm_project_block_list( 1 );
+			if( is_main_site() ) {
+				$args = array(
+					'fields' => 'ids',
+					'nopaging'   => true,
+				);
+
+
+				$project_data = $this->rtpm_project_main_site_data( $args );
+
+				$project_total_counts = count( $project_data );
+				$_REQUEST['project_total_page'] = ceil( $project_total_counts  / 2 );
+			}
+			$max_num_pages = absint( $_REQUEST['project_total_page'] );
+			$this->rtpm_project_block_list( 1 );
 			if( 1 < $max_num_pages ) : ?>
 				<li class="load-more activity-item">
 					<a href="#more" id="load-more" data-page="2" data-max-pages="<?php echo $max_num_pages ?>">Load More</a>
@@ -179,22 +192,30 @@ class Rt_Pm_Project_Overview {
 
 		$displayed_user_id = bp_displayed_user_id();
 
-		$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
-
 		$args = array(
 			'paged'          => $page,
-			'post_type'      => $rt_pm_project->post_type,
-			'posts_per_page' => 5,
+			'posts_per_page' => 2,
 		);
 
-		if ( ! current_user_can( $admin_cap ) ) {
+		if( is_main_site() ) {
+			$project_data = $this->rtpm_project_main_site_data( $args );
 
-			$projects         = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
-			$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
+		} else {
+
+			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
+
+			if ( ! current_user_can( $admin_cap ) ) {
+
+				$projects         = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
+				$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
+			}
+
+			$query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
+
+			$_REQUEST['project_total_page'] = $query->max_num_pages;
+
+			$project_data = $query->posts;
 		}
-
-		$query = new WP_Query( $args );
-		$project_data = $query->posts;
 
 		if ( empty( $project_data ) ) {
 			return;
@@ -310,8 +331,6 @@ class Rt_Pm_Project_Overview {
 				</div>
 			</li>
 		<?php endforeach;
-
-		return $query->max_num_pages;
 	}
 
 	public function rtpm_get_older_projects() {
@@ -443,5 +462,108 @@ class Rt_Pm_Project_Overview {
 			}
 		</style>
 	<?php }
+
+	/**
+	 * Prepare data for main site, Project data from all sub site
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public function rtpm_project_main_site_data( $args ) {
+		global $rt_pm_project, $wpdb, $rt_pm_task_resources_model, $table_prefix;
+
+		$args['no_found_rows'] = true;
+
+		$displayed_user_id = bp_displayed_user_id();
+		$project_query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
+
+
+		$project_blog_query = array();
+
+		/**
+		 * task sql query
+		 */
+		$project_data_query = $project_query->request;
+
+
+		$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
+		if ( ! current_user_can( $admin_cap ) ) {
+
+			/**
+			 * Inner join query
+			 */
+			$inner_join         = " INNER JOIN {$rt_pm_task_resources_model->table_name} ON {$wpdb->posts}.ID = {$rt_pm_task_resources_model->table_name}.project_id  ";
+			$pos                = strpos( $project_data_query, "FROM {$wpdb->posts}" ) + strlen( "FROM {$wpdb->posts}" );
+			$project_data_query = substr_replace( $project_data_query, $inner_join, $pos, 0 );
+
+
+			/**
+			 * Where clause
+			 */
+			$where_clause = " {$rt_pm_task_resources_model->table_name}.user_id = {$displayed_user_id} AND {$rt_pm_task_resources_model->table_name}.post_status <> 'trash' AND";
+			$pos = strpos( $project_data_query, "WHERE" ) + strlen("WHERE");
+			$project_data_query = substr_replace( $project_data_query, $where_clause, $pos, 0 );
+
+		}
+
+		/**
+		 * Limit, Pagination
+		 */
+		if ( false !== strpos( $project_data_query, 'LIMIT' ) ) {
+			$limits          = substr( $project_data_query, strpos( $project_data_query, 'LIMIT' ) );
+			$project_data_query = str_replace( $limits, '', $project_data_query );
+		}
+
+		$sites = rtbiz_get_our_sites();
+
+		foreach ( $sites as $site ) {
+
+			/**
+			 * Skip 1st blog or main site
+			 */
+			if ( '1' === $site->blog_id ) {
+				continue;
+			}
+
+			/**
+			 * Replace table name with blog specific table name like wp_2_posts
+			 */
+			$blog_table_prefix = $table_prefix . $site->blog_id . '_';
+			$blog_query        = str_replace( $table_prefix, $blog_table_prefix, $project_data_query );
+
+			/**
+			 * INNER JOIN with pm_task_resources
+			 */
+			$blog_id_column = " DISTINCT '{$site->blog_id}' AS blog_id, ";
+			$blog_query = substr_replace( $blog_query, $blog_id_column, 7, 0 );
+
+			/**
+			 * Filter split_the_query change * to ID
+			 */
+			if( ! isset( $args['fields'] ) ) {
+				$pos = strpos( $blog_query, 'ID' );
+				if ( false !== $pos ) {
+					$blog_query = substr_replace( $blog_query, '*', $pos, strlen( 'ID' ) );
+				}
+			}
+
+			/**
+			 * Blog query
+			 */
+			$project_blog_query[] = '(' . $blog_query . ')';
+		}
+
+		/**
+		 * Whole query
+		 */
+		$project_main_query = implode( ' UNION ALL ', $project_blog_query );
+
+		//Pagination
+		if ( isset( $limits ) ) {
+			$project_main_query .= ' ' . $limits;
+		}
+
+		return $wpdb->get_results( $project_main_query );
+	}
 
 }

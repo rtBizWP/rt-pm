@@ -3163,5 +3163,14 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Set saturday, sunday weekend days
             update_post_meta( $post_id, 'working_days', array( 'days' => array( '0', '6' ), 'occasions' => array() ) );
         }
+
+        public function rtpm_prepare_project_wp_query( $args ) {
+            global $rt_pm_project;
+
+            $args['post_type'] = $rt_pm_project->post_type;
+            $query = new WP_Query( $args );
+
+            return $query;
+        }
     }
 }
