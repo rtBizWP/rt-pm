@@ -157,7 +157,6 @@ class Rtbp_Pm_Screens {
 
 		global $rt_bp_reports, $rt_pm_project_overview;
 
-		$rt_pm_project_overview = Rt_Pm_Project_Overview::factory();
 		$rt_bp_reports = Rt_Bp_Reports_Loader::factory();
 	}
 

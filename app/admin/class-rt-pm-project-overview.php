@@ -43,17 +43,19 @@ class Rt_Pm_Project_Overview {
 
 	public function rtpm_load_style_script() {
 
-		//Enqueue sidr scripts
-		rt_enqueue_sidr( true );
+		if ( in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
+			//Enqueue sidr scripts
+			rt_enqueue_sidr( true );
 
-		wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri() . '/assets/js/contextMenu.min.js', array( 'jquery' ), BUDDYBOSS_CHILD_THEME_VERS );
-		wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri() . '/assets/css/contextMenu.css' );
+			wp_enqueue_script( 'rtvoxxi-context-script', get_stylesheet_directory_uri() . '/assets/js/contextMenu.min.js', array( 'jquery' ), BUDDYBOSS_CHILD_THEME_VERS );
+			wp_enqueue_style( 'rtvoxxi-context-style', get_stylesheet_directory_uri() . '/assets/css/contextMenu.css' );
 
-		wp_enqueue_script( 'rtpm-handlebar-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true );
+			wp_enqueue_script( 'rtpm-handlebar-script', RT_PM_URL . 'app/assets/javascripts/handlebars.js', "", true );
 
-		wp_localize_script('rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
+			wp_localize_script( 'rtbiz-side-panel-script', 'pm_script_url', RT_PM_URL . 'app/buddypress-components/rt-pm-componet/assets/javascripts/rt-bp-pm.min.js' );
 
-		wp_enqueue_style( 'rtpm-grid-style', get_stylesheet_directory_uri() . '/css/style.css' );
+			wp_enqueue_style( 'rtpm-grid-style', get_stylesheet_directory_uri() . '/css/style.css' );
+		}
 	}
 
 	/**
@@ -66,25 +68,27 @@ class Rt_Pm_Project_Overview {
 		?>
 		<ul id="activity-stream" class="activity-list item-list">
 			<?php
-			if( is_main_site() ) {
+			if ( is_main_site() ) {
 				$args = array(
-					'fields' => 'ids',
-					'nopaging'   => true,
+					'fields'   => 'ids',
+					'nopaging' => true,
 				);
 
 
 				$project_data = $this->rtpm_project_main_site_data( $args );
 
-				$project_total_counts = count( $project_data );
-				$_REQUEST['project_total_page'] = ceil( $project_total_counts  / 2 );
+				$project_total_counts           = count( $project_data );
+				$_REQUEST['project_total_page'] = ceil( $project_total_counts / 2 );
 			}
-			$max_num_pages = absint( $_REQUEST['project_total_page'] );
 			$this->rtpm_project_block_list( 1 );
-			if( 1 < $max_num_pages ) : ?>
+			$max_num_pages = absint( $_REQUEST['project_total_page'] );
+
+			if ( 1 < $max_num_pages ) : ?>
 				<li class="load-more activity-item">
-					<a href="#more" id="load-more" data-page="2" data-max-pages="<?php echo $max_num_pages ?>">Load More</a>
+					<a href="#more" id="load-more" data-page="2" data-max-pages="<?php echo $max_num_pages ?>">Load
+						More</a>
 				</li>
-			<?php endif;  ?>
+			<?php endif; ?>
 
 		</ul>
 
@@ -99,26 +103,26 @@ class Rt_Pm_Project_Overview {
 				project_overview = {
 					init: function () {
 
-						$('a#load-more').click( function ( e ) {
+						$('a#load-more').click(function (e) {
 							e.preventDefault();
-							return project_overview.load_more_projects( $(this) );
+							return project_overview.load_more_projects($(this));
 						});
 
-						$( document ).on( 'click', 'a.project_edit_link', project_overview.open_project_side_panel );
+						$(document).on('click', 'a.project_edit_link', project_overview.open_project_side_panel);
 
 						project_overview.init_contextmenu();
 					},
 
-					init_contextmenu: function() {
+					init_contextmenu: function () {
 
 						$('a.rtcontext-taskbox').contextMenu('div.rtcontext-box');
 
-						$('a.rtcontext-taskbox').click( function(e) {
-							return project_overview.fill_tasks_list( $(this), e );
+						$('a.rtcontext-taskbox').click(function (e) {
+							return project_overview.fill_tasks_list($(this), e);
 						});
 					},
 
-					fill_tasks_list: function( elm, event ) {
+					fill_tasks_list: function (elm, event) {
 						event.stopPropagation();
 
 						var post = {};
@@ -126,29 +130,29 @@ class Rt_Pm_Project_Overview {
 						post.user_id = elm.data('team-member-id');
 						post.project_id = elm.parents('li').data('project-id');
 
-						rtpm_show_user_task_hovercart( post );
+						rtpm_show_user_task_hovercart(post);
 					},
 
-					load_more_projects: function( elm ) {
+					load_more_projects: function (elm) {
 
 						$('#buddypress li.load-more').addClass('loading');
-						var page = parseInt( elm.data('page') );
+						var page = parseInt(elm.data('page'));
 
-						var total_page = parseInt( elm.data('max-pages') );
+						var total_page = parseInt(elm.data('max-pages'));
 
 						var post = {'page': page};
 
 						var senddata = {'action': 'rtpm_get_older_projects', 'post': post};
 
-						$.post( ajax_adminurl, senddata, function (response) {
+						$.post(ajax_adminurl, senddata, function (response) {
 
 							$('#buddypress li.load-more').removeClass('loading');
-							if ( response.success ) {
+							if (response.success) {
 								var data = response.data;
 
-								$('#activity-stream').append( response.data.content );
+								$('#activity-stream').append(response.data.content);
 
-								if ( total_page <= page ) {
+								if (total_page <= page) {
 									elm.parent().hide();
 								} else {
 									elm.data('page', page + 1);
@@ -166,14 +170,14 @@ class Rt_Pm_Project_Overview {
 						});
 					},
 
-					open_project_side_panel: function( e ) {
+					open_project_side_panel: function (e) {
 						e.preventDefault();
 
 						block_ui();
-						$element = $( this );
+						$element = $(this);
 						$url = $element.attr('href');
 
-						var project_id = get_parameter_by_name( $url, 'rt_project_id' );
+						var project_id = get_parameter_by_name($url, 'rt_project_id');
 						render_project_slide_panel('open', project_id, current_blog_id, '', 'project');
 					}
 				};
@@ -183,7 +187,7 @@ class Rt_Pm_Project_Overview {
 			}(jQuery));
 		</script>
 
-	<?php
+		<?php
 		rtpm_user_tasks_hover_cart();
 	}
 
@@ -197,9 +201,8 @@ class Rt_Pm_Project_Overview {
 			'posts_per_page' => 2,
 		);
 
-		if( is_main_site() ) {
+		if ( is_main_site() ) {
 			$project_data = $this->rtpm_project_main_site_data( $args );
-
 		} else {
 
 			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
@@ -233,7 +236,8 @@ class Rt_Pm_Project_Overview {
 				<div class="activity-content">
 					<div class="row activity-inner rt-biz-activity">
 						<div class="rt-voxxi-content-box">
-							<p><strong>Project Name: </strong><a class="project_edit_link" href="<?php echo $project_edit_link ?>"><?php echo $project->post_title; ?></a>
+							<p><strong>Project Name: </strong><a class="project_edit_link"
+							                                     href="<?php echo $project_edit_link ?>"><?php echo $project->post_title; ?></a>
 							</p>
 
 							<p><strong>Create date: </strong><?php echo mysql2date( 'd M Y', $project->post_date ) ?>
@@ -283,7 +287,7 @@ class Rt_Pm_Project_Overview {
 								<div class="number-circle">
 									<div class="height_fix"></div>
 									<div
-										class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ).'%' ?>
+										class="content"><?php echo $rt_pm_task->rtpm_get_completed_task_per( $project->ID ) . '%' ?>
 									</div>
 								</div>
 							</div>
@@ -426,45 +430,49 @@ class Rt_Pm_Project_Overview {
 				'pointSize' => '5',
 			)
 		); ?>
-			<div id="rtpm_task_status_burnup_<?php echo $project_id; ?>" class="rtpm-gantt-graph-container"></div>
+		<div id="rtpm_task_status_burnup_<?php echo $project_id; ?>" class="rtpm-gantt-graph-container"></div>
 	<?php
 	}
 
 	/**
 	 * Style for table without outer border
 	 */
-	public function rtpm_print_style() { ?>
-		<style>
-			table.no-outer-border {
-				border-collapse: collapse;
-			}
+	public function rtpm_print_style() {
+		if ( in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
+			?>
+			<style>
+				table.no-outer-border {
+					border-collapse: collapse;
+				}
 
-			table.no-outer-border td, table.no-outer-border th {
-				border: 1px solid black;
-			}
+				table.no-outer-border td, table.no-outer-border th {
+					border: 1px solid black;
+				}
 
-			table.no-outer-border tr:first-child th {
-				border-top: 0;
-			}
+				table.no-outer-border tr:first-child th {
+					border-top: 0;
+				}
 
-			table.no-outer-border tr:last-child td {
-				border-bottom: 0;
-			}
+				table.no-outer-border tr:last-child td {
+					border-bottom: 0;
+				}
 
-			table.no-outer-border tr td:first-child,
-			table.no-outer-border tr th:first-child {
-				border-left: 0;
-			}
+				table.no-outer-border tr td:first-child,
+				table.no-outer-border tr th:first-child {
+					border-left: 0;
+				}
 
-			table.no-outer-border tr td:last-child,
-			table.no-outer-border tr th:last-child {
-				border-right: 0;
-			}
-		</style>
-	<?php }
+				table.no-outer-border tr td:last-child,
+				table.no-outer-border tr th:last-child {
+					border-right: 0;
+				}
+			</style>
+		<?php }
+	}
 
 	/**
 	 * Prepare data for main site, Project data from all sub site
+	 *
 	 * @param $args
 	 *
 	 * @return mixed
@@ -475,7 +483,7 @@ class Rt_Pm_Project_Overview {
 		$args['no_found_rows'] = true;
 
 		$displayed_user_id = bp_displayed_user_id();
-		$project_query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
+		$project_query     = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
 
 
 		$project_blog_query = array();
@@ -500,8 +508,8 @@ class Rt_Pm_Project_Overview {
 			/**
 			 * Where clause
 			 */
-			$where_clause = " {$rt_pm_task_resources_model->table_name}.user_id = {$displayed_user_id} AND {$rt_pm_task_resources_model->table_name}.post_status <> 'trash' AND";
-			$pos = strpos( $project_data_query, "WHERE" ) + strlen("WHERE");
+			$where_clause       = " {$rt_pm_task_resources_model->table_name}.user_id = {$displayed_user_id} AND {$rt_pm_task_resources_model->table_name}.post_status <> 'trash' AND";
+			$pos                = strpos( $project_data_query, "WHERE" ) + strlen( "WHERE" );
 			$project_data_query = substr_replace( $project_data_query, $where_clause, $pos, 0 );
 
 		}
@@ -510,7 +518,7 @@ class Rt_Pm_Project_Overview {
 		 * Limit, Pagination
 		 */
 		if ( false !== strpos( $project_data_query, 'LIMIT' ) ) {
-			$limits          = substr( $project_data_query, strpos( $project_data_query, 'LIMIT' ) );
+			$limits             = substr( $project_data_query, strpos( $project_data_query, 'LIMIT' ) );
 			$project_data_query = str_replace( $limits, '', $project_data_query );
 		}
 
@@ -535,12 +543,12 @@ class Rt_Pm_Project_Overview {
 			 * INNER JOIN with pm_task_resources
 			 */
 			$blog_id_column = " DISTINCT '{$site->blog_id}' AS blog_id, ";
-			$blog_query = substr_replace( $blog_query, $blog_id_column, 7, 0 );
+			$blog_query     = substr_replace( $blog_query, $blog_id_column, 7, 0 );
 
 			/**
 			 * Filter split_the_query change * to ID
 			 */
-			if( ! isset( $args['fields'] ) ) {
+			if ( ! isset( $args['fields'] ) ) {
 				$pos = strpos( $blog_query, 'ID' );
 				if ( false !== $pos ) {
 					$blog_query = substr_replace( $blog_query, '*', $pos, strlen( 'ID' ) );
