@@ -251,7 +251,9 @@ function rtpm_user_tasks_hover_cart() { ?>
 		var source = $('#task-list-template').html();
 		var template = Handlebars.compile(source);
 
-		function rtpm_show_user_task_hovercart( filter ) {
+		var current_blog_id = '<?php echo get_current_blog_id() ?>';
+
+		function rtpm_show_user_task_hovercart( filter, blog_id ) {
 
 			$('div.rtcontext-box').html('<strong>Loading...</strong>');
 
@@ -260,7 +262,13 @@ function rtpm_user_tasks_hover_cart() { ?>
 			data.action = 'rtpm_get_user_tasks'
 			data.post = filter;
 
-			$.post(ajax_adminurl, data, function (res) {
+			if( 'undefined' != typeof blog_id ) {
+				data.rt_voxxi_blog_id = blog_id;
+				current_blog_id = blog_id;
+			}
+
+
+			$.post(ajaxurl, data, function (res) {
 
 				if (res.success) {
 					$('div.rtcontext-box').html(template(res.data));
@@ -278,7 +286,7 @@ function rtpm_user_tasks_hover_cart() { ?>
 
 			block_ui();
 
-			render_project_slide_panel('open', task_id, <?php echo get_current_blog_id(); ?>, '', 'task');
+			render_project_slide_panel('open', task_id, current_blog_id, '', 'task');
 		}
 
 	</script>

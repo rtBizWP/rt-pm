@@ -60,12 +60,8 @@ class Rt_Pm_Project_Overview {
 
 	/**
 	 * Render all grids for project overview
-	 *
-	 * @param $project_data
 	 */
-	public function rtpm_render_project_grid() {
-		global $rt_pm_project, $rt_pm_task, $rt_pm_bp_pm;
-		?>
+	public function rtpm_render_project_grid() { ?>
 		<ul id="activity-stream" class="activity-list item-list">
 			<?php
 			if ( is_main_site() ) {
@@ -93,8 +89,6 @@ class Rt_Pm_Project_Overview {
 		</ul>
 
 		<script type="text/javascript">
-			var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
-
 			var project_overview;
 
 			var current_blog_id = '<?php echo get_current_blog_id() ?>';
@@ -130,7 +124,9 @@ class Rt_Pm_Project_Overview {
 						post.user_id = elm.data('team-member-id');
 						post.project_id = elm.parents('li').data('project-id');
 
-						rtpm_show_user_task_hovercart(post);
+						var that = elm.parents('.activity-item');
+						var blog_id = that.data('rt-blog-id');
+						rtpm_show_user_task_hovercart( post, blog_id );
 					},
 
 					load_more_projects: function (elm) {
@@ -144,7 +140,7 @@ class Rt_Pm_Project_Overview {
 
 						var senddata = {'action': 'rtpm_get_older_projects', 'post': post};
 
-						$.post(ajax_adminurl, senddata, function (response) {
+						$.post(ajaxurl, senddata, function (response) {
 
 							$('#buddypress li.load-more').removeClass('loading');
 							if (response.success) {
@@ -177,8 +173,12 @@ class Rt_Pm_Project_Overview {
 						$element = $(this);
 						$url = $element.attr('href');
 
+						var that = $element.parents('.activity-item');
+						var blog_id = that.data('rt-blog-id');
+
+
 						var project_id = get_parameter_by_name($url, 'rt_project_id');
-						render_project_slide_panel('open', project_id, current_blog_id, '', 'project');
+						render_project_slide_panel('open', project_id, blog_id, '', 'project');
 					}
 				};
 				$(document).ready(function () {
@@ -192,7 +192,7 @@ class Rt_Pm_Project_Overview {
 	}
 
 	public function rtpm_project_block_list( $page ) {
-		global $rt_pm_project, $rt_pm_task;
+		global $rt_pm_project, $rt_pm_task, $rt_pm_task_resources_model, $rt_pm_time_entries_model, $table_prefix;
 
 		$displayed_user_id = bp_displayed_user_id();
 
@@ -200,6 +200,8 @@ class Rt_Pm_Project_Overview {
 			'paged'          => $page,
 			'posts_per_page' => 2,
 		);
+
+		$old_blog_id = get_current_blog_id();
 
 		if ( is_main_site() ) {
 			$project_data = $this->rtpm_project_main_site_data( $args );
@@ -218,6 +220,9 @@ class Rt_Pm_Project_Overview {
 			$_REQUEST['project_total_page'] = $query->max_num_pages;
 
 			$project_data = $query->posts;
+
+			$blog_id = get_current_blog_id();
+
 		}
 
 		if ( empty( $project_data ) ) {
@@ -229,10 +234,31 @@ class Rt_Pm_Project_Overview {
 			wp_localize_script( 'rt-biz-admin', 'NOT_INIT_MASONRY', 'false' );
 		}
 
+		if( is_main_site() ) {
+			$rt_pm_task_resources_table_name = $rt_pm_task_resources_model->table_name;
+			$rt_pm_time_entries_table_name = $rt_pm_time_entries_model->table_name;
+			$old_table_prefix = $table_prefix;
+		}
+
 		foreach ( $project_data as $project ):
+
+			/**
+			 * Switch to blog and set table name prefix
+			 */
+			if( isset( $project->blog_id ) ) {
+
+				$blog_id = $project->blog_id;
+
+				switch_to_blog( $project->blog_id );
+				$blog_table_prefix = $table_prefix;
+				$rt_pm_task_resources_model->table_name  = str_replace( $old_table_prefix, $blog_table_prefix, $rt_pm_task_resources_table_name );
+				$rt_pm_time_entries_model->table_name = str_replace( $old_table_prefix, $blog_table_prefix, $rt_pm_time_entries_table_name );
+			}
+
+
 			$project_edit_link = rtpm_bp_get_project_details_url( $project->ID );
 			?>
-			<li class="activity-item" data-project-id="<?php echo $project->ID ?>">
+			<li class="activity-item" data-project-id="<?php echo $project->ID ?>" data-rt-blog-id="<?php echo $blog_id; ?>">
 				<div class="activity-content">
 					<div class="row activity-inner rt-biz-activity">
 						<div class="rt-voxxi-content-box">
@@ -334,7 +360,18 @@ class Rt_Pm_Project_Overview {
 					</div>
 				</div>
 			</li>
-		<?php endforeach;
+		<?php
+		endforeach;
+
+		/**
+		 * Restore blog and table name
+		 */
+		if( 1 === $old_blog_id ) {
+
+			switch_to_blog( 1 );
+			$rt_pm_task_resources_model->table_name = $rt_pm_task_resources_table_name;
+			$rt_pm_time_entries_model->table_name = $rt_pm_time_entries_table_name;
+		}
 	}
 
 	public function rtpm_get_older_projects() {
@@ -382,7 +419,7 @@ class Rt_Pm_Project_Overview {
 	 * @param $project_id
 	 */
 	public function rtpm_prepare_task_chart( $project_id ) {
-		global $rt_pm_task, $rt_pm_project_overview;
+		global $rt_pm_task;
 
 		$data_source = array();
 		$cols        = array( __( 'Hours' ), __( 'Estimated' ), __( 'Billed' ) );
