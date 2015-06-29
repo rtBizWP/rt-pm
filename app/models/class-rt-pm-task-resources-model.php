@@ -151,8 +151,6 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 
 		$where_columns   =   $this->rtpm_prepare_query_where_clause( $args );
 
-		$where_columns[] = " post_status <> 'trash' ";
-
 		$where_clause   =   $this->rtpm_generate_where_clause_string( $where_columns );
 
 		$query = $select_statment.$where_clause;
@@ -245,28 +243,28 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 		$where_columns = array();
 
 		if( isset( $args['user_id'] ) )
-			$where_columns[] = " user_id = {$args['user_id']} ";
+			$where_columns[] = " {$this->table_name}.user_id = {$args['user_id']} ";
 
 		if( isset( $args['task_id'] ) )
-			$where_columns[] = " task_id = {$args['task_id']} ";
+			$where_columns[] = " {$this->table_name}.task_id = {$args['task_id']} ";
 
 		if( isset( $args['project_id'] ) )
-			$where_columns[] = " project_id = {$args['project_id']} ";
+			$where_columns[] = " {$this->table_name}.project_id = {$args['project_id']} ";
 
 		if( isset( $args['timestamp'] ) )
-			$where_columns[] = " DATE(timestamp) = '{$args['timestamp']}'";
+			$where_columns[] = " DATE({$this->table_name}.timestamp) = '{$args['timestamp']}'";
 
 		if( isset( $args['task__in'] )  && is_array( $args['task__in'] ) )
-			$where_columns[] =  ' task_id IN( '.implode(', ', $args['task__in'] ) .') ';
+			$where_columns[] =  $this->table_name.'.task_id IN( '.implode(', ', $args['task__in'] ) .') ';
 
 		if( isset( $args['project__in'] )  && is_array( $args['project__in'] ) )
-			$where_columns[] =  ' project_id IN( '.implode(', ', $args['project__in'] ) .') ';
+			$where_columns[] =  $this->table_name.'.project_id IN( '.implode(', ', $args['project__in'] ) .') ';
 
 		if( isset( $args['user__in'] )  && is_array( $args['user__in'] ) )
-			$where_columns[] =  ' user_id IN( '.implode(', ', $args['user__in'] ) .') ';
+			$where_columns[] =  $this->table_name.'user_id IN( '.implode(', ', $args['user__in'] ) .') ';
 
 		if( ! isset( $args['post_status'] ) )
-			$where_columns[] = " post_status <> 'trash' ";
+			$where_columns[] = " {$this->table_name}.post_status <> 'trash' ";
 
 		return $where_columns;
 	}
