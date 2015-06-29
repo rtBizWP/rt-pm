@@ -44,7 +44,7 @@ if( isset( $_GET["id"] ) ) {
 
 
 //Reecord time and expenses url
-$timeentries_url = add_query_arg( array( 'post_type' => $rt_pm_project->post_type,  $rt_pm_project->post_type.'_id' => $post_project_id, 'tab' => $rt_pm_project->post_type .'-timeentry', 'action' => 'timeentry', 'task_id' => $post_id ) ,  $rt_pm_bp_pm->get_component_root_url() .'time-entries' );
+$timeentries_url = add_query_arg( array( 'post_type' => $rt_pm_project->post_type,  $rt_pm_project->post_type.'_id' => $post_project_id, 'tab' => $rt_pm_project->post_type .'-timeentry', 'action' => 'timeentry', 'task_id' => $post_id, 'rt_voxxi_blog_id' => $blog_id ) ,  $rt_pm_bp_pm->get_component_root_url() .'time-entries' );
 
 //assign to
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
@@ -350,7 +350,9 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
               $url = $element.attr('href');
 
               var task_id = get_parameter_by_name( $url, 'task_id' );
-              render_project_slide_panel( 'add_time_entry', task_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+              var rtvoxxi_blog_id = get_parameter_by_name( $url, 'rt_voxxi_blog_id' );
+
+              render_project_slide_panel( 'add_time_entry', task_id, rtvoxxi_blog_id, '', 'time-entries' );
           }
         };
 

@@ -63,7 +63,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
          * Save time entries
          */
         public function rtpm_save_timeentry() {
-            global $rt_pm_time_entries_model, $rt_pm_task_resources_model;
+            global $rt_pm_time_entries_model, $rt_pm_task_resources_model, $table_prefix;
 
             if ( ! isset( $_POST['rtpm_save_timeentry_nonce'] ) || ! wp_verify_nonce( $_POST['rtpm_save_timeentry_nonce'], 'rtpm_save_timeentry' ) )
                 return;
@@ -71,8 +71,21 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             $newTimeEntry = $_POST['post'];
 
             //Switch to blog in MU site while editing from other site
-            if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) )
-                switch_to_blog( $newTimeEntry['rt_voxxi_blog_id'] );
+            if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) ) {
+
+
+                $rt_pm_task_resources_table_name = $rt_pm_task_resources_model->table_name;
+                $rt_pm_time_entries_table_name = $rt_pm_time_entries_model->table_name;
+                $old_table_prefix = $table_prefix;
+
+                $blog_id = $newTimeEntry['rt_voxxi_blog_id'];
+
+                switch_to_blog( $blog_id );
+                $blog_table_prefix = $table_prefix;
+                $rt_pm_task_resources_model->table_name  = str_replace( $old_table_prefix, $blog_table_prefix, $rt_pm_task_resources_table_name );
+                $rt_pm_time_entries_model->table_name = str_replace( $old_table_prefix, $blog_table_prefix, $rt_pm_time_entries_table_name );
+            }
+
 
             $creationdate = $newTimeEntry['post_date'];
             if ( isset( $creationdate ) && $creationdate != '' ) {
@@ -108,7 +121,6 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                 if( empty( $estimated_hours) ||
                     $estimated_hours < $new_billed_hours ) {
 
-
                         $remain_billable_hours = $estimated_hours - $billed_hours;
                         $message = 'Assign hours limit has been exceeded';
 
@@ -127,6 +139,8 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                      */
                     if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) ) {
                         restore_current_blog();
+                        $rt_pm_task_resources_model->table_name  = $rt_pm_task_resources_table_name;
+                        $rt_pm_time_entries_model->table_name = $rt_pm_time_entries_table_name;
                         add_action ( 'wp_head', 'rt_voxxi_js_variables' );
                     }
 
@@ -185,6 +199,8 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                 bp_core_add_message( $message , 'success' );
                 if( isset( $newTimeEntry['rt_voxxi_blog_id'] ) ){
                     restore_current_blog();
+                    $rt_pm_task_resources_model->table_name  = $rt_pm_task_resources_table_name;
+                    $rt_pm_time_entries_model->table_name = $rt_pm_time_entries_table_name;
                     add_action ( 'wp_head', 'rt_voxxi_js_variables' );
                 }
             } else {
