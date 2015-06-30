@@ -504,6 +504,8 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var end_date_val = $("input[name='post[post_duedate]']").val();
 
 					if( ! start_date_val || ! end_date_val ) {
+
+						//Show error message
 						$error_div = $main_div.find('small.error');
 						$error_div.remove();
 						$('<small class="error" style="display: inline-block; width: 100%;">Task Start date or Due date is not selected</small>').appendTo($main_div).hide().show('slow');
@@ -515,11 +517,18 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var end_date = new Date( end_date_val );
 
 					if( timestamp <= start_date || timestamp >= end_date ) {
+
+						// Show error message
 						$error_div = $main_div.find('small.error');
 						$error_div.remove();
 						$('<small class="error" style="display: inline-block; width: 100%;">Date must be between Task Start date and Due date</small>').appendTo($main_div).hide().show('slow');
+
 						return false;
 					}
+
+					//Remove error message
+					$error_div = $main_div.find('small.error');
+					$error_div.remove();
 
 					return true;
 

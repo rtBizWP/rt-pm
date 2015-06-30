@@ -52,55 +52,9 @@ $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 $rt_pm_task->disable_working_days( $post_project_id );
 $task_labels=$rt_pm_task->labels;
 $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
+
+$uncommon_task_type = array( 'milestone', 'task_group' );
 ?>
-<script type="text/javascript">
-    /**
-     * Show and Hide div along task type
-     * @type {string}
-     */
-    var task_type = '<?php echo $task_type ?>';
-
-    var rtpm_task_type;
-
-    ( function( $ ) {
-        rtpm_task_type = {
-            init: function() {
-
-                if( 'milestone' === task_type )
-                    rtpm_task_type.show_milestone_elememts();
-
-
-                if( 'sub_task' === task_type )
-                    rtpm_task_type.show_sub_task_elemets();
-;
-                $( document).on( 'click', 'a.close-sidepanel', rtpm_task_type.reset_elements );
-
-                $(document).keyup(function(e) {
-                    if (e.keyCode == 27) { // esc keycode
-                       // jQuery.sidr('close', 'rt-action-panel');
-                        rtpm_task_type.reset_elements();
-                    }
-                });
-            },
-
-            show_milestone_elememts: function() {
-                $('.hide-for-milestone').hide();
-                $('input[name="post[task_type]"]').val('milestone');
-                $('.parent-task-dropdown').show();
-            },
-
-            show_sub_task_elemets: function() {
-                $('.parent-task-dropdown').show();
-            },
-
-            reset_elements: function() {
-                $('.parent-task-dropdown').hide();
-                $('.hide-for-milestone').show();
-            }
-        };
-        $( document ).ready( function(){ rtpm_task_type.init(); });
-    })(jQuery);
-</script>
 <form method="post"   action="">
     <?php wp_nonce_field('rtpm_save_task','rtpm_save_task_nonce') ?>
     <?php if( isset( $_GET["id"] ) ){ ?>
@@ -110,7 +64,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     <input type="hidden" name="post[actvity_element_id]" value="<?php echo $_GET['actvity_element_id'] ?>" />
     <?php } ?>
 
-    <input type="hidden" name="post[task_type]" value="" />
+    <input type="hidden" name="post[task_type]" value="<?php echo $task_type ?>" />
     <input type="hidden" id="rt-pm-blog-id" name="post[rt_voxxi_blog_id]" value="<?php echo $blog_id ?>" />
     <input type="hidden" name="post[post_type]" value="<?php echo $task_post_type; ?>" />
 
@@ -250,7 +204,7 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
             <?php } ?>
         </div>
    </div>
-    <?php if ( ! bp_is_current_component( BP_CRM_SLUG ) ): ?>
+    <?php if ( ! bp_is_current_component( BP_CRM_SLUG ) && ! in_array( $task_type, $uncommon_task_type ) ): ?>
     <div class="row hide-for-milestone">
         <span title="Resources"><label><?php _e('Resources') ?></label></span>
         <div class="rt-resources-parent-row">
@@ -309,24 +263,25 @@ $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
     </div>
     <?php endif; ?>
 
-    <?php   
-	
-	if( isset( $post_id ) && 'milestone' !== $task_type){ ?>
+    <?php
+	if( isset( $post_id ) && ! in_array( $task_type, $uncommon_task_type ) ): ?>
     <h3><?php _e('Attachments'); ?></h3>
     <hr/>
     <?php render_rt_bp_wall_documents_section( $post_id, $blog_id );
-    }
+    endif;
     ?>
 
 
-    <?php if( ! bp_is_current_component( BP_CRM_SLUG ) ): ?>
+
     <div class="row">
         <div class="small-12 columns action-bar">
+            <?php if( ! bp_is_current_component( BP_CRM_SLUG ) && ! in_array( $task_type, $uncommon_task_type ) ): ?>
             <a class="button rtpm_task_timeentries"  href='<?php echo $timeentries_url; ?>'>Time and Expenses</a>
+            <?php endif; ?>
             <input type="submit" value="Save" >
         </div>
     </div>
-    <?php endif; ?>
+
 
 </form>
 <!-- Validate user assigned hours -->
