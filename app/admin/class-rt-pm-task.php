@@ -58,7 +58,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 		function task_add_bp_activity( $post_id, $update ) {
 
-			if( ! function_exists( 'bp_is_active') )
+			if( ! function_exists( 'bp_is_active') || bp_is_current_component( BP_CRM_SLUG ) )
 				return false;
 
 			$args = array(
