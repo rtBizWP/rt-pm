@@ -64,18 +64,18 @@ class Rt_Pm_Project_Overview {
 	public function rtpm_render_project_grid() { ?>
 		<ul id="activity-stream" class="activity-list item-list">
 			<?php
-			if ( is_main_site() ) {
+			if ( is_main_site() || bp_is_current_component( BP_TODO_SLUG ) ) {
 				$args = array(
 					'fields'   => 'ids',
 					'nopaging' => true,
 				);
-
 
 				$project_data = $this->rtpm_project_main_site_data( $args );
 
 				$project_total_counts           = count( $project_data );
 				$_REQUEST['project_total_page'] = ceil( $project_total_counts / 2 );
 			}
+
 			$this->rtpm_project_block_list( 1 );
 			$max_num_pages = absint( $_REQUEST['project_total_page'] );
 
@@ -203,7 +203,7 @@ class Rt_Pm_Project_Overview {
 
 		$old_blog_id = get_current_blog_id();
 
-		if ( is_main_site() ) {
+		if ( is_main_site() || bp_is_current_component( BP_TODO_SLUG ) ) {
 			$project_data = $this->rtpm_project_main_site_data( $args );
 		} else {
 
@@ -222,7 +222,6 @@ class Rt_Pm_Project_Overview {
 			$project_data = $query->posts;
 
 			$blog_id = get_current_blog_id();
-
 		}
 
 		if ( empty( $project_data ) ) {
@@ -234,7 +233,7 @@ class Rt_Pm_Project_Overview {
 			wp_localize_script( 'rt-biz-admin', 'NOT_INIT_MASONRY', 'false' );
 		}
 
-		if( is_main_site() ) {
+		if( is_main_site() || bp_is_current_component( BP_TODO_SLUG ) ) {
 			$rt_pm_task_resources_table_name = $rt_pm_task_resources_model->table_name;
 			$rt_pm_time_entries_table_name = $rt_pm_time_entries_model->table_name;
 			$old_table_prefix = $table_prefix;
@@ -366,12 +365,13 @@ class Rt_Pm_Project_Overview {
 		/**
 		 * Restore blog and table name
 		 */
-		if( 1 === $old_blog_id ) {
+		switch_to_blog( $old_blog_id );
+		if( ! empty( $rt_pm_task_resources_table_name) ) {
 
-			switch_to_blog( 1 );
 			$rt_pm_task_resources_model->table_name = $rt_pm_task_resources_table_name;
 			$rt_pm_time_entries_model->table_name = $rt_pm_time_entries_table_name;
 		}
+
 	}
 
 	public function rtpm_get_older_projects() {
@@ -573,8 +573,7 @@ class Rt_Pm_Project_Overview {
 			/**
 			 * Replace table name with blog specific table name like wp_2_posts
 			 */
-			$blog_table_prefix = $table_prefix . $site->blog_id . '_';
-			$blog_query        = str_replace( $table_prefix, $blog_table_prefix, $project_data_query );
+			$blog_query        = rtbiz_replace_table_name( $project_data_query, $site->blog_id );
 
 			/**
 			 * INNER JOIN with pm_task_resources
