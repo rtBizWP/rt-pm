@@ -62,12 +62,18 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			// CRM Lead to PM Project - Link Hook
 			add_action( 'rt_crm_after_lead_information', array( $this, 'crm_to_pm_link' ), 10, 2 );
 			add_action( 'admin_init', array( $this, 'convert_lead_to_project' )  );
-                        
+
             //add_action("init",  array( $this,"project_list_switch_view"));
             add_filter('get_edit_post_link', array($this, 'project_listview_editlink'),10, 3);
             add_filter('post_row_actions', array($this, 'project_listview_action'),10,2);
             add_filter( 'bulk_actions-' . 'edit-rt_project', array($this, 'project_bulk_actions') );
-			
+
+            // Project action -Trash, Delete and Restore
+            add_action( 'init', array( $this, 'rtpm_project_action' ) );
+            add_action( 'wp_trash_post', array( $this, 'before_trash_project' ) );
+            add_action( 'untrash_post', array( $this, 'before_untrash_project' ) );
+            add_action( 'before_delete_post', array( $this, 'before_delete_project' ) );
+
 			add_action( 'wp_ajax_projects_listing_info', array( $this, 'projects_listing' ) );
 			add_action( 'wp_ajax_nopriv_projects_listing_info', array( $this, 'projects_listing' ) );
 			
@@ -3150,7 +3156,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
         /**
          * After project insert action callback
-
          */
         public function rtpm_set_default_working_days_and_hours( $post_id, $post, $update ) {
 
@@ -3164,6 +3169,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             update_post_meta( $post_id, 'working_days', array( 'days' => array( '0', '6' ), 'occasions' => array() ) );
         }
 
+        /**
+         * Prepare wp_query for 'rt_project' post type
+         * @param $args
+         *
+         * @return WP_Query
+         */
         public function rtpm_prepare_project_wp_query( $args ) {
             global $rt_pm_project;
 
@@ -3171,6 +3182,141 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $query = new WP_Query( $args );
 
             return $query;
+        }
+
+        /**
+         * Project trash, untrash and delete action
+         */
+        public function rtpm_project_action() {
+
+            if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'rtpm_project_trash_action' ) ) {
+                return;
+            }
+
+            $project_id = $_GET['rt_project_id'];
+
+            switch( $_GET['action'] ) {
+                case 'trash':
+                    wp_trash_post( $project_id );
+                    $url = remove_query_arg( array( 'rt_project_id', 'action', '_wpnonce' ) );
+                    wp_safe_redirect( $url );
+                    break;
+                case 'untrash'  :
+                    wp_untrash_post( $project_id );
+                    $url = remove_query_arg( array( 'rt_project_id', 'action', '_wpnonce' ) );
+                    wp_safe_redirect( $url );
+                    break;
+                case 'delete':
+                    wp_delete_post( $project_id );
+                    wp_trash_post( $project_id );
+                    $url = remove_query_arg( array( 'rt_project_id', 'action', '_wpnonce' ) );
+                    break;
+            }
+
+        }
+
+        /**
+         * Before trash project call back
+         * @param $post_id
+         *
+         * @return bool
+         */
+        public function before_trash_project( $post_id ) {
+            global $rt_pm_task, $rt_crm_leads;
+
+            //Bail if post type is not 'rt_project'
+            if( 'rt_project' !== get_post_type( $post_id ) )
+                return;
+
+            //Project parent lead
+            $lead_id = wp_get_post_parent_id( $post_id );
+
+            //Trash all the project tasks
+            $args = array(
+                'nopaging' => true,
+                'no_found_rows' => true,
+                'post_parent' => $post_id,
+                'fields' => 'ids'
+            );
+            $tasks = $rt_pm_task->rtpm_get_task_data( $args );
+            foreach ( $tasks as $t ) {
+                $rt_pm_task->rtpm_trash_task( $t );
+            }
+
+            //Trash the project lead
+            $rt_crm_leads->rtcrm_trash_lead( $lead_id );
+
+            do_action( 'rtpm_after_trash_project', $post_id );
+        }
+
+        /**
+         * Before restore or untrash project callback
+         * @param $post_id
+         *
+         * @return bool
+         */
+        public function before_untrash_project( $post_id ) {
+            global $rt_pm_task, $rt_crm_leads;
+
+            //Bail if post type is not 'rt_project'
+            if( 'rt_project' !== get_post_type( $post_id ) )
+                return false;
+
+            //Project parent lead
+            $lead_id = wp_get_post_parent_id( $post_id );
+
+            //Restore all the project tasks
+            $args = array(
+                'post_status' => 'any',
+                'nopaging' => true,
+                'no_found_rows' => true,
+                'post_parent' => $post_id,
+                'fields' => 'ids'
+            );
+            $tasks = $rt_pm_task->rtpm_get_task_data( $args );
+            foreach ( $tasks as $t ) {
+                 $rt_pm_task->rtpm_untrash_task( $t );
+            }
+
+            //untrash project parent lead
+            $rt_crm_leads->rtcrm_untrash_lead( $lead_id );
+
+            do_action( 'rtpm_after_untrash_project', $post_id );
+        }
+
+        /**
+         * Before delete project permanently callback
+         * @param $post_id
+         *
+         * @return bool
+         */
+        public function before_delete_project( $post_id ) {
+            global $rt_pm_task, $rt_crm_leads;
+
+            //Bail if post type is not 'rt_project'
+            if( 'rt_project' !== get_post_type( $post_id ) )
+                return false;
+
+            //Project parent lead
+            $lead_id = wp_get_post_parent_id( $post_id );
+
+            //Delete all the project tasks
+            $args = array(
+                'post_status' => 'any',
+                'nopaging' => true,
+                'no_found_rows' => true,
+                'post_parents' => $post_id,
+                'fields' => 'ids'
+            );
+            $tasks = $rt_pm_task->rtpm_get_task_data( $args );
+            foreach ( $tasks as $t ) {
+                $rt_pm_task->rtpm_delete_task( $t->ID );
+            }
+
+            //Delete project parent lead
+            $rt_crm_leads->rtcrm_delete_lead( $lead_id );
+
+            do_action( 'rtpm_after_delete_project', $post_id );
         }
     }
 }

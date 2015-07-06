@@ -37,56 +37,8 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             add_action( 'after_setup_theme', array( $this, 'init_pm_bp_component' ) );
 
-			add_action( "remove_lead", array( $this, 'lead_remove_bp_activity' ), 10, 2 );
-			add_action( "hide_lead_activity", array( $this, 'lead_hide_bp_activity' ), 10, 2 );
-			add_action( "show_lead_activity", array( $this, 'lead_show_bp_activity' ), 10, 2 );
 		}
-		
-		function lead_remove_bp_activity( $post_id ){
-			global $wpdb;
-			$bp  = buddypress();
-			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->activity->table_name} WHERE item_id = %d", $post_id ) );
-			if($row != NULL){
-				$activity_id = (int) $row->id;
-				$activity_userid = (int) $row->user_id;
-				do_action( 'bp_activity_before_action_delete_activity', $activity_id, $activity_userid );
-				if( !bp_activity_delete( array( 'id' => $activity_id, 'user_id' => $activity_userid ) ) ){
-					return;
-				}
-			}
-			return;
-		}
-		
-		function lead_hide_bp_activity( $post_id ){
-			global $wpdb;
-			$bp  = buddypress();
-			$wpdb->update(
-					$bp->activity->table_name,
-					array(
-						'is_spam'=>1
-						),
-					array(
-						'item_id'=> $post_id
-						)
-					);
-			return;
-		}
-		
-		function lead_show_bp_activity( $post_id ){
-			global $wpdb;
-			$bp  = buddypress();
-			$wpdb->update(
-					$bp->activity->table_name,
-					array(
-						'is_spam'=>0
-						),
-					array(
-						'item_id'=> $post_id
-						)
-					);
-			return;
-		}
-		
+
         function init_pm_bp_component(){
 
             if( function_exists('bp_is_active') ) {

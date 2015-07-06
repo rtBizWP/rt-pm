@@ -801,7 +801,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * Task actions:, trash, delete, restore
 		 */
 		public function rtpm_task_actions() {
-			global $rt_pm_project, $rt_pm_task, $rt_pm_time_entries_model, $rt_pm_bp_pm;
+			global $rt_pm_project, $rt_pm_bp_pm;
 
 			if ( ! isset( $_REQUEST['post_type'] ) || $rt_pm_project->post_type !== $_REQUEST['post_type'] ) {
 				return;
@@ -1512,13 +1512,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		 * @param $post_id
 		 */
 		public function rtpm_after_delete_task( $post_id ) {
-			global $rt_pm_time_entries_model, $rt_pm_task_resources_model, $rt_pm_project;
+			global $rt_pm_time_entries_model, $rt_pm_task_resources_model, $rt_pm_project, $rt_pm_task_links_model;
 
 			$where = array( 'task_id' => $post_id );
 
-			//Delete time entries and resources
+			//Delete time entries and resources and task links
 			$rt_pm_task_resources_model->delete( $where );
 		 	$rt_pm_time_entries_model->delete( $where );
+			$rt_pm_task_links_model->delete( $where );
 
 			$rt_pm_project->remove_connect_post_to_entity( $this->post_type, $post_id );
 		}
