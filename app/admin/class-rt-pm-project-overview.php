@@ -552,6 +552,16 @@ class Rt_Pm_Project_Overview {
 		}
 
 		if( ! is_multisite() ) {
+			/**
+			 * Filter split_the_query change * to ID
+			 */
+			if ( ! isset( $args['fields'] ) ) {
+				$pos = strpos( $project_data_query, 'ID' );
+				if ( false !== $pos ) {
+					$project_data_query = substr_replace( $project_data_query, '*', $pos, strlen( 'ID' ) );
+				}
+			}
+
 			$project_main_query = $project_data_query;
 		} else {
 			/**
