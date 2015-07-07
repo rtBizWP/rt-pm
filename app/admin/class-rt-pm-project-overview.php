@@ -551,60 +551,65 @@ class Rt_Pm_Project_Overview {
 
 		}
 
-		/**
-		 * Limit, Pagination
-		 */
-		if ( false !== strpos( $project_data_query, 'LIMIT' ) ) {
-			$limits             = substr( $project_data_query, strpos( $project_data_query, 'LIMIT' ) );
-			$project_data_query = str_replace( $limits, '', $project_data_query );
-		}
-
-		$sites = rtbiz_get_our_sites();
-
-		foreach ( $sites as $site ) {
-
+		if( ! is_multisite() ) {
+			$project_main_query = $project_data_query;
+		} else {
 			/**
-			 * Skip 1st blog or main site
+			 * Limit, Pagination
 			 */
-			if ( '1' === $site->blog_id ) {
-				continue;
+			if ( false !== strpos( $project_data_query, 'LIMIT' ) ) {
+				$limits             = substr( $project_data_query, strpos( $project_data_query, 'LIMIT' ) );
+				$project_data_query = str_replace( $limits, '', $project_data_query );
 			}
 
-			/**
-			 * Replace table name with blog specific table name like wp_2_posts
-			 */
-			$blog_query        = rtbiz_replace_table_name( $project_data_query, $site->blog_id );
+			$sites = rtbiz_get_our_sites();
 
-			/**
-			 * INNER JOIN with pm_task_resources
-			 */
-			$blog_id_column = " DISTINCT '{$site->blog_id}' AS blog_id, ";
-			$blog_query     = substr_replace( $blog_query, $blog_id_column, 7, 0 );
+			foreach ( $sites as $site ) {
 
-			/**
-			 * Filter split_the_query change * to ID
-			 */
-			if ( ! isset( $args['fields'] ) ) {
-				$pos = strpos( $blog_query, 'ID' );
-				if ( false !== $pos ) {
-					$blog_query = substr_replace( $blog_query, '*', $pos, strlen( 'ID' ) );
+				/**
+				 * Skip 1st blog or main site
+				 */
+				if ( '1' === $site->blog_id ) {
+					continue;
 				}
+
+				/**
+				 * Replace table name with blog specific table name like wp_2_posts
+				 */
+				$blog_query        = rtbiz_replace_table_name( $project_data_query, $site->blog_id );
+
+				/**
+				 * INNER JOIN with pm_task_resources
+				 */
+				$blog_id_column = " DISTINCT '{$site->blog_id}' AS blog_id, ";
+				$blog_query     = substr_replace( $blog_query, $blog_id_column, 7, 0 );
+
+				/**
+				 * Filter split_the_query change * to ID
+				 */
+				if ( ! isset( $args['fields'] ) ) {
+					$pos = strpos( $blog_query, 'ID' );
+					if ( false !== $pos ) {
+						$blog_query = substr_replace( $blog_query, '*', $pos, strlen( 'ID' ) );
+					}
+				}
+
+				/**
+				 * Blog query
+				 */
+				$project_blog_query[] = '(' . $blog_query . ')';
 			}
 
 			/**
-			 * Blog query
+			 * Whole query
 			 */
-			$project_blog_query[] = '(' . $blog_query . ')';
-		}
+			$project_main_query = implode( ' UNION ALL ', $project_blog_query );
 
-		/**
-		 * Whole query
-		 */
-		$project_main_query = implode( ' UNION ALL ', $project_blog_query );
+			//Pagination
+			if ( isset( $limits ) ) {
+				$project_main_query .= ' ' . $limits;
+			}
 
-		//Pagination
-		if ( isset( $limits ) ) {
-			$project_main_query .= ' ' . $limits;
 		}
 
 		return $wpdb->get_results( $project_main_query );
