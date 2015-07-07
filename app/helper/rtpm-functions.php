@@ -297,7 +297,7 @@ function rtpm_user_tasks_hover_cart() { ?>
 <?php }
 
 /**
- *
+ *  Script for task resource assignment validation
  */
 function rtpm_validate_user_assigned_hours_script( ) {
 
@@ -495,6 +495,10 @@ function rtpm_validate_user_assigned_hours_script( ) {
 							$input.val('');
 							id_index++;
 
+							//Remove the error message
+							$error_div = $element.find('small.error');
+							$error_div.remove();
+
 						}
 					});
 				},
@@ -503,6 +507,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var start_date_val = $("input[name='post[post_date]']").val();
 					var end_date_val = $("input[name='post[post_duedate]']").val();
 
+					//Check task's start and end date is not empty
 					if( ! start_date_val || ! end_date_val ) {
 
 						//Show error message
@@ -516,6 +521,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var start_date = new Date( start_date_val );
 					var end_date = new Date( end_date_val );
 
+					//Check assign date is between task's start date and end date
 					if( timestamp <= start_date || timestamp >= end_date ) {
 
 						// Show error message
@@ -525,10 +531,6 @@ function rtpm_validate_user_assigned_hours_script( ) {
 
 						return false;
 					}
-
-					//Remove error message
-					$error_div = $main_div.find('small.error');
-					$error_div.remove();
 
 					return true;
 
