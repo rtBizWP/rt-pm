@@ -25,7 +25,7 @@ if( isset( $_GET["id"] ) ) {
         $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
         $due_date = $due->format("M d, Y h:i A");
         $post_assignee = get_post_meta($post->ID, 'post_assignee', true);
-        $post_project_id = get_post_meta($post->ID, 'post_project_id', true);
+        $post_project_id = $post->post_parent;
         $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
         $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
         $createdate = $create->format("M d, Y h:i A");

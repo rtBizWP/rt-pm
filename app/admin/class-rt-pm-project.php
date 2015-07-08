@@ -3274,7 +3274,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          * @return bool
          */
         public function before_delete_project( $post_id ) {
-            global $rt_pm_task, $rt_crm_leads;
+            global $rt_pm_task, $rt_pm_task_resources_model, $rt_pm_time_entries_model, $rt_pm_task_links_model;
 
             //Bail if post type is not 'rt_project'
             if( 'rt_project' !== get_post_type( $post_id ) )
@@ -3283,7 +3283,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             //Project parent lead
             $lead_id = wp_get_post_parent_id( $post_id );
 
-            //Delete all the project tasks
+            //Some glitch on task
             $args = array(
                 'post_status' => array( 'any', 'trash', 'auto-draft' ),
                 'nopaging' => true,
@@ -3293,11 +3293,27 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             );
             $task_ids = $rt_pm_task->rtpm_get_task_data( $args );
             foreach ( $task_ids as $task_id ) {
-                $rt_pm_task->rtpm_delete_task( $task_id );
+
+                //Update the project tasks and set it to a lead
+                $args = array(
+                    'ID' => $task_id,
+                    'post_parent' => $lead_id,
+                );
+                wp_update_post( $args );
             }
 
+            $data = array( 'project_id' => $lead_id );
+            $where = array( 'project_id' => $post_id );
+
+            //Update task link
+            $rt_pm_task_links_model->rtpm_update_task_link( $data, $where );
+
+            //Delete resources and time entries
+            $rt_pm_task_resources_model->delete( $where );
+            $rt_pm_time_entries_model->delete( $where );
+
             //Delete project parent lead
-            $rt_crm_leads->rtcrm_delete_lead( $lead_id );
+           // $rt_crm_leads->rtcrm_delete_lead( $lead_id );
 
             do_action( 'rtpm_after_delete_project', $post_id );
         }
