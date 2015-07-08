@@ -515,7 +515,7 @@ class Rt_Pm_Project_Overview {
 	 * @return mixed
 	 */
 	public function rtpm_project_main_site_data( $args ) {
-		global $rt_pm_project, $wpdb, $rt_pm_task_resources_model, $table_prefix;
+		global $rt_pm_project, $wpdb, $rt_pm_task_resources_model;
 
 		$args['no_found_rows'] = true;
 
@@ -532,7 +532,7 @@ class Rt_Pm_Project_Overview {
 
 
 		$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
-		if ( ! current_user_can( $admin_cap ) ) {
+		if ( bp_is_current_component( BP_TODO_SLUG ) || ! current_user_can( $admin_cap ) ) {
 
 			/**
 			 * Inner join query

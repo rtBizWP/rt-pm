@@ -175,7 +175,6 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 //
 			//Returns Array of Term Names for "rt-leave-type"
 			$rt_project_type_list = wp_get_post_terms( $get_the_id, 'rt_project-type', array( "fields" => "names" ) ); // tod0:need to call in correct way
-			if ( bp_loggedin_user_id() == bp_displayed_user_id() ) {
 				?>
 
 				<tr>
@@ -236,7 +235,6 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 					} ?></td> -->
 				</tr>
 			<?php
-			}
 		}
 	} else {
 		?>
