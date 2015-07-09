@@ -415,6 +415,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'post_parent' => $lead_id,
                 'no_found_rows' => true,
                 'fields' => 'ids',
+                'post_status' => array( 'trash', 'any' )
             ));
 
             if( !empty( $query->posts ) ){

@@ -541,3 +541,26 @@ function rtpm_validate_user_assigned_hours_script( ) {
 		})(jQuery);
 	</script>
 <?php }
+
+
+/**
+ * Check lead has project associated with them
+ * @param $post_id
+ *
+ * @return bool
+ */
+function rtpm_lead_has_project( $post_id ) {
+
+	$query = new WP_Query( array(
+		'post_type' => 'rt_project',
+		'post_parent' => $post_id,
+		'no_found_rows' => true,
+		'fields' => 'ids',
+		'post_status' => array( 'trash', 'any' )
+	));
+
+	if( $query->have_posts() )
+		return $query->posts[0];
+
+	return false;
+}
