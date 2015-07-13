@@ -164,7 +164,11 @@ class Rt_PM_Project_Gantt {
 
         $tentative_tasks = array();
 
-        $non_working_days = $rt_pm_task->rtpm_get_non_working_days( $project_id );
+        if( 'rt_project' === get_post_type( $project_id ) ) {
+            $non_working_days = $rt_pm_task->rtpm_get_non_working_days( $project_id );
+        } else {
+            $non_working_days = array( 'days' => array( 0, 6 ) );
+        }
 
         if( !empty( $task_list ) ) {
 

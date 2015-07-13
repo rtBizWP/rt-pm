@@ -65,7 +65,6 @@ function rt_pm_include() {
 	$rtpm_notification_autoload = new RT_WP_Autoload( RT_PM_PATH_NOTIFICATION );
 	$rtpm_form_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtformhelpers/' );
     $rtpm_settings_autoload = new RT_WP_Autoload( RT_PM_PATH . 'app/settings/' );
-//	$rtpm_reports_autoload = new RT_WP_Autoload( RT_PM_PATH_LIB . 'rtreports/' );
 	$rtpm_buddypress_autoload = new RT_WP_Autoload( RT_PM_PATH . 'app/buddypress-components/rt-pm-componet/' );
 }
 
