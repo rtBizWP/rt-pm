@@ -522,7 +522,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var end_date = new Date( end_date_val );
 
 					//Check assign date is between task's start date and end date
-					if( timestamp <= start_date || timestamp >= end_date ) {
+					if( timestamp < start_date || timestamp > end_date ) {
 
 						// Show error message
 						$error_div = $main_div.find('small.error');

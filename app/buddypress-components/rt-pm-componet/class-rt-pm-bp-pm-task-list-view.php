@@ -155,7 +155,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 			// set through session variable
 			$user_id = get_current_user_id();
 			$user_post_per_page = get_user_meta($user_id,'rt_task_per_page',true);
-			if( isset($user_post_per_page) ){
+			if( ! empty($user_post_per_page) ){
 				$perpage = $user_post_per_page;
 			}else{
 				$perpage = 25;
