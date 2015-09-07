@@ -200,6 +200,13 @@ class Rt_PM_Project_Gantt {
                     $tentative_tasks[] = $task->ID;
                 }
 
+                if( isset( $_COOKIE["rtvo_task_branch_{$task->ID}"] ) && 'close' === $_COOKIE["rtvo_task_branch_{$task->ID}"] ) {
+                    $open_branch_mode = false;
+                } else {
+                    $open_branch_mode = true;
+                }
+
+
                 $data[] = array(
                     'id' => $task->ID,
                     'text' => $task->post_title,
@@ -207,12 +214,13 @@ class Rt_PM_Project_Gantt {
                     'end_date' => $end_date->format('d-m-Y'),
                     'type' => $task_type,
                     'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
-                    'open' => true,
+                    'open' => $open_branch_mode,
                     'parent' => $parent_task,
                     'color' => ( 'milestone' !== $task_type ) ? $task_color : $this->milestone_color,
                     'progress' => $progress_percentage,
                     'resources' =>  implode( ', ', $resources_user_displayname ),
                 );
+
 
                 $links_data = $rt_pm_task_links_model->rtpm_get_task_links( $project_id,   $task->ID );
 
@@ -585,6 +593,31 @@ class Rt_PM_Project_Gantt {
                     task.start_date = start_date;
                 }
                 return true;
+            });
+
+
+            gantt.attachEvent("onTaskClosed", function(id) {
+
+                var data = {
+                    task_id: id,
+                    branch_mode: 'close'
+                };
+
+                var send_data = { 'action' : 'rtpm_set_task_branch_cookie', 'post': data };
+
+                $.post( admin_url, send_data );
+            });
+
+            gantt.attachEvent("onTaskOpened", function(id) {
+
+                var data = {
+                    task_id: id,
+                    branch_mode: 'open'
+                };
+
+                var send_data = { 'action' : 'rtpm_set_task_branch_cookie', 'post': data };
+
+                $.post( admin_url, send_data );
             });
 
 

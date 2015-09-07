@@ -39,6 +39,7 @@ class Rt_Pm_Project_Overview {
 		add_action( 'wp_head', array( $this, 'rtpm_print_style' ) );
 		add_action( 'wp_ajax_rtpm_get_older_projects', array( $this, 'rtpm_get_older_projects' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'rtpm_load_style_script' ) );
+		add_action( 'wp_ajax_rtpm_set_task_branch_cookie', array( $this, 'rtpm_set_task_branch_cookie' ) );
 	}
 
 	public function rtpm_load_style_script() {
@@ -623,6 +624,17 @@ class Rt_Pm_Project_Overview {
 		}
 
 		return $wpdb->get_results( $project_main_query );
+	}
+
+
+
+	public function rtpm_set_task_branch_cookie() {
+
+		$data = $_REQUEST['post'];
+
+		setcookie( 'rtvo_task_branch_'.$data['task_id'], $data['branch_mode'], time() + (10 * 365 * 24 * 60 * 60), COOKIEPATH, COOKIE_DOMAIN, false );
+
+		wp_send_json_success();
 	}
 
 }
