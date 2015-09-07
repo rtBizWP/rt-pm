@@ -632,7 +632,11 @@ class Rt_Pm_Project_Overview {
 
 		$data = $_REQUEST['post'];
 
-		setcookie( 'rtvo_task_branch_'.$data['task_id'], $data['branch_mode'], time() + (10 * 365 * 24 * 60 * 60), COOKIEPATH, COOKIE_DOMAIN, false );
+		if( 'open' == $data['branch_mode']  ) {
+			setcookie( 'rtvo_task_branch_'.$data['task_id'], $data['branch_mode'], time() - 999999, COOKIEPATH, COOKIE_DOMAIN, false );
+		} else {
+			setcookie( 'rtvo_task_branch_'.$data['task_id'], $data['branch_mode'], time() + (10 * 365 * 24 * 60 * 60), COOKIEPATH, COOKIE_DOMAIN, false );
+		}
 
 		wp_send_json_success();
 	}
