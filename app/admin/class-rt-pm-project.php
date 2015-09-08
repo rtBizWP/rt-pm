@@ -3206,14 +3206,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          * @return bool
          */
         public function before_trash_project( $post_id ) {
-            global $rt_pm_task, $rt_crm_leads;
+            global $rt_pm_task;
 
             //Bail if post type is not 'rt_project'
             if( 'rt_project' !== get_post_type( $post_id ) )
                 return;
-
-            //Project parent lead
-            $lead_id = wp_get_post_parent_id( $post_id );
 
             //Trash all the project tasks
             $args = array(
@@ -3226,9 +3223,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             foreach ( $task_ids as $task_id ) {
                 $rt_pm_task->rtpm_trash_task( $task_id );
             }
-
-            //Trash the project lead
-            $rt_crm_leads->rtcrm_trash_lead( $lead_id );
 
             do_action( 'rtpm_after_trash_project', $post_id );
         }
