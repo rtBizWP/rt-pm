@@ -236,7 +236,7 @@ $uncommon_task_type = array( 'milestone', 'task_group' );
 
             foreach( $task_resources as  $resource ) {
 
-                $dr = rt_convert_strdate_to_usertimestamp( $resource->timestamp )
+                $dr = new DateTime( $resource->timestamp );
                 ?>
                 <div class="row rt-row rt-resources-row" data-resource-id="<?php echo $resource->id ?>">
                     <div class="small-4 medium-4 column">

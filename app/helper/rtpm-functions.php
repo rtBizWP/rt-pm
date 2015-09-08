@@ -311,6 +311,13 @@ function rtpm_validate_user_assigned_hours_script( ) {
 
 		var rtpm_task_assignee, request, id_index = 0;
 
+		function addZero(i) {
+			if (i < 10) {
+				i = "0" + i;
+			}
+			return i;
+		}
+
 		(function( $ ) {
 			rtpm_task_assignee = {
 				init: function() {
@@ -350,7 +357,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					var ajax_nonce = '<?php echo wp_create_nonce( "rtpm-validate-hours" ); ?>';
 
 					var todayUTC = new Date(Date.UTC(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()));
-					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
+					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' '+addZero(timestamp.getHours())+':'+addZero(timestamp.getMinutes())+':'+addZero(timestamp.getSeconds());
 
 
 					var post = {
@@ -449,7 +456,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 
 					var timestamp = $input.eq(3).datepicker('getDate');
 					var todayUTC = new Date(Date.UTC(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate()));
-					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' 00:00:00';
+					timestamp = todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' '+addZero(timestamp.getHours())+':'+addZero(timestamp.getMinutes())+':'+addZero(timestamp.getSeconds());
 
 					var user_id = $input.eq(1).val();
 					var time_duration = $input.eq(2).val();
