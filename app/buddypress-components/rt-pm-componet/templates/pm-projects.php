@@ -191,13 +191,15 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 									'tab'           => 'rt_project-details',
 									'action'        => 'edit'
 								), $rt_pm_bp_pm->get_component_root_url() . 'details' ) ) );
+
+								printf( __( '<a class="hidden-for-small-only" href="%s"> ' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a> <span class="hidden-for-small-only"> | </span>' ), esc_url( add_query_arg( array(
+									'rt_project_id' => $get_the_id,
+									'post_type'     => 'rt_project',
+									'tab'           => 'rt_project-details',
+									'action'        => 'view'
+								), $rt_pm_bp_pm->get_component_root_url() . 'details' ) ) );
+
 							}
-							printf( __( '<a class="hidden-for-small-only" href="%s">' . __( 'View', RT_PM_TEXT_DOMAIN ) . '</a>' ), esc_url( add_query_arg( array(
-								'rt_project_id' => $get_the_id,
-								'post_type'     => 'rt_project',
-								'tab'           => 'rt_project-details',
-								'action'        => 'view'
-							), $rt_pm_bp_pm->get_component_root_url() . 'details' ) ) );
 
 							$action_url = add_query_arg( array(
 								'rt_project_id' => $get_the_id,
@@ -206,7 +208,7 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 
 							$url = wp_nonce_url( $action_url, 'rtpm_project_trash_action' );
 
-							printf( __( '<span class="hidden-for-small-only"> | </span><a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ) . '</a>' ), $url );
+							printf( __( '<a href="%s">' . __( $archive_text, RT_PM_TEXT_DOMAIN ) . '</a>' ), $url );
 							if ( bp_is_current_action( 'projects' ) )
 								//printf( __('<span class="hidden-for-small-only"> | </span><a class="hidden-for-small-only deletepostlink" href="%s">' . __( 'Delete', RT_PM_TEXT_DOMAIN ) . '</a>'), esc_url( add_query_arg( array( 'rt_project_id'=> $get_the_id, 'action'=>'trash' ) ) ) );
 								?>
