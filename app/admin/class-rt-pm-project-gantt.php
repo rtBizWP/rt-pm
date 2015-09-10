@@ -170,6 +170,8 @@ class Rt_PM_Project_Gantt {
             $non_working_days = array( 'days' => array( 0, 6 ) );
         }
 
+        $last_start_date = new DateTime( get_post_field( 'post_date', $project_id ) );
+
         if( !empty( $task_list ) ) {
 
             foreach( $task_list as $task ) {
@@ -179,6 +181,12 @@ class Rt_PM_Project_Gantt {
                 $task_type = get_post_meta( $task->ID, 'rtpm_task_type', true );
                 $estimated_hours = $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task->ID );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
+
+
+
+                if( $last_start_date < $end_date ){
+                    $last_start_date = $end_date;
+                }
 
                 //Set task color
                 if( ! empty( $parent_task ) )
@@ -242,6 +250,10 @@ class Rt_PM_Project_Gantt {
         ?>
 
         <div id="<?php echo $dom_element; ?>" style='height:600px;'></div>
+
+        <script type="text/javascript">
+            var last_start_date = new Date( '<?php echo $last_start_date->format('Y-m-d H:i:s') ?>' );
+        </script>
     <?php
         $rtcrm_ganttchart->rtgantt_render_chart( $rtcrm_chart );
     }
@@ -288,7 +300,12 @@ class Rt_PM_Project_Gantt {
 
                         rtpm_set_task_group_date( item.parent, data );
 
-                        rtcrm_gantt_notiy( 'Task has been created !' )
+                        rtcrm_gantt_notiy( 'Task has been created !' );
+
+                        if( last_start_date < item.end_date ) {
+                            last_start_date = item.end_date;
+                        }
+
                     }else {
                         rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
                     }
@@ -589,7 +606,7 @@ class Rt_PM_Project_Gantt {
                     parent = gantt.getTask(parent);
                     task.start_date = parent.end_date;
                 } else {
-                    var start_date = new Date('<?php echo get_post_field( 'post_date', $project_id ) ?>');
+                    var start_date = last_start_date;
                     task.start_date = start_date;
                 }
                 return true;
