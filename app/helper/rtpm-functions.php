@@ -309,7 +309,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 
 		var ajax_adminurl = '<?php echo  admin_url( 'admin-ajax.php' ); ?>';
 
-		var rtpm_task_assignee, request, id_index = 0;
+		var rtpm_task_assignee, request_validate_user_assigned_hours, id_index = 0;
 
 		function addZero(i) {
 			if (i < 10) {
@@ -380,8 +380,9 @@ function rtpm_validate_user_assigned_hours_script( ) {
 					}
 					//block_ui();
 
-					if( 'undefined' == typeof request ) {
-						request = $.post( ajax_adminurl, data, rtpm_task_assignee.set_hours_limit );
+
+					if( 'undefined' == typeof request_validate_user_assigned_hours ) {
+						request_validate_user_assigned_hours = $.post( ajax_adminurl, data, rtpm_task_assignee.set_hours_limit );
 					}
 				},
 
@@ -402,7 +403,7 @@ function rtpm_validate_user_assigned_hours_script( ) {
 						}
 					}
 
-					request = undefined;
+					request_validate_user_assigned_hours = undefined;
 				},
 
 				remove_task_resources_markup: function() {
