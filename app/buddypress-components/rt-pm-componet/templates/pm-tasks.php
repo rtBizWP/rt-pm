@@ -132,6 +132,11 @@ $rt_pm_task->disable_working_days( $project_id );
     })(jQuery);
 </script>
 
+<style type="text/css">
+    .column-rtpm_title button.toggle-row {
+        display: none !important;
+    }
+</style>
 <div id="wp-custom-list-table">
     <?php
     if( $user_edit ) {
