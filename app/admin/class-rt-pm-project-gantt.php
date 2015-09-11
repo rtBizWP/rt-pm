@@ -351,7 +351,10 @@ class Rt_PM_Project_Gantt {
                 $.post( admin_url, send_data, function( response ) {
 
                     if( response.success ) {
-                        rtcrm_gantt_notiy( 'Task has been deleted !' )
+                        rtcrm_gantt_notiy( 'Task has been deleted !' );
+                        var all_tasks = gantt.getTaskByTime();
+                        var last_task = all_tasks.slice(-1)[0];
+                        last_start_date = last_task.end_date;
                     }else {
                         rtcrm_gantt_notiy( 'Something went wrong !', 'error' );
                     }
