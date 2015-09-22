@@ -129,7 +129,7 @@ class Rt_PM_Install {
             'manage_project',
             'manage_project_time_entry',
             'add_project_time_entry',
-            'manage_project_notification',
+            'manage_project_notifications',
             'manage_project_attachments',
             'run_project_user_reports',
             'view_project_reports',

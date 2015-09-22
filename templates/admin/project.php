@@ -49,13 +49,28 @@
 
 		?>
         <dl class="tabs five-up">
+
+            <?php if( current_user_can('edit_rt_projects') ): ?>
 			<dd <?php echo ( ! isset( $_REQUEST['tab'] ) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) ) ? 'class="active"':'';  ?> ><a href="<?php echo isset($ref_link)?admin_url($ref_link . "tab={$post_type}-details"):""; ?>">Details</a></dd>
+           <?php endif; ?>
             <?php if ( !$is_new_project_page) { ?>
+
+                <?php if( current_user_can('manage_project_attachments') ): ?>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-files"); ?>">Attachments</a></dd>
-			<dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
+			<?php endif; ?>
+
+                <?php if( current_user_can('manage_project_time_entry') ): ?>
+                    <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-timeentry"); ?>">Time Entries</a></dd>
+           <?php endif; ?>
+
+                <?php if( current_user_can( 'edit_rt_tasks' ) ): ?>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ? 'class="active"':'';  ?> ><a href="<?php echo admin_url($ref_link . "tab={$post_type}-task"); ?>">Tasks</a></dd>
+           <?php endif; ?>
+
+                <?php if( current_user_can('manage_project_notifications') ): ?>
             <dd <?php echo isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ? 'class="active"':''; ?>><a href="<?php echo admin_url($ref_link . "tab={$post_type}-notification"); ?>">Notification</a></dd>
-            <?php } ?>            
+            <?php endif; ?>
+            <?php } ?>
         </dl>
 
         <div class="tabs-content">
