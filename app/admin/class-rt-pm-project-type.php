@@ -48,10 +48,10 @@ if ( !class_exists( 'Rt_PM_Project_Type' ) ) {
 				'update_count_callback' => 'rtpm_update_post_term_count',
 				'rewrite' => array('slug' => self::$project_type_tax),
 				'capabilities' => array(
-					'manage_terms' => $editor_cap,
-					'edit_terms' => $editor_cap,
-					'delete_terms' => $editor_cap,
-					'assign_terms' => $editor_cap,
+					'manage_terms' => 'manage_project_type',
+					'edit_terms' => 'edit_project_type',
+					'delete_terms' => 'delete_project_type',
+					'assign_terms' => 'assign_project_type',
 				),
 			));
 		}

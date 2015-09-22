@@ -116,7 +116,13 @@ if ( ! class_exists( 'Rt_PM_Time_Entry_Type' ) ) {
                 'show_admin_column' => TRUE,
                 'query_var'    => TRUE,
                 'rewrite'      => TRUE,
-                'update_count_callback' => '_update_generic_term_count'
+                'update_count_callback' => '_update_generic_term_count',
+				'capabilities' => array(
+					'manage_terms' => 'manage_time_entry_type',
+					'edit_terms' => 'edit_time_entry_type',
+					'delete_terms' => 'delete_time_entry_type',
+					'assign_terms' => 'assign_time_entry_type',
+				),
             );
 
 			register_taxonomy(
