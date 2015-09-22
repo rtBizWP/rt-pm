@@ -43,9 +43,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             if( function_exists('bp_is_active') ) {
 
-               $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-
-                if (  current_user_can( $author_cap ) ) {
+                if (  current_user_can( 'manage_project' ) ) {
 
                     global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend, $rt_pm_bp_pm_project;
 

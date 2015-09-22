@@ -11,7 +11,7 @@ global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_task, $rt_pm_time_entries_model;
 $post_id = 0;
 
 $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-if( current_user_can( $author_cap ) ){
+if( current_user_can( 'edit_rt_tasks' ) ){
 
     $user_edit = true;
 }else {

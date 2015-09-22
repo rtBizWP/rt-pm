@@ -208,9 +208,7 @@ class Rt_Pm_Project_Overview {
 			$project_data = $this->rtpm_project_main_site_data( $args );
 		} else {
 
-			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
-
-			if ( ! current_user_can( $admin_cap ) ) {
+			if ( ! current_user_can( 'edit_rt_projects' ) ) {
 
 				$projects         = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
 				$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
@@ -531,9 +529,7 @@ class Rt_Pm_Project_Overview {
 		 */
 		$project_data_query = $project_query->request;
 
-
-		$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
-		if ( bp_is_current_component( BP_TODO_SLUG ) || ! current_user_can( $admin_cap ) ) {
+		if ( bp_is_current_component( BP_TODO_SLUG ) || ! current_user_can( 'edit_rt_projects' ) ) {
 
 			/**
 			 * Inner join query

@@ -130,7 +130,8 @@ class Rt_PM_Install {
             'manage_time_entry',
             'add_time_entry',
             'manage_project_notification',
-            'manage_project_attachment'
+            'manage_project_attachment',
+            'run_user_reports'
         );
 
         $capability_types = array( 'rt_project', 'rt_task' );

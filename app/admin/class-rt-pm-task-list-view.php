@@ -126,7 +126,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                 $actions['untrash'] = __( 'Restore' );
             }
 
-            if ( current_user_can( $post_type_obj->cap->delete_posts ) ) {
+            if ( current_user_can( $post_type_obj->cap->delete_rt_projects ) ) {
                 if ( $this->is_trash || ! EMPTY_TRASH_DAYS ) {
                     $actions['delete'] = __( 'Delete Permanently' );
                 } else {
@@ -259,7 +259,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
                 $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
 
-            if ( !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'admin') &&  !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'editor') && current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'author') ){
+            if ( !current_user_can( 'edit_rt_projects' ) ) ){
                 $query .= " AND $wpdb->postmeta.meta_value = '".get_current_user_id()."'";
                 $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
@@ -522,7 +522,7 @@ if ( !class_exists( 'Rt_PM_Task_List_View' ) ) {
             $query = "SELECT post_status, COUNT( * ) AS num_posts FROM {$wpdb->posts} WHERE post_type = %s AND post_parent = %d  ";
             if ( 'readable' == $perm && is_user_logged_in() ) {
                 $post_type_object = get_post_type_object($type);
-                if ( ! current_user_can( $post_type_object->cap->read_private_posts ) ) {
+                if ( ! current_user_can( $post_type_object->cap->read_private_projects ) ) {
                     $query .= $wpdb->prepare( " AND (post_status != 'private' OR ( post_author = %d AND post_status = 'private' ))",
                         get_current_user_id()
                     );

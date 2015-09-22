@@ -44,7 +44,7 @@ if ( !class_exists( 'Rt_PM_Project_List_View' ) ) {
                         ?>
                         <div class="large-3 small-4 columns">
                             <article id="rtpm-<?php the_id() ?>" <?php post_class('rtpm_admin '); ?>>
-                                <?php if( current_user_can( $editor_cap ) || get_current_user_id() == intval( get_the_author_meta('ID') ) ) { ?>
+                                <?php if( current_user_can( 'edit_rt_projects' ) || get_current_user_id() == intval( get_the_author_meta('ID') ) ) { ?>
                                 <a href="<?php echo admin_url("edit.php?post_type={$rt_pm_project->post_type}&page=rtpm-add-{$rt_pm_project->post_type}&{$rt_pm_project->post_type}_id=" . get_the_id()); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                     <h2><?php
                                         echo '#'.get_post_meta( get_the_ID(), 'rtpm_job_no', true );

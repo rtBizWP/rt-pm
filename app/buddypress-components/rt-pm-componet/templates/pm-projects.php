@@ -180,7 +180,7 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 				<tr>
 					<td>
 						<?php the_title();
-						if ( current_user_can( $editor_cap ) || get_current_user_id() == intval( get_the_author_meta( 'ID' ) ) ) {
+						if ( current_user_can( 'edit_rt_projects' ) || get_current_user_id() == intval( get_the_author_meta( 'ID' ) ) ) {
 							?>
 							<div class="row-actions">
 							<?php

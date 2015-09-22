@@ -439,18 +439,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		
 
 		function register_custom_pages() {
-            $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
-            $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-//            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
+         //            add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Dashboard' ), __( 'Dashboard' ), $author_cap, self::$dashboard_slug, array( $this, 'dashboard_ui' ) );
             $url = add_query_arg( array( 'post_type' => $this->post_type ), 'edit.php' );
 			if( isset($this->labels['all_items']) )
-				add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], $author_cap, $url );
+				add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['all_items'], $this->labels['all_items'], 'edit_rt_projects', $url );
 
             if( isset( $_REQUEST['rt_project_id'] ) ) {
 
-                add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['edit_item'], $this->labels['edit_item'], $author_cap, 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
+                add_submenu_page( 'edit.php?post_type='.$this->post_type, $this->labels['edit_item'], $this->labels['edit_item'], 'edit_rt_projects', 'rtpm-add-'.$this->post_type, array( $this, 'custom_page_ui' ) );
             }
-			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), $editor_cap, 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
+			add_submenu_page( 'edit.php?post_type='.$this->post_type, __( 'Time Entry Types' ), __( 'Time Entry Types' ), 'edit_time_entry_type', 'edit-tags.php?taxonomy='.Rt_PM_Time_Entry_Type::$time_entry_type_tax );
         }
 
 		function register_custom_post( $menu_position ) {
@@ -768,7 +766,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         $trashed = $locked = 0;
 
                         foreach( (array) $post_ids as $post_id ) {
-                            if ( !current_user_can( 'delete_post', $post_id) )
+                            if ( !current_user_can( 'delete_rt_project', $post_id) )
                                 wp_die( __('You are not allowed to move this item to the Trash.') );
 
                             if ( wp_check_post_lock( $post_id ) ) {
@@ -786,7 +784,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     case 'untrash':
                         $untrashed = 0;
                         foreach( (array) $post_ids as $post_id ) {
-                            if ( !current_user_can( 'delete_post', $post_id) )
+                            if ( !current_user_can( 'delete_rt_project', $post_id) )
                                 wp_die( __('You are not allowed to restore this item from the Trash.') );
 
                             if ( !$rt_pm_task->rtpm_untrash_task($post_id) )
@@ -801,7 +799,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                         foreach( (array) $post_ids as $post_id ) {
                             $post_del = get_post($post_id);
 
-                            if ( !current_user_can( 'delete_post', $post_id ) )
+                            if ( !current_user_can( 'delete_rt_project', $post_id ) )
                                 wp_die( __('You are not allowed to delete this item.') );
 
                             if ( $post_del->post_type == 'attachment' ) {

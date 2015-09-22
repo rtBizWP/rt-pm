@@ -6,7 +6,7 @@ if( ! isset( $_REQUEST['post_type'] ) || $_REQUEST['post_type'] != $rt_pm_projec
 }
 
 $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-if( current_user_can( $author_cap ) ){
+if( current_user_can( 'edit_rt_projects' ) ){
 
     $user_edit = true;
 }else {

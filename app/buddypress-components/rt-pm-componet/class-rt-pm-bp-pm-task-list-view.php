@@ -134,7 +134,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                 $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }
 
-            if ( !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'admin') &&  !current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'editor') && current_user_can( rt_biz_sanitize_module_key( RT_PM_TEXT_DOMAIN ) . '_' . 'author') ){
+            if ( !current_user_can( 'edit_rt_projects' ) ){
                 $query .= " AND $wpdb->postmeta.meta_value = '".get_current_user_id()."'";
                 $query .= " AND $wpdb->postmeta.meta_key = 'post_assignee'";
             }

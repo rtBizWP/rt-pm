@@ -409,10 +409,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		public function rtcrm_generate_task_sql( $where, &$wp_query ) {
 			global $wp_query, $wpdb, $rtbp_todo, $bp;
 
-			$author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-
 			if ( function_exists( 'bp_is_active' ) &&
-				 current_user_can( $author_cap ) &&
+				 current_user_can( 'edit_rt_projects' ) &&
 			     bp_is_current_component( $bp->profile->slug ) &&
 			     bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) &&
 			     false !== strpos( $where, 'rt_task' ) && false !== strpos( $where, 'post_duedate' ) ) {
