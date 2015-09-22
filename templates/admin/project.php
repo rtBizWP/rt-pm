@@ -76,19 +76,19 @@
         <div class="tabs-content">
             <div class="content active" >
                 <?php
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' ){
+                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-task' && current_user_can('edit_rt_tasks') ) {
                         $rt_pm_project->get_project_task_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' ){
+                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-timeentry' && current_user_can('manage_project_time_entry') ){
                         $rt_pm_project->get_project_timeentry_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files' ){
+                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-files'&& current_user_can('manage_project_attachments') ) {
                         $rt_pm_project->get_project_file_tab($labels,$user_edit);
                     }
-                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' ){
+                    if ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-notification' && current_user_can('manage_project_notifications') ) {
                         $rt_pm_project->get_project_notification_tab($labels,$user_edit);
                     }
-					if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' )) {
+					if ( $is_new_project_page || !isset($_REQUEST['tab']) || ( isset($_REQUEST['tab']) && $_REQUEST['tab']==$post_type.'-details' ) && current_user_can('edit_rt_projects') ) {
                         $rt_pm_project->get_project_description_tab($labels,$user_edit);
                     }
 
