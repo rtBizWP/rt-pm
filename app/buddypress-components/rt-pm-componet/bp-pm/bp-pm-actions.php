@@ -102,7 +102,7 @@ class Rtbp_Pm_Actions {
     private function localize_scripts() {
         global $rt_pm_project, $rt_pm_bp_pm;
         $user_edit = false;
-        if ( current_user_can( "edit_{$rt_pm_project->post_type}s" ) ) {
+        if ( current_user_can( "projects_edit_projects" ) ) {
             $user_edit = true;
         }
         wp_localize_script( 'rtpm-admin-js', 'ajaxurl', admin_url( 'admin-ajax.php' ) );

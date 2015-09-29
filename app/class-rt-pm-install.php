@@ -9,7 +9,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 /**
@@ -17,173 +17,215 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Rt_PM_Install {
 
-    /**
-     * Hook in tabs.
-     */
-    public static function init() {
-        add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
-        add_action( 'admin_init', array( __CLASS__, 'install_actions' ) );
+	/**
+	 * Hook in tabs.
+	 */
+	public static function init() {
+		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
+		add_action( 'admin_init', array( __CLASS__, 'install_actions' ) );
 
-    }
+	}
 
-    /**
-     * check_version function.
-     */
-    public static function check_version() {
-        if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'rtpm_version' ) != RT_PM_VERSION ) ) {
-            self::install();
-            do_action( 'rtpm_updated' );
-        }
-    }
+	/**
+	 * check_version function.
+	 */
+	public static function check_version() {
+		if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'rtpm_version' ) != RT_PM_VERSION ) ) {
+			self::install();
+			do_action( 'rtpm_updated' );
+		}
+	}
 
-    /**
-     * Install actions such as installing pages when a button is clicked.
-     */
-    public static function install_actions() {
-        if ( ! empty( $_GET['do_update_rtpm'] ) ) {
-            self::update();
-        }
-    }
+	/**
+	 * Install actions such as installing pages when a button is clicked.
+	 */
+	public static function install_actions() {
+		if ( ! empty( $_GET['do_update_rtpm'] ) ) {
+			self::update();
+		}
+	}
 
-    /**
-     * Install RP
-     */
-    public static function install() {
+	/**
+	 * Install RP
+	 */
+	public static function install() {
 
-        if ( ! defined( 'RP_INSTALLING' ) ) {
-            define( 'RP_INSTALLING', true );
-        }
+		if ( ! defined( 'RP_INSTALLING' ) ) {
+			define( 'RP_INSTALLING', true );
+		}
 
-        self::create_roles();
+		self::create_roles();
 
-        self::update_rb_version();
+		self::update_rb_version();
 
-         // Trigger action
-        do_action( 'rtpm_installed' );
-    }
+		// Trigger action
+		do_action( 'rtpm_installed' );
+	}
 
-    /**
-     * Update RP version to current
-     */
-    private static function update_rb_version() {
-        delete_option( 'rtpm_version' );
-        add_option( 'rtpm_version', RT_PM_VERSION );
-    }
+	/**
+	 * Update RP version to current
+	 */
+	private static function update_rb_version() {
+		delete_option( 'rtpm_version' );
+		add_option( 'rtpm_version', RT_PM_VERSION );
+	}
 
-    /**
-     * Update DB version to current
-     */
-    private static function update_db_version( $version = null ) {
-        delete_option( 'rtpm_db_version' );
-        add_option( 'rtpm_db_version', is_null( $version ) ? RT_PM_VERSION : $version );
-    }
+	/**
+	 * Update DB version to current
+	 */
+	private static function update_db_version( $version = null ) {
+		delete_option( 'rtpm_db_version' );
+		add_option( 'rtpm_db_version', is_null( $version ) ? RT_PM_VERSION : $version );
+	}
 
-    /**
-     * Handle updates
-     */
-    private static function update() {
-        $current_db_version = get_option( 'rtpm_db_version' );
+	/**
+	 * Handle updates
+	 */
+	private static function update() {
+		$current_db_version = get_option( 'rtpm_db_version' );
 
-        foreach ( self::$db_updates as $version => $updater ) {
-            if ( version_compare( $current_db_version, $version, '<' ) ) {
-                include( $updater );
-                self::update_db_version( $version );
-            }
-        }
+		foreach ( self::$db_updates as $version => $updater ) {
+			if ( version_compare( $current_db_version, $version, '<' ) ) {
+				include( $updater );
+				self::update_db_version( $version );
+			}
+		}
 
-        self::update_db_version();
-    }
+		self::update_db_version();
+	}
 
-    /**
-     * Create roles and capabilities
-     */
-    public static function create_roles() {
-        global $wp_roles;
+	/**
+	 * Create roles and capabilities
+	 */
+	public static function create_roles() {
+		global $wp_roles;
 
-        if ( ! class_exists( 'WP_Roles' ) ) {
-            return;
-        }
+		if ( ! class_exists( 'WP_Roles' ) ) {
+			return;
+		}
 
-        if ( ! isset( $wp_roles ) ) {
-            $wp_roles = new WP_Roles();
-        }
+		if ( ! isset( $wp_roles ) ) {
+			$wp_roles = new WP_Roles();
+		}
 
-        $capabilities = self::get_core_capabilities();
+		// Customer role
+		add_role( 'voxxi_projects_no_roles', __( 'Voxxi Projects No Roles', 'rtbiz' ), array(
+			'read' => true,
+		) );
 
-        foreach ( $capabilities as $cap_group ) {
-            foreach ( $cap_group as $cap ) {
-                $wp_roles->add_cap( 'administrator', $cap );
-            }
-        }
-    }
+		add_role( 'voxxi_projects_author', __( 'Voxxi Projects Author', 'rtbiz' ), array(
 
-    /**
-     * Get capabilities for rtpm - these are assigned to admin/shop manager during installation or reset
-     *
-     * @return array
-     */
-    private static function get_core_capabilities() {
-        $capabilities = array();
+			//Leads caps
+			"projects_delete_project"            => true,
+			'projects_delete_published_projects' => true,
+			'voxxi_projects'             => true,
+			'projects_edit_projects'              => true,
+			'projects_edit_project'              => true,
+			'projects_edit_published_projects'   => true,
+			'projects_publish_projects'          => true,
+			'projects_read_project'              => true,
+			'projects_upload_files'              => true,
+			'voxxi_projects'                     => true,
+			'projects_my_tasks'                  => true,
+			'projects_edit_time_entries'         => true,
+			"projects_delete_task"               => true,
+			'projects_delete_published_tasks'    => true,
+			'projects_edit_tasks'                => true,
+			'projects_edit_published_tasks'      => true,
+			'projects_publish_tasks'             => true,
+			'projects_read_task'                 => true,
+		) );
 
-        $capabilities['core'] = array(
-            'manage_project',
-            'manage_project_time_entry',
-            'add_project_time_entry',
-            'manage_project_notifications',
-            'manage_project_attachments',
-            'run_project_user_reports',
-            'view_project_reports',
-            'manage_project_resources'
-        );
+		add_role( 'voxxi_projects_editor', __( 'Voxxi Projects Editor', 'rtbiz' ), array(
 
-        $capability_types = array( 'rt_project', 'rt_task' );
+			'projects_delete_others_projects'    => true,
+			'projects_delete_private_projects'   => true,
+			'projects_delete_published_projects' => true,
+			'projects_edit_others_projects'      => true,
+			'voxxi_projects'             => true,
+			'projects_edit_project'              => true,
+			'projects_edit_projects'              => true,
+			'projects_edit_private_projects'     => true,
+			'projects_edit_published_projects'   => true,
+			'projects_publish_projects'          => true,
+			'projects_read_projects'             => true,
+			'projects_read_private_projects'     => true,
+			'projects_unfiltered_html'           => true,
+			'projects_upload_files'              => true,
+			'voxxi_projects'                     => true,
+			'projects_my_tasks'                  => true,
+			'projects_ganttchart'               => true,
+			'projects_edit_time_entries'         => true,
+			'projects_delete_others_tasks'       => true,
+			'projects_delete_private_tasks'      => true,
+			'projects_delete_published_tasks'    => true,
+			'projects_edit_others_tasks'         => true,
+			'projects_edit_tasks'                => true,
+			'projects_edit_task'                 => true,
+			'projects_edit_private_tasks'        => true,
+			'projects_edit_published_tasks'      => true,
+			'projects_publish_tasks'             => true,
+			'projects_read_tasks'                => true,
+			'projects_read_private_tasks'        => true,
 
-        foreach ( $capability_types as $capability_type ) {
+		) );
 
-            $capabilities[ $capability_type ] = array(
-                // Post type
-                "edit_{$capability_type}",
-                "read_{$capability_type}",
-                "delete_{$capability_type}",
-                "edit_{$capability_type}s",
-                "edit_others_{$capability_type}s",
-                "publish_{$capability_type}s",
-                "read_private_{$capability_type}s",
-                "delete_{$capability_type}s",
-                "delete_private_{$capability_type}s",
-                "delete_published_{$capability_type}s",
-                "delete_others_{$capability_type}s",
-                "edit_private_{$capability_type}s",
-                "edit_published_{$capability_type}s",
-            );
-        }
+		$capabilities = array(
 
-        return $capabilities;
-    }
+			'projects_delete_others_projects'    => true,
+			'projects_delete_private_projects'   => true,
+			'projects_delete_published_projects' => true,
+			'projects_edit_others_projects'      => true,
+			'voxxi_projects'             => true,
+			'projects_edit_project'              => true,
+			'projects_edit_projects'              => true,
+			'projects_edit_private_projects'     => true,
+			'projects_edit_published_projects'   => true,
+			'projects_publish_projects'          => true,
+			'projects_read_projects'             => true,
+			'projects_read_private_projects'     => true,
+			'projects_unfiltered_html'           => true,
+			'projects_upload_files'              => true,
+			'projects_manage_time_entry_types'    => true,
+			'projects_edit_time_entry_types'      => true,
+			'projects_delete_time_entry_types'    => true,
+			'projects_assign_time_entry_types'    => true,
+			'projects_manage_project_types'       => true,
+			'projects_edit_project_types'        => true,
+			'projects_delete_project_types'      => true,
+			'projects_assign_project_types'      => true,
+			'projects_settings'                  => true,
+			'projects_notifications'                  => true,
+			'voxxi_projects'                     => true,
+			'projects_project_overview' => true,
+			'projects_user_reports'              => true,
+			'projects_resources'                 => true,
+			'projects_my_tasks'                  => true,
+			'projects_overview'                  => true,
+			'projects_ganttadmin'               => true,
+			'projects_ganttchart'               => true,
+			'projects_delete_others_tasks'       => true,
+			'projects_delete_private_tasks'      => true,
+			'projects_delete_published_tasks'    => true,
+			'projects_edit_others_tasks'         => true,
+			'projects_edit_tasks'                => true,
+			'projects_edit_task'                 => true,
+			'projects_edit_private_tasks'        => true,
+			'projects_edit_published_tasks'      => true,
+			'projects_publish_tasks'             => true,
+			'projects_read_tasks'                => true,
+			'projects_read_private_tasks'        => true,
+		);
 
-    /**
-     * rtpm_remove_roles function.
-     */
-    public static function remove_roles() {
-        global $wp_roles;
+		// Shop manager role
+		add_role( 'voxxi_projects_administrator', __( 'Voxxi Projects Administrator', 'rtbiz' ), $capabilities );
 
-        if ( ! class_exists( 'WP_Roles' ) ) {
-            return;
-        }
 
-        if ( ! isset( $wp_roles ) ) {
-            $wp_roles = new WP_Roles();
-        }
+		foreach ( $capabilities as $cap ) {
 
-        $capabilities = self::get_core_capabilities();
-
-        foreach ( $capabilities as $cap_group ) {
-            foreach ( $cap_group as $cap ) {
-                $wp_roles->remove_cap( 'administrator', $cap );
-            }
-        }
-
-    }
+			$wp_roles->add_cap( 'administrator', $cap );
+		}
+	}
 
 }
 

@@ -30,7 +30,7 @@ if ( ! class_exists( 'Rt_PM_User_Reports' ) ) {
 		function register_custom_pages() {
 			$admin_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'admin' );
 			global $rt_pm_project;
-			add_submenu_page( 'edit.php?post_type='.$rt_pm_project->post_type, __( 'User Reports' ), __( 'User Reports' ), 'run_project_user_reports', self::$user_reports_page_slug, array( $this, 'ui' ) );
+			add_submenu_page( 'edit.php?post_type='.$rt_pm_project->post_type, __( 'User Reports' ), __( 'User Reports' ), 'projects_user_reports', self::$user_reports_page_slug, array( $this, 'ui' ) );
 		}
 
 		function ui() {

@@ -4,7 +4,7 @@
   	Plugin Name: Voxxi Plus Projects
 	Plugin URI: http://voxxi.me
 	Description: Part of the Voxxi Business
-	Version: 3.0
+	Version: 1.0
 	Author: Voxxi
 	Author URI: http://voxxi.me
 	License: GPL
@@ -12,7 +12,7 @@
  */
 
 if ( !defined( 'RT_PM_VERSION' ) ) {
-	define( 'RT_PM_VERSION', '3.0' );
+	define( 'RT_PM_VERSION', '1.0' );
 }
 if ( !defined( 'RT_PM_TEXT_DOMAIN' ) ) {
 	define( 'RT_PM_TEXT_DOMAIN', 'rt_pm' );
@@ -120,6 +120,7 @@ function rt_pm_deactivate() {
 }
 
 function rt_pm_check_dependency() {
+
 	global $rt_wp_pm;
 	if ( empty( $rt_wp_pm ) ) {
 		rt_pm_include();

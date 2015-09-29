@@ -208,7 +208,7 @@ class Rt_Pm_Project_Overview {
 			$project_data = $this->rtpm_project_main_site_data( $args );
 		} else {
 
-			if ( ! current_user_can( 'edit_rt_projects' ) ) {
+			if ( ! current_user_can( 'projects_edit_projects' ) ) {
 
 				$projects         = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
 				$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
@@ -529,7 +529,7 @@ class Rt_Pm_Project_Overview {
 		 */
 		$project_data_query = $project_query->request;
 
-		if ( bp_is_current_component( BP_TODO_SLUG ) || ! current_user_can( 'edit_rt_projects' ) ) {
+		if ( bp_is_current_component( BP_TODO_SLUG ) || ! current_user_can( 'projects_edit_projects' ) ) {
 
 			/**
 			 * Inner join query

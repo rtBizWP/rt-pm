@@ -12,7 +12,7 @@ $operators = $rt_pm_notification->get_operators();
 $post_type = $_REQUEST['post_type'];
 
 $author_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'author' );
-if( current_user_can( 'manage_project_notifications' ) ){
+if( current_user_can( 'projects_notifications' ) ){
 
     $user_edit = true;
 }else {

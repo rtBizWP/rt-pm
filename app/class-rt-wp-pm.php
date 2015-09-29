@@ -43,7 +43,7 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
             if( function_exists('bp_is_active') ) {
 
-                if (  current_user_can( 'manage_project' ) ) {
+                if (  current_user_can( 'voxxi_projects' ) ) {
 
                     global $rt_pm_bp_pm, $rt_pm_bp_pm_frontend, $rt_pm_bp_pm_project;
 

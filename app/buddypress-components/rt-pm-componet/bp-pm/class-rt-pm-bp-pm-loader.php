@@ -110,7 +110,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 		function setup_nav( $nav = array(), $sub_nav = array() ) {
 			global $rtbp_pm_screen;
 
-            if( ( is_multisite() && is_main_site() ) || ! current_user_can('manage_project') )
+            if( ( is_multisite() && is_main_site() ) || ! current_user_can('voxxi_projects') )
                 return;
             
             $nav_name = __( 'PM', 'buddypress' );
@@ -160,7 +160,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
             }
 
-			if( current_user_can('edit_rt_projects') && $add_projects == true){
+			if( current_user_can('projects_edit_projects') && $add_projects == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Projects' ),
@@ -183,7 +183,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			);*/
 			
 			
-			if( current_user_can('edit_rt_projects') && $add_archive == true){
+			if( current_user_can('projects_edit_projects') && $add_archive == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Archives' ),
@@ -198,7 +198,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			// Resources
 			if( ! isset($_GET['rt_project_id']) ){
 
-				if( current_user_can('manage_project_resources') ) {
+				if( current_user_can('projects_resources') ) {
 					$sub_nav[] = array(
 						'name'            =>  __( 'All Resources' ),
 						'slug'            => 'all-resources',
@@ -209,17 +209,19 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					);
 				}
 
-				
-				$sub_nav[] = array(
-					'name'            =>  __( 'My Tasks' ),
-					'slug'            => 'my-tasks',
-					'parent_url'      => $people_link,
-					'parent_slug'     =>  $this->id,
-					'screen_function' => array( $rtbp_pm_screen, 'bp_pm_my_tasks' ),
-					'position'        => 10,
-				);
 
-				if( current_user_can('view_project_reports') ) {
+				if( current_user_can('projects_my_tasks') ) {
+					$sub_nav[] = array(
+						'name'            => __( 'My Tasks' ),
+						'slug'            => 'my-tasks',
+						'parent_url'      => $people_link,
+						'parent_slug'     => $this->id,
+						'screen_function' => array( $rtbp_pm_screen, 'bp_pm_my_tasks' ),
+						'position'        => 10,
+					);
+				}
+
+				if( current_user_can('projects_project_overview') ) {
 					$sub_nav[] = array(
 						'name'            =>  __( 'Overview' ),
 						'slug'            => 'overview',
@@ -237,7 +239,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			if ( isset($_GET['rt_project_id']) && in_array( bp_current_action(), $project_detail_actions ) ){
 				
 
-               if( current_user_can('edit_rt_projects') ) {
+               if( current_user_can('projects_edit_projects') ) {
 
 				   $main_url = trailingslashit( $user_domain . $this->slug .'/details');
 				   $url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-details'  ), $main_url ) );
@@ -256,7 +258,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 
 
-				if( current_user_can('manage_project_resources') ) {
+				if( current_user_can('projects_resources') ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/resources');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_resources-details'  ), $main_url ) );
 					$sub_nav[] = array(
@@ -271,7 +273,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				}
 
 
-				if( current_user_can('manage_project_attachments') ) {
+				if( current_user_can('projects_edit_projects') ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/attachments');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-files'  ), $main_url ) );
 					$sub_nav[] = array(
@@ -286,7 +288,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				}
 
 
-				if( current_user_can('edit_rt_tasks') ) {
+				if( current_user_can('projects_edit_tasks') ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/tasks');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-task'  ), $main_url ) );
 					$sub_nav[] = array(
@@ -301,7 +303,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				}
 
-				if( current_user_can( 'manage_project_time_entry' ) ) {
+				if( current_user_can( 'projects_manage_time_entry_types' ) ) {
 
 					$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
@@ -317,7 +319,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				}
 
-				if( current_user_can('manage_project_notifications') ) {
+				if( current_user_can('projects_notifications') ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/notifications');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-notification'  ), $main_url ) );
 					$sub_nav[] = array(
@@ -332,7 +334,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				}
 
 
-				if( current_user_can( 'manage_options' ) ) {
+				if( current_user_can( 'projects_ganttadmin' ) ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$gantt_admin);
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$gantt_admin  ), $main_url ) );
 					$sub_nav[] = array(
@@ -346,7 +348,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 					);
 				}
 
-				if( current_user_can('view_project_reports') ) {
+				if( current_user_can('projects_ganttchart') ) {
 					$main_url = trailingslashit( $user_domain . $this->slug .'/'.self::$ganttchart_slug);
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-'.self::$ganttchart_slug  ), $main_url ) );
 					$sub_nav[] = array(

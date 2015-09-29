@@ -142,7 +142,7 @@ if ( !class_exists( 'Rt_PM_Time_Entry_List_View' ) ) {
                 $query .= " AND author = '".$_REQUEST["post_author"]."'";
             }
 
-            if ( !current_user_can( 'edit_rt_projects' ) ){
+            if ( !current_user_can( 'projects_edit_projects' ) ){
                 $query .= " AND author = '".get_current_user_id()."'";
             }
 

@@ -138,8 +138,24 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				'menu_icon'          => $logo_url,
 				'menu_position'      => $menu_position,
 				'supports'           => array( 'title', 'editor', 'comments', 'custom-fields' ),
-				'capability_type'    => $this->post_type,
 				'map_meta_cap' => true,
+				'capabilities'      => array(
+					'edit_post'              => "projects_edit_task",
+					'read_post'              => "projects_read_task",
+					'delete_post'            => "projects_delete_task",
+					'edit_posts'             => "projects_edit_tasks",
+					'edit_others_posts'      => "projects_edit_others_tasks",
+					'publish_posts'          => "projects_publish_tasks",
+					'read_private_posts'     => "projects_read_private_tasks",
+					'read'                   => "projects_read_tasks",
+					'delete_posts'           => "projects_delete_tasks",
+					'delete_private_posts'   => "projects_delete_private_tasks",
+					'delete_published_posts' => "projects_delete_published_tasks",
+					'delete_others_posts'    => "projects_delete_others_tasks",
+					'edit_private_posts'     => "projects_edit_private_tasks",
+					'edit_published_posts'   => "projects_edit_published_tasks",
+					'create_posts'           => "projects_create_tasks"
+				)
 			);
 			register_post_type( $this->post_type, $args );
 		}
@@ -410,7 +426,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			global $wp_query, $wpdb, $rtbp_todo, $bp;
 
 			if ( function_exists( 'bp_is_active' ) &&
-				 current_user_can( 'edit_rt_projects' ) &&
+				 current_user_can( 'projects_edit_projects' ) &&
 			     bp_is_current_component( $bp->profile->slug ) &&
 			     bp_is_current_action( Rt_Bp_People_Loader:: $profile_todo_slug ) &&
 			     false !== strpos( $where, 'rt_task' ) && false !== strpos( $where, 'post_duedate' ) ) {
