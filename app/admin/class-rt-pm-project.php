@@ -71,6 +71,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             // Project action -Trash, Delete and Restore
             add_action( 'init', array( $this, 'rtpm_project_action' ) );
             add_action( 'wp_trash_post', array( $this, 'before_trash_project' ) );
+            add_action( 'trashed_post', array( $this, 'after_trash_project' ) );
             add_action( 'untrashed_post', array( $this, 'after_untrash_project' ) );
             add_action( 'before_delete_post', array( $this, 'before_delete_project' ) );
 
@@ -3220,7 +3221,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
          * @return bool
          */
         public function before_trash_project( $post_id ) {
-            global $rt_pm_task;
+            global $rt_pm_task, $rt_crm_leads;
 
             //Bail if post type is not 'rt_project'
             if( 'rt_project' !== get_post_type( $post_id ) )
@@ -3238,7 +3239,19 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 $rt_pm_task->rtpm_trash_task( $task_id );
             }
 
+
             do_action( 'rtpm_after_trash_project', $post_id );
+        }
+
+        public function after_trash_project( $post_id ) {
+            global $rt_crm_leads;
+
+            //Project parent lead
+            $lead_id = wp_get_post_parent_id( $post_id );
+
+            //trash project parent lead
+            $rt_crm_leads->rtcrm_trash_lead( $lead_id );
+
         }
 
         /**
