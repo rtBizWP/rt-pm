@@ -14,7 +14,7 @@
     $post_type = $_REQUEST['post_type'];
 
     $user_edit = false;
-    if ( current_user_can( "project_edit_projects" ) ) {
+    if ( current_user_can( "projects_edit_projects" ) ) {
         $user_edit = 'true';
     } else if ( current_user_can( "projects_read_projects" ) ) {
         $user_edit = 'false';

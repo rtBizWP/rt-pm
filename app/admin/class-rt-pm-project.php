@@ -470,7 +470,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                 'map_meta_cap' => true,
                 'capabilities'      => array(
                     'edit_post'              => "projects_edit_project",
-                    'read_post'              => "projects_read_project",
+                    'read_post'              => "projects_read_projects",
                     'delete_post'            => "projects_delete_project",
                     'edit_posts'             => "projects_edit_projects",
                     'edit_others_posts'      => "projects_edit_others_projects",

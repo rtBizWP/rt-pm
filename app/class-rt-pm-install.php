@@ -115,16 +115,7 @@ class Rt_PM_Install {
 
 		add_role( 'voxxi_projects_author', __( 'Voxxi Projects Author', 'rtbiz' ), array(
 
-			//Leads caps
-			"projects_delete_project"            => true,
-			'projects_delete_published_projects' => true,
-			'voxxi_projects'             => true,
-			'projects_edit_projects'              => true,
-			'projects_edit_project'              => true,
-			'projects_edit_published_projects'   => true,
-			'projects_publish_projects'          => true,
-			'projects_read_project'              => true,
-			'projects_upload_files'              => true,
+			'projects_read_projects'              => true,
 			'voxxi_projects'                     => true,
 			'projects_my_tasks'                  => true,
 			'projects_edit_time_entries'         => true,
@@ -138,6 +129,7 @@ class Rt_PM_Install {
 
 		add_role( 'voxxi_projects_editor', __( 'Voxxi Projects Editor', 'rtbiz' ), array(
 
+			'projects_create_projects' => true,
 			'projects_delete_others_projects'    => true,
 			'projects_delete_private_projects'   => true,
 			'projects_delete_published_projects' => true,
@@ -168,10 +160,19 @@ class Rt_PM_Install {
 			'projects_read_tasks'                => true,
 			'projects_read_private_tasks'        => true,
 
+			'projects_user_reports'              => true,
+
+			'projects_manage_project_types'       => true,
+			'projects_edit_project_types'        => true,
+			'projects_delete_project_types'      => true,
+			'projects_assign_project_types'      => true,
+
+
 		) );
 
 		$capabilities = array(
 
+			'projects_create_projects' => true,
 			'projects_delete_others_projects'    => true,
 			'projects_delete_private_projects'   => true,
 			'projects_delete_published_projects' => true,

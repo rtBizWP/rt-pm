@@ -160,7 +160,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
             }
 
-			if( current_user_can('projects_edit_projects') && $add_projects == true){
+			if( current_user_can('projects_read_projects') && $add_projects == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Projects' ),
@@ -183,7 +183,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 			);*/
 			
 			
-			if( current_user_can('projects_edit_projects') && $add_archive == true){
+			if( current_user_can('projects_read_projects') && $add_archive == true){
 				// Add the subnav items
 				$sub_nav[] = array(
 					'name'            =>  __( 'Archives' ),
@@ -201,7 +201,8 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 				if( current_user_can('projects_resources') ) {
 					$sub_nav[] = array(
 						'name'            =>  __( 'All Resources' ),
-						'slug'            => 'all-resources',
+						'slug'
+						=> 'all-resources',
 						'parent_url'      => $people_link,
 						'parent_slug'     =>  $this->id,
 						'screen_function' => array( $rtbp_pm_screen, 'bp_pm_all_resources' ),
