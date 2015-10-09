@@ -115,6 +115,7 @@ class Rt_PM_Install {
 
 		add_role( 'voxxi_projects_author', __( 'Voxxi Projects Author', 'rtbiz' ), array(
 
+			'projects_edit_projects'             => true,
 			'projects_read_projects'              => true,
 			'voxxi_projects'                     => true,
 			'projects_my_tasks'                  => true,
