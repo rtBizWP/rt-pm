@@ -18,11 +18,18 @@ screen_icon();
 						<label class="left inline" for="rtpm_user"><?php _e('User : '); ?></label>
 					</div>
 					<div class="large-6 columns">
-						<?php $users = Rt_PM_Utils::get_pm_rtcamp_user(); ?>
+						<?php $users = rt_biz_get_employees(); ?>
 						<select id="rtpm_user" name="rtpm_user">
 							<option value=""><?php _e( 'Any' ); ?></option>
-							<?php foreach ( $users as $u ) { ?>
-							<option value="<?php echo $u->ID; ?>"><?php echo $u->display_name; ?></option>
+							<?php foreach ( $users as $u ) {
+
+								$employee_wp_user_id = rt_biz_get_wp_user_for_person( $u->ID );
+
+								if( empty( $employee_wp_user_id ) ) {
+									continue;
+								}
+								?>
+							<option value="<?php echo $employee_wp_user_id; ?>"><?php echo rtbiz_get_user_displayname( $employee_wp_user_id ); ?></option>
 							<?php } ?>
 						</select>
 					</div>
