@@ -562,19 +562,19 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
                                     $url = add_query_arg( 'post_status', $rec->post_status, $url );
                                     if ( !empty( $status ) ) {
                                         if ($this->user_edit){
-                                            echo '<td '.$attributes.'><a href="'.$url.'">'.$status['name'].'</a>';
+                                            echo '<td style="float:left;" '.$attributes.'><a href="'.$url.'">'.$status['name'].'</a>';
                                         }else{
-                                            echo '<td '.$attributes.'>'.$status['name'];
+                                            echo '<td style="float:left;" '.$attributes.'>'.$status['name'];
                                         }
                                     } else {
                                         if ($this->user_edit){
-                                            echo '<td '.$attributes.'><a href="'.$url.'">'.$rec->post_status.'</a>';
+                                            echo '<td style="float:left;" '.$attributes.'><a href="'.$url.'">'.$rec->post_status.'</a>';
                                         }else{
-                                            echo '<td '.$attributes.'>'.$rec->post_status;
+                                            echo '<td style="float:left;" '.$attributes.'>'.$rec->post_status;
                                         }
                                     }
                                 } else {
-                                    echo '<td '.$attributes.'>-';
+                                    echo '<td style="float:left;" '.$attributes.'>-';
                                 }
                                 //.'< /td>';
                                 break;
