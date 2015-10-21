@@ -119,7 +119,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 
             <?php  if ( $user_edit ) { ?>
-                <input name="post[post_date]" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
+                <input name="post[post_date]" required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date"
                         value="<?php echo $prefilled_timestamp; ?>"
                        title="<?php echo ( isset($prefilled_timestamp) ) ? $prefilled_timestamp : ''; ?>" id="create_<?php echo $timeentry_post_type ?>_date">
 
@@ -132,7 +132,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
         <div class="smlla-12 columns">
 
             <?php if( $user_edit ) { ?>
-                <textarea required="required"  name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo $prefilled_message; ?> </textarea>
+                <textarea required="required"  name="post[post_title]" id="new_<?php echo $timeentry_post_type ?>_title" type="text" placeholder="<?php _e("Message"); ?>" ><?php echo $prefilled_message; ?></textarea>
             <?php } else { ?>
                 <span><?php echo ( isset($post->id) ) ? trim($post->message) : ""; ?></span><br /><br />
             <?php } ?>
