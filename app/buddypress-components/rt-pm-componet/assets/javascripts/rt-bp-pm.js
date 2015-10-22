@@ -839,7 +839,7 @@ jQuery(document).ready(function($) {
 function rtpm_reset_task_form() {
     jQuery('input[name="post[task_type]"]').val('');
     jQuery("input[name='post[post_title]']").val("");
-    jQuery("input[name='post[post_content]']").val("");
+    jQuery("textarea[name='post[post_content]']").val("");
     jQuery("input[name='post[post_date]']").val("");
     jQuery("input[name='post[post_duedate]']").val("");
     jQuery("select[name='post[post_author]']").val(0);
@@ -848,6 +848,5 @@ function rtpm_reset_task_form() {
     jQuery("#attachment-container .scroll-height").html('');
     jQuery('div.resources-list>div.parent-row:gt(0)').remove();
 }
-
 
 
