@@ -3108,6 +3108,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $data = $_POST['post'];
 
             update_post_meta( $data['project_id'], 'working_hours', $data['working_hours'] );
+
+	        if( function_exists('bp_is_active') ) {
+		        bp_core_add_message('Project working hours saved successfully', 'success');
+	        }
         }
 
         /**
@@ -3148,6 +3152,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             }
 
             update_post_meta( $data['project_id'], 'working_days', $working_days );
+
+	        if( function_exists('bp_is_active') ) {
+		        bp_core_add_message('Project working days saved successfully', 'success');
+	        }
         }
 
 
