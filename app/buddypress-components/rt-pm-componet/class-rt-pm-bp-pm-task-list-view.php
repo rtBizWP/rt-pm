@@ -37,6 +37,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		var $labels;
         static $project_id_key = 'post_project_id';
         var $user_edit;
+		var $user_assigned_task = array();
 
 		public function __construct( $user_edit ) {
 
@@ -91,7 +92,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 		/**
 		 * Prepare the table with different parameters, pagination, columns and table elements */
 		function prepare_items() {
-			global $wpdb;
+			global $wpdb, $rt_pm_task;
             $screen = get_current_screen();
 
             if ( ! isset( $_REQUEST["{$_REQUEST['post_type']}_id"] ) ){
@@ -99,6 +100,8 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
             }
             $project_id = $_REQUEST["{$_REQUEST['post_type']}_id"];
            // $this->user_edit = $user_edit;
+
+			$this->user_assigned_task = $rt_pm_task->rtpm_user_assigned_tasks( $project_id );
 
             $s = @$_POST['s'];
 			
@@ -494,7 +497,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Task_List_View' ) ) {
 
 
 	                                //Show time entry link for normal task and sub task
-	                                if( in_array( $temp['rtpm_task_type'], array( 'main_task', 'sub_task'  ) ) ) {
+	                                if( in_array( $rec->ID, $this->user_assigned_task ) && in_array( $temp['rtpm_task_type'], array( 'main_task', 'sub_task'  ) ) ) {
 
 										$actions['timeentry'] = '<a class="rtpm_task_timeentries_link" href="'.$rt_pm_bp_pm->get_component_root_url() .'time-entries?post_type='. $rt_pm_project->post_type.'&'.$rt_pm_project->post_type.'_id='.$_REQUEST["{$rt_pm_project->post_type}_id"].'&tab='.$rt_pm_project->post_type .'-timeentry&task_id='.$rec->ID.'&action=timeentry">Time</a>';
 	                                }

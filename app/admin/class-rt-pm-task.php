@@ -1321,8 +1321,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		public function rtpm_tasks_dropdown( $project_id, $task_id = '' ) {
-
-			$tasks = $this->rtpm_get_timeentries_tasks( $project_id ); ?>
+			$tasks = $this->rtpm_user_assigned_tasks( $project_id );
+		?>
 
 			<select required='required' name='post[post_task_id]' id='task_id'>;
 			<?php foreach ( $tasks as $task ):
@@ -1332,6 +1332,26 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			<select>
 
 			<?php
+		}
+
+		public function rtpm_user_assigned_tasks(  $project_id, $user_id = 0 ) {
+			global $rt_pm_task_resources_model;
+
+			if( empty( $user_id ) ) {
+				if( function_exists('bp_is_active') ) {
+					$user_id = bp_displayed_user_id();
+				 }
+
+				 if( empty( $user_id ) ) {
+				    $user_id = get_current_user_id();
+				 }
+			}
+
+			$time_entry_tasks = $this->rtpm_get_timeentries_tasks( $project_id );
+			$assigned_task = $rt_pm_task_resources_model->rtpm_get_all_task_id_by_user( $user_id );
+			$tasks = array_intersect( $assigned_task, $time_entry_tasks );
+
+			return $tasks;
 		}
 
 		/**
