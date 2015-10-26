@@ -613,15 +613,15 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
                                     echo '<td '.$attributes.'><span title="'.$rec->time_duration.'">'. $rt_pm_time_entries->get_timer($rec->time_duration) .'</span>';
                                 } else
                                     echo '<td '.$attributes.'>-';
-                                //.'< /td>';
+                                //.'< /td>';'
                                 break;
                             case "rtpm_created_by":
                                 if(!empty($rec->author)) {
                                     $user = get_user_by('id', $rec->author);
                                     $url = add_query_arg( 'post_author', $rec->author );
-                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    echo '<td style="float:left;" '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
-                                    echo '<td '.$attributes.'>-';
+                                    echo '<td style="float:left;" '.$attributes.'>-';
                                 //.'< /td>';
                                 break;
 						}

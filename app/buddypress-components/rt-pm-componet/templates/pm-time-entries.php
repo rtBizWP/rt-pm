@@ -86,6 +86,13 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
     </script>
 <?php } ?>
 
+
+<style type="text/css">
+    .column-rtpm_message button.toggle-row {
+        display: none !important;
+    }
+</style>
+
 <div id="wp-custom-list-table">
     <?php
     if( $user_edit ) {
