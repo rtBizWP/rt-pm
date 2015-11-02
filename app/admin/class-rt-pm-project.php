@@ -1983,8 +1983,8 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 		function get_project_notification_tab( $labels, $user_edit ) {
 			global $rt_biz_notification_rules_model, $rt_pm_notification;
 			$project_id = $_REQUEST["{$this->post_type}_id"];
-			$users = Rt_PM_Utils::get_pm_rtcamp_user();
-			$operators = $rt_pm_notification->get_operators();
+            $employees = rt_biz_get_employees();
+            $operators = $rt_pm_notification->get_operators();
 			$post_type = $_REQUEST['post_type'];
 
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'delete' ) {
@@ -2119,9 +2119,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 									<option value=""><?php _e( 'Select User to Notify' ); ?></option>
 									<option value="{{project_manager}}"><?php _e( '{{project_manager}}' ); ?></option>
 									<option value="{{business_manager}}"><?php _e( '{{business_manager}}' ); ?></option>
-									<?php foreach ( $users as $u ) { ?>
-									<option value="<?php echo $u->ID; ?>"><?php echo $u->display_name; ?></option>
-									<?php } ?>
+									<?php if (!empty( $employees )) {
+                                        foreach ( $employees as $bm ) {
+                                            $employee_wp_user_id = rt_biz_get_wp_user_for_person( $bm->ID );
+                                            $userdata            = get_userdata( $employee_wp_user_id );
+
+                                            ?>
+                                            <option
+                                                value="<?php echo $userdata->ID; ?>"><?php echo $userdata->display_name; ?></option>
+                                        <?php }
+                                    }?>
 								</select>
 							</div>
 							<div class="large-1 columns">
@@ -2302,9 +2309,16 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 									<option value=""><?php _e( 'Select User to Notify' ); ?></option>
 									<option value="{{project_manager}}"><?php _e( '{{project_manager}}' ); ?></option>
 									<option value="{{business_manager}}"><?php _e( '{{business_manager}}' ); ?></option>
-									<?php foreach ( $users as $u ) { ?>
-									<option value="<?php echo $u->ID; ?>"><?php echo $u->display_name; ?></option>
-									<?php } ?>
+                                    <?php if (!empty( $employees )) {
+                                        foreach ( $employees as $bm ) {
+                                            $employee_wp_user_id = rt_biz_get_wp_user_for_person( $bm->ID );
+                                            $userdata            = get_userdata( $employee_wp_user_id );
+
+                                            ?>
+                                            <option
+                                                value="<?php echo $userdata->ID; ?>"><?php echo $userdata->display_name; ?></option>
+                                        <?php }
+                                    }?>
 								</select>
 							</div>
 							<div class="large-1 columns">
