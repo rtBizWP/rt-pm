@@ -57,6 +57,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		}
 
 		function task_add_bp_activity( $post_id, $update ) {
+			global $rt_pm_task_resources_model;
 
 			if( ! function_exists( 'bp_is_active') || bp_is_current_component( BP_CRM_SLUG ) )
 				return false;
@@ -77,13 +78,15 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				$action = 'Task created';
 			}
 
-			$activity_users = array();
+			//$activity_users = array();
 
-			$activity_users[] = get_post_meta( $post->ID, "post_assignee", true );
+			//$activity_users[] = get_post_meta( $post->ID, "post_assignee", true );
 
-			$parent_project_id = get_post_meta( $post->ID, "post_project_id", true );
+			//$parent_project_id = get_post_meta( $post->ID, "post_project_id", true );
 
-			$activity_users[] = get_post_meta( $parent_project_id, "project_manager", true );
+			//$activity_users[] = get_post_meta( $parent_project_id, "project_manager", true );
+
+			$activity_users = $rt_pm_task_resources_model->rtpm_get_task_resources( $post_id );
 
 			$mentioned_user = '';
 			foreach ( $activity_users as $activity_user ) {
