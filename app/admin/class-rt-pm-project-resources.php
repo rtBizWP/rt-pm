@@ -390,6 +390,14 @@ class Rt_PM_Project_Resources {
 		$timstamp = $post['timestamp'];
 		$time_duration = $post['time_duration'];
 
+		$project_members = get_post_meta( $project_id, "project_member", true );
+		$team            = array( $user_id );
+
+		if ( ! empty( $project_members ) ) {
+			$team = array_unique( array_merge( $team, $project_members ) );
+		}
+
+		update_post_meta( $project_id, 'project_member', $team );
 
 		$insert_rows = array(
 			'project_id' => $project_id,

@@ -287,6 +287,24 @@ if( !empty( $results_organization ) ) {
 				<?php if ( $user_edit ) { ?>
 				<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
 				<?php } ?>
+				<?php
+				 if( ! empty( $project_member ) ) :
+
+				    foreach( $project_member as $project_member_id ):
+
+				        $author = get_userdata( $project_member_id ); ?>
+                        <div class='row'>
+                            <div class='column small-2'><?php echo get_avatar( $author->user_email, 32 )  ?> </div>
+                            <div  class="columns small-9 vertical-center">
+                                    <a target="_blank" class="" title="<?php echo $author->display_name ?>" href="<?php echo bp_core_get_userlink( $author->ID, false, true) ?>"><?php echo rtbiz_get_user_displayname( $author->ID ) ?></a>
+                            </div>
+                            <div class='columns small-1 vertical-center'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
+                            <input type='hidden' name='post[project_member][]' value='<?php echo $author->ID  ?>' /> </div>
+                        </div>
+				 <?php
+				    endforeach;
+				 endif;
+				 ?>
 				<ul id="divProjectMemberList">
 					<?php echo $subProjectMemberHTML; ?>
 				</ul>

@@ -2952,7 +2952,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'project_estimated_time' => $newProject['project_estimated_time'],
                     'project_client' => isset( $newProject['project_client'] ) ? $newProject['project_client'] : array(),
                     'project_organization' => isset( $newProject['project_organization'] ) ? $newProject['project_organization']: '',
-                    'project_member' => isset($newProject['project_member'])? $newProject['project_member'] : array(),
+                    'project_member' => isset( $newProject['project_member'] )? $newProject['project_member'] : array(),
                     'business_manager' => $newProject['business_manager'],
                     '_rtpm_status_detail' => $newProject['status_detail'],
                     '_rtpm_project_budget' => $newProject['project_budget'],
@@ -2961,6 +2961,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     'user_updated_by' => get_current_user_id(),
                     'user_created_by' => get_current_user_id(),
                 );
+
 
                 $post_id = $this->rtpm_save_project_data( $post, $data );
 
