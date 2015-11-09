@@ -3269,6 +3269,10 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
         public function after_trash_project( $post_id ) {
             global $rt_crm_leads;
 
+            //Bail if post type is not 'rt_project'
+            if( 'rt_project' !== get_post_type( $post_id ) )
+                return false;
+
             //Project parent lead
             $lead_id = wp_get_post_parent_id( $post_id );
 
