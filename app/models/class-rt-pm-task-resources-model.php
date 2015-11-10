@@ -261,7 +261,7 @@ class Rt_Pm_Task_Resources_Model extends RT_DB_Model {
 			$where_columns[] =  $this->table_name.'.project_id IN( '.implode(', ', $args['project__in'] ) .') ';
 
 		if( isset( $args['user__in'] )  && is_array( $args['user__in'] ) )
-			$where_columns[] =  $this->table_name.'user_id IN( '.implode(', ', $args['user__in'] ) .') ';
+			$where_columns[] =  $this->table_name.'.user_id IN( '.implode(', ', $args['user__in'] ) .') ';
 
 		if( ! isset( $args['post_status'] ) )
 			$where_columns[] = " {$this->table_name}.post_status <> 'trash' ";
