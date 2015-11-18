@@ -670,8 +670,11 @@ class Rt_PM_Project_Gantt {
 
                 if( 'undefined' != typeof data.parent_task_data ) {
 
-                    gantt.getTask(  parent_task_id ).start_date = new Date( data.parent_task_data.start_date );
-                    gantt.getTask(  parent_task_id ).end_date = new Date( data.parent_task_data.end_date );
+                    var parent_start_date = data.parent_task_data.start_date.substr( 0, 10 );
+                    var parent_end_date = data.parent_task_data.end_date.substr( 0, 10 );
+
+                    gantt.getTask(  parent_task_id ).start_date = new Date( parent_start_date );
+                    gantt.getTask(  parent_task_id ).end_date = new Date( parent_end_date );
                     gantt.updateTask( parent_task_id );
                     gantt.refreshTask( parent_task_id, true);
                     gantt.render();
