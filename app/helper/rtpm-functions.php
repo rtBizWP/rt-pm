@@ -572,3 +572,22 @@ function rtpm_lead_has_project( $post_id ) {
 
 	return false;
 }
+
+/**
+ * Add automated job number when a lead is created,
+ *
+ * @param $project_id
+ *
+ * @return bool
+ */
+function rtpm_set_job_number( $project_id ) {
+	global $blog_id;
+
+	$job_last_index = intval( get_option( 'rt_pm_job_last_index' ) );
+
+	update_post_meta( $project_id, 'rtpm_job_no', $blog_id . $project_id. $job_last_index );
+
+	$job_last_index ++;
+
+	return update_option( 'rt_pm_job_last_index', $job_last_index );
+}

@@ -33,11 +33,19 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 
 			add_action( 'init', array( $this, 'admin_init' ), 5 );
 
+            add_action( 'init', array( $this, 'init' ), 6 );
+
             do_action( 'rt_pm_init' );
 
             add_action( 'after_setup_theme', array( $this, 'init_pm_bp_component' ) );
 
-		}
+            add_action( 'shutdown', array( $this, 'rt_pm_remove_activation_option' ) );
+
+        }
+
+        function init(){
+            $this->rt_pm_set_job_index_wp_option();
+        }
 
         function init_pm_bp_component(){
 
@@ -142,6 +150,32 @@ if ( ! class_exists( 'RT_WP_PM' ) ) {
 			$updateDB = new RT_DB_Update( trailingslashit( RT_PM_PATH ) . 'index.php', trailingslashit( RT_PM_PATH_SCHEMA ) );
 			$updateDB->do_upgrade();
 		}
+
+        /**
+         *  Set job index in wp_option
+         */
+        private function rt_pm_set_job_index_wp_option() {
+
+            $rt_pm_activated = get_option('rt_pm_activated');
+
+            if( ! $rt_pm_activated )
+                return;
+
+            update_option('rt_pm_job_last_index', '3200');
+        }
+
+        /**
+         * Remove activation flag from wp_option
+         */
+        public function rt_pm_remove_activation_option(){
+
+            $rt_crm_activated = get_option('rt_pm_activated');
+
+            if( ! $rt_crm_activated )
+                return;
+
+            delete_option('rt_pm_activated');
+        }
 
     }
 }

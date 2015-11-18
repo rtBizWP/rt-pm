@@ -249,7 +249,6 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
             $data = array(
                 'project_organization' => $project_organization,
                 'project_client' => $project_client,
-                'rtpm_job_no' => get_post_meta( $lead_id, 'rtcrm_job_no', true ),
             );
 
             //Team member
@@ -263,6 +262,7 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $project_id = $this->rtpm_save_project_data( $project, $data );
 
+            rtpm_set_job_number( $project_id ) ;
 
 
             //Set post( project ) parent to lead
