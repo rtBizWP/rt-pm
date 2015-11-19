@@ -218,8 +218,8 @@ class Rt_PM_Project_Gantt {
                 $data[] = array(
                     'id' => $task->ID,
                     'text' => $task->post_title,
-                    'start_date' => $start_date->format( "d-m-Y" ),
-                    'end_date' => $end_date->format('d-m-Y'),
+                    'start_date' => $start_date->format( "d-m-Y H:i:s" ),
+                    'end_date' => $end_date->format('d-m-Y H:i:s'),
                     'type' => $task_type,
                     'estimated_hours' => ! empty( $estimated_hours ) ? $estimated_hours : 0,
                     'open' => $open_branch_mode,

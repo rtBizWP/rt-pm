@@ -48,7 +48,7 @@ class Rt_PM_Project_Resources {
 			'resources'
 		);
 
-		if ( in_array( bp_current_action(), $white_action_lists ) ) {
+		if ( function_exists('bp_is_active') && in_array( bp_current_action(), $white_action_lists ) ) {
 
 			wp_enqueue_style( 'rt-biz-sidr-style', get_stylesheet_directory_uri() . '/css/jquery.sidr.light.css', array() );
 			wp_enqueue_script( 'rt-biz-sidr-script', get_stylesheet_directory_uri() . '/assets/js/jquery.sidr.min.js', array( 'jquery' ) );

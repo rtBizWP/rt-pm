@@ -44,7 +44,7 @@ class Rt_Pm_Project_Overview {
 
 	public function rtpm_load_style_script() {
 
-		if ( in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
+		if ( function_exists('bp_is_active') && in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
 			//Enqueue sidr scripts
 			rt_enqueue_sidr( true );
 
@@ -474,7 +474,7 @@ class Rt_Pm_Project_Overview {
 	 * Style for table without outer border
 	 */
 	public function rtpm_print_style() {
-		if ( in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
+		if ( function_exists('bp_is_active') && in_array( bp_current_action(), array( 'todo', 'overview' ) ) ) {
 			?>
 			<style>
 				table.no-outer-border {
