@@ -373,26 +373,6 @@ jQuery(document).ready(function($) {
 
     }
 
-    //datetime picker
-    if( $(".datetimepicker").length > 0 ) {
-        $( document ).on( 'focus', ".datetimepicker", function() {
-            $( this ).datetimepicker( {
-                dateFormat: "M d, yy",
-                timeFormat: "hh:mm TT"
-            } );
-        } );
-    }
-
-    if( $(".datepicker").length > 0 ) {
-
-        $( document ).on( 'focus', ".datepicker", function() {
-            $( this ).datepicker( {
-                'dateFormat': 'dd/mm/yy'
-            } );
-        } );
-    }
-
-
     $(document).on("click", ".moment-from-now", function(e) {
         var oldDate = $(this).attr("title");
 
@@ -835,6 +815,27 @@ jQuery(document).ready(function($) {
     }
     
 });
+
+var jq = $ = jQuery.noConflict();
+
+//datetime picker
+if( $(".datetimepicker").length > 0 ) {
+    $( document ).on( 'focus', ".datetimepicker", function() {
+        $( this ).datetimepicker( {
+            dateFormat: "M d, yy",
+            timeFormat: "hh:mm TT"
+        } );
+    } );
+}
+
+if( $(".datepicker").length > 0 ) {
+
+    $( document ).on( 'focus', ".datepicker", function() {
+        $( this ).datepicker( {
+            'dateFormat': 'dd/mm/yy'
+        } );
+    } );
+}
 
 function rtpm_reset_task_form() {
     jQuery('input[name="post[task_type]"]').val('');
