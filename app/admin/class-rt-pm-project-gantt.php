@@ -271,8 +271,8 @@ class Rt_PM_Project_Gantt {
             gantt.attachEvent("onAfterTaskAdd", function( id, item ) {
 
                 var data = {
-                    start_date :  rtcrm_get_postdata( item.start_date ),
-                    end_date :  rtcrm_get_postdata( item.end_date ),
+                    start_date :  rtcrm_get_postdata( item.start_date)+' 09:00:00',
+                    end_date :  rtcrm_get_postdata( item.end_date )+' 18:00:00',
                     task_title : item.text,
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
@@ -318,8 +318,8 @@ class Rt_PM_Project_Gantt {
 
                 var data = {
                     task_id : id,
-                    start_date :  rtcrm_get_postdata( item.start_date ),
-                    end_date:  rtcrm_get_postdata( item.end_date ),
+                    start_date :  rtcrm_get_postdata( item.start_date )+' 09:00:00',
+                    end_date:  rtcrm_get_postdata( item.end_date )+' 18:00:00',
                     task_title : item.text,
                     parent_project : jQuery('#rtpm_project_id').val(),
                     task_type: item.$rendered_type,
@@ -523,8 +523,8 @@ class Rt_PM_Project_Gantt {
 
                         var data = {
                             task_id : child.id,
-                            start_date :  rtcrm_get_postdata( child.start_date ),
-                            end_date:  rtcrm_get_postdata( child.end_date ),
+                            start_date :  rtcrm_get_postdata( child.start_date )+' 09:00:00',
+                            end_date:  rtcrm_get_postdata( child.end_date )+' 18:00:00',
                             task_title : child.text,
                             parent_project : jQuery('#rtpm_project_id').val(),
                             task_type: child.$rendered_type,
@@ -689,7 +689,7 @@ class Rt_PM_Project_Gantt {
             function rtcrm_get_postdata( post_date ) {
 
                 var todayUTC = new Date(Date.UTC(post_date.getFullYear(), post_date.getMonth(), post_date.getDate()));
-                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-')+' 00:00:00';
+                return todayUTC.toISOString().slice(0, 10).replace(/-/g, '-');
             }
 
             /**

@@ -837,6 +837,26 @@ if( $(".datepicker").length > 0 ) {
     } );
 }
 
+if( $('#create_rt_task_date').length > 0 ) {
+
+    $('#create_rt_task_date').datetimepicker({
+        dateFormat: "M d, yy",
+        timeFormat: "hh:mm TT",
+        hour: 09,
+        minute: 00
+    });
+}
+
+if( $('#due_rt_task_date').length > 0 ) {
+    $('#due_rt_task_date').datetimepicker({
+        dateFormat: "M d, yy",
+        timeFormat: "hh:mm TT",
+        hour: 18,
+        minute: 00
+    });
+}
+
+
 function rtpm_reset_task_form() {
     jQuery('input[name="post[task_type]"]').val('');
     jQuery("input[name='post[post_title]']").val("");

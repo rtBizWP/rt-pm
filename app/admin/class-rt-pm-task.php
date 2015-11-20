@@ -650,10 +650,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			if ( isset( $duedate ) && $duedate != '' ) {
 				try {
 					$dr = date_create_from_format( 'M d, Y H:i A', $duedate );
-					//  $UTC = new DateTimeZone('UTC');
-					//  $dr->setTimezone($UTC);
-					$timeStamp               = $dr->getTimestamp();
-					$newTask['post_duedate'] = rt_set_date_to_utc( gmdate( 'Y-m-d H:i:s', intval( $timeStamp ) ) );
+					$newTask['post_duedate'] = $dr->format("Y-m-d H:i:s");
 				} catch ( Exception $e ) {
 					$newTask['post_duedate'] = current_time( 'mysql' );
 				}
@@ -664,11 +661,8 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				if ( isset( $creationdate ) && $creationdate != '' ) {
 					try {
 						$dr  = date_create_from_format( 'M d, Y H:i A', $creationdate );
-						$UTC = new DateTimeZone( 'UTC' );
-						$dr->setTimezone( $UTC );
-						$timeStamp                = $dr->getTimestamp();
-						$newTask['post_date']     = gmdate( 'Y-m-d H:i:s', intval( $timeStamp ) );
-						$newTask['post_date_gmt'] = rt_set_date_to_utc( gmdate( 'Y-m-d H:i:s', ( intval( $timeStamp ) ) ) );
+						$newTask['post_date']     = $dr->format("Y-m-d H:i:s");
+						$newTask['post_date_gmt'] = $dr->format("Y-m-d H:i:s");
 					} catch ( Exception $e ) {
 						$newTask['post_date']     = current_time( 'mysql' );
 						$newTask['post_date_gmt'] = gmdate( 'Y-m-d H:i:s' );

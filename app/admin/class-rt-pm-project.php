@@ -872,10 +872,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
                     $post = false;
                 }
 
-                $create = rt_convert_strdate_to_usertimestamp( $post->post_date_gmt );
-               // $modify = rt_convert_strdate_to_usertimestamp( $post->post_modified_gmt );
-                $createdate = $create->format("M d, Y h:i A");
-               // $modifydate = $modify->format("M d, Y h:i A");
+                $due                = get_post_meta($post->ID, 'post_duedate', true);
+                $due_date           = date_create_from_format( 'Y-m-d H:i:s', $due )->format("M d, Y h:i A");
+                $post_assignee      = get_post_meta($post->ID, 'post_assignee', true);
+                $post_project_id    = $post->post_parent;
+                $createdate         = date_create_from_format( 'Y-m-d H:i:s', $post->post_date_gmt )->format("M d, Y h:i A");
+                $modifydate         = date_create_from_format( 'Y-m-d H:i:s', $post->post_modified_gmt )->format("M d, Y h:i A");
 
             }else{
                 $post=null;
@@ -883,11 +885,11 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 
             $task_type = get_post_meta( $post_id, 'rtpm_task_type', true );
 
-            // get project meta
-            if (isset($post->ID)) {
-                $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
-                $due_date = $due->format("M d, Y h:i A");
-			}
+//            // get project meta
+//            if (isset($post->ID)) {
+//                $due = rt_convert_strdate_to_usertimestamp(get_post_meta($post->ID, 'post_duedate', true));
+//                $due_date = $due->format("M d, Y h:i A");
+//			}
 
             //Disable working days
             $rt_pm_task->disable_working_days( $_GET['rt_project_id'] );
