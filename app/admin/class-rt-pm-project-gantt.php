@@ -270,14 +270,6 @@ class Rt_PM_Project_Gantt {
             //Add new task
             gantt.attachEvent("onAfterTaskAdd", function( id, item ) {
 
-                var data = {
-                    start_date :  rtcrm_get_postdata( item.start_date)+' 09:00:00',
-                    end_date :  rtcrm_get_postdata( item.end_date )+' 18:00:00',
-                    task_title : item.text,
-                    parent_project : jQuery('#rtpm_project_id').val(),
-                    task_type: item.$rendered_type,
-                    parent_task: item.parent,
-                };
 
                 //Set task color after adding
                 if( 'milestone' !== item.$rendered_type ) {
@@ -287,8 +279,22 @@ class Rt_PM_Project_Gantt {
                         gantt.getTask(id).color = '<?php echo $this->child_task_color ?>';
                     }
                 } else {
+
+                    if(!gantt.isWorkTime(item.start_date))
+                        item.start_date=gantt.getClosestWorkTime({date:item.start_date, dir:"future"})
+                    item.end_date=gantt.calculateEndDate(item.start_date,item.duration)
+
                     gantt.getTask(id).color = '<?php echo $this->milestone_color ?>';
                 }
+
+                var data = {
+                    start_date :  rtcrm_get_postdata( item.start_date)+' 09:00:00',
+                    end_date :  rtcrm_get_postdata( item.end_date )+' 18:00:00',
+                    task_title : item.text,
+                    parent_project : jQuery('#rtpm_project_id').val(),
+                    task_type: item.$rendered_type,
+                    parent_task: item.parent,
+                };
 
                 var send_data = { action : 'rtpm_save_project_task', post: data };
 
