@@ -176,8 +176,8 @@ class Rt_PM_Project_Gantt {
 
             foreach( $task_list as $task ) {
 
-                $start_date = rt_convert_strdate_to_usertimestamp( $task->post_date );
-                $end_date = rt_convert_strdate_to_usertimestamp( get_post_meta( $task->ID, 'post_duedate', true ) );
+                $start_date = new DateTime( $task->post_date );
+                $end_date = new DateTime( get_post_meta( $task->ID, 'post_duedate', true ) );
                 $task_type = get_post_meta( $task->ID, 'rtpm_task_type', true );
                 $estimated_hours = $rt_pm_task_resources_model->rtpm_get_tasks_estimated_hours( $task->ID );
                 $parent_task = get_post_meta( $task->ID, 'rtpm_parent_task', true );
