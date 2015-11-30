@@ -14,7 +14,7 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 ?>
 <div class="list-heading">
 	<div class="large-10 columns list-title">
-		<h4><?php _e( 'Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
+		<h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
 	</div>
 	<div class="large-2 columns">
 
