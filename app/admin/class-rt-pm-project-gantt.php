@@ -287,6 +287,10 @@ class Rt_PM_Project_Gantt {
                     gantt.getTask(id).color = '<?php echo $this->milestone_color ?>';
                 }
 
+                item.start_date.setHours(9);
+                item.end_date.setDate( item.end_date.getDate() - 1 );
+                item.end_date.setHours(18);
+
                 var data = {
                     start_date :  rtcrm_get_postdata( item.start_date)+' 09:00:00',
                     end_date :  rtcrm_get_postdata( item.end_date )+' 18:00:00',
