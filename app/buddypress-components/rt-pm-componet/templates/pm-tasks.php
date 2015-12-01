@@ -117,7 +117,7 @@ $rt_pm_task->disable_working_days( $project_id );
                 $element = $( this );
                 $url = $element.attr('href');
 
-                var task_id = get_parameter_by_name( $url, 'rt_task_id' );
+                var task_id = rtpm_task_edit.get_parameter_by_name( $url, 'rt_task_id' );
                 render_project_slide_panel('open', task_id, <?php echo get_current_blog_id(); ?>, '', 'task');
             },
 
@@ -128,10 +128,19 @@ $rt_pm_task->disable_working_days( $project_id );
                 $element = $( this );
                 $url = $element.attr('href');
 
-                var task_id = get_parameter_by_name( $url, 'task_id' );
+                var task_id = rtpm_task_edit.get_parameter_by_name( $url, 'task_id' );
                 render_project_slide_panel( 'add_time_entry', task_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
+            },
+
+            //Function is also in voxxi-theme/js/rt-buddyboss-custom.min.js, but not working so redefined here, remove it after fix that
+            get_parameter_by_name: function( url, name ) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec( url );
+                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             }
-        };
+
+    };
 
         $( document).ready( function() { rtpm_task_edit.init(); } );
 
