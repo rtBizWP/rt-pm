@@ -301,8 +301,8 @@ $uncommon_task_type = array( 'milestone', 'task_group' );
               $element = $( this );
               $url = $element.attr('href');
 
-              var task_id = get_parameter_by_name( $url, 'task_id' );
-              var rtvoxxi_blog_id = get_parameter_by_name( $url, 'rt_voxxi_blog_id' );
+              var task_id = rtvo_get_parameter_by_name( $url, 'task_id' );
+              var rtvoxxi_blog_id = rtvo_get_parameter_by_name( $url, 'rt_voxxi_blog_id' );
 
               render_project_slide_panel( 'add_time_entry', task_id, rtvoxxi_blog_id, '', 'time-entries' );
           }

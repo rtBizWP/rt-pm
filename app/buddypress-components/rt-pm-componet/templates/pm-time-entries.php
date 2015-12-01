@@ -141,7 +141,7 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
                 $element = $( this );
                 $url = $element.attr('href');
 
-                var timeentry_id = get_parameter_by_name( $url, 'rt_time_entry_id' );
+                var timeentry_id = rtvo_get_parameter_by_name( $url, 'rt_time_entry_id' );
                 render_project_slide_panel( 'edit_time_entry', timeentry_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
             },
 

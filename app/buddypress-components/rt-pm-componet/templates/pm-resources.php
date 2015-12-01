@@ -111,7 +111,7 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 
 			rtpm_refresh_user_task_link: function( event,request, settings ) {
 
-				var action = get_parameter_by_name('?' + settings.data, 'action');
+				var action = rtvo_get_parameter_by_name('?' + settings.data, 'action');
 
 				var allowed_actions = ['rtpm_get_resources_calender'];
 

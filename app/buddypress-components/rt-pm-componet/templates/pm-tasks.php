@@ -117,7 +117,7 @@ $rt_pm_task->disable_working_days( $project_id );
                 $element = $( this );
                 $url = $element.attr('href');
 
-                var task_id = get_parameter_by_name( $url, 'rt_task_id' );
+                var task_id = rtvo_get_parameter_by_name( $url, 'rt_task_id' );
                 render_project_slide_panel('open', task_id, <?php echo get_current_blog_id(); ?>, '', 'task');
             },
 
@@ -128,7 +128,7 @@ $rt_pm_task->disable_working_days( $project_id );
                 $element = $( this );
                 $url = $element.attr('href');
 
-                var task_id = get_parameter_by_name( $url, 'task_id' );
+                var task_id = rtvo_get_parameter_by_name( $url, 'task_id' );
                 render_project_slide_panel( 'add_time_entry', task_id, <?php echo get_current_blog_id(); ?>, '', 'time-entries' );
             }
         };

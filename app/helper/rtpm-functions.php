@@ -282,7 +282,7 @@ function rtpm_user_tasks_hover_cart() { ?>
 		function rtpm_open_task_side_panel( e ) {
 			e.preventDefault();
 
-			var task_id = get_parameter_by_name('?' + $(this).attr('href'), 'rt_task_id');
+			var task_id = rtvo_get_parameter_by_name('?' + $(this).attr('href'), 'rt_task_id');
 
 			block_ui();
 

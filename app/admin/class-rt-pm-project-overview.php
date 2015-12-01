@@ -178,7 +178,7 @@ class Rt_Pm_Project_Overview {
 						var blog_id = that.data('rt-blog-id');
 
 
-						var project_id = get_parameter_by_name($url, 'rt_project_id');
+						var project_id = rtvo_get_parameter_by_name($url, 'rt_project_id');
 						render_project_slide_panel('open', project_id, blog_id, '', 'project');
 					}
 				};
