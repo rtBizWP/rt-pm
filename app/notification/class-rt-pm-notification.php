@@ -300,6 +300,9 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 					$user_id = $user;
 					break;
 			}
+			if ( empty( $user_id ) ) {
+				return ;
+			}
 
 			$user = get_user_by( 'id', $user_id );
 			$entity = get_post( $entity_id );
