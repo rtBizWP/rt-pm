@@ -112,9 +112,11 @@ jQuery(document).ready(function($) {
 			var footer_1 = $table_1.find('tfoot tr');
 			var footer_2 = $table_2.find('tfoot tr');
 
+
+
 			for( var i=0; i<footer_1.length;i++ ){
 
-				var td_1 = footer_1[i].getElementsByTagName('th');
+				var td_1 = footer_1[i].getElementsByTagName('td');
 				var text_1 = td_1[0].innerText;
 				var csv = csv + text_1 + '","';
 				var td_2 = footer_2[i].getElementsByTagName('td');

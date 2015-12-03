@@ -29,8 +29,6 @@
 // all resources table css
 
 .rt-export-button{
-	position: absolute;
-	top: -50px;
 	padding: 6px 10px;
 	border-radius: 5px;
 	background: #E2E2E2;
@@ -40,18 +38,15 @@
 	}
 }
 
-.export-csv{
-	right: 20px;
-}
-.export-pdf{
-	right: 120px;
-}
 
 a.rtpm-get-calender{
 	color: #555;
 }
 
 .rt-main-resources-container{
+
+  	margin-top: 30px;
+
 	.export-bottom{
 		top: 5px;
 		position: relative;
@@ -170,9 +165,12 @@ a.rtpm-get-calender{
 		}
 	}
 	#buddypress .rt-main-resources-container{
-		margin-top: 50px;
 		.export-bottom{
 			display: none;
 		}
+	}
+
+  	.rt-export-button-bottom-container {
+	  	margin-top: 15px;
 	}
 }

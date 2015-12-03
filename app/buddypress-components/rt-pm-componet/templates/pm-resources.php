@@ -12,18 +12,17 @@ $current_date = date( "Y-m-d" );
 $dates = rt_get_next_dates( $current_date );
 $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'project_id' => $project_id ) );
 ?>
-<div class="list-heading">
-	<div class="large-10 columns list-title">
+
+	<div class="small-12 medium-6 large-8 columns">
 		<h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
 	</div>
-	<div class="large-2 columns">
-
+	<div class=" small-12 medium-6 large-4 columns" style="text-align: right; margin-bottom: 15px;">
+		<a href="#" class="rt-export-button export-csv">Export CSV</a>
+		<a href="#" class="rt-export-button export-pdf">Export PDF</a>
 	</div>
-</div>
-<div class="rt-main-resources-container">
+
+<div class="rt-main-resources-container" style="clear: both; ">
 	<?php  if(!empty($user_ids)) { ?>
-	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
-	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 	<div class="rt-left-container">
 		<table>
 			<thead>
@@ -75,8 +74,12 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 			}
 			?></a>
 	</div>
-	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a></div>
-	<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a></div>
+
+	<div class="small-12 columns rt-export-button-bottom-container" style="text-align: right;">
+		<a href="#" class="rt-export-button export-csv">Export CSV</a>
+		<a href="#" class="rt-export-button export-pdf">Export PDF</a>
+	</div>
+
 	<?php } else { ?>
 	<div><?php _e( 'No Resources to show', RT_PM_TEXT_DOMAIN ) ?></div>
 	<?php } ?>

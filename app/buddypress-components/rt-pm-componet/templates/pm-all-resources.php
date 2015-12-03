@@ -5,19 +5,20 @@
  * and open the template in the editor.
  */
 global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model, $rt_pm_project_resources;?>
-<div class="list-heading">
-	<div class="large-10 columns list-title">
+
+	<div class="small-6  columns">
 		<h4><?php _e( 'All Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
 	</div>
-	<div class="large-2 columns">
+	<div class=" small-6 columns" style="text-align: right; margin-bottom: 15px;">
+		<a href="#" class="rt-export-button export-csv">Export CSV</a>
+		<a href="#" class="rt-export-button export-pdf">Export PDF</a>
 	</div>
-</div>
+
 <?php $current_date = date( "Y-m-d" );
 $dates = rt_get_next_dates( $current_date );
 $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
-	<div class="rt-main-resources-container rt-all-resources-container">
-		<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
-		<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
+	<div class="rt-main-resources-container rt-all-resources-container" style="clear: both">
+
 		<div class="rt-left-container">
 			<table>
 				<thead>
@@ -50,7 +51,7 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 				</tbody>
 				<tfoot>
 				<tr>
-					<th><?php _e( 'TOTAL HOURS', RT_PM_TEXT_DOMAIN ); ?></th>
+					<td><?php _e( 'TOTAL HOURS', RT_PM_TEXT_DOMAIN ); ?></td>
 				</tr>
 				</tfoot>
 			</table>
@@ -79,10 +80,12 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 					echo ">";
 				} ?></a>
 		</div>
-		<div class="rt-export-button-container"><a class="rt-export-button export-csv export-bottom">Export
-				CSV</a></div>
-		<div class="rt-export-button-container"><a class="rt-export-button export-pdf export-bottom">Export
-				PDF</a></div>
+
+		<div class="small-12 columns rt-export-button-bottom-container" style="text-align: right;">
+			<a href="#" class="rt-export-button export-csv">Export CSV</a>
+			<a href="#" class="rt-export-button export-pdf">Export PDF</a>
+		</div>
+
 	</div>
 
 	<script type="text/javascript">
