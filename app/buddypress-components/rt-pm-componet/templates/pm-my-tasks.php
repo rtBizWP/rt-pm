@@ -14,17 +14,16 @@ $project_ids  = $rt_pm_task_resources_model->rtpm_get_users_projects( bp_display
 // lets start with all projects
 if ( ! empty( $project_ids ) ) { ?>
 	<div class="list-heading">
-		<div class="large-10 columns list-title">
+		<div class="small-6 columns">
 			<h4><?php _e( 'My Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
 		</div>
-		<div class="large-2 columns">
-
+		<div class="small-6 columns" style="text-align: right; margin-bottom: 15px;">
+			<a href="#" class="rt-export-button export-csv">Export CSV</a>
+			<a href="#" class="rt-export-button export-pdf">Export PDF</a>
 		</div>
 	</div>
 
 	<div class="rt-main-resources-container rt-my-tasks-container">
-		<div class="rt-export-button-container"><a href="#" class="rt-export-button export-csv">Export CSV</a></div>
-		<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf">Export PDF</a></div>
 		<div class="rt-left-container">
 			<table>
 				<thead>
