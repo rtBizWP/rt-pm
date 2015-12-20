@@ -85,6 +85,25 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
         </div>
     </div>
 
+
+    <div class="row task-dates">
+        <div class="small-4 columns">
+            <label for="post[task_start_date]">Start Date<small class="required"> * </small></label>
+        </div>
+        <div class="small-8 columns">
+            <input name="post[task_start_date]" required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
+        </div>
+    </div>
+
+    <div class="row task-dates">
+        <div class="small-4 columns">
+            <label for="post[task_end_date]">End Date<small class="required"> * </small></label>
+        </div>
+        <div class="small-8 columns">
+            <input name="post[task_end_date]" required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
+        </div>
+    </div>
+
     <div class="row rtpm-post-author-wrapper">
         <div class="small-4 columns">
             <label for="post[post_timeentry_type]">Type<small class="required"> * </small></label>
@@ -109,7 +128,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
                 <input required="required" type="number" name="post[post_duration]" step="0.25" min="0" value="<?php echo $prefilled_time_duration; ?>"  />
             <?php } ?>
         </div>
-        </div>
+    </div>
 
     <div class="row">
 
@@ -218,3 +237,33 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
      <?php endforeach;
  endif;?>
 </form>
+<script type="text/javascript">
+
+    var jq = $ = jQuery.noConflict();
+    var wall_time_entries;
+
+    (function($){
+        wall_time_entries = {
+
+          //Wall time entries sidebar init
+          init: function() {
+              wall_time_entries.set_task_data();
+              $(document).on( 'change', 'select[name="post[post_task_id]"]', wall_time_entries.set_task_data );
+          },
+
+          //Show task start date and task end date field
+          set_task_data: function() {
+              var $select_task_id = $('select[name="post[post_task_id]"]');
+
+              if( 'add-time' == $select_task_id.val() ) {
+                  $('.task-dates').show();
+              } else {
+                  $('.task-dates').hide();
+              }
+
+          },
+        };
+
+        $(document).ready( function( e ) { wall_time_entries.init(); } );
+    })(jQuery);
+</script>

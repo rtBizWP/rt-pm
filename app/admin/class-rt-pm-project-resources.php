@@ -482,11 +482,10 @@ class Rt_PM_Project_Resources {
 
 		$estimated_hours_in_project = $rt_pm_task_resources_model->rtpm_get_estimated_hours( $args );
 
-		$message = '';
 		/**
 		 * Check project working hours is not exceeding
 		 */
-		if( $estimated_hours_in_project <= $project_working_hours ) {
+		if ( $estimated_hours_in_project <= $project_working_hours ) {
 
 			//New assigned hours after adding new value to old assigned value
 			$new_estimated_hours_in_project =  $estimated_hours_in_project + $time_duration;

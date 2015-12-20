@@ -1322,10 +1322,18 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 		?>
 
 			<select required='required' name='post[post_task_id]' id='task_id'>;
+
 			<?php foreach ( $tasks as $task ):
 				$task_title = get_post_field( 'post_title', $task );?>
 				<option  <?php selected( $task_id, $task ) ?> value="<?php echo $task ?>"><?php echo $task_title ?></option>
 			<?php endforeach; ?>
+
+			<?php
+			//Show "Add Time" option while adding timn entry at project level
+			if ( defined('DOING_AJAX') && DOING_AJAX && bp_is_current_action('time-entries') ) {
+				echo "<option value='add-time'>Add Time</option>";
+			}
+			?>
 			<select>
 
 			<?php
