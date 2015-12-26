@@ -193,7 +193,7 @@ class Rt_Pm_Project_Overview {
 	}
 
 	public function rtpm_project_block_list( $page ) {
-		global $rt_pm_project, $rt_pm_task, $rt_pm_task_resources_model, $rt_pm_time_entries_model, $table_prefix;
+		global $wpdb, $rt_pm_project, $rt_pm_task, $rt_pm_task_resources_model, $rt_pm_time_entries_model, $table_prefix;
 
 		$displayed_user_id = bp_displayed_user_id();
 
@@ -212,6 +212,45 @@ class Rt_Pm_Project_Overview {
 
 				$projects         = $rt_pm_project->rtpm_get_users_projects( $displayed_user_id );
 				$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
+			}
+
+			//Project overview top filters
+			if ( ! empty( $_REQUEST['project_overview_filter'] ) ) {
+
+				$filter_form_data = $_REQUEST['post'];
+
+				//Select all project that has searched project_member
+				if ( ! empty( $filter_form_data['project_member'] ) ) {
+
+					//Find all project that has the searched member in it
+					$project_member_query = "SELECT post_id FROM {$wpdb->postmeta} WHERE wp_13_postmeta.meta_value LIKE '%:\"{$filter_form_data['project_member']}\";%' AND  meta_key = 'project_member'";
+
+					$project_ids_with_members = $wpdb->get_col( $project_member_query );
+
+					if ( ! empty( $ids ) ) {
+						//Set filtered post_id ( project_id ) those have searched member in it
+						//Force the type to be array in case of null or not set
+						$args['post__in'] = array_merge( (array)$args['post__in'], $project_ids_with_members );
+					}
+
+				}
+
+				//project type tax_query in wp_query
+				if ( ! empty( $filter_form_data['project_type'] ) ) {
+
+					$args['tax_query'] = array(
+						array(
+							'taxonomy' => Rt_PM_Project_Type::$project_type_tax,
+							'field'    => 'term_id',
+							'terms'    => $filter_form_data['project_type'],
+						)
+					);
+				}
+
+				//Select only one project that is selected
+				if ( ! empty( $filter_form_data['project_id'] ) ) {
+					$args['p'] = $filter_form_data['project_id'];
+				}
 			}
 
 			$query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
