@@ -9,6 +9,7 @@
 class Rt_Pm_Project_Overview {
 
 	private $rtpm_chars = array();
+	public $project_not_in = array();
 
 	/**
 	 * Return singleton instance of class
@@ -214,44 +215,8 @@ class Rt_Pm_Project_Overview {
 				$args['post__in'] = ( ! empty( $projects ) ) ? $projects : array( '0' );
 			}
 
-			//Project overview top filters
-			if ( ! empty( $_REQUEST['project_overview_filter'] ) ) {
-
-				$filter_form_data = $_REQUEST['post'];
-
-				//Select all project that has searched project_member
-				if ( ! empty( $filter_form_data['project_member'] ) ) {
-
-					//Find all project that has the searched member in it
-					$project_member_query = "SELECT post_id FROM {$wpdb->postmeta} WHERE wp_13_postmeta.meta_value LIKE '%:\"{$filter_form_data['project_member']}\";%' AND  meta_key = 'project_member'";
-
-					$project_ids_with_members = $wpdb->get_col( $project_member_query );
-
-					if ( ! empty( $ids ) ) {
-						//Set filtered post_id ( project_id ) those have searched member in it
-						//Force the type to be array in case of null or not set
-						$args['post__in'] = array_merge( (array)$args['post__in'], $project_ids_with_members );
-					}
-
-				}
-
-				//project type tax_query in wp_query
-				if ( ! empty( $filter_form_data['project_type'] ) ) {
-
-					$args['tax_query'] = array(
-						array(
-							'taxonomy' => Rt_PM_Project_Type::$project_type_tax,
-							'field'    => 'term_id',
-							'terms'    => $filter_form_data['project_type'],
-						)
-					);
-				}
-
-				//Select only one project that is selected
-				if ( ! empty( $filter_form_data['project_id'] ) ) {
-					$args['p'] = $filter_form_data['project_id'];
-				}
-			}
+			//Exclude all project that is already in top filterd list
+			$args['post__not_in'] = $this->project_not_in;
 
 			$query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
 
@@ -410,6 +375,65 @@ class Rt_Pm_Project_Overview {
 			$rt_pm_time_entries_model->table_name = $rt_pm_time_entries_table_name;
 		}
 
+	}
+
+	/**
+	 * Project filer block
+	 */
+	public function rtpm_filtered_project_block() {
+		global $wpdb, $rt_pm_project;
+
+		$args = array();
+		$project_data = array();
+
+		//Project overview top filters
+		if ( ! empty( $_REQUEST['project_overview_filter'] ) ) {
+
+			$filter_form_data = $_REQUEST['post'];
+
+			//Select all project that has searched project_member
+			if ( ! empty( $filter_form_data['project_member'] ) ) {
+
+				//Find all project that has the searched member in it
+				$project_member_query = "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%:\"{$filter_form_data['project_member']}\";%' AND  meta_key = 'project_member'";
+
+				$project_ids_with_members = $wpdb->get_col( $project_member_query );
+
+				if ( ! empty( $project_ids_with_members ) ) {
+					//Set filtered post_id ( project_id ) those have searched member in it
+					//Force the type to be array in case of null or not set
+					$args['post__in'] = array_merge( (array)$args['post__in'], $project_ids_with_members );
+				}
+
+			}
+
+			//project type tax_query in wp_query
+			if ( ! empty( $filter_form_data['project_type'] ) ) {
+
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => Rt_PM_Project_Type::$project_type_tax,
+						'field'    => 'term_id',
+						'terms'    => $filter_form_data['project_type'],
+					)
+				);
+			}
+
+			//Select only one project that is selected
+			if ( ! empty( $filter_form_data['project_id'] ) ) {
+				$args['p'] = $filter_form_data['project_id'];
+			}
+		}
+
+		if ( ! empty( $args ) ) {
+
+			$query = $rt_pm_project->rtpm_prepare_project_wp_query( $args );
+			$project_data = $query->posts;
+
+			$this->project_not_in = wp_list_pluck( $project_data, 'ID' );
+		}
+
+		return $project_data;
 	}
 
 	public function rtpm_get_older_projects() {
