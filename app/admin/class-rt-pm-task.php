@@ -858,6 +858,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 				}
 
 				wp_safe_redirect( $redirect_url );
+				die();
 			}
 
 		}
