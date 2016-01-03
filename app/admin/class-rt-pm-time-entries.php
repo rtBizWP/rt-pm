@@ -160,7 +160,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                     $args = array(
                         'user_id'   =>  get_current_user_id(),
                         'project_id' =>   $newTimeEntry['post_project_id'],
-                        'timestamp' =>  $dr->format( 'Y-m-d H:i:s' ),
+                        'timestamp' =>  $dr->format( 'Y-m-d' ),
                     );
 
                     $resource_validate = $rt_pm_project_resources->rtpm_validate_assigned_hours( $args );
