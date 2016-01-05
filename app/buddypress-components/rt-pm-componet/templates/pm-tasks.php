@@ -368,41 +368,45 @@ $rt_pm_task->disable_working_days( $project_id );
                         <?php } ?>
                         <div class="scroll-height">
                             <table>
-                                <?php if ( ! empty($attachments)){?>
-                                    <tr>
-                                        <th scope="column">Type</th>
-                                        <th scope="column">Name</th>
-                                        <th scope="column">Size</th>
-                                        <th scope="column"></th>
-                                    </tr>
-                                    <?php foreach ($attachments as $attachment) { ?>
-                                        <?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
-                                        <tr class="large-12 mobile-large-3 attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
-                                            <td scope="column"><img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" /></td>
-                                            <td scope="column">
-                                                <a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
-                                                    <?php echo '<span>'.$attachment->post_title .".".$extn.'</span>'; ?>
-                                                </a>
-                                            </td>
-                                            <td scope="column">
-                                                <?php
-                                                $attached_file = get_attached_file( $attachment->ID );
-                                                if ( file_exists( $attached_file ) ) {
-                                                    $bytes = filesize( $attached_file );
-                                                    $response['filesizeInBytes'] = $bytes;
-                                                    echo '<span>'. $response['filesizeHumanReadable'] = size_format( $bytes ) .'</span>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td scope="column">
-                                                <?php if( $user_edit ) { ?>
-                                                    <a href="#" class="rtpm_delete_attachment  button add-button removeMeta"><i class="fa fa-times"></i></a>
-                                                <?php } ?>
-                                                <input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                <?php } ?>
+								<thead>
+									<tr>
+										<th scope="column">Type</th>
+										<th scope="column">Name</th>
+										<!--<th scope="column">Size</th>-->
+										<th scope="column"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php if ( ! empty($attachments)){?>
+										<?php foreach ($attachments as $attachment) { ?>
+											<?php $extn_array = explode('.', $attachment->guid); $extn = $extn_array[count($extn_array) - 1]; ?>
+											<tr class="large-12 mobile-large-3 attachment-item" data-attachment-id="<?php echo $attachment->ID; ?>">
+												<td scope="column"><img height="20px" width="20px" src="<?php echo RT_PM_URL . "app/assets/file-type/" . $extn . ".png"; ?>" /></td>
+												<td scope="column">
+													<a target="_blank" href="<?php echo wp_get_attachment_url($attachment->ID); ?>">
+														<?php echo '<span>'.$attachment->post_title .".".$extn.'</span>'; ?>
+													</a>
+												</td>
+												<td scope="column">
+													<?php
+													$attached_file = get_attached_file( $attachment->ID );
+													if ( file_exists( $attached_file ) ) {
+														$bytes = filesize( $attached_file );
+														$response['filesizeInBytes'] = $bytes;
+														echo '<span>'. $response['filesizeHumanReadable'] = size_format( $bytes ) .'</span>';
+													}
+													?>
+												</td>
+												<td scope="column">
+													<?php if( $user_edit ) { ?>
+														<a href="#" class="rtpm_delete_attachment  button add-button removeMeta"><i class="fa fa-times"></i></a>
+													<?php } ?>
+													<input type="hidden" name="attachment[]" value="<?php echo $attachment->ID; ?>" />
+												</td>
+											</tr>
+										<?php } ?>
+									<?php } ?>
+								</tbody>
                             </table>
                         </div>
                     </div>

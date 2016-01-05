@@ -495,14 +495,15 @@ jQuery(document).ready(function($) {
             var strAttachment = '';
             selection.map(function(attachment) {
                 attachment = attachment.toJSON();
-                strAttachment = '<tr class="large-12 mobile-large-3 attachment-item" data-attachment-id="'+attachment.id+'">';
-				strAttachment += '<td scope="column"><img height="20px" width="20px" src="' +attachment.icon + '"'+attachment.filename+'" /></td>';
+				var img_src = rt_biz_url + 'app/assets/file-type/' + attachment.url.split('.').pop() + '.png'; 
+				strAttachment = '<tr class="large-12 mobile-large-3 attachment-item" data-attachment-id="'+attachment.id+'">';
+				strAttachment += '<td scope="column"><img height="20px" width="20px" src="' +img_src + '" /></td>';
                 strAttachment += '<td scope="column"><a target="_blank" href="'+attachment.url+'"> '+attachment.filename+'</a></td>';
-				strAttachment += '<td scope="column"><span>&nbsp;&nbsp;&nbsp;</span></td>';
+				//strAttachment += '<td scope="column"><span>&nbsp;&nbsp;&nbsp;</span></td>';
                 strAttachment += '<td scope="column"><a href="#" class="rtpm_delete_attachment right">x</a>';
                 strAttachment += '<input type="hidden" name="attachment[]" value="' + attachment.id +'" /></td></tr>';
 
-                jQuery("#attachment-container .scroll-height table").append(strAttachment);
+                jQuery("#attachment-container .scroll-height table tbody").append(strAttachment);
 
                 // Do something with attachment.id and/or attachment.url here
             });
@@ -868,8 +869,6 @@ function rtpm_reset_task_form() {
     jQuery("select[name='post[post_author]']").val(0);
     jQuery("select[name='post[post_status]']").val();
     jQuery("select[name='post[parent_task]']").val(0);
-    jQuery("#attachment-container .scroll-height").html('');
+    jQuery("#attachment-container .scroll-height table tbody").html('');
     jQuery('div.resources-list>div.parent-row:gt(0)').remove();
 }
-
-

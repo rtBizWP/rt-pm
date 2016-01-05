@@ -716,10 +716,10 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 
 				$_REQUEST["new"]    = true;
 				$newTask['post_id'] = $post_id;
-
-				//Save task resources
-				$rt_pm_project_resources->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 			}
+			
+			//Save task resources
+			$rt_pm_project_resources->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 
 			$rt_pm_project->connect_post_to_entity( $task_post_type, $newTask['post_project_id'], $post_id );
 
@@ -745,7 +745,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			$old_attachments = $query->posts;
 
 			$new_attachments = array();
-			if ( is_admin() ) {
+			//if ( is_admin() ) {
 				if ( isset( $_POST['attachment'] ) ) {
 					$new_attachments = $_POST['attachment'];
 					foreach ( $new_attachments as $attachment ) {
@@ -793,7 +793,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					}
 					delete_post_meta( $newTask['post_id'], '_rt_wp_pm_attachment_hash' );
 				}
-			}
+			//}
 
 
 			//Add success message

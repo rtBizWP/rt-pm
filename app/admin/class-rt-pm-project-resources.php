@@ -197,6 +197,12 @@ class Rt_PM_Project_Resources {
 			$all_task_ids = array_merge( $all_task_ids, $task_ids );
 
 			foreach ( $task_ids as $task_id ) {
+				
+				$task_info = get_post( $task_id );
+
+				if ( !$task_info )
+					continue;
+				
 				$table_html .= '<tr>';
 				// for each task travel through each date
 

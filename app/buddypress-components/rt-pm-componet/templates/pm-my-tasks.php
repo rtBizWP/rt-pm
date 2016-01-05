@@ -41,13 +41,18 @@ if ( ! empty( $project_ids ) ) { ?>
 						continue;
 					?>
 					<tr>
-						<td class="rt_project_resources_title"><?php echo mb_strimwidth( get_post_field( 'post_title', $project_id ), 0, 25, '..' ); ?></td>
+						<td class="rt_project_resources_title"><?php echo mb_strimwidth( get_post_field( 'post_title', $project_id ), 0, 20, '..' ); ?></td>
 					</tr>
-					<?php foreach ( $task_ids as $task_id ): ?>
+					<?php foreach ( $task_ids as $task_id ): 
+							$task_title = get_post_field( 'post_title', $task_id );
+							if( empty( $task_title ) ) {
+								continue;
+							}
+					?>
 						<tr>
 							<td>
 								<a class="rtpm_tasks_title" data-task-id="<?php echo $task_id ?>">
-									<?php echo mb_strimwidth( get_post_field( 'post_title', $task_id ), 0, 20, '..' ); ?>
+									<?php echo mb_strimwidth( $task_title, 0, 20, '..' ); ?>
 								</a>
 							</td>
 						</tr>
