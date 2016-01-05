@@ -591,3 +591,15 @@ function rtpm_set_job_number( $project_id ) {
 
 	return update_option( 'rt_pm_job_last_index', $job_last_index );
 }
+
+/**
+ * Hide Add Project button.
+ */
+function rtpm_hide_add_button() {
+	if( 'rt_project' == get_post_type() ) {
+		echo '<style type="text/css">
+			.post-type-rt_project .page-title-action { display:none; }
+			</style>';
+	}
+}
+add_action( 'admin_head', 'rtpm_hide_add_button' );
