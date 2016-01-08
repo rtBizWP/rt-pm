@@ -14,10 +14,10 @@ $project_ids  = $rt_pm_task_resources_model->rtpm_get_users_projects( bp_display
 // lets start with all projects
 if ( ! empty( $project_ids ) ) { ?>
 	<div class="list-heading">
-		<div class="small-6 columns">
+		<div class="small-4 columns">
 			<h4><?php _e( 'My Tasks', RT_PM_TEXT_DOMAIN ) ?></h4>
 		</div>
-		<div class="small-6 columns" style="text-align: right; margin-bottom: 15px;">
+		<div class="small-8 columns" style="text-align: right; margin-bottom: 15px; padding-right: 0;">
 			<a href="#" class="rt-export-button export-csv">Export CSV</a>
 			<a href="#" class="rt-export-button export-pdf">Export PDF</a>
 		</div>
@@ -76,7 +76,7 @@ if ( ! empty( $project_ids ) ) { ?>
 			<a id="rtpm-get-prev-calender" class="rtpm-get-calender" data-flag="prev"
 			   data-date="<?php echo $first_date; ?>" data-calender="my-tasks"><?php
 				if ( wp_is_mobile() ) {
-					echo "prev";
+					echo "&#8592; Prev";
 				} else {
 					echo "<";
 				}
@@ -87,7 +87,7 @@ if ( ! empty( $project_ids ) ) { ?>
 			<a id="rtpm-get-next-calender" class="rtpm-get-calender" data-flag="next"
 			   data-date="<?php echo $last_date; ?>" data-calender="my-tasks"><?php
 				if ( wp_is_mobile() ) {
-					echo "next";
+					echo "Next &#8594;";
 				} else {
 					echo ">";
 				}
@@ -97,7 +97,7 @@ if ( ! empty( $project_ids ) ) { ?>
 				CSV</a></div>
 		<div class="rt-export-button-container"><a href="#" class="rt-export-button export-pdf export-bottom">Export
 				PDF</a></div>
-
+		
 		<!-- Inline script-->
 		<script type="text/javascript">
 			var rtpm_my_task;
@@ -119,7 +119,7 @@ if ( ! empty( $project_ids ) ) { ?>
 				$( document ).ready( function() { rtpm_my_task.init() } );
 			})(jQuery);
 		</script>
-
+		<div style="clear: both;"></div>
 	</div>    <?php
 	rtpm_task_detail_hover_cart();
 } else {

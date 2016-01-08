@@ -104,9 +104,9 @@ function rt_get_next_dates( $date ) {
 	// if mobile show only 3 columns
 
 	if ( wp_is_mobile() ) {
-		$table_cols = 3;
+		$table_cols = 2; //3 columns ( 0-2 )
 	} else {
-		$table_cols = 9;
+		$table_cols = 9; // 10 columns ( 0-9 )
 	}
 	for ( $i = 0; $i <= $table_cols; $i ++ ) {
 		array_push( $dates, date( 'Y-m-d', strtotime( "+$i day", $start ) ) );

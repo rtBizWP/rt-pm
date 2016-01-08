@@ -21,10 +21,9 @@ $project_id = $_REQUEST['rt_project_id'];
             <input value="Export to JSON" type="button" onclick='gantt.exportToJSON()'>
             <input  id="upload_task_json" type="button" value="Import JSON" />
         </div>
+		<div style="clear:both;"></div>
     </div>
 
-
-    <br/>
     <input type="hidden" value="<?php echo $project_id; ?>" id="rtpm_project_id" />
 <?php
 $rt_pm_project_gantt->rtpm_prepare_ganttchart( $project_id, 'rtpm_project_ganttchart' );

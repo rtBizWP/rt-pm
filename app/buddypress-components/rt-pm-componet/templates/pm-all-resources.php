@@ -6,10 +6,10 @@
  */
 global $rt_pm_project, $rt_pm_bp_pm, $rt_pm_bp_pm_project, $bp, $wpdb, $wp_query, $rt_person, $rt_pm_task_resources_model, $rt_pm_project_resources;?>
 
-	<div class="small-6  columns">
+	<div class="small-5  columns">
 		<h4><?php _e( 'All Resources', RT_PM_TEXT_DOMAIN ) ?></h4>
 	</div>
-	<div class=" small-6 columns" style="text-align: right; margin-bottom: 15px;">
+	<div class=" small-7 columns" style="text-align: right; margin-bottom: 15px; padding-right: 0;">
 		<a href="#" class="rt-export-button export-csv">Export CSV</a>
 		<a href="#" class="rt-export-button export-pdf">Export PDF</a>
 	</div>
@@ -64,7 +64,7 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 			<a id="rtpm-get-prev-calender" class="rtpm-get-calender" data-flag="prev"
 			   data-date="<?php echo $first_date; ?>" data-calender="all-resources"><?php
 				if ( wp_is_mobile() ) {
-					echo "prev";
+					echo "&#8592; Prev";
 				} else {
 					echo "<";
 				}
@@ -75,15 +75,15 @@ $project_ids = $rt_pm_task_resources_model->rtpm_get_resources_projects(); ?>
 			<a id="rtpm-get-next-calender" class="rtpm-get-calender" data-flag="next"
 			   data-date="<?php echo $last_date; ?>" data-calender="all-resources"><?php
 				if ( wp_is_mobile() ) {
-					echo "next";
+					echo "Next &#8594;";
 				} else {
 					echo ">";
 				} ?></a>
 		</div>
 
 		<div class="small-12 columns rt-export-button-bottom-container" style="text-align: right;">
-			<a href="#" class="rt-export-button export-csv">Export CSV</a>
-			<a href="#" class="rt-export-button export-pdf">Export PDF</a>
+			<a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a>
+			<a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a>
 		</div>
 
 	</div>
