@@ -58,7 +58,7 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 		?>
 		<a id="rtpm-get-prev-calender" class="rtpm-get-calender"  data-flag="prev" data-date="<?php echo $first_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
 			if ( wp_is_mobile() ) {
-				echo "prev";
+				echo "&#8592; Prev";
 			} else {
 				echo "<";
 			}
@@ -68,7 +68,7 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 		</table>
 		<a id="rtpm-get-next-calender" class="rtpm-get-calender"  data-flag="next" data-date="<?php echo $last_date; ?>" data-calender="resources" data-project="<?php echo $project_id; ?>"><?php
 			if ( wp_is_mobile() ) {
-				echo "next";
+				echo "Next &#8594;";
 			} else {
 				echo ">";
 			}
@@ -76,8 +76,8 @@ $user_ids = $rt_pm_task_resources_model->rtpm_get_resources_users( array( 'proje
 	</div>
 
 	<div class="small-12 columns rt-export-button-bottom-container" style="text-align: right;">
-		<a href="#" class="rt-export-button export-csv">Export CSV</a>
-		<a href="#" class="rt-export-button export-pdf">Export PDF</a>
+		<a href="#" class="rt-export-button export-csv export-bottom">Export CSV</a>
+		<a href="#" class="rt-export-button export-pdf export-bottom">Export PDF</a>
 	</div>
 
 	<?php } else { ?>
