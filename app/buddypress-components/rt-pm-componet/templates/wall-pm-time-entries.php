@@ -91,7 +91,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
             <label for="post[task_start_date]">Start Date<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns">
-            <input name="post[task_start_date]" required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
+            <input name="post[task_start_date]" id="task_start_date" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
         </div>
     </div>
 
@@ -100,7 +100,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
             <label for="post[task_end_date]">End Date<small class="required"> * </small></label>
         </div>
         <div class="small-8 columns">
-            <input name="post[task_end_date]" required="required" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
+            <input name="post[task_end_date]" id="task_end_date" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
         </div>
     </div>
 
@@ -256,9 +256,19 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
               var $select_task_id = $('select[name="post[post_task_id]"]');
 
               if( 'add-time' == $select_task_id.val() ) {
+
                   $('.task-dates').show();
+
+                  //Add required attribute
+                  $("#task_start_date").attr( 'required', 'required' );
+                  $("#task_end_date").attr( 'required', 'required' );
               } else {
+
                   $('.task-dates').hide();
+
+                  //Remove required attribute
+                  $("#task_start_date").removeAttr( 'required' );
+                  $("#task_end_date").removeAttr( 'required' );
               }
 
           },
