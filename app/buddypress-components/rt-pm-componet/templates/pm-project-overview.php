@@ -6,7 +6,7 @@
  * Time: 3:46 PM
  */
 
-global $rt_pm_project, $rt_pm_project_overview, $rt_bp_reports, $rt_person, $rt_pm_task, $rt_pm_time_entries;
+global $wpdb, $rt_pm_project, $rt_pm_project_overview, $rt_bp_reports, $rt_person, $rt_pm_task, $rt_pm_time_entries;
 
 $displayed_user_id = bp_displayed_user_id();
 
@@ -209,6 +209,33 @@ $project_budget = get_post_meta( $project->ID, '_rtpm_project_budget', true );
 		</div>
 
 	</div>
+
+	<!-- Project time entries summary recorded by users -->
+	<div class="small-12 column" >
+		<?php
+		$sql = $wpdb->prepare("SELECT author, sum(time_duration) total_hours FROM {$wpdb->prefix}rt_pm_time_entries WHERE project_id = %d GROUP BY author", $project->ID );
+		$result = $wpdb->get_results( $sql );
+		?>
+		<?php if ( ! empty( $result ) ): ?>
+		<table>
+			<thead>
+				<tr>
+					<th style="width: 75%;"><?php _e('Team Member') ?></th>
+					<th style="width: 25%;"><?php _e('Hours Recorded') ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $result as $data ): ?>
+				<tr>
+					<td style="width: 75%;"><?php echo bp_core_get_userlink( $data->author ) ?></td>
+					<td style="width: 25%;"><?php echo $data->total_hours ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php endif; ?>
+	</div>
+	<!-- Project time entries summary recorded by users -->
 
 
 </div>
