@@ -103,12 +103,6 @@ $project_budget = get_post_meta( $project->ID, '_rtpm_project_budget', true );
 <br/><br/>
 <div class="panel" style="overflow: auto;">
 
-	<div style="overflow: auto; margin-bottom: 0;" class="row">
-		<?php $rt_pm_time_entries->rtpm_project_summary_markup( $project->ID ) ?>
-	</div>
-
-	<div style="border-bottom: 1px solid #E6E6E6; margin: 6px 0px;"></div>
-
 	<div class="small-12 medium-5 columns" style="border-right: 1px solid #E6E6E6;">
 		<div class="activity-content">
 			<div class="row activity-inner rt-biz-activity">
