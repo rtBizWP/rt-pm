@@ -200,7 +200,8 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
                     $meta_values = array(
                         'post_duedate'         => $end_start_dr->format( 'Y-m-d H:i:s'),
                         'post_project_id'      => $newTimeEntry['post_project_id'],
-                        'rtpm_parent_task'     => 0,
+                        'rtpm_parent_task'     => $newTimeEntry['parent_task'],
+                        'rtpm_task_type'       => $newTimeEntry['task_type'],
                     );
 
                     //Create task

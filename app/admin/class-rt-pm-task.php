@@ -1668,7 +1668,7 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 			if( ! empty( $post_id ) )
 				$parent_task_id = get_post_meta( $post_id, 'rtpm_parent_task', true );
 			?>
-			<select name="post[parent_task]">
+			<select name="post[parent_task]" id="parent_task_select">
 				<option value="0">Select Parent Task</option>
 				<?php foreach( $data as $task_id) : ?>
 					<option <?php selected( $task_id, $parent_task_id ); ?> value="<?php echo $task_id ?>"><?php echo get_post_field( 'post_title', $task_id ) ?></option>

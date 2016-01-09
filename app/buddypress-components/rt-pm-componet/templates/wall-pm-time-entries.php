@@ -85,8 +85,9 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
         </div>
     </div>
 
+    <!-- Add new task fields added along time entries -->
 
-    <div class="row task-dates">
+    <div class="row task-fields">
         <div class="small-4 columns">
             <label for="post[task_start_date]">Start Date<small class="required"> * </small></label>
         </div>
@@ -95,7 +96,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
         </div>
     </div>
 
-    <div class="row task-dates">
+    <div class="row task-fields">
         <div class="small-4 columns">
             <label for="post[task_end_date]">End Date<small class="required"> * </small></label>
         </div>
@@ -103,6 +104,29 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
             <input name="post[task_end_date]" id="task_end_date" class="datetimepicker moment-from-now" type="text" placeholder="Select Create Date" />
         </div>
     </div>
+
+    <div class="row task-fields">
+        <div class="small-4 columns">
+            <label for="post[task_type]"><?php _e('Task Type') ?><small class="required"> * </small></label>
+        </div>
+        <div class="small-8 columns">
+          <select name="post[task_type]">
+            <option value="main_task"><?php _e('Normal Task') ?></option>
+            <option value="sub_task"><?php _e('Sub Task') ?></option>
+          </select>
+        </div>
+    </div>
+
+    <div class="row parent-task-div" style="display: none;">
+        <div class="small-4 columns">
+            <label for="post[task_type]"><?php _e('Parent Task') ?><small class="required"> * </small></label>
+        </div>
+        <div class="small-8 columns">
+        <?php $rt_pm_task->rtpm_render_parent_tasks_dropdown( $project->ID ); ?>
+        </div>
+    </div>
+
+    <!-- Add new task fields added along time entries -->
 
     <div class="row rtpm-post-author-wrapper">
         <div class="small-4 columns">
@@ -247,31 +271,50 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 
           //Wall time entries sidebar init
           init: function() {
-              wall_time_entries.set_task_data();
-              $(document).on( 'change', 'select[name="post[post_task_id]"]', wall_time_entries.set_task_data );
+
+              wall_time_entries.task_date_fields();
+              wall_time_entries.parent_task_type_fields();
+
+              $(document).on( 'change', 'select[name="post[post_task_id]"]', wall_time_entries.task_date_fields );
+              $(document).on( 'change', 'select[name="post[task_type]"]', wall_time_entries.parent_task_type_fields );
           },
 
           //Show task start date and task end date field
-          set_task_data: function() {
+          task_date_fields: function() {
               var $select_task_id = $('select[name="post[post_task_id]"]');
 
               if( 'add-time' == $select_task_id.val() ) {
 
-                  $('.task-dates').show();
+                  $('.task-fields').show();
 
                   //Add required attribute
                   $("#task_start_date").attr( 'required', 'required' );
                   $("#task_end_date").attr( 'required', 'required' );
               } else {
 
-                  $('.task-dates').hide();
+                  $('.task-fields').hide();
 
                   //Remove required attribute
                   $("#task_start_date").removeAttr( 'required' );
                   $("#task_end_date").removeAttr( 'required' );
               }
 
+              wall_time_entries.parent_task_type_fields();
+
           },
+
+          //Show/hide parent task drowpdown on Task Type selection
+          parent_task_type_fields: function() {
+            var $task_type = $('select[name="post[task_type]"]');
+
+            var $parent_task_div = $('div.parent-task-div');
+
+            if ( 'sub_task' == $task_type.val() && $task_type.is(':visible') ) {
+                $parent_task_div.show();
+            } else {
+                $parent_task_div.hide();
+            }
+          }
         };
 
         $(document).ready( function( e ) { wall_time_entries.init(); } );
