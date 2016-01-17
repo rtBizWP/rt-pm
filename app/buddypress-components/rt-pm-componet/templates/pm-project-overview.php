@@ -45,8 +45,8 @@ if ( ! empty( $_REQUEST['post'] ) ) {
 <form action="" method="post">
 
 <div class="small-12 medium-3 columns">
-	<select name="post[project_member]">
-		<option value=""><?php  _e('Any Team members', RT_PM_TEXT_DOMAIN ) ?></option>
+	<select name="post[project_member]">saliva
+		<option value=""><?php  _e('All Team members', RT_PM_TEXT_DOMAIN ) ?></option>
 		<?php $employees = rt_biz_get_employees();
 		foreach ( $employees as $employee ):
 			$user_id = rt_biz_get_wp_user_for_person( $employee->ID );
@@ -58,7 +58,7 @@ if ( ! empty( $_REQUEST['post'] ) ) {
 
 <div class="small-12 medium-3 columns">
 	<select name="post[project_type]">
-		<option value=""><?php  _e('Any Project type', RT_PM_TEXT_DOMAIN ) ?></option>
+		<option value=""><?php  _e('All Project type', RT_PM_TEXT_DOMAIN ) ?></option>
 		<?php
 		$terms = get_terms( Rt_PM_Project_Type::$project_type_tax, array( 'hide_empty' => false ) );
 		foreach ( $terms as $project_type ) :?>
@@ -69,7 +69,7 @@ if ( ! empty( $_REQUEST['post'] ) ) {
 
 <div class="small-12 medium-3 columns">
 	<select name="post[project_id]">
-		<option value=""><?php _e( 'Any Project', RT_PM_TEXT_DOMAIN ) ?></option>
+		<option value=""><?php _e( 'All Project', RT_PM_TEXT_DOMAIN ) ?></option>
 		<?php
 		$project_args_arr = array(
 			'nopaging' => true,
@@ -101,7 +101,7 @@ $project_budget = get_post_meta( $project->ID, '_rtpm_project_budget', true );
 ?>
 
 <br/><br/>
-<div class="panel" style="overflow: auto;">
+<div class="panel" style="overflow: auto;" data-project-id="<?php echo $project->ID; ?>" data-rt-blog-id="<?php echo get_current_blog_id() ?>">
 
 	<div class="small-12 medium-5 columns" style="border-right: 1px solid #E6E6E6;">
 		<div class="activity-content">

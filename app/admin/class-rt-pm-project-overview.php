@@ -124,9 +124,9 @@ class Rt_Pm_Project_Overview {
 						var post = {};
 
 						post.user_id = elm.data('team-member-id');
-						post.project_id = elm.parents('li').data('project-id');
+						post.project_id = elm.parents('li, div.panel').data('project-id');
 
-						var that = elm.parents('.activity-item');
+						var that = elm.parents('.activity-item, div.panel');
 						var blog_id = that.data('rt-blog-id');
 						rtpm_show_user_task_hovercart( post, blog_id );
 					},
