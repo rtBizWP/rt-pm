@@ -242,8 +242,12 @@ $project_budget = get_post_meta( $project->ID, '_rtpm_project_budget', true );
 <?php
 endforeach;
 
-$rt_pm_project_overview->rtpm_filtered_project_block();
+//Remove the summery blocks from the page, before doing search and after
+if (  empty( $_REQUEST['project_overview_filter'] ) ) {
+ $rt_pm_project_overview->rtpm_filtered_project_block();
 
-$rt_pm_project_overview->rtpm_render_project_grid();
+ $rt_pm_project_overview->rtpm_render_project_grid();
+}
+
 
 $rt_pm_project_overview->rtpm_render_project_charts();
