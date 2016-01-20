@@ -12,7 +12,7 @@
  */
 
 if ( !defined( 'RT_PM_VERSION' ) ) {
-	define( 'RT_PM_VERSION', '1.0' );
+	define( 'RT_PM_VERSION', '1.1' );
 }
 if ( !defined( 'RT_PM_TEXT_DOMAIN' ) ) {
 	define( 'RT_PM_TEXT_DOMAIN', 'rt_pm' );
