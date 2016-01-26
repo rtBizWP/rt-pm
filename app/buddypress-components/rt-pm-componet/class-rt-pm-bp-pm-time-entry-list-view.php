@@ -179,7 +179,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 			$perpage = 5;
 
 			//Which page is this?
-			$paged = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+			$paged = isset( $_GET['paged'] ) && !empty( $_GET['paged'] ) ? $_GET['paged'] : '';
 			//Page Number
 			if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) { $paged=1; }
 			//How many pages do we have in total?
@@ -565,7 +565,7 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 					echo '<tr id="record_'.$rec->id.'" class="'.(($i%2)?'alternate':'').'">';
 					foreach ( $columns as $column_name => $column_display_name ) {
 
-						$class = "class='$column_name column-$column_name'";
+						$class = "class='$column_name rtvo-$column_name'";
 						$style = "";
 						if ( in_array( $column_name, $hidden ) ) $style = ' style="display:none;"';
 						$attributes = $class . $style;
@@ -619,9 +619,9 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
                                 if(!empty($rec->author)) {
                                     $user = get_user_by('id', $rec->author);
                                     $url = add_query_arg( 'post_author', $rec->author );
-                                    echo '<td style="float:left;" '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
                                 } else
-                                    echo '<td style="float:left;" '.$attributes.'>-';
+                                    echo '<td '.$attributes.'>-';
                                 //.'< /td>';
                                 break;
 						}

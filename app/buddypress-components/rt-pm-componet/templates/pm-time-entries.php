@@ -88,7 +88,7 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
 
 
 <style type="text/css">
-    .column-rtpm_message button.toggle-row {
+    .rtvo-rtpm_message button.toggle-row {
         display: none !important;
     }
 </style>
@@ -102,7 +102,7 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
                 <h2><?php _e( '#'.get_post_meta(  $project_id, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $project_id ), RT_PM_TEXT_DOMAIN );?></h2>
             </div>
             <div class="large-4 columns">
-                <a class="right button rtpm_new_time_entry"><?php _e( 'Time and Expenses', RT_PM_TEXT_DOMAIN ); ?></a>
+                <a class="right button rtpm_new_time_entry"><?php _e( 'Time Entry', RT_PM_TEXT_DOMAIN ); ?></a>
             </div>
 
         </div>

@@ -301,23 +301,24 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
             $estimated_hours = $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $project_id ) );
 
             ?>
-
-            <div class="large-3 columns">
-                <strong><?php _e( 'Project Cost:'); ?></strong>
-                <span><?php echo '$ '.$project_current_budget_cost; ?></span>
-            </div>
-            <div class="large-3 columns">
-                <strong><?php _e( 'Budget:'); ?></strong>
-                <span><?php echo '$ '.floatval( get_post_meta( $project_id, '_rtpm_project_budget', true ) ); ?></span>
-            </div>
-            <div class="large-3 columns">
-                <strong><?php _e( 'Time spent:'); ?></strong>
-                <span><?php echo $project_current_time_cost.__(' hours'); ?></span>
-            </div>
-            <div class="large-3 columns">
-                <strong><?php _e( 'Estimated Time:'); ?></strong>
-                <span><?php echo floatval( $estimated_hours ).__(' hours'); ?></span>
-            </div>
+			<div class="columns">
+				<div class="large-3 columns">
+					<strong><?php _e( 'Project Cost:'); ?></strong>
+					<span><?php echo '$ '.number_format( $project_current_budget_cost, 2 ); ?></span>
+				</div>
+				<div class="large-3 columns">
+					<strong><?php _e( 'Budget:'); ?></strong>
+					<span><?php echo '$ '.number_format( str_replace( ",", "", get_post_meta( $project_id, '_rtpm_project_budget', true ) ), 2 ); ?></span>
+				</div>
+				<div class="large-3 columns">
+					<strong><?php _e( 'Time spent:'); ?></strong>
+					<span><?php echo $project_current_time_cost.__(' hours'); ?></span>
+				</div>
+				<div class="large-3 columns end">
+					<strong><?php _e( 'Estimated Time:'); ?></strong>
+					<span><?php echo floatval( $estimated_hours ).__(' hours'); ?></span>
+				</div>
+			</div>
         <?php
         }
 

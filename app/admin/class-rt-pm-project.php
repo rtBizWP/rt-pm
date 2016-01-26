@@ -1687,9 +1687,9 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 										</div>
 										<div class="large-7 mobile-large-2 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 											<?php if( $user_edit ) { ?>
-											<input type="text" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?>" />
+											<input type="number" name="post[project_budget]" id="project_budget" value="<?php echo ( isset( $post->ID ) ) ? str_replace( ",", "", get_post_meta( $post->ID, '_rtpm_project_budget', true ) ) : ''; ?>" />
 											<?php } else { ?>
-											<span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? get_post_meta( $post->ID, '_rtpm_project_budget', true ) : ''; ?></span>';
+											<span class="rtpm_view_mode"><?php echo ( isset( $post->ID ) ) ? number_format( str_replace( ",", "", get_post_meta( $post->ID, '_rtpm_project_budget', true ) ), 2 ) : ''; ?></span>';
 											<?php } ?>
 										</div>
 										<?php if( $user_edit ) { ?>

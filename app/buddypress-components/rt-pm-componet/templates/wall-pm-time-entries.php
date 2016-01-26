@@ -207,22 +207,22 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
          }
      } ?>
 
-     <table>
+     <table id="rtpm_wall_project_cost_report">
          <thead>
          <tr>
-             <th><?php _e( 'Project Cost' ) ?></th>
+             <th><?php _e( 'Cost' ) ?></th>
              <th><?php _e( 'Budget' ) ?></th>
-             <th><?php _e( 'Time spent' ) ?></th>
-             <th><?php _e( 'Estimated Time' ) ?></th>
+             <th><?php _e( 'Time' ) ?></th>
+             <!--<th><?php //_e( 'Estimated Time' ) ?></th>-->
          </tr>
          </thead>
 
          <tbody>
          <tr>
-             <td><?php echo '$ ' . $project_current_budget_cost ?></td>
-             <td><?php echo '$ ' . floatval( get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ) ?></td>
-             <td><?php echo $project_current_time_cost . __( ' hours' ) ?></td>
-             <td><?php echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ) . __( ' hours' ) ?></td>
+             <td><?php echo '$ ' . number_format( $project_current_budget_cost, 2 ); ?></td>
+             <td><?php echo '$ ' . number_format( str_replace( ",", "", get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ), 2 ); ?></td>
+             <td><?php echo $project_current_time_cost . __( ' hours' ); ?></td>
+             <!--<td><?php //echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ) . __( ' hours' ); ?></td>-->
          </tr>
          </tbody>
      </table>
@@ -230,6 +230,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
      <hr/>
 
      <?php
+	 if( !empty( $result ) ) :
      foreach ( $result as $time_entry ) : ?>
 
          <div class="row">
@@ -259,6 +260,9 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
          </div>
          <hr/>
      <?php endforeach;
+		else:
+			_e( 'No time entry records for this task.', RT_PM_TEXT_DOMAIN );
+		endif;
  endif;?>
 </form>
 <script type="text/javascript">
