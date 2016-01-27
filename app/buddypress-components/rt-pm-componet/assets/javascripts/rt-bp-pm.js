@@ -624,8 +624,8 @@ jQuery(document).ready(function($) {
     });
 
     try {
-        if ('undefined' != typeof jQuery('input.search-contact')) {
-
+        if ( jQuery('input.search-contact').length > 0 ) {
+			
             jQuery( document ).on( 'keydown.autocomplete', function() {
                 jQuery("input.search-contact").autocomplete({
                     source: function (request, response) {
