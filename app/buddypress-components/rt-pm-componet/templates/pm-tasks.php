@@ -312,7 +312,7 @@ $rt_pm_task->disable_working_days( $project_id );
                             </div>
 
                             <div class="small-1 columns left">
-                                <a class="resources-add-multiple button"><i class="fa fa-plus"></i></a>
+                                <a class="resources-add-multiple button" title="Add Resource"><i class="fa fa-plus"></i></a>
                             </div>
                         </div>
                         <?php
@@ -342,7 +342,7 @@ $rt_pm_task->disable_working_days( $project_id );
                                 </div>
 
                                 <div class="small-1 columns left">
-                                    <a class="resources-delete-multiple button"><i class="fa fa-times"></i></a>
+                                    <a class="resources-delete-multiple button" title="Remove Resource"><i class="fa fa-times"></i></a>
                                 </div>
                             </div>
                         <?php }

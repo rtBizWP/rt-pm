@@ -221,7 +221,7 @@ $uncommon_task_type = array( 'milestone', 'task_group' );
                 </div>
 
                 <div class="small-1 columns">
-                    <a class="resources-add-multiple add-button button"><i class="fa fa-plus"></i></a>
+                    <a class="resources-add-multiple add-button button" title="Add Resource"><i class="fa fa-plus"></i></a>
                 </div>
             </div>
             <?php
@@ -251,7 +251,7 @@ $uncommon_task_type = array( 'milestone', 'task_group' );
                     </div>
 
                     <div class="small-1 columns">
-                        <a class="resources-delete-multiple add-button button"><i class="fa fa-times"></i></a>
+                        <a class="resources-delete-multiple add-button button" title="Remove Resource"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
             <?php }

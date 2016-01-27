@@ -713,14 +713,14 @@ if ( ! class_exists( 'Rt_PM_Task' ) ) {
 					'rtpm_task_type'       => $newTask['task_type'],
 				);
 				$post_id = $this->rtpm_save_task_data( $post, $data );
+				
+				//Save task resources
+				$rt_pm_project_resources->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
 
 				$_REQUEST["new"]    = true;
 				$newTask['post_id'] = $post_id;
 			}
 			
-			//Save task resources
-			$rt_pm_project_resources->rtpm_save_task_resources( $post_id, $newTask['post_project_id'], $newTask );
-
 			$rt_pm_project->connect_post_to_entity( $task_post_type, $newTask['post_project_id'], $post_id );
 
 			// link post to user

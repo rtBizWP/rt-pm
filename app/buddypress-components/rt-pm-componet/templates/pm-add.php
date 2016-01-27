@@ -288,7 +288,7 @@ if( !empty( $results_organization ) ) {
 				<input style="margin-bottom:10px" type="text" placeholder="Type User Name to select" id="project_member_user_ac" />
 				<?php } ?>
 				<?php
-				 if( ! empty( $project_member ) ) :
+				 /*if( ! empty( $project_member ) ) :
 
 				    foreach( $project_member as $project_member_id ):
 
@@ -303,7 +303,7 @@ if( !empty( $results_organization ) ) {
                         </div>
 				 <?php
 				    endforeach;
-				 endif;
+				 endif;*/
 				 ?>
 				<ul id="divProjectMemberList">
 					<?php echo $subProjectMemberHTML; ?>
