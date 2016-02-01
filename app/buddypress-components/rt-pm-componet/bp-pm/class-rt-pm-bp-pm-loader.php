@@ -304,7 +304,7 @@ if ( !class_exists( 'RT_PM_Bp_PM_Loader' ) ) {
 
 				}
 
-				if( current_user_can( 'projects_manage_time_entry_types' ) ) {
+				if( current_user_can( 'projects_edit_time_entries' ) ) {
 
 					$main_url = trailingslashit( $user_domain . $this->slug .'/time-entries');
 					$url = esc_url( add_query_arg( array( 'post_type' => 'rt_project' ,'rt_project_id' => $_GET['rt_project_id'], 'tab' => 'rt_project-timeentry'  ), $main_url ) );
