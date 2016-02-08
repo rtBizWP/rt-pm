@@ -176,7 +176,10 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
 
 			//How many to display per page?
 			//$perpage = 25;
-			$perpage = 5;
+			$perpage = get_user_meta( get_current_user_id(), 'rt_time_entry_per_page', true );
+			if ( empty( $perpage ) ) {
+				$perpage = 50;
+			}
 
 			//Which page is this?
 			$paged = isset( $_GET['paged'] ) && !empty( $_GET['paged'] ) ? $_GET['paged'] : '';

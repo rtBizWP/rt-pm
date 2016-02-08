@@ -120,7 +120,24 @@ if ( isset ( $_REQUEST["task_id"] ) ) {
     $rtpm_bp_pm_time_entry_list = new Rt_PM_BP_PM_Time_Entry_List_View();
     $rtpm_bp_pm_time_entry_list->prepare_items();
     $rtpm_bp_pm_time_entry_list->display();
-    ?>
+    
+	$user_post_per_page = get_user_meta( get_current_user_id(), 'rt_time_entry_per_page', true );
+	if ( empty( $user_post_per_page ) ) {
+		$user_post_per_page = 50;
+	}
+	?>
+	<div class="rt-post-per-page-container">
+		<select class="rt-post-per-page-select" data-value="time-entry-list">
+			<?php
+				$option_array = array( 15, 25, 50 );
+				foreach( $option_array as $opt_value ) {
+			?>
+			<option value="<?php echo $opt_value; ?>" <?php selected( $user_post_per_page, $opt_value ); ?>>
+				<?php echo $opt_value; ?>
+			</option>
+			<?php } ?>
+		</select>
+	</div>
 </div>
 
 <!-- Open task in sidr panel -->
