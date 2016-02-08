@@ -375,7 +375,7 @@ if( !empty( $results_organization ) ) {
 
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">
-                    <label>Create Date</label>
+                    <label>Created on</label>
                 </div>
                 <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                         <input  type="text"  name="post[post_date]" readonly=""  placeholder="Select Create Date"
@@ -385,7 +385,7 @@ if( !empty( $results_organization ) ) {
             </div>
             <div class="column medium-6 small-12">
                 <div class="large-4 small-4 columns">
-                     <label><?php _e('Closing Date'); ?></label>
+                     <label><?php esc_html_e('Finished on'); ?></label>
                 </div>
                 <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                     <?php if( $user_edit ) { ?>
@@ -426,7 +426,7 @@ if( !empty( $results_organization ) ) {
                     <?php if (isset($post->ID)) { ?>
                         <div class="column medium-6 small-12">
                             <div class="large-4 mobile-large-1 columns">
-                                <label>Modify Date</label>
+                                <label>Last Modified</label>
                             </div>
                             <div class="large-8 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
                                 <?php if( $user_edit ) { ?>

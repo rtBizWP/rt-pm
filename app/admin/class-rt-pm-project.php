@@ -214,12 +214,12 @@ if( !class_exists( 'Rt_PM_Project' ) ) {
 			$project['post_content'] = $lead->post_content;
             $project['post_parent'] = $lead_id;
 
-            $lead_index_tabel_name = rtcrm_get_lead_table_name();
+            /*$lead_index_tabel_name = rtcrm_get_lead_table_name();
             $query = $wpdb->prepare( "SELECT * FROM  {$lead_index_tabel_name} WHERE post_id = %s", $lead_id );
-            $result = $wpdb->get_row( $query );
+            $result = $wpdb->get_row( $query );*/
 
-            $project['post_date'] = $result->date_create_gmt;
-            $project['post_date_gmt'] = $result->date_create_gmt;
+            $project['post_date'] = current_time( 'mysql' );
+            $project['post_date_gmt'] = current_time( 'mysql' );
 
             //Pull or attachments
             $attachments = get_posts( array(
