@@ -70,7 +70,7 @@ $form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id
 <h2><?php _e( '#'.get_post_meta(  $projectid, 'rtpm_job_no', true ).' '. get_post_field( 'post_title', $projectid ), RT_PM_TEXT_DOMAIN );?></h2>
 <div id="wp-custom-list-table">
     <div id="attachment-error" class="row"></div>
-    <h3><b><?php _e('External'); ?></b></h3>
+    <h3><b><?php esc_html_e('External Files'); ?></b></h3>
     <hr/>
     <div class="row">
 
@@ -126,11 +126,11 @@ $form_ulr .= "?post_type={$post_type}&page=rtpm-add-{$post_type}&{$post_type}_id
                     $count++;
                 }
             } ?>
-
-
         </div>
     </div>
-
+	
+	<h3><b><?php esc_html_e('Attachments'); ?></b></h3>
+    <hr/>
     <div id="attachment-search-row" class="row collapse postbox">
         <input type='hidden' id='rt_pm_post_id' name='post[rt_project_id]' value=<?php echo $projectid; ?>>
         <?php add_documents_section( $projectid ); ?>
