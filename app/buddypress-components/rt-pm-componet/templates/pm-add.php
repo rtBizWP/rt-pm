@@ -95,27 +95,25 @@ if (isset($post->ID)) {
 $results_member = Rt_PM_Utils::get_pm_rtcamp_user();
 $arrProjectMember = array();
 $subProjectMemberHTML = "";
-if( !empty( $results_member ) ) {
-    foreach ( $results_member as $author ) {
-        if (isset($project_member) && $project_member && !empty($project_member) && in_array($author->ID, $project_member)) {
-            $subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID . "' class='contact-list'>"
-            . "<div class='row'>
-            <div class='column small-2'>"
-             . get_avatar($author->user_email, 32) . ' </div>
-             <div  class="columns small-9 vertical-center">
-             	<a target="_blank" class="" title="'.$author->display_name.'" href="'.bp_core_get_userlink( $author->ID, false, true).'">'.rtbiz_get_user_displayname( $author->ID ).'</a>
-             </div>'
-                . "<div class='columns small-1 vertical-center'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
-                            <input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /> </div>
-                            
-                </div>
-            </li>";
-        }
-        //$arrProjectMember[] = array("id" => $author->ID, "label" => $author->display_name, "imghtml" => get_avatar($author->user_email, 32), 'user_edit_link'=>  bp_core_get_userlink($author->ID, false, true));
-    }
+if( ! empty( $project_member ) ) {
+	foreach( $project_member as $project_member_id ) {
+		$author = get_userdata( $project_member_id );
+		$subProjectMemberHTML .= "<li id='project-member-auth-" . $author->ID . "' class='contact-list'>"
+		. "<div class='row'>
+		<div class='column small-2'>"
+		 . get_avatar($author->user_email, 32) . ' </div>
+		 <div  class="columns small-9 vertical-center">
+			<a target="_blank" class="" title="'.$author->display_name.'" href="'.bp_core_get_userlink( $author->ID, false, true).'">'.rtbiz_get_user_displayname( $author->ID ).'</a>
+		 </div>'
+			. "<div class='columns small-1 vertical-center'><a class='right' href='#removeProjectMember'><i class='foundicon-remove'></i></a>
+						<input type='hidden' name='post[project_member][]' value='" . $author->ID . "' /> </div>
+
+			</div>
+		</li>";
+	}
 }
 
-$arrProjectMember = get_employee_array( $results_member );
+$arrProjectMember = get_employee_array();
 
 //Project client
 $results_client = Rt_PM_Utils::get_pm_client_user();
