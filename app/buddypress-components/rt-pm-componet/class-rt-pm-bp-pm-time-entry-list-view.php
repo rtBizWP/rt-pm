@@ -620,9 +620,13 @@ if ( !class_exists( 'Rt_PM_BP_PM_Time_Entry_List_View' ) ) {
                                 break;
                             case "rtpm_created_by":
                                 if(!empty($rec->author)) {
-                                    $user = get_user_by('id', $rec->author);
                                     $url = add_query_arg( 'post_author', $rec->author );
-                                    echo '<td '.$attributes.'><a href="'.$url.'">'.$user->display_name.'</a>';
+                                    $user_name = rtbiz_get_user_displayname( $rec->author );
+									if ( empty( $user_name ) ) {
+										$user = get_user_by( 'id', $rec->author );
+										$user_name = $user->user_nicename;
+									}
+									echo '<td '.$attributes.'><a href="'.$url.'">'.$user_name.'</a>';
                                 } else
                                     echo '<td '.$attributes.'>-';
                                 //.'< /td>';
