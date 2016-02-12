@@ -235,9 +235,9 @@ $rt_pm_task->disable_working_days( $project_id );
 
                 <div class="row hide-for-milestone">
                     <div class="large-6 mobile-large-1 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
-                        <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
+                        <span title="Start Date"><label>Start Date<small class="required"> * </small></label></span>
                         <?php if( $user_edit ) { ?>
-                            <input required="required" class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Create Date"
+                            <input required="required" class="datetimepicker moment-from-now" name="post[post_date]" type="text" placeholder="Select Start Date"
                                    value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                                    title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
 

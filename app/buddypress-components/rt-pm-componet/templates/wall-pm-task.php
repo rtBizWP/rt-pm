@@ -171,12 +171,12 @@ $uncommon_task_type = array( 'milestone', 'task_group' );
 
     <div class="row hide-for-milestone">
         <div  class="small-4 columns">
-            <span title="Create Date"><label>Create Date<small class="required"> * </small></label></span>
+            <span title="Start Date"><label>Start Date<small class="required"> * </small></label></span>
         </div>
         <div class="small-8 columns <?php echo ( ! $user_edit ) ? 'rtpm_attr_border' : ''; ?>">
 
             <?php if( $user_edit ) { ?>
-                <input required="required" class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Create Date"
+                <input required="required" class="datetimepicker moment-from-now" type="text" name="post[post_date]" placeholder="Select Start Date"
                        value="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>"
                        title="<?php echo ( isset($createdate) ) ? $createdate : ''; ?>" id="create_<?php echo $task_post_type ?>_date">
 
