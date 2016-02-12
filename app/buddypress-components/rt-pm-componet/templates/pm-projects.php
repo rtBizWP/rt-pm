@@ -164,10 +164,8 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 			}
 
 			$project_manager_info = get_user_by( 'id', $project_manager_id );
-			$project_manager_nicename = '';
-			if ( ! empty( $project_manager_info->display_name ) ) {
-				$project_manager_nicename = $project_manager_info->display_name;
-			} else if ( ! empty( $project_manager_info->user_nicename ) ) {
+			$project_manager_nicename = rtbiz_get_user_displayname( $project_manager_id );
+			if ( empty( $project_manager_nicename ) ) {
 				$project_manager_nicename = $project_manager_info->user_nicename;
 			}
 
