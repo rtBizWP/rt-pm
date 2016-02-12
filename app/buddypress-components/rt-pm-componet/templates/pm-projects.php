@@ -22,7 +22,7 @@ if ( $offset <= 0 ) {
 }
 $post_status = array( 'new', 'active', 'paused', 'complete', 'closed' );
 
-$archive_text = __( 'Archive' );
+$archive_text = esc_html__( 'Archive' );
 
 $args = array(
 	'post_type'      => $rt_pm_project->post_type,
@@ -164,8 +164,11 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 			}
 
 			$project_manager_info = get_user_by( 'id', $project_manager_id );
-			if ( ! empty( $project_manager_info->user_nicename ) ) {
+			$project_manager_nicename = '';
+			if ( ! empty( $project_manager_info->display_name ) ) {
 				$project_manager_nicename = $project_manager_info->display_name;
+			} else if ( ! empty( $project_manager_info->user_nicename ) ) {
+				$project_manager_nicename = $project_manager_info->user_nicename;
 			}
 
 //						$business_manager_info = get_user_by( 'id', $business_manager_id );
@@ -225,9 +228,7 @@ $editor_cap = rt_biz_get_access_role_cap( RT_PM_TEXT_DOMAIN, 'editor' );
 							echo $rt_project_type_list[0];
 						} ?>
 					</td>
-					<td><?php if ( ! empty( $project_manager_info->user_nicename ) ) {
-							echo $project_manager_nicename;
-						} ?></td>
+					<td><?php echo $project_manager_nicename; ?></td>
 					<td><?php if ( ! empty( $business_manager_id ) ) {
 							echo rtbiz_get_user_displayname( $business_manager_id );
 						} ?></td>
