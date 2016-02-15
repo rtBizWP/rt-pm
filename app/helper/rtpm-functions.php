@@ -603,3 +603,11 @@ function rtpm_hide_add_button() {
 	}
 }
 add_action( 'admin_head', 'rtpm_hide_add_button' );
+
+function rtpm_format_project_budget( $budget, $format = false ) {
+	$amount = str_replace( array( '$', ',' ), array( "", "" ), $budget );
+	if( $format ) {
+		$amount = number_format( $amount, 2 );
+	}
+	return $amount;
+}

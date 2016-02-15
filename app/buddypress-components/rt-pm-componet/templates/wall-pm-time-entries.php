@@ -210,9 +210,9 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
      <table id="rtpm_wall_project_cost_report">
          <thead>
          <tr>
-             <th><?php _e( 'Cost' ) ?></th>
-             <th><?php _e( 'Budget' ) ?></th>
-             <th><?php _e( 'Time' ) ?></th>
+             <th><?php esc_html_e( 'Cost' ) ?></th>
+             <th><?php esc_html_e( 'Budget' ) ?></th>
+             <th><?php esc_html_e( 'Time' ) ?></th>
              <!--<th><?php //_e( 'Estimated Time' ) ?></th>-->
          </tr>
          </thead>
@@ -220,8 +220,8 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
          <tbody>
          <tr>
              <td><?php echo '$ ' . number_format( $project_current_budget_cost, 2 ); ?></td>
-             <td><?php echo '$ ' . number_format( str_replace( ",", "", get_post_meta( $post_project_id, '_rtpm_project_budget', true ) ), 2 ); ?></td>
-             <td><?php echo $project_current_time_cost . __( ' hours' ); ?></td>
+             <td><?php echo '$ ' . rtpm_format_project_budget( get_post_meta( $post_project_id, '_rtpm_project_budget', true ), true ); ?></td>
+             <td><?php echo $project_current_time_cost . esc_html__( ' hours' ); ?></td>
              <!--<td><?php //echo $rt_pm_task_resources_model->rtpm_get_estimated_hours( array( 'project_id' => $post_project_id ) ) . __( ' hours' ); ?></td>-->
          </tr>
          </tbody>
@@ -235,7 +235,7 @@ $timeentry_post_type = Rt_PM_Time_Entries::$post_type;
 
          <div class="row">
              <div class="small-3 columns">
-                 <label class="rt-voxxi-label"><?php _e( 'Type', RT_PM_TEXT_DOMAIN ) ?></label>
+                 <label class="rt-voxxi-label"><?php esc_html_e( 'Type', RT_PM_TEXT_DOMAIN ) ?></label>
                  <label><?php echo $time_entry->type ?></label>
              </div>
              <div class="small-3 columns">

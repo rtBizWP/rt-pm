@@ -308,7 +308,7 @@ if ( ! class_exists( 'Rt_PM_Time_Entries' ) ) {
 				</div>
 				<div class="large-3 columns">
 					<strong><?php _e( 'Budget:'); ?></strong>
-					<span><?php echo '$ '.number_format( str_replace( ",", "", get_post_meta( $project_id, '_rtpm_project_budget', true ) ), 2 ); ?></span>
+					<span><?php echo '$ '.rtpm_format_project_budget( get_post_meta( $project_id, '_rtpm_project_budget', true ), true ); ?></span>
 				</div>
 				<div class="large-3 columns">
 					<strong><?php _e( 'Time spent:'); ?></strong>

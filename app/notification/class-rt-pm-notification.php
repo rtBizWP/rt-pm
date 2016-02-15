@@ -158,7 +158,7 @@ if ( ! class_exists( 'RT_PM_Notification' ) ) {
 					$budget = floatval( $value );
 					break;
 				case 'percentage':
-					$project_budget = floatval( str_replace( ",", "", get_post_meta( $project_id, '_rtpm_project_budget', true ) ) );
+					$project_budget = floatval( rtpm_format_project_budget( get_post_meta( $project_id, '_rtpm_project_budget', true ) ) );
 					$budget = ( $project_budget * $value ) / 100;
 					break;
 				default:
